@@ -14,12 +14,14 @@ class ErrorScreen<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final message =
+        error.startsWith('ClientException') ? t.error.offlineError : error.substring(error.indexOf(':') + 1);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            t.common.error.error(error: error),
+            message,
             textAlign: TextAlign.center,
             style: TextStyle(color: ThemeColors.textWarning),
           ),

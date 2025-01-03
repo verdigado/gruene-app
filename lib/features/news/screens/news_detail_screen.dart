@@ -16,7 +16,7 @@ class NewsDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return FutureLoadingScreen(
+    return FutureLoadingScreen<NewsModel?>(
       load: () => fetchNewsById(newsId),
       buildChild: (NewsModel? news) {
         if (news == null) {

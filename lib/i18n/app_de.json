@@ -2,7 +2,6 @@
   "common": {
     "appName": "B90/DIE GRÜNEN",
     "error": "Fehler",
-    "retry": "Erneut versuchen",
     "notImplementedYet": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
     "actions": {
       "save": "Speichern",
@@ -14,6 +13,12 @@
       "openSettings": "Einstellungen öffnen",
       "close": "Schließen"
     }
+  },
+  "error": {
+    "unknownError": "Ein unbekannter Fehler ist aufgetreten.",
+    "offlineError": "Du bist offline. Keine Verbindung zum Internet möglich.",
+    "apiError": "Die Kommunikation mit dem Server ist fehlgeschlagen (${statusCode}).",
+    "retry": "Erneut versuchen"
   },
   "news": {
     "news": "News",

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 
 class FutureLoadingScreen<T> extends StatefulWidget {
   final Future<T> Function() load;
-  final Widget Function(T data) buildChild;
+  final Widget Function(T? data) buildChild;
 
   const FutureLoadingScreen({super.key, required this.load, required this.buildChild});
 
@@ -30,10 +31,10 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
         }
 
         final data = snapshot.data;
-        if (snapshot.hasError || !snapshot.hasData || data == null) {
+        if (snapshot.hasError || !snapshot.hasData) {
           return ErrorScreen(
-            error: snapshot.error?.toString() ?? 'Unknown error',
-            retry: () => setState(() => _data = widget.load()),
+            error: snapshot.error?.toString() ?? t.error.unknownError,
+            retry: () => _data = widget.load(),
           );
         }
 
