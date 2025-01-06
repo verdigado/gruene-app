@@ -28,7 +28,7 @@ class ErrorScreen<T> extends StatelessWidget {
           SizedBox(height: 16),
           ElevatedButton(
             onPressed: retry,
-            child: Text(t.common.error.retry),
+            child: Text(t.error.retry),
           ),
         ],
       ),

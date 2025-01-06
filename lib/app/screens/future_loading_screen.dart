@@ -34,7 +34,10 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
         if (snapshot.hasError || !snapshot.hasData) {
           return ErrorScreen(
             error: snapshot.error?.toString() ?? t.error.unknownError,
-            retry: () => _data = widget.load(),
+            retry: () {
+              setState(() {});
+              _data = widget.load();
+            },
           );
         }
 
