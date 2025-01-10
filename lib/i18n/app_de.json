@@ -2,6 +2,7 @@
   "common": {
     "appName": "B90/DIE GRÜNEN",
     "error": "Fehler",
+    "retry": "Erneut versuchen",
     "notImplementedYet": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
     "actions": {
       "save": "Speichern",
@@ -19,7 +20,9 @@
     "label": "Artikel",
     "newsDetail": "Artikel",
     "writtenBy": "Von ${author}",
-    "updatedAt": "Stand: ${date}"
+    "updatedAt": "Stand: ${date}",
+    "noResults": "Es wurden leider keine Artikel gefunden.",
+    "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden."
   },
   "campaigns": {
     "map": {
