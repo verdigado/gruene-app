@@ -120,15 +120,15 @@ class NewsCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  IconButton(
-                    // TODO: Add bookmarking functionality
-                    onPressed: () {},
-                    icon: Icon(
-                      news.bookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
-                      color: theme.colorScheme.surface,
-                      size: 24,
-                    ),
-                  ),
+                  // IconButton(
+                  //   // TODO: Add bookmarking functionality
+                  //   onPressed: () {},
+                  //   icon: Icon(
+                  //     news.bookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
+                  //     color: theme.colorScheme.surface,
+                  //     size: 24,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
