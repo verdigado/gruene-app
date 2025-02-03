@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
+import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:image/image.dart' as image_lib;
 import 'package:image_picker/image_picker.dart';
@@ -145,5 +146,13 @@ class MediaHelper {
         );
       },
     );
+  }
+
+  static Future<String> storeImage(Uint8List imageData) async {
+    return GetIt.I<FileManager>().storeFile('${DateTime.now().millisecondsSinceEpoch}.jpg', imageData);
+  }
+
+  static void removeAllFiles() {
+    GetIt.I<FileManager>().clearAllFiles();
   }
 }

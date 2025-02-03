@@ -10,4 +10,6 @@ extension StringExtension on String {
     if (text.trim().isEmpty) return this;
     return '$this\n$text';
   }
+
+  bool isNetworkImageUrl() => Uri.parse(this).hasScheme;
 }

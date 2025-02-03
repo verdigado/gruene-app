@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
@@ -317,7 +318,10 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     }
     if (_isPhotoDeleted) return getDummyAsset();
     return FutureBuilder(
-      future: Future.delayed(Duration.zero, () => widget.poster.imageUrl),
+      future: Future.delayed(
+        Duration.zero,
+        () => widget.poster.imageUrl == null ? null : (imageUrl: widget.poster.imageUrl),
+      ),
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError) {
           return getDummyAsset();
@@ -325,18 +329,23 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
 
         return GestureDetector(
           onTap: _showPictureFullView,
-          child: FadeInImage.assetNetwork(
-            placeholder: CampaignConstants.dummyImageAssetName,
-            image: snapshot.data!,
-            fit: BoxFit.cover,
-          ),
+          child: snapshot.data!.imageUrl!.isNetworkImageUrl()
+              ? FadeInImage.assetNetwork(
+                  placeholder: CampaignConstants.dummyImageAssetName,
+                  image: snapshot.data!.imageUrl!,
+                  fit: BoxFit.cover,
+                )
+              : Image.file(
+                  File(snapshot.data!.imageUrl!),
+                  fit: BoxFit.cover,
+                ),
         );
       },
     );
   }
 
   void _onDeletePressed() async {
-    widget.onDelete(widget.poster.id);
+    await widget.onDelete(widget.poster.id);
     _closeDialog(ModalEditResult.delete);
   }
 
@@ -356,13 +365,22 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
       () => MediaHelper.resizeAndReduceImageFile(_currentPhoto),
     );
 
+    String? fileLocation;
+    if (reducedImage != null) {
+      fileLocation = await MediaHelper.storeImage(reducedImage);
+      var exists = await File(fileLocation).exists();
+      debugPrint(exists.toString());
+    }
+
     final updateModel = PosterUpdateModel(
       id: widget.poster.id,
       address: getAddress(),
       status: _segmentedButtonSelection.isEmpty ? PosterStatus.ok : _segmentedButtonSelection.single,
       comment: commentTextController.text,
       removePreviousPhotos: _isPhotoDeleted,
-      newPhoto: reducedImage,
+      location: widget.poster.location,
+      newImageFileLocation: fileLocation,
+      oldPosterDetail: widget.poster,
     );
     await widget.onSave(updateModel);
 
@@ -431,8 +449,10 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     ImageProvider imageProvider;
     if (_currentPhoto != null) {
       imageProvider = FileImage(_currentPhoto!);
-    } else {
+    } else if (widget.poster.imageUrl!.isNetworkImageUrl()) {
       imageProvider = NetworkImage(widget.poster.imageUrl!);
+    } else {
+      imageProvider = FileImage(File(widget.poster.imageUrl!));
     }
     MediaHelper.showPictureInFullView(context, imageProvider);
   }

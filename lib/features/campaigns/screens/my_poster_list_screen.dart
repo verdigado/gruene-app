@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
@@ -40,6 +43,7 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
     return Container(
       padding: EdgeInsets.all(16),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             height: 52,
@@ -119,7 +123,7 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
                       child: FittedBox(
                         fit: BoxFit.cover,
                         child: FutureBuilder(
-                          future: Future.delayed(Duration.zero, () => myPoster.thumbnailUrl),
+                          future: Future.delayed(Duration.zero, () => (thumbnailUrl: myPoster.thumbnailUrl)),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData && !snapshot.hasError) {
                               return Image.asset(CampaignConstants.dummyImageAssetName);
@@ -127,10 +131,14 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
 
                             return GestureDetector(
                               onTap: () => _showPictureFullView(myPoster.imageUrl!),
-                              child: FadeInImage.assetNetwork(
-                                placeholder: CampaignConstants.dummyImageAssetName,
-                                image: snapshot.data!,
-                              ),
+                              child: snapshot.data!.thumbnailUrl!.isNetworkImageUrl()
+                                  ? FadeInImage.assetNetwork(
+                                      placeholder: CampaignConstants.dummyImageAssetName,
+                                      image: snapshot.data!.thumbnailUrl!,
+                                    )
+                                  : Image.file(
+                                      File(snapshot.data!.thumbnailUrl!),
+                                    ),
                             );
                           },
                         ),
@@ -202,8 +210,10 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
   }
 
   void _showPictureFullView(String imageUrl) {
-    ImageProvider imageProvider = NetworkImage(imageUrl);
-    MediaHelper.showPictureInFullView(context, imageProvider);
+    MediaHelper.showPictureInFullView(
+      context,
+      imageUrl.isNetworkImageUrl() ? NetworkImage(imageUrl) : FileImage(File(imageUrl)),
+    );
   }
 
   void _editPoster(PosterListItemModel myPoster) async {

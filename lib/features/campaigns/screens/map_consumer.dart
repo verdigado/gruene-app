@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
@@ -25,9 +27,10 @@ typedef SaveNewAndGetMarkerCallback<T> = Future<MarkerItemModel> Function(T);
 typedef GetPoiCallback<T> = Future<T> Function(String);
 typedef GetPoiDetailWidgetCallback<T> = Widget Function(T);
 typedef GetPoiEditWidgetCallback<T> = Widget Function(T);
-typedef OnDeletePoiCallback = void Function(String posterId);
+typedef OnDeletePoiCallback = Future<void> Function(String poiId);
 
-abstract class MapConsumer<T extends StatefulWidget> extends State<T> with FocusAreaInfo, SearchMixin<T> {
+abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiUpdateType> extends State<T>
+    with FocusAreaInfo, SearchMixin<T> {
   late MapController mapController;
 
   final NominatimService _nominatimService = GetIt.I<NominatimService>();
@@ -37,8 +40,10 @@ abstract class MapConsumer<T extends StatefulWidget> extends State<T> with Focus
   final _minZoomFocusAreaLayer = 11.0;
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _lastInfoSnackBar;
   String? _lastFocusAreaId;
+  final campaignActionCache = GetIt.I<CampaignActionCache>();
+  final PoiServiceType poiType;
 
-  MapConsumer();
+  MapConsumer(this.poiType);
 
   GrueneApiCampaignsService get campaignService;
 
@@ -148,10 +153,9 @@ abstract class MapConsumer<T extends StatefulWidget> extends State<T> with Focus
     );
   }
 
-  void deletePoi(String poiId) async {
-    final id = int.parse(poiId);
-    await campaignService.deletePoi(poiId);
-    mapController.removeMarkerItem(id);
+  Future<void> deletePoi(String poiId) async {
+    var markerItem = await campaignActionCache.deletePoi(poiType, poiId);
+    mapController.setMarkerSource([markerItem]);
   }
 
   void addMapLayersForContext(MapLibreMapController mapLibreController) async {
@@ -333,4 +337,17 @@ abstract class MapConsumer<T extends StatefulWidget> extends State<T> with Focus
   void navigateMapTo(LatLng location) {
     mapController.navigateMapTo(location);
   }
+
+  void loadCachedItems() async {
+    var markerItems = await campaignActionCache.getMarkerItems(poiType);
+    mapController.setMarkerSource(markerItems);
+  }
+
+  Future<void> savePoi(PoiUpdateType poiUpdate) async {
+    final updatedMarker = await campaignActionCache.updatePoi(poiType, poiUpdate);
+    mapController.setMarkerSource([updatedMarker]);
+  }
+
+  Future<MarkerItemModel> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
+      await campaignActionCache.storeNewPoi(poiType, newPoi);
 }

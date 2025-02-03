@@ -42,4 +42,11 @@ class MapHelper {
     final id = feature['id'].toString();
     return id;
   }
+
+  static bool extractIsCachedFromFeature(Map<String, dynamic> feature) {
+    if (feature['properties'] == null) return false;
+    final properties = feature['properties'] as Map<String, dynamic>;
+    if (properties['is_virtual'] == null) return false;
+    return bool.parse(properties['is_virtual'].toString());
+  }
 }

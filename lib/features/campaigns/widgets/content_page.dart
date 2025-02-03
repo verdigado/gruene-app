@@ -7,7 +7,15 @@ class ContentPage extends StatelessWidget {
 
   final Color? contentBackgroundColor;
 
-  const ContentPage({super.key, required this.title, required this.child, this.contentBackgroundColor});
+  final Alignment alignment;
+
+  const ContentPage({
+    super.key,
+    required this.title,
+    required this.child,
+    this.contentBackgroundColor,
+    this.alignment = Alignment.center,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +23,7 @@ class ContentPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: contentBackgroundColor ?? theme.colorScheme.secondary,
       body: Align(
-        alignment: Alignment.center,
+        alignment: alignment,
         child: SingleChildScrollView(child: child),
       ),
       appBar: CustomAppBar(

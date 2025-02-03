@@ -2,6 +2,10 @@ targets:
   $default:
     sources:
       - swaggers/**
+      - lib/$lib$
+      # - $package$
+      - lib/**
+      - pubspec.yaml
     builders:
       chopper_generator:
         options:

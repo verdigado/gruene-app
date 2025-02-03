@@ -153,6 +153,8 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
       address: getAddress(),
       openedDoors: validationResult.openedDoors,
       closedDoors: validationResult.closedDoors,
+      location: widget.door.location,
+      oldDoorDetail: widget.door,
     );
     await widget.onSave(updateModel);
     _closeDialog();

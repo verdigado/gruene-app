@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/map_layer_manager.dart';
@@ -20,12 +21,14 @@ import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/attribution_dialog.dart';
 import 'package:gruene_app/features/campaigns/widgets/location_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
+import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 typedef OnMapCreatedCallback = void Function(MapController controller);
 typedef AddPOIClickedCallback = void Function(LatLng location);
 typedef LoadVisibleItemsCallBack = void Function(LatLng locationSW, LatLng locationNE);
+typedef LoadCachedItemsCallback = void Function();
 typedef LoadDataLayersCallBack = void Function(LatLng locationSW, LatLng locationNE);
 typedef GetMarkerImagesCallback = Map<String, String> Function();
 typedef OnFeatureClickCallback = void Function(dynamic feature);
@@ -38,6 +41,7 @@ class MapContainer extends StatefulWidget {
   final OnMapCreatedCallback? onMapCreated;
   final AddPOIClickedCallback? addPOIClicked;
   final LoadVisibleItemsCallBack? loadVisibleItems;
+  final LoadCachedItemsCallback? loadCachedItems;
   final LoadDataLayersCallBack? loadDataLayers;
   final GetMarkerImagesCallback? getMarkerImages;
   final OnFeatureClickCallback? onFeatureClick;
@@ -52,6 +56,7 @@ class MapContainer extends StatefulWidget {
     required this.onMapCreated,
     required this.addPOIClicked,
     required this.loadVisibleItems,
+    required this.loadCachedItems,
     required this.getMarkerImages,
     required this.onFeatureClick,
     required this.onNoFeatureClick,
@@ -66,11 +71,12 @@ class MapContainer extends StatefulWidget {
   State<StatefulWidget> createState() => _MapContainerState();
 }
 
-class _MapContainerState extends State<MapContainer> implements MapController {
+class _MapContainerState extends State<MapContainer> implements MapController, MapControllerSimplified {
   MapLibreMapController? _controller;
   final MarkerItemManager _markerItemManager = MarkerItemManager();
   final MapLayerDataManager _mapLayerManager = MapLayerDataManager();
   final appSettings = GetIt.I<AppSettings>();
+  final campaignActionCache = GetIt.I<CampaignActionCache>();
 
   bool _isMapInitialized = false;
   bool _permissionGiven = false;
@@ -184,10 +190,12 @@ class _MapContainerState extends State<MapContainer> implements MapController {
       onMapCreated(this);
     }
 
-    _loadDataOnMap();
+    campaignActionCache.setCurrentMapController(this);
+
+    _loadDataOnMap(init: true);
   }
 
-  void _loadDataOnMap() async {
+  void _loadDataOnMap({bool init = false}) async {
     final visRegion = await _controller?.getVisibleRegion();
     var currentZoomLevel = _controller!.cameraPosition!.zoom;
 
@@ -196,6 +204,10 @@ class _MapContainerState extends State<MapContainer> implements MapController {
 
     _showAddMarker = currentZoomLevel > minimumMarkerZoomLevel;
 
+    if (init) {
+      final loadCachedItems = widget.loadCachedItems;
+      if (loadCachedItems != null) loadCachedItems();
+    }
     final loadVisibleItems = widget.loadVisibleItems;
     if (loadVisibleItems != null) {
       loadVisibleItems(visRegion.southwest, visRegion.northeast);
@@ -671,6 +683,13 @@ class _MapContainerState extends State<MapContainer> implements MapController {
       CameraUpdate.newLatLngZoom(location, zoomLevelSearchLocation),
       duration: Duration(seconds: 1),
     );
+  }
+
+  @override
+  void resetMarkerItems() {
+    if (!mounted) return;
+    _markerItemManager.resetAllMarkers();
+    _loadDataOnMap(init: true);
   }
 }
 

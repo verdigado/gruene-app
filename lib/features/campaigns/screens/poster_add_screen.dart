@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -193,16 +192,22 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
     if (!localContext.mounted) return;
 
     final reducedImage = await MediaHelper.resizeAndReduceImageFile(_currentPhoto);
-    _saveAndReturn(reducedImage);
+    String? fileLocation;
+    if (reducedImage != null) {
+      fileLocation = await MediaHelper.storeImage(reducedImage);
+      var exists = await File(fileLocation).exists();
+      debugPrint(exists.toString());
+    }
+    _saveAndReturn(fileLocation);
   }
 
-  void _saveAndReturn(Uint8List? reducedImage) {
+  void _saveAndReturn(String? fileLocation) {
     Navigator.maybePop(
       context,
       PosterCreateModel(
         location: widget.location,
         address: getAddress(),
-        photo: reducedImage,
+        imageFileLocation: fileLocation,
       ),
     );
   }

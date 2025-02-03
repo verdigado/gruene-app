@@ -1,14 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_service.dart';
+import 'package:gruene_app/app/services/gruene_api_door_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/screens/door_edit.dart';
 import 'package:gruene_app/features/campaigns/screens/doors_add_screen.dart';
 import 'package:gruene_app/features/campaigns/screens/doors_detail.dart';
@@ -25,7 +26,8 @@ class DoorsScreen extends StatefulWidget {
   State<DoorsScreen> createState() => _DoorsScreenState();
 }
 
-class _DoorsScreenState extends MapConsumer<DoorsScreen> {
+class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorUpdateModel> {
+  static const _poiType = PoiServiceType.door;
   final Map<String, List<String>> doorsExclusions = <String, List<String>>{
     t.campaigns.filters.focusAreas: [t.campaigns.filters.visited_areas],
     t.campaigns.filters.visited_areas: [t.campaigns.filters.focusAreas],
@@ -33,12 +35,12 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen> {
 
   late List<FilterChipModel> doorsFilter;
 
-  final GrueneApiCampaignsService _grueneApiService = GrueneApiCampaignsService(poiType: PoiServiceType.door);
+  final _grueneApiService = GetIt.I<GrueneApiDoorService>();
 
-  _DoorsScreenState() : super();
+  _DoorsScreenState() : super(_poiType);
 
   @override
-  GrueneApiCampaignsService get campaignService => _grueneApiService;
+  GrueneApiDoorService get campaignService => _grueneApiService;
 
   @override
   void initState() {
@@ -70,6 +72,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen> {
       onMapCreated: onMapCreated,
       addPOIClicked: _addPOIClicked,
       loadVisibleItems: loadVisibleItems,
+      loadCachedItems: loadCachedItems,
       getMarkerImages: _getMarkerImages,
       onFeatureClick: _onFeatureClick,
       onNoFeatureClick: _onNoFeatureClick,
@@ -98,7 +101,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen> {
       location,
       null,
       _getAddScreen,
-      _saveNewAndGetMarkerItem,
+      saveNewAndGetMarkerItem,
     );
   }
 
@@ -109,10 +112,20 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen> {
   }
 
   void _onFeatureClick(dynamic rawFeature) async {
+    final feature = rawFeature as Map<String, dynamic>;
+    final isCached = MapHelper.extractIsCachedFromFeature(feature);
+
     getPoi(String poiId) async {
       final door = await campaignService.getPoiAsDoorDetail(poiId);
       return door;
     }
+
+    getCachedPoi(String poiId) async {
+      final door = await campaignActionCache.getPoiAsDoorDetail(poiId);
+      return door;
+    }
+
+    var getPoiFromCacheOrApi = isCached ? getCachedPoi : getPoi;
 
     getPoiDetail(DoorDetailModel door) {
       return DoorsDetail(
@@ -121,12 +134,12 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen> {
     }
 
     getEditPoiWidget(DoorDetailModel door) {
-      return DoorEdit(door: door, onSave: _saveDoor, onDelete: deletePoi);
+      return DoorEdit(door: door, onSave: savePoi, onDelete: deletePoi);
     }
 
     super.onFeatureClick<DoorDetailModel>(
       rawFeature,
-      getPoi,
+      getPoiFromCacheOrApi,
       getPoiDetail,
       getEditPoiWidget,
       desiredSize: Size(145, 110),
@@ -137,18 +150,10 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen> {
     showFocusAreaInfoAtPoint(point);
   }
 
-  Future<void> _saveDoor(DoorUpdateModel doorUpdate) async {
-    final updatedMarker = await campaignService.updateDoor(doorUpdate);
-    mapController.setMarkerSource([updatedMarker]);
-  }
-
   DoorsAddScreen _getAddScreen(LatLng location, AddressModel? address, Object? additionalData) {
     return DoorsAddScreen(
       location: location,
       address: address!,
     );
   }
-
-  Future<MarkerItemModel> _saveNewAndGetMarkerItem(DoorCreateModel newDoor) async =>
-      await _grueneApiService.createNewDoor(newDoor);
 }

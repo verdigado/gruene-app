@@ -9,6 +9,7 @@ class PosterListItemModel {
   final String lastChangeStatus;
   final String lastChangeDateTime;
   final DateTime createdAt;
+  final bool isCached;
 
   const PosterListItemModel({
     required this.id,
@@ -19,5 +20,6 @@ class PosterListItemModel {
     required this.lastChangeStatus,
     required this.lastChangeDateTime,
     required this.createdAt,
+    this.isCached = false,
   });
 }

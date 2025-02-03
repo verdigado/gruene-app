@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:gruene_app/app/geocode/nominatim.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+
+part 'nominatim_service.g.dart';
 
 class NominatimService {
   final Logger _logger = Logger();
@@ -103,13 +106,14 @@ class SearchResultItem {
         displayName = place.getAddress();
 }
 
+@JsonSerializable()
 class AddressModel {
   final String street;
   final String city;
   final String zipCode;
   final String houseNumber;
 
-  const AddressModel({this.street = '', this.houseNumber = '', this.zipCode = '', this.city = ''});
+  AddressModel({this.street = '', this.houseNumber = '', this.zipCode = '', this.city = ''});
 
   /*
   * More details on how to find and categorize "places" can be found in the OSM Wiki:
@@ -123,4 +127,11 @@ class AddressModel {
         houseNumber = place.getHouseNumber(),
         zipCode = place.getZipCode(),
         city = cityOverride ?? place.getCityOrVillage();
+
+  /// Connect the generated [_$AddressModelFromJson] function to the `fromJson`
+  /// factory.
+  factory AddressModel.fromJson(Map<String, dynamic> json) => _$AddressModelFromJson(json);
+
+  /// Connect the generated [_$AddressModelToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$AddressModelToJson(this);
 }

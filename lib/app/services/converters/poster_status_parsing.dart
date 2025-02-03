@@ -9,4 +9,6 @@ extension PosterStatusParsing on PosterStatus {
       PosterStatus.removed => PoiPosterStatus.removed,
     };
   }
+
+  String translatePosterStatus() => transformToPoiPosterStatus().translatePosterStatus();
 }

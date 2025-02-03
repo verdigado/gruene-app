@@ -133,6 +133,8 @@ class _FlyerEditState extends State<FlyerEdit> with AddressExtension, FlyerValid
       id: widget.flyer.id,
       address: getAddress(),
       flyerCount: validationResult.flyerCount,
+      oldFlyerDetail: widget.flyer,
+      location: widget.flyer.location,
     );
     await widget.onSave(updateModel);
     _closeDialog();
