@@ -62,6 +62,7 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.9.0
   sqflite: ^2.4.1
+  simple_animations: ^5.0.2
 
 dev_dependencies:
 

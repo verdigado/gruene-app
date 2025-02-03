@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -7,6 +9,7 @@ import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MainAppBar({super.key});
@@ -55,6 +58,7 @@ class RefreshButton extends StatefulWidget {
 class _RefreshButtonState extends State<RefreshButton> {
   int _currentCount = 0;
   final campaignActionCache = GetIt.I<CampaignActionCache>();
+  bool _animateIcon = false;
 
   @override
   void initState() {
@@ -71,24 +75,41 @@ class _RefreshButtonState extends State<RefreshButton> {
   Widget build(BuildContext context) {
     const maxLabelCount = 99;
     var labelText = _currentCount > maxLabelCount ? '$maxLabelCount+' : _currentCount.toString();
+
+    getIcon() => CustomIcon(
+          path: 'assets/icons/refresh.svg',
+          color: ThemeColors.background,
+        );
+
+    var iconAnimated = LoopAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 2 * pi), // 0° to 360° (2π)
+      duration: const Duration(seconds: 2), // for 2 seconds per iteration
+
+      builder: (context, value, _) {
+        return Transform.rotate(
+          angle: value, // use value
+          child: getIcon(),
+        );
+      },
+    );
+
     return IconButton(
+      onPressed: _flushCachedData,
       icon: Badge(
         label: Text(labelText),
         isLabelVisible: _currentCount != 0,
-        child: CustomIcon(
-          path: 'assets/icons/refresh.svg',
-          color: ThemeColors.background,
-        ),
+        child: _animateIcon ? iconAnimated : getIcon(),
       ),
-      onPressed: _flushCachedData,
     );
   }
 
   void _setCurrentCounter() async {
     final newCount = await campaignActionCache.getCachedActionCount();
+    final isFlushing = campaignActionCache.isFlushing;
     if (!mounted) return;
     setState(() {
       _currentCount = newCount;
+      _animateIcon = isFlushing;
     });
   }
 

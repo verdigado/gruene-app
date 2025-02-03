@@ -35,6 +35,8 @@ class CampaignActionCache extends ChangeNotifier {
 
   factory CampaignActionCache() => _instance ??= CampaignActionCache._();
 
+  bool get isFlushing => _isflushing;
+
   Future<bool> isCached(String poiId) async {
     return campaignActionDatabase.actionsWithPoiIdExists(poiId);
   }
@@ -269,12 +271,12 @@ class CampaignActionCache extends ChangeNotifier {
     required T Function(CampaignAction) transformAddAction,
   }) async {
     var cacheList = await _findActionsByPoiId(poiId);
-    var addActions = cacheList.where((p) => p.actionType == addActionFilter).toList();
     var editActions = cacheList.where((p) => p.actionType == editActionFilter).toList();
     if (editActions.isNotEmpty) {
       var editAction = editActions.single;
       return transformEditAction(editAction);
     } else {
+      var addActions = cacheList.where((p) => p.actionType == addActionFilter).toList();
       var addAction = addActions.single;
       return transformAddAction(addAction);
     }
@@ -289,6 +291,8 @@ class CampaignActionCache extends ChangeNotifier {
     if (_isflushing) return;
     try {
       _isflushing = true;
+      notifyListeners();
+
       var posterApiService = GetIt.I<GrueneApiPosterService>();
       var doorApiService = GetIt.I<GrueneApiDoorService>();
       var flyerApiService = GetIt.I<GrueneApiFlyerService>();
@@ -357,14 +361,14 @@ class CampaignActionCache extends ChangeNotifier {
         notifyListeners();
       }
     } finally {
-      _isflushing = false;
-      notifyListeners();
       if (await getCachedActionCount() == 0) {
         MediaHelper.removeAllFiles();
       }
       if (_currentMapController != null) {
         _currentMapController!.resetMarkerItems();
       }
+      _isflushing = false;
+      notifyListeners();
     }
   }
 

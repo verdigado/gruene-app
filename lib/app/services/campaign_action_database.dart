@@ -16,7 +16,6 @@ class CampaignActionDatabase {
   Future<Database> _initDatabase() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'campaign_action_db.db');
-    // await File(path).delete();
     return await openDatabase(
       path,
       version: 1,
