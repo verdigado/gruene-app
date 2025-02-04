@@ -87,7 +87,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/badges/
-    - assets/bottom_navigation/
     - assets/icons/
     - assets/splash/
     - assets/graphics/

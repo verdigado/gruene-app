@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/routes.dart';
-import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/widgets/icon.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -22,10 +20,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       actions: [
         IconButton(
-          icon: CustomIcon(
-            path: 'assets/icons/settings.svg',
-            color: ThemeColors.background,
-          ),
+          icon: Icon(Icons.settings_outlined, color: theme.colorScheme.surface),
           onPressed: () => context.push(Routes.settings.path),
         ),
       ],

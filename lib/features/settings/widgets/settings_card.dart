@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/widgets/icon.dart';
 
 class SettingsCard extends StatelessWidget {
   final String icon;
@@ -60,11 +59,9 @@ class SettingsCard extends StatelessWidget {
           ),
           trailing: Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: CustomIcon(
-              path: isExternal ? 'assets/icons/external.svg' : 'assets/icons/chevron.svg',
+            child: Icon(
+              isExternal ? Icons.open_in_browser_outlined : Icons.chevron_right_outlined,
               color: theme.disabledColor,
-              width: 16,
-              height: 16,
             ),
           ),
         ),
