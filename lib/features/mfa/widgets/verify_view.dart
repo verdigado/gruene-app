@@ -90,7 +90,7 @@ class _VerifyViewState extends State<VerifyView> {
               textAlign: TextAlign.center,
             ),
             Text(
-              '${state.loginAttempt!.browser}, ${state.loginAttempt!.os}',
+              '${state.loginAttempt!.browser}, ${state.loginAttempt!.os} (${state.loginAttempt!.ipAddress})',
               style: theme.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),

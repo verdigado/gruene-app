@@ -51,7 +51,7 @@ class LastGrantedLoginAttemptWidget extends StatelessWidget {
                     style: theme.textTheme.bodyMedium,
                   ),
                   Text(
-                    '${state.lastGrantedLoginAttempt!.browser}, ${state.lastGrantedLoginAttempt!.os}',
+                    '${state.lastGrantedLoginAttempt!.browser}, ${state.lastGrantedLoginAttempt!.os} (${state.lastGrantedLoginAttempt!.ipAddress})',
                     style: theme.textTheme.bodyMedium,
                   ),
                   Text(
