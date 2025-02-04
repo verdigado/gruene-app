@@ -318,7 +318,15 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
       CampaignConstants.markerLayerName,
       const SymbolLayerProperties(
         iconImage: ['get', 'status_type'],
-        iconSize: 2,
+        iconSize: [
+          Expressions.interpolate,
+          ['linear'],
+          [Expressions.zoom],
+          11,
+          1,
+          16,
+          2,
+        ],
         iconAllowOverlap: true,
       ),
       enableInteraction: false,

@@ -154,6 +154,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
       'poster_damaged': CampaignConstants.posterDamagedAssetName,
       'poster_missing': CampaignConstants.posterMissingAssetName,
       'poster_removed': CampaignConstants.posterRemovedAssetName,
+      'poster_to_be_moved': CampaignConstants.posterToBeMovedAssetName,
     };
   }
 
@@ -197,6 +198,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
       getPoiDetailWidget,
       _getEditPosterWidget,
       desiredSize: Size(150, 150),
+      useBottomSheet: true,
     );
   }
 

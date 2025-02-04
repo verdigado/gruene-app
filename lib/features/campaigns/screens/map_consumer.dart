@@ -114,22 +114,42 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiUpdateTyp
     GetPoiDetailWidgetCallback<U> getPoiDetail,
     GetPoiEditWidgetCallback<U> getPoiEdit, {
     Size desiredSize = const Size(100, 100),
+    bool useBottomSheet = false,
   }) async {
     final feature = rawFeature as Map<String, dynamic>;
     final poiId = MapHelper.extractPoiIdFromFeature(feature);
     U poi = await getPoi(poiId);
     final poiDetailWidget = getPoiDetail(poi);
-    var popupWidget = SizedBox(
-      height: desiredSize.height,
-      width: desiredSize.width,
-      child: poiDetailWidget,
-    );
-    final coord = MapHelper.extractLatLngFromFeature(feature);
-    mapController.showMapPopover(
-      coord,
-      popupWidget,
-      () => _editPoi(() => getPoiEdit(poi)),
-      desiredSize,
+    if (useBottomSheet) {
+      var result = await showDetailBottomSheet(poiDetailWidget);
+      if (result != null && result == ModalDetailResult.edit) {
+        _editPoi(() => getPoiEdit(poi));
+      }
+    } else {
+      var popupWidget = SizedBox(
+        height: desiredSize.height,
+        width: desiredSize.width,
+        child: poiDetailWidget,
+      );
+      final coord = MapHelper.extractLatLngFromFeature(feature);
+      mapController.showMapPopover(
+        coord,
+        popupWidget,
+        () => _editPoi(() => getPoiEdit(poi)),
+        desiredSize,
+      );
+    }
+  }
+
+  Future<ModalDetailResult?> showDetailBottomSheet(Widget poiDetailWidget) async {
+    final theme = Theme.of(context);
+    return await showModalBottomSheet<ModalDetailResult>(
+      isScrollControlled: false,
+      isDismissible: true,
+      barrierColor: Colors.transparent,
+      context: context,
+      backgroundColor: theme.colorScheme.surface,
+      builder: (context) => poiDetailWidget,
     );
   }
 

@@ -7,7 +7,7 @@ extension PoiPosterStatusParsing on PoiPosterStatus {
       PoiPosterStatus.damaged => PosterStatus.damaged,
       PoiPosterStatus.missing => PosterStatus.missing,
       PoiPosterStatus.removed => PosterStatus.removed,
-      PoiPosterStatus.toBeMoved => PosterStatus.to_be_moved,
+      PoiPosterStatus.toBeMoved => PosterStatus.toBeMoved,
       PoiPosterStatus.swaggerGeneratedUnknown => throw UnimplementedError(),
     };
   }

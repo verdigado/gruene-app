@@ -65,19 +65,26 @@
       "status": {
         "damaged": {
           "label": "Beschädigt",
-          "hint": "Durch Fremdeinwirkung beschädigt"
+          "hint": "Durch Fremdeinwirkung beschädigt",
+          "description": "Plakat ist beschädigt, bitte ersetzen!"
         },
         "missing": {
           "label": "Verschollen",
-          "hint": "Durch Fremdeinwirkung entfernt"
+          "hint": "Durch Fremdeinwirkung entfernt",
+          "description": "Plakat ist verschollen, bitte ersetzen!"
         },
         "removed": {
           "label": "Abgehängt",
-          "hint": "Dauerhaft entfernt"
+          "hint": "Dauerhaft entfernt",
+          "description": "Plakat wurde abeghängt."
         },
         "to_be_moved": {
           "label": "Umzuhängen",
-          "hint": "Sollte umgehangen werden"
+          "hint": "Sollte umgehangen werden",
+          "description": "Plakat hängt falsch, bitte umhängen!"
+        },
+        "ok": {
+          "description": "Plakat hängt, kein Handlungsbedarf."
         }
       },
       "comment": {
