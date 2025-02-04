@@ -152,7 +152,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
     return {
       'poster_ok': CampaignConstants.posterOkAssetName,
       'poster_damaged': CampaignConstants.posterDamagedAssetName,
-      'poster_missing': CampaignConstants.posterDamagedAssetName,
+      'poster_missing': CampaignConstants.posterMissingAssetName,
       'poster_removed': CampaignConstants.posterRemovedAssetName,
     };
   }
