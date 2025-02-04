@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -48,7 +49,13 @@ class TokenScanScreen extends StatelessWidget {
         await Future<void>.delayed(const Duration(milliseconds: 100));
       }
       if (context.mounted) {
-        context.push(Routes.mfa.path);
+        while (context.canPop()) {
+          context.pop();
+        }
+        final bloc = context.read<AuthBloc>();
+        if (bloc.state is Unauthenticated) {
+          context.pushNamed(Routes.mfa.name!);
+        }
       }
     }
 
@@ -97,11 +104,7 @@ class TokenScanScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Spacer(),
           TextButton(
-            onPressed: () => {
-              context.push(
-                '${Routes.mfa.path}/${Routes.mfaTokenInput.path}',
-              ),
-            },
+            onPressed: () => context.push('${Routes.mfa.path}/${Routes.mfaTokenInput.path}'),
             child: Text(
               t.mfa.tokenScan.doManual,
               style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.text, decoration: TextDecoration.underline),
