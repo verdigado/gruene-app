@@ -74,6 +74,10 @@
         "removed": {
           "label": "Abgehängt",
           "hint": "Dauerhaft entfernt"
+        },
+        "to_be_moved": {
+          "label": "Umzuhängen",
+          "hint": "Sollte umgehangen werden"
         }
       },
       "comment": {
