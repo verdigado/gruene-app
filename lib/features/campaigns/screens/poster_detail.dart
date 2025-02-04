@@ -20,7 +20,7 @@ class PosterDetail extends StatelessWidget {
     getStatusColor() {
       switch (poi.status) {
         case PosterStatus.ok:
-          return ThemeColors.primary;
+          return ThemeColors.secondary;
         case PosterStatus.damaged:
         case PosterStatus.missing:
         case PosterStatus.toBeMoved:
@@ -97,7 +97,7 @@ class PosterDetail extends StatelessWidget {
                   children: [
                     SizedBox(width: 12),
                     SvgPicture.asset(
-                      'assets/symbols/posters/svg/poster_${poi.status.name}.svg',
+                      'assets/symbols/posters/svg_inverted/poster_${poi.status.name.toLowerCase()}.svg',
                       height: 18,
                     ),
                     SizedBox(width: 12),
