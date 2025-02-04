@@ -4,9 +4,9 @@ import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 
 class AuthEvent {}
 
-class SignInRequested extends AuthEvent {}
+class LoginRequested extends AuthEvent {}
 
-class SignOutRequested extends AuthEvent {}
+class LogoutRequested extends AuthEvent {}
 
 class CheckTokenRequested extends AuthEvent {}
 
@@ -24,9 +24,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> get authStateStream => stream;
 
   AuthBloc(this.authRepository) : super(AuthLoading()) {
-    on<SignInRequested>((event, emit) async {
+    on<LoginRequested>((event, emit) async {
       emit(AuthLoading());
-      final success = await authRepository.signIn();
+      final success = await authRepository.login();
       if (success) {
         emit(Authenticated());
       } else {
@@ -34,8 +34,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    on<SignOutRequested>((event, emit) async {
-      await authRepository.signOut();
+    on<LogoutRequested>((event, emit) async {
+      await authRepository.logout();
       emit(Unauthenticated());
     });
 

@@ -17,7 +17,7 @@ class AuthRepository {
   final AuthenticatorService _authenticatorService = GetIt.I<AuthenticatorService>();
   final IpService _ipService = GetIt.I<IpService>();
 
-  Future<bool> signIn() async {
+  Future<bool> login() async {
     final authenticator = await _authenticatorService.getFirst();
     final pollingTimer = authenticator != null ? _pollForChallenge(authenticator) : null;
     try {
@@ -36,16 +36,16 @@ class AuthRepository {
       await _secureStorage.write(key: SecureStorageKeys.refreshToken, value: result.refreshToken);
       return true;
     } on FlutterAppAuthUserCancelledException catch (e) {
-      _logger.w('Sign-in was cancelled: $e');
+      _logger.w('Login was cancelled: $e');
     } catch (e) {
-      _logger.w('Sign-in was not successful: $e');
+      _logger.w('Login was not successful: $e');
     } finally {
       stopPolling(pollingTimer);
     }
     return false;
   }
 
-  Future<void> signOut() async {
+  Future<void> logout() async {
     final idToken = await _secureStorage.read(key: SecureStorageKeys.idToken);
 
     await _appAuth.endSession(

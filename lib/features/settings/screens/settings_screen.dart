@@ -59,7 +59,7 @@ class SettingsScreen extends StatelessWidget {
             ? Container(
                 padding: const EdgeInsets.only(top: 48),
                 child: TextButton(
-                  onPressed: () => context.read<AuthBloc>().add(SignOutRequested()),
+                  onPressed: () => context.read<AuthBloc>().add(LogoutRequested()),
                   child: Text(
                     t.settings.logout,
                     style: theme.textTheme.bodyMedium!

@@ -30,7 +30,7 @@ class WelcomeView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           height: 64,
           child: FilledButton(
-            onPressed: () => context.read<AuthBloc>().add(SignInRequested()),
+            onPressed: () => context.read<AuthBloc>().add(LoginRequested()),
             child: Text(
               t.login.loginMembers,
               style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
