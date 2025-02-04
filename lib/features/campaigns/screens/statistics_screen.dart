@@ -6,7 +6,7 @@ import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
-import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics.dart';
+import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_set.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +29,7 @@ class StatisticsScreen extends StatelessWidget {
     );
   }
 
-  SingleChildScrollView _buildStatScreen(CampaignStatistics statistics, ThemeData theme, BuildContext context) {
+  SingleChildScrollView _buildStatScreen(CampaignStatisticsModel statistics, ThemeData theme, BuildContext context) {
     var lastUpdateTime = GetIt.I<AppSettings>().campaign.recentStatisticsFetchTimestamp ?? DateTime.now();
     return SingleChildScrollView(
       child: Container(
@@ -73,7 +73,7 @@ class StatisticsScreen extends StatelessWidget {
     );
   }
 
-  Widget _getBadgeBox(CampaignStatistics statistics, BuildContext context, ThemeData theme) {
+  Widget _getBadgeBox(CampaignStatisticsModel statistics, BuildContext context, ThemeData theme) {
     var mediaQuery = MediaQuery.of(context);
     return Container(
       padding: EdgeInsets.all(16),
@@ -107,7 +107,7 @@ class StatisticsScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _getBadges(CampaignStatistics statistics, ThemeData theme) {
+  List<Widget> _getBadges(CampaignStatisticsModel statistics, ThemeData theme) {
     return [
       _getBadgeRow(t.campaigns.statistic.recorded_doors, statistics.houseStats.own.toInt(), theme),
       _getBadgeRow(t.campaigns.statistic.recorded_posters, statistics.posterStats.own.toInt(), theme),
@@ -269,7 +269,7 @@ class StatisticsScreen extends StatelessWidget {
     );
   }
 
-  Future<CampaignStatistics> _loadStatistics() async {
+  Future<CampaignStatisticsModel> _loadStatistics() async {
     var campaignSettings = GetIt.I<AppSettings>().campaign;
 
     if (campaignSettings.recentStatistics != null &&

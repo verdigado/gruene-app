@@ -1832,8 +1832,8 @@ paths:
         - oauth2: []
   /v1/campaigns/statistics:
     get:
-      operationId: getStatistics
-      summary: Get statistics
+      operationId: getCampaignStatistics
+      summary: Get campaign statistics
       parameters: []
       responses:
         '200':
@@ -1841,7 +1841,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Statistics'
+                $ref: '#/components/schemas/CampaignStatistics'
         '401':
           description: ''
       tags:
@@ -3851,7 +3851,7 @@ components:
         - division
         - state
         - germany
-    Statistics:
+    CampaignStatistics:
       type: object
       properties:
         poster:
