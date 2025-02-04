@@ -43,4 +43,7 @@ abstract class MapController {
   void toggleInfoForMissingMapFeatures(bool enable);
 
   void navigateMapTo(LatLng location);
+
+  Future<void> setFocusToMarkerItem(Map<String, dynamic> feature);
+  Future<void> unsetFocusToMarkerItem();
 }

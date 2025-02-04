@@ -76,7 +76,7 @@
         "removed": {
           "label": "Abgehängt",
           "hint": "Dauerhaft entfernt",
-          "description": "Plakat wurde abeghängt."
+          "description": "Plakat wurde abgehängt."
         },
         "to_be_moved": {
           "label": "Umzuhängen",

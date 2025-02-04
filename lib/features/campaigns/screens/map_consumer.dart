@@ -121,10 +121,12 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiUpdateTyp
     U poi = await getPoi(poiId);
     final poiDetailWidget = getPoiDetail(poi);
     if (useBottomSheet) {
+      await mapController.setFocusToMarkerItem(rawFeature);
       var result = await showDetailBottomSheet(poiDetailWidget);
       if (result != null && result == ModalDetailResult.edit) {
         _editPoi(() => getPoiEdit(poi));
       }
+      await mapController.unsetFocusToMarkerItem();
     } else {
       var popupWidget = SizedBox(
         height: desiredSize.height,

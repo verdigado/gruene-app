@@ -59,28 +59,27 @@ class PosterDetail extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.only(left: 12, bottom: 12),
                   height: 150,
-                  child: Expanded(
-                    child: FutureBuilder(
-                      future: Future.delayed(
-                        Duration.zero,
-                        () => poi.thumbnailUrl == null ? null : (thumbnailUrl: poi.thumbnailUrl),
-                      ),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData && !snapshot.hasError) {
-                          return Image.asset(CampaignConstants.dummyImageAssetName);
-                        }
-                        if (snapshot.data!.thumbnailUrl!.isNetworkImageUrl()) {
-                          return FadeInImage.assetNetwork(
-                            placeholder: CampaignConstants.dummyImageAssetName,
-                            image: snapshot.data!.thumbnailUrl!,
-                          );
-                        } else {
-                          return Image.file(
-                            File(snapshot.data!.thumbnailUrl!),
-                          );
-                        }
-                      },
+                  width: 120,
+                  child: FutureBuilder(
+                    future: Future.delayed(
+                      Duration.zero,
+                      () => poi.thumbnailUrl == null ? null : (thumbnailUrl: poi.thumbnailUrl),
                     ),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData && !snapshot.hasError) {
+                        return Image.asset(CampaignConstants.dummyImageAssetName);
+                      }
+                      if (snapshot.data!.thumbnailUrl!.isNetworkImageUrl()) {
+                        return FadeInImage.assetNetwork(
+                          placeholder: CampaignConstants.dummyImageAssetName,
+                          image: snapshot.data!.thumbnailUrl!,
+                        );
+                      } else {
+                        return Image.file(
+                          File(snapshot.data!.thumbnailUrl!),
+                        );
+                      }
+                    },
                   ),
                 ),
                 SizedBox(width: 12),
