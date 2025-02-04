@@ -11,7 +11,10 @@ import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart'
 import 'package:simple_animations/simple_animations.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MainAppBar({super.key});
+  final Widget? appBarAction;
+  final PreferredSizeWidget? tabBar;
+
+  const MainAppBar({super.key, this.appBarAction, this.tabBar});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: isLoggedIn ? theme.colorScheme.surface : ThemeColors.text,
       backgroundColor: isLoggedIn ? theme.primaryColor : theme.colorScheme.surfaceDim,
       centerTitle: true,
+      bottom: tabBar,
       actions: [
+        if (appBarAction != null) appBarAction!,
         if (currentRoute.path == Routes.campaigns.path) RefreshButton(),
         if (currentRoute.path != Routes.settings.path && isLoggedIn)
           IconButton(
@@ -39,7 +44,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + (tabBar == null ? 0 : kTextTabBarHeight));
 }
 
 class RefreshButton extends StatefulWidget {
