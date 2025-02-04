@@ -4,10 +4,8 @@ before_all do
   setup_circle_ci
 end
 
-default_platform(:ios)
-
 platform :ios do
-  private_lane :apple_auth do |options|
+  private_lane :apple_auth do
     ensure_env_vars(
       env_vars: ["APP_STORE_CONNECT_API_KEY_ID", "APP_STORE_CONNECT_API_ISSUER_ID", "APP_STORE_CONNECT_API_KEY_CONTENT"]
     )
@@ -102,7 +100,6 @@ platform :ios do
       ipa: "#{ENV['HOME']}/#{ipa_path}",
       app_version: version_name,
       submit_for_review: true,
-      # TODO change to true
       automatic_release: false,
       force: true,
       skip_screenshots: true,
@@ -134,7 +131,6 @@ platform :ios do
       build_number: testflight_build_number.to_s,
       app_identifier: BUNDLE_IDENTIFIER,
       submit_for_review: true,
-      # TODO change to true
       automatic_release: false,
       force: true,
       skip_metadata: false,

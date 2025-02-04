@@ -234,7 +234,7 @@ jobs:
                 directory: android
             - install_gradle_dependencies
             - run:
-                command: bundle exec fastlane keystore
+                command: bundle exec fastlane android keystore
                 name: '[FL] Prepare Android Keystore'
                 working_directory: android
             - run:
