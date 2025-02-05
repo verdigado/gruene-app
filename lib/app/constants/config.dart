@@ -8,7 +8,7 @@ class Config {
   static bool get isDevelopment => Config.env == 'development';
 
   static String get grueneApiUrl => dotenv.env['GRUENE_API_URL']!;
-  static String get grueneApiAccessToken => dotenv.env['GRUENE_API_ACCESS_TOKEN'] ?? '';
+  static String? get grueneApiAccessToken => dotenv.env['GRUENE_API_ACCESS_TOKEN'];
 
   static String get oidcCallbackPath => '${Config.appId}://oauthredirect';
   static String get oidcClientId => dotenv.env['OIDC_CLIENT_ID']!;

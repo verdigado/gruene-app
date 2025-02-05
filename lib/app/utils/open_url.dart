@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> _openInAppBrowser(String url, BuildContext context) async {
@@ -13,7 +14,7 @@ Future<void> _openInAppBrowser(String url, BuildContext context) async {
 Future<void> openUrl(String url, BuildContext context) async {
   final parsedUrl = Uri.parse(url);
   if (!parsedUrl.hasScheme) {
-    debugPrint('Unable to open $url');
+    logger.w('Unable to open $url');
     return;
   }
 
@@ -26,7 +27,7 @@ Future<void> openUrl(String url, BuildContext context) async {
   if (canOpenUrl) {
     await launchUrl(parsedUrl);
   } else {
-    debugPrint('Unable to open $url');
+    logger.w('Unable to open $url');
   }
 }
 

@@ -6,14 +6,13 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:keycloak_authenticator/api.dart';
-import 'package:logger/logger.dart';
 
 class AuthRepository {
   final FlutterAppAuth _appAuth = FlutterAppAuth();
   final _secureStorage = GetIt.instance<FlutterSecureStorage>();
-  final Logger _logger = Logger();
   final AuthenticatorService _authenticatorService = GetIt.I<AuthenticatorService>();
   final IpService _ipService = GetIt.I<IpService>();
 
@@ -34,11 +33,14 @@ class AuthRepository {
       await _secureStorage.write(key: SecureStorageKeys.accessToken, value: result.accessToken);
       await _secureStorage.write(key: SecureStorageKeys.idToken, value: result.idToken);
       await _secureStorage.write(key: SecureStorageKeys.refreshToken, value: result.refreshToken);
+
+      logger.d('Login successful');
+
       return true;
     } on FlutterAppAuthUserCancelledException catch (e) {
-      _logger.w('Login was cancelled: $e');
+      logger.d('Login cancelled: $e');
     } catch (e) {
-      _logger.w('Login was not successful: $e');
+      logger.w('SLogin failed: $e');
     } finally {
       stopPolling(pollingTimer);
     }
@@ -57,6 +59,7 @@ class AuthRepository {
       ),
     );
 
+    logger.d('Logout successful');
     await _deleteTokens();
   }
 
@@ -66,14 +69,22 @@ class AuthRepository {
 
   Future<bool> isTokenValid() async {
     final accessToken = await getAccessToken();
-    if (accessToken == null) return false;
+    if (accessToken == null) {
+      logger.d('No access token found');
+      return false;
+    }
 
-    return !JwtDecoder.isExpired(accessToken);
+    final isExpired = JwtDecoder.isExpired(accessToken);
+    logger.d('Access token ${isExpired ? 'expired' : 'valid'}');
+    return !isExpired;
   }
 
   Future<bool> refreshToken() async {
     final refreshToken = await _secureStorage.read(key: SecureStorageKeys.refreshToken);
-    if (refreshToken == null) return false;
+    if (refreshToken == null) {
+      logger.d('No refresh token found');
+      return false;
+    }
 
     try {
       final TokenResponse result = await _appAuth.token(
@@ -89,9 +100,10 @@ class AuthRepository {
       await _secureStorage.write(key: SecureStorageKeys.accessToken, value: result.accessToken);
       await _secureStorage.write(key: SecureStorageKeys.idToken, value: result.idToken);
       await _secureStorage.write(key: SecureStorageKeys.refreshToken, value: result.refreshToken);
+      logger.d('Token refresh successful');
       return true;
     } catch (e) {
-      _logger.w('Token refresh was not successful: $e');
+      logger.w('Token refresh failed: $e');
     }
     return false;
   }
@@ -100,6 +112,7 @@ class AuthRepository {
     await _secureStorage.delete(key: SecureStorageKeys.accessToken);
     await _secureStorage.delete(key: SecureStorageKeys.idToken);
     await _secureStorage.delete(key: SecureStorageKeys.refreshToken);
+    logger.d('Auth tokens deleted successfully');
   }
 
   Timer _pollForChallenge(Authenticator authenticator) {
@@ -116,13 +129,11 @@ class AuthRepository {
         final challenge = await authenticator.fetchChallenge();
         if (challenge != null && await _ipService.isOwnIp(challenge.ipAddress)) {
           stopPolling(timer);
-          await authenticator.reply(
-            challenge: challenge,
-            granted: true,
-          );
+          await authenticator.reply(challenge: challenge, granted: true);
+          logger.d('Challenge approved successfully');
         }
       } catch (e) {
-        _logger.w('Error during challenge polling: $e');
+        logger.w('Challenge polling failed: $e');
       }
     });
   }
