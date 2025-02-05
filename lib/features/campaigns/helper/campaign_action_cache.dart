@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/campaign_action_database.dart';
 import 'package:gruene_app/app/services/converters.dart';
@@ -300,6 +300,7 @@ class CampaignActionCache extends ChangeNotifier {
 
       for (int i = 0; i < allActions.length; i++) {
         var action = allActions[i];
+
         switch (action.actionType) {
           case CampaignActionType.addPoster:
             var model = action.getAsPosterCreate();

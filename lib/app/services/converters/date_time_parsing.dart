@@ -10,4 +10,11 @@ extension DateTimeParsing on DateTime {
         .replaceAll('{date}', dateString)
         .replaceAll('{time}', timeString);
   }
+
+  String getAsTimeStamp() {
+    DateTime utcDateTime = this;
+    DateTime localDateTime = utcDateTime.toLocal();
+    final timestampString = DateFormat(t.campaigns.poster.timestamp_format).format(localDateTime);
+    return timestampString;
+  }
 }

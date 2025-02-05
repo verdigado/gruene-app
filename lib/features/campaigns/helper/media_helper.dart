@@ -2,12 +2,17 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
+import 'package:gruene_app/features/campaigns/helper/picture_gallery_view.dart';
+import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:http/http.dart';
 import 'package:image/image.dart' as image_lib;
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
@@ -16,27 +21,20 @@ class MediaHelper {
   static const int maxUploadDimension = 1200;
 
   static Future<File?> acquirePhoto(BuildContext context) async {
-    try {
-      await showImageConsent(context);
-      final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (pickedImage != null) {
-        return File(pickedImage.path);
-      }
-    } catch (e) {
-      debugPrint(e.toString());
+    await showImageConsent(context);
+    final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedImage != null) {
+      return File(pickedImage.path);
     }
+
     return null;
   }
 
   static Future<File?> pickImageFromDevice(BuildContext context) async {
-    try {
-      await showImageConsent(context);
-      final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedImage != null) {
-        return File(pickedImage.path);
-      }
-    } catch (e) {
-      debugPrint(e.toString());
+    await showImageConsent(context);
+    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      return File(pickedImage.path);
     }
     return null;
   }
@@ -148,11 +146,58 @@ class MediaHelper {
     );
   }
 
+  static void showPictureGalleryInFullView({
+    required BuildContext context,
+    required GetImageProviderCallback getImageProvider,
+    required GetAllImagesCallback getAllImages,
+    required int currentImageIndex,
+    required RemoveImageCallback removeImage,
+    required DownloadImageCallback downloadImage,
+    required ReplaceImageWithCameraCallback replaceImageWithCamera,
+    required ReplaceImageWithDeviceCallback replaceImageWithDevice,
+  }) async {
+    await showDialog<void>(
+      context: Navigator.of(context).context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => PictureGalleryView(
+        getImageProvider: getImageProvider,
+        getAllImages: getAllImages,
+        currentImageIndex: currentImageIndex,
+        removeImage: removeImage,
+        downloadImage: downloadImage,
+        replaceImageWithCamera: replaceImageWithCamera,
+        replaceImageWithDevice: replaceImageWithDevice,
+      ),
+    );
+  }
+
   static Future<String> storeImage(Uint8List imageData) async {
-    return GetIt.I<FileManager>().storeFile('${DateTime.now().millisecondsSinceEpoch}.jpg', imageData);
+    var fileLocation =
+        await GetIt.I<FileManager>().storeFile('${DateTime.now().millisecondsSinceEpoch}.jpg', imageData);
+    var exists = await File(fileLocation).exists();
+    assert(exists, 'file does not exist');
+    return fileLocation;
   }
 
   static void removeAllFiles() {
     GetIt.I<FileManager>().clearAllFiles();
+  }
+
+  static void storeImageOnDevice(PosterPhotoModel currentPhoto) async {
+    var imageUrl = currentPhoto.imageUrl;
+
+    var now = DateTime.now();
+    var fileName = 'poster_${now.getAsTimeStamp()}.jpg';
+
+    if (imageUrl.isNetworkImageUrl()) {
+      final Response response = await get(Uri.parse(imageUrl));
+
+      // Save to filesystem
+      final params = SaveFileDialogParams(data: response.bodyBytes, fileName: fileName);
+      await FlutterFileDialog.saveFile(params: params);
+    } else {
+      final params = SaveFileDialogParams(sourceFilePath: imageUrl, fileName: fileName);
+      await FlutterFileDialog.saveFile(params: params);
+    }
   }
 }

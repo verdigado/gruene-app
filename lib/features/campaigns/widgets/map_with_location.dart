@@ -34,7 +34,7 @@ class MapWithLocation extends StatelessWidget {
       future: determinePosition(context, requestIfNotGranted: false, preferLastKnownPosition: true)
           .timeout(const Duration(milliseconds: 400), onTimeout: () => RequestedPosition.unknown()),
       builder: (context, AsyncSnapshot<RequestedPosition> snapshot) {
-        if (!snapshot.hasData && !snapshot.hasError) {
+        if (!snapshot.hasData || snapshot.hasError) {
           return const Center();
         }
 

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -9,6 +11,7 @@ import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/poster_status.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
+import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_update_model.dart';
 import 'package:gruene_app/features/campaigns/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
@@ -19,6 +22,8 @@ import 'package:gruene_app/features/campaigns/widgets/multiline_text_input_field
 import 'package:gruene_app/i18n/translations.g.dart';
 
 typedef OnSavePosterCallback = Future<void> Function(PosterUpdateModel posterUpdate);
+
+enum PhotoEditAction { acquireNewPhoto, usePhotoFromGallery }
 
 class PosterEdit extends StatefulWidget {
   final PosterDetailModel poster;
@@ -47,10 +52,13 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
   TextEditingController cityTextController = TextEditingController();
   TextEditingController commentTextController = TextEditingController();
 
-  File? _currentPhoto;
-  bool _isPhotoDeleted = false;
-
   bool _isWorking = false;
+
+  final _imageSliderController = CarouselSliderController();
+  var _currentImageIndex = 0;
+  late List<PosterPhotoModel> _currentPhotos;
+  final List<String> _deletedPhotoIds = [];
+  final List<PosterPhotoModel> _newPhotos = [];
 
   @override
   void dispose() {
@@ -62,9 +70,11 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
   @override
   void initState() {
     setAddress(widget.poster.address);
+
     commentTextController.text = widget.poster.comment;
-    _isPhotoDeleted = (widget.poster.imageUrl == null);
     _selectedPosterStatus = widget.poster.status;
+    _currentPhotos = widget.poster.photos.toList();
+    _currentPhotos.sortByIdDescending();
 
     super.initState();
   }
@@ -87,107 +97,118 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
+                height: imageRowHeight,
                 child: Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: imageRowHeight,
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(10), bottom: Radius.zero),
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: currentSize.width,
-                              height: imageRowHeight,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.vertical(top: Radius.circular(10), bottom: Radius.zero),
-                              ),
-                              child: _getPosterPreview(),
-                            ),
-                            _hasPhoto
-                                ? Positioned.fill(
-                                    right: 10,
-                                    top: 5,
-                                    child: Align(
-                                      alignment: Alignment.topRight,
-                                      child: GestureDetector(
-                                        onTap: _removeImage,
-                                        child: Container(
-                                          width: 50,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: ThemeColors.secondary.withAlpha(100),
-                                          ),
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.delete,
-                                              color: Colors.white,
-                                              size: 30.0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : SizedBox(),
-                            Positioned.fill(
-                              left: 10,
-                              bottom: 5,
-                              child: Align(
-                                alignment: Alignment.bottomLeft,
-                                child: GestureDetector(
-                                  onTap: _pickImageFromDevice,
-                                  child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: ThemeColors.secondary.withAlpha(100),
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.add_photo_alternate,
-                                        color: Colors.white,
-                                        size: 30.0,
-                                      ),
-                                    ),
+                      child: _currentPhotos.isEmpty
+                          ? _getDummyAsset()
+                          : CarouselSlider.builder(
+                              controller: _imageSliderController,
+                              itemCount: _currentPhotos.length,
+                              itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) => Container(
+                                height: imageRowHeight,
+                                clipBehavior: Clip.hardEdge,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(10), bottom: Radius.zero),
+                                ),
+                                child: Container(
+                                  width: currentSize.width,
+                                  height: imageRowHeight,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(10), bottom: Radius.zero),
                                   ),
+                                  child: _getPosterPreview(itemIndex),
                                 ),
                               ),
-                            ),
-                            Positioned.fill(
-                              right: 10,
-                              bottom: 5,
-                              child: Align(
-                                alignment: Alignment.bottomRight,
-                                child: GestureDetector(
-                                  onTap: _acquireNewPhoto,
-                                  child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: ThemeColors.secondary.withAlpha(100),
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.photo_camera,
-                                        color: Colors.white,
-                                        size: 30.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              options: CarouselOptions(
+                                onPageChanged: (index, reason) {
+                                  setState(() => _currentImageIndex = index);
+                                },
                               ),
                             ),
-                          ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                child: Stack(
+                  children: [
+                    _currentPhotos.isEmpty
+                        ? SizedBox.shrink()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List<int>.generate(_currentPhotos.length, (i) => i).asMap().entries.map((entry) {
+                              return GestureDetector(
+                                onTap: () => _imageSliderController.animateToPage(entry.key),
+                                child: Container(
+                                  width: 12.0,
+                                  height: 12.0,
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 8.0,
+                                    horizontal: 4.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black.withAlpha(_currentImageIndex == entry.key ? 225 : 100),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                    Positioned(
+                      right: 6,
+                      child: PopupMenuButton<PhotoEditAction>(
+                        color: ThemeColors.background,
+                        onSelected: (PhotoEditAction result) {
+                          switch (result) {
+                            case PhotoEditAction.acquireNewPhoto:
+                              _acquireNewPhoto();
+                            case PhotoEditAction.usePhotoFromGallery:
+                              _pickImageFromDevice();
+                          }
+                        },
+                        offset: Offset(0, 41),
+                        child: Container(
+                          width: 41,
+                          height: 41,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: ThemeColors.secondary.withAlpha(100), width: 2),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.photo_camera_outlined,
+                              size: 30.0,
+                            ),
+                          ),
                         ),
+                        itemBuilder: (BuildContext context) => <PopupMenuEntry<PhotoEditAction>>[
+                          PopupMenuItem<PhotoEditAction>(
+                            value: PhotoEditAction.acquireNewPhoto,
+                            child: Row(
+                              children: [
+                                Icon(Icons.add_a_photo_outlined),
+                                SizedBox(width: 12),
+                                Text(t.campaigns.poster.photoEditActions.acquireNewPhoto),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem<PhotoEditAction>(
+                            value: PhotoEditAction.usePhotoFromGallery,
+                            child: Row(
+                              children: [
+                                Icon(Icons.image_outlined),
+                                SizedBox(width: 12),
+                                Text(t.campaigns.poster.photoEditActions.uploadFile),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -266,39 +287,30 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     );
   }
 
-  Widget _getPosterPreview() {
-    Widget getDummyAsset() => Image.asset(CampaignConstants.dummyImageAssetName);
+  Widget _getDummyAsset() => Image.asset(CampaignConstants.dummyImageAssetName);
 
-    if (_currentPhoto != null) {
-      return GestureDetector(
-        onTap: _showPictureFullView,
-        child: Image.file(
-          _currentPhoto!,
-          fit: BoxFit.cover,
-        ),
-      );
-    }
-    if (_isPhotoDeleted) return getDummyAsset();
+  Widget _getPosterPreview(int itemIndex) {
+    var photo = _currentPhotos[itemIndex];
     return FutureBuilder(
       future: Future.delayed(
         Duration.zero,
-        () => widget.poster.imageUrl == null ? null : (imageUrl: widget.poster.imageUrl),
+        () => (imageUrl: photo.imageUrl),
       ),
       builder: (context, snapshot) {
-        if (!snapshot.hasData && !snapshot.hasError) {
-          return getDummyAsset();
+        if (!snapshot.hasData || snapshot.hasError) {
+          return _getDummyAsset();
         }
 
         return GestureDetector(
           onTap: _showPictureFullView,
-          child: snapshot.data!.imageUrl!.isNetworkImageUrl()
+          child: snapshot.data!.imageUrl.isNetworkImageUrl()
               ? FadeInImage.assetNetwork(
                   placeholder: CampaignConstants.dummyImageAssetName,
-                  image: snapshot.data!.imageUrl!,
+                  image: snapshot.data!.imageUrl,
                   fit: BoxFit.cover,
                 )
               : Image.file(
-                  File(snapshot.data!.imageUrl!),
+                  File(snapshot.data!.imageUrl),
                   fit: BoxFit.cover,
                 ),
         );
@@ -322,16 +334,21 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
       _isWorking = true;
     });
 
-    final reducedImage = await Future.delayed(
-      Duration(milliseconds: 250),
-      () => MediaHelper.resizeAndReduceImageFile(_currentPhoto),
-    );
+    reduceImage(PosterPhotoModel p) async {
+      var file = File(p.imageUrl);
+      final reducedImage = await Future.delayed(
+        Duration(milliseconds: 150),
+        () => MediaHelper.resizeAndReduceImageFile(file),
+      );
 
-    String? fileLocation;
-    if (reducedImage != null) {
-      fileLocation = await MediaHelper.storeImage(reducedImage);
-      var exists = await File(fileLocation).exists();
-      debugPrint(exists.toString());
+      var fileLocation = await MediaHelper.storeImage(reducedImage!);
+      return p.copyWith(imageUrl: fileLocation, thumbnailUrl: fileLocation);
+    }
+
+    var newPhotosReduced = <PosterPhotoModel>[];
+    for (var p in _newPhotos) {
+      var newPhoto = await reduceImage(p);
+      newPhotosReduced.add(newPhoto);
     }
 
     final updateModel = PosterUpdateModel(
@@ -339,9 +356,9 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
       address: getAddress(),
       status: _selectedPosterStatus,
       comment: commentTextController.text,
-      removePreviousPhotos: _isPhotoDeleted,
       location: widget.poster.location,
-      newImageFileLocation: fileLocation,
+      deletedPhotoIds: _deletedPhotoIds,
+      newPhotos: newPhotosReduced,
       oldPosterDetail: widget.poster,
     );
     await widget.onSave(updateModel);
@@ -349,26 +366,59 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     _closeDialog(ModalEditResult.save);
   }
 
-  void _acquireNewPhoto() async {
+  Future<bool> _acquireNewPhoto() async {
     final photo = await MediaHelper.acquirePhoto(context);
 
-    if (photo != null) {
-      setState(() {
-        _currentPhoto = photo;
-      });
+    if (photo == null) {
+      return false;
     }
+    _addNewPhoto(photo);
+    return true;
+  }
+
+  void _addNewPhoto(File photo) {
+    var newPhoto = PosterPhotoModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      imageUrl: photo.absolute.path,
+      thumbnailUrl: photo.absolute.path,
+      createdAt: DateTime.now(),
+    );
+    _newPhotos.add(newPhoto);
+    setState(() {
+      _currentPhotos.insert(0, newPhoto);
+      _imageSliderController.jumpToPage(0);
+      _currentImageIndex = 0;
+    });
   }
 
   void _showPictureFullView() async {
-    ImageProvider imageProvider;
-    if (_currentPhoto != null) {
-      imageProvider = FileImage(_currentPhoto!);
-    } else if (widget.poster.imageUrl!.isNetworkImageUrl()) {
-      imageProvider = NetworkImage(widget.poster.imageUrl!);
-    } else {
-      imageProvider = FileImage(File(widget.poster.imageUrl!));
+    ImageProvider getImageProvider(PosterPhotoModel photo) {
+      ImageProvider imageProvider;
+      if (photo.imageUrl.isNetworkImageUrl()) {
+        imageProvider = NetworkImage(photo.imageUrl);
+      } else {
+        imageProvider = FileImage(File(photo.imageUrl));
+      }
+      return imageProvider;
     }
-    MediaHelper.showPictureInFullView(context, imageProvider);
+
+    getAllImages() => _currentPhotos;
+
+    MediaHelper.showPictureGalleryInFullView(
+      context: context,
+      getImageProvider: getImageProvider,
+      getAllImages: getAllImages,
+      currentImageIndex: _currentImageIndex,
+      removeImage: _removeImage,
+      downloadImage: _downloadImage,
+      replaceImageWithCamera: _replaceImageWithCamera,
+      replaceImageWithDevice: _replaceImageWithDevice,
+    );
+
+    setState(() {
+      _currentImageIndex = min(_currentImageIndex, _currentPhotos.length - 1);
+      _imageSliderController.jumpToPage(_currentImageIndex);
+    });
   }
 
   Widget _getLoadingScreen() {
@@ -385,26 +435,23 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     );
   }
 
-  void _pickImageFromDevice() async {
+  Future<bool> _pickImageFromDevice() async {
     final photo = await MediaHelper.pickImageFromDevice(context);
 
-    if (photo != null) {
-      setState(() {
-        _currentPhoto = photo;
-      });
+    if (photo == null) {
+      return false;
     }
+    _addNewPhoto(photo);
+    return true;
   }
 
-  void _removeImage() {
-    if (_hasPhoto) {
-      setState(() {
-        _isPhotoDeleted = true;
-        _currentPhoto = null;
-      });
-    }
+  void _removeImage(int itemIndex) {
+    setState(() {
+      var currentPhoto = _currentPhotos[itemIndex];
+      _deletedPhotoIds.add(currentPhoto.id);
+      _currentPhotos.removeAt(itemIndex);
+    });
   }
-
-  bool get _hasPhoto => _currentPhoto != null || (widget.poster.imageUrl != null && !_isPhotoDeleted);
 
   PosterStatus _selectedPosterStatus = PosterStatus.ok;
 
@@ -424,5 +471,28 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
       visualDensity: VisualDensity(vertical: VisualDensity.minimumDensity, horizontal: VisualDensity.minimumDensity),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
+  }
+
+  void _downloadImage(int imageIndex) {
+    var currentPhoto = _currentPhotos[imageIndex];
+    MediaHelper.storeImageOnDevice(currentPhoto);
+  }
+
+  Future<bool> _replaceImageWithCamera(int imageIndex) async {
+    return await _replaceImage(imageIndex, _acquireNewPhoto);
+  }
+
+  Future<bool> _replaceImageWithDevice(int imageIndex) async {
+    return await _replaceImage(imageIndex, _pickImageFromDevice);
+  }
+
+  Future<bool> _replaceImage(int imageIndex, Future<bool> Function() getNewImage) async {
+    var currentPhoto = _currentPhotos[imageIndex];
+    if (await getNewImage()) {
+      var newIndex = _currentPhotos.indexOf(currentPhoto);
+      _removeImage(newIndex);
+      return true;
+    }
+    return false;
   }
 }

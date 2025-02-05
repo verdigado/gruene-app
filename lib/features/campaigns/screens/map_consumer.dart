@@ -75,7 +75,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiUpdateTyp
           return FutureBuilder(
             future: locationAddress.timeout(const Duration(milliseconds: 1300), onTimeout: () => AddressModel()),
             builder: (context, AsyncSnapshot<AddressModel> snapshot) {
-              if (!snapshot.hasData && !snapshot.hasError) {
+              if (!snapshot.hasData || snapshot.hasError) {
                 return Container(
                   color: ThemeColors.secondary,
                 );

@@ -125,7 +125,7 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
                         child: FutureBuilder(
                           future: Future.delayed(Duration.zero, () => (thumbnailUrl: myPoster.thumbnailUrl)),
                           builder: (context, snapshot) {
-                            if (!snapshot.hasData && !snapshot.hasError) {
+                            if (!snapshot.hasData || snapshot.data!.thumbnailUrl == null || snapshot.hasError) {
                               return Image.asset(CampaignConstants.dummyImageAssetName);
                             }
 
@@ -136,9 +136,7 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
                                       placeholder: CampaignConstants.dummyImageAssetName,
                                       image: snapshot.data!.thumbnailUrl!,
                                     )
-                                  : Image.file(
-                                      File(snapshot.data!.thumbnailUrl!),
-                                    ),
+                                  : Image.file(File(snapshot.data!.thumbnailUrl!)),
                             );
                           },
                         ),
