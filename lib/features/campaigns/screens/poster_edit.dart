@@ -37,8 +37,6 @@ class PosterEdit extends StatefulWidget {
 }
 
 class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmDelete {
-  Set<PosterStatus> _segmentedButtonSelection = <PosterStatus>{};
-
   @override
   TextEditingController streetTextController = TextEditingController();
   @override
@@ -65,8 +63,8 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
   void initState() {
     setAddress(widget.poster.address);
     commentTextController.text = widget.poster.comment;
-    if (widget.poster.status != PosterStatus.ok) _segmentedButtonSelection = {widget.poster.status};
     _isPhotoDeleted = (widget.poster.imageUrl == null);
+    _selectedPosterStatus = widget.poster.status;
 
     super.initState();
   }
@@ -74,7 +72,6 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final buttonStyle = _getSegmentedButtonStyle(theme);
     final currentSize = MediaQuery.of(context).size;
     final lightBorderColor = ThemeColors.textLight;
     var imageRowHeight = 130.0;
@@ -218,51 +215,16 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
-                child: Row(
+                height: 217,
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.center,
-                            child: SegmentedButton<PosterStatus>(
-                              multiSelectionEnabled: false,
-                              emptySelectionAllowed: true,
-                              showSelectedIcon: false,
-                              selected: _segmentedButtonSelection,
-                              onSelectionChanged: (Set<PosterStatus> newSelection) {
-                                setState(() {
-                                  _segmentedButtonSelection = newSelection;
-                                });
-                              },
-                              segments: PosterStatusHelper.getPosterStatusOptions.map<ButtonSegment<PosterStatus>>(
-                                  ((PosterStatus, String, String) posterStatusContext) {
-                                return ButtonSegment<PosterStatus>(
-                                  value: posterStatusContext.$1,
-                                  label: Text(posterStatusContext.$2),
-                                );
-                              }).toList(),
-                              style: buttonStyle,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 25,
-                            child: Text(
-                              _getCurrentPosterStatusHint(),
-                              style: theme.textTheme.labelMedium!.apply(
-                                color: ThemeColors.textDisabled,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ...PosterStatusHelper.getPosterStatusList.map(_getRadioItem),
                   ],
                 ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
-                height: 140,
+                height: 148,
                 child: Row(
                   children: [
                     Expanded(
@@ -375,7 +337,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     final updateModel = PosterUpdateModel(
       id: widget.poster.id,
       address: getAddress(),
-      status: _segmentedButtonSelection.isEmpty ? PosterStatus.ok : _segmentedButtonSelection.single,
+      status: _selectedPosterStatus,
       comment: commentTextController.text,
       removePreviousPhotos: _isPhotoDeleted,
       location: widget.poster.location,
@@ -385,54 +347,6 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     await widget.onSave(updateModel);
 
     _closeDialog(ModalEditResult.save);
-  }
-
-  ButtonStyle _getSegmentedButtonStyle(ThemeData theme) {
-    final WidgetStateProperty<Color?> segmentedButtonBackgroundColor = WidgetStateProperty.resolveWith<Color?>(
-      (Set<WidgetState> states) {
-        if (states.contains(WidgetState.selected)) {
-          return ThemeColors.secondary;
-        }
-        return ThemeColors.background;
-      },
-    );
-    final WidgetStateProperty<Color?> segmentedButtonForegroundColor = WidgetStateProperty.resolveWith<Color?>(
-      (Set<WidgetState> states) {
-        if (states.contains(WidgetState.selected)) {
-          return ThemeColors.background;
-        }
-        return ThemeColors.text;
-      },
-    );
-
-    final WidgetStateProperty<TextStyle?> segmentedButtonTextStyle = WidgetStateProperty.resolveWith<TextStyle?>(
-      (Set<WidgetState> states) {
-        if (states.contains(WidgetState.selected)) {
-          return theme.textTheme.labelMedium!.apply(
-            color: Colors.red,
-          );
-        }
-        return theme.textTheme.labelMedium;
-      },
-    );
-
-    return ButtonStyle(
-      textStyle: segmentedButtonTextStyle, //WidgetStatePropertyAll(theme.textTheme.labelMedium),
-      backgroundColor: segmentedButtonBackgroundColor,
-      foregroundColor: segmentedButtonForegroundColor,
-      side: WidgetStatePropertyAll(BorderSide(color: ThemeColors.secondary)),
-    );
-  }
-
-  String _getCurrentPosterStatusHint() {
-    if (_segmentedButtonSelection.isEmpty) return '';
-    return _segmentedButtonSelection.map(
-      (selected) {
-        return PosterStatusHelper.getPosterStatusOptions
-            .firstWhere(((PosterStatus, String, String) posterStatusContext) => posterStatusContext.$1 == selected)
-            .$3;
-      },
-    ).join('; ');
   }
 
   void _acquireNewPhoto() async {
@@ -491,4 +405,24 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
   }
 
   bool get _hasPhoto => _currentPhoto != null || (widget.poster.imageUrl != null && !_isPhotoDeleted);
+
+  PosterStatus _selectedPosterStatus = PosterStatus.ok;
+
+  Widget _getRadioItem((PosterStatus, String) item) {
+    var theme = Theme.of(context);
+    return RadioListTile<PosterStatus>(
+      value: item.$1,
+      groupValue: _selectedPosterStatus,
+      onChanged: (value) => setState(() {
+        _selectedPosterStatus = value!;
+      }),
+      fillColor: WidgetStatePropertyAll(ThemeColors.primary),
+      title: Text(
+        item.$2,
+        style: theme.textTheme.bodyMedium,
+      ),
+      visualDensity: VisualDensity(vertical: VisualDensity.minimumDensity, horizontal: VisualDensity.minimumDensity),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+  }
 }

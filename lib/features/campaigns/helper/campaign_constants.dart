@@ -6,7 +6,9 @@ class CampaignConstants {
   static const flyerAssetName = 'assets/symbols/flyer/flyer.png';
   static const posterOkAssetName = 'assets/symbols/posters/poster.png';
   static const posterDamagedAssetName = 'assets/symbols/posters/poster_damaged.png';
+  static const posterMissingAssetName = 'assets/symbols/posters/poster_missing.png';
   static const posterRemovedAssetName = 'assets/symbols/posters/poster_removed.png';
+  static const posterToBeMovedAssetName = 'assets/symbols/posters/poster_to_be_moved.png';
   static const addMarkerAssetName = 'assets/symbols/add_marker.svg';
 
   static const markerSourceName = 'markers';

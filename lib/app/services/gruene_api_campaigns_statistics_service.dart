@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics.dart';
+import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_set.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -11,7 +11,7 @@ class GrueneApiCampaignsStatisticsService {
     grueneApi = GetIt.I<GrueneApi>();
   }
 
-  Future<CampaignStatistics> getStatistics() async {
+  Future<CampaignStatisticsModel> getStatistics() async {
     try {
       var statResult = await grueneApi.v1CampaignsStatisticsGet();
       return statResult.body!.asCampaignStatistics();
@@ -23,9 +23,9 @@ class GrueneApiCampaignsStatisticsService {
   }
 }
 
-extension StatisticsParser on Statistics {
-  CampaignStatistics asCampaignStatistics() {
-    return CampaignStatistics(
+extension StatisticsParser on CampaignStatistics {
+  CampaignStatisticsModel asCampaignStatistics() {
+    return CampaignStatisticsModel(
       flyerStats: flyer.asStatisticsSet(),
       houseStats: house.asStatisticsSet(),
       posterStats: poster.asStatisticsSet(),

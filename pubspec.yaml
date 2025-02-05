@@ -94,6 +94,7 @@ flutter:
     - assets/graphics/placeholders/
     - assets/symbols/
     - assets/symbols/posters/
+    - assets/symbols/posters/svg_inverted/
     - assets/symbols/doors/
     - assets/symbols/flyer/
     - assets/maps/

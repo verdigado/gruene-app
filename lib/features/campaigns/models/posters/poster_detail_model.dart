@@ -15,6 +15,8 @@ enum PosterStatus {
   missing,
   @JsonValue(400)
   removed,
+  @JsonValue(500)
+  toBeMoved,
 }
 
 @JsonSerializable()

@@ -64,16 +64,24 @@
       "info_poster_guidelines": "Wusstest Du, dass es je nach Region unterschiedliche gesetzliche Vorgaben und Regeln für das Aufhängen von Plakaten gibt? Bitte wende Dich an Deinen Orts- oder Kreisverband für weitere Informationen, bevor Du Plakate aufhängst!",
       "status": {
         "damaged": {
-          "label": "Beschädigt",
-          "hint": "Durch Fremdeinwirkung beschädigt"
+          "label": "Beschädigt (Als zu ersetzen melden)",
+          "description": "Plakat ist beschädigt, bitte ersetzen!"
         },
         "missing": {
           "label": "Verschollen",
-          "hint": "Durch Fremdeinwirkung entfernt"
+          "description": "Plakat ist verschollen, bitte ersetzen!"
         },
         "removed": {
           "label": "Abgehängt",
-          "hint": "Dauerhaft entfernt"
+          "description": "Plakat wurde abgehängt."
+        },
+        "to_be_moved": {
+          "label": "Umzuhängen",
+          "description": "Plakat hängt falsch, bitte umhängen!"
+        },
+        "ok": {
+          "label": "Plakat hängt",
+          "description": "Plakat hängt, kein Handlungsbedarf."
         }
       },
       "comment": {

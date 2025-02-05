@@ -7,6 +7,7 @@ extension PosterStatusParsing on PosterStatus {
       PosterStatus.damaged => PoiPosterStatus.damaged,
       PosterStatus.missing => PoiPosterStatus.missing,
       PosterStatus.removed => PoiPosterStatus.removed,
+      PosterStatus.toBeMoved => PoiPosterStatus.toBeMoved,
     };
   }
 

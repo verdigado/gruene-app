@@ -331,7 +331,6 @@ paths:
       security:
         - api_key: []
         - bearer: []
-        - oauth2: []
     post:
       operationId: createProfile
       summary: Create user profile
@@ -356,7 +355,6 @@ paths:
       security:
         - api_key: []
         - bearer: []
-        - oauth2: []
   /v1/profiles/self:
     get:
       operationId: getOwnProfile
@@ -378,7 +376,6 @@ paths:
       security:
         - api_key: []
         - bearer: []
-        - oauth2: []
   /v1/profiles/{profileId}:
     get:
       operationId: getProfile
@@ -405,7 +402,6 @@ paths:
       security:
         - api_key: []
         - bearer: []
-        - oauth2: []
     put:
       operationId: updateProfile
       summary: Update user profile
@@ -442,7 +438,6 @@ paths:
       security:
         - api_key: []
         - bearer: []
-        - oauth2: []
     delete:
       operationId: deleteProfile
       summary: Delete user profile
@@ -468,7 +463,6 @@ paths:
       security:
         - api_key: []
         - bearer: []
-        - oauth2: []
   /v1/profiles/{profileId}/image:
     put:
       operationId: updateProfileImage
@@ -482,7 +476,8 @@ paths:
                 - profileImage
               properties:
                 profileImage:
-                  type: file
+                  type: string
+                  format: binary
       parameters:
         - name: profileId
           required: true
@@ -505,7 +500,6 @@ paths:
       security:
         - api_key: []
         - bearer: []
-        - oauth2: []
     delete:
       operationId: deleteProfileImage
       summary: Delete user profile image
@@ -531,7 +525,6 @@ paths:
       security:
         - api_key: []
         - bearer: []
-        - oauth2: []
   /v1/profile-tags:
     get:
       operationId: findProfileTags
@@ -918,7 +911,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     get:
       operationId: findAreas
       summary: Find Areas
@@ -942,7 +934,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/areas/self:
     get:
       operationId: findOwnAreas
@@ -967,7 +958,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/areas/{areaId}:
     get:
       operationId: getArea
@@ -993,7 +983,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     put:
       operationId: updateArea
       summary: Update an Area
@@ -1024,7 +1013,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     delete:
       operationId: deleteArea
       summary: Delete an Area
@@ -1049,7 +1037,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/polling-stations:
     post:
       operationId: createPollingStation
@@ -1205,7 +1192,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     get:
       operationId: findPois
       summary: Find POIs
@@ -1240,7 +1226,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/pois/self:
     get:
       operationId: findOwnPois
@@ -1276,7 +1261,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/pois/{poiId}:
     get:
       operationId: getPoi
@@ -1302,7 +1286,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     put:
       operationId: updatePoi
       summary: Update a POI
@@ -1333,7 +1316,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     delete:
       operationId: deletePoi
       summary: Delete a POI
@@ -1358,7 +1340,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/pois/{poiId}/photos:
     post:
       operationId: addPoiPhoto
@@ -1372,7 +1353,8 @@ paths:
                 - image
               properties:
                 image:
-                  type: file
+                  type: string
+                  format: binary
       parameters:
         - name: poiId
           required: true
@@ -1394,7 +1376,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/pois/{poiId}/photos/{photoId}:
     delete:
       operationId: deletePoiPhoto
@@ -1425,7 +1406,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/routes:
     post:
       operationId: createRoute
@@ -1592,7 +1572,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     get:
       operationId: findExperienceAreas
       summary: Find ExperienceAreas
@@ -1616,7 +1595,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/experience-areas/{experienceAreaId}:
     get:
       operationId: getExperienceArea
@@ -1642,7 +1620,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     put:
       operationId: updateExperienceArea
       summary: Update a ExperienceArea
@@ -1673,7 +1650,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     delete:
       operationId: deleteExperienceArea
       summary: Delete a ExperienceArea
@@ -1698,7 +1674,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/focus-areas:
     post:
       operationId: createFocusArea
@@ -1723,7 +1698,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     get:
       operationId: findFocusAreas
       summary: Find FocusAreas
@@ -1747,7 +1721,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/focus-areas/{focusAreaId}:
     get:
       operationId: getFocusArea
@@ -1773,7 +1746,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     put:
       operationId: updateFocusArea
       summary: Update a FocusArea
@@ -1804,7 +1776,6 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
     delete:
       operationId: deleteFocusArea
       summary: Delete a FocusArea
@@ -1829,11 +1800,10 @@ paths:
         - campaigns
       security:
         - bearer: []
-        - oauth2: []
   /v1/campaigns/statistics:
     get:
-      operationId: getStatistics
-      summary: Get statistics
+      operationId: getCampaignStatistics
+      summary: Get campaign statistics
       parameters: []
       responses:
         '200':
@@ -1841,7 +1811,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Statistics'
+                $ref: '#/components/schemas/CampaignStatistics'
         '401':
           description: ''
       tags:
@@ -1899,7 +1869,6 @@ paths:
         - news
       security:
         - bearer: []
-        - oauth2: []
   /v1/news/{newsId}:
     get:
       operationId: getNews
@@ -1925,7 +1894,31 @@ paths:
         - news
       security:
         - bearer: []
-        - oauth2: []
+  /v1/client-info:
+    get:
+      operationId: ClientInfoController_getClientInfo
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientInfo'
+  /v1/gnetz-applications:
+    get:
+      operationId: findGnetzApplications
+      summary: Find GNetz Applications
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindGnetzApplicationsResponse'
+      tags:
+        - gnetz-applications
   /health:
     get:
       tags:
@@ -2427,14 +2420,17 @@ components:
           items:
             type: string
         purposes:
-          description: Purposes associated with email
-          examples:
-            - - privat
-            - - grüne
-            - - dienstlich
-            - - Postanschrift
-            - - Rechnungsanschrift
-            - - Lieferanschrift
+          description: |-
+            Purposes associated with email
+            Occuring values:
+             - privat
+             - grüne
+             - dienstlich
+             - Postanschrift
+             - Rechnungsanschrift
+             - Lieferanschrift
+          example:
+            - privat
           type: array
           items:
             type: string
@@ -2623,6 +2619,19 @@ components:
         - tags
         - roles
         - achievements
+    OffsetPaginationMeta:
+      type: object
+      properties:
+        count:
+          type: number
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+        hasNext:
+          type: boolean
     FindProfilesResponse:
       type: object
       properties:
@@ -2631,20 +2640,7 @@ components:
           items:
             $ref: '#/components/schemas/PublicProfile'
         meta:
-          type: object
-          properties:
-            count:
-              required: true
-              type: number
-            offset:
-              required: true
-              type: number
-            limit:
-              required: true
-              type: number
-            hasNext:
-              required: true
-              type: boolean
+          $ref: '#/components/schemas/OffsetPaginationMeta'
       required:
         - data
         - meta
@@ -2871,20 +2867,7 @@ components:
           items:
             $ref: '#/components/schemas/ProfileTag'
         meta:
-          type: object
-          properties:
-            count:
-              required: true
-              type: number
-            total:
-              required: true
-              type: number
-            offset:
-              required: true
-              type: number
-            limit:
-              required: true
-              type: number
+          $ref: '#/components/schemas/OffsetPaginationMeta'
       required:
         - data
         - meta
@@ -2906,6 +2889,11 @@ components:
       required:
         - id
         - username
+    KeysetPaginationMeta:
+      type: object
+      properties:
+        cursorNext:
+          type: string
     FindOffboardingUsersResponse:
       type: object
       properties:
@@ -2914,11 +2902,7 @@ components:
           items:
             $ref: '#/components/schemas/OffboardingUserInfo'
         meta:
-          type: object
-          properties:
-            cursorNext:
-              required: false
-              type: string
+          $ref: '#/components/schemas/KeysetPaginationMeta'
       required:
         - data
         - meta
@@ -2953,20 +2937,7 @@ components:
           items:
             $ref: '#/components/schemas/Division'
         meta:
-          type: object
-          properties:
-            count:
-              required: true
-              type: number
-            total:
-              required: true
-              type: number
-            offset:
-              required: true
-              type: number
-            limit:
-              required: true
-              type: number
+          $ref: '#/components/schemas/OffsetPaginationMeta'
       required:
         - data
         - meta
@@ -3107,20 +3078,7 @@ components:
           items:
             $ref: '#/components/schemas/Role'
         meta:
-          type: object
-          properties:
-            count:
-              required: true
-              type: number
-            total:
-              required: true
-              type: number
-            offset:
-              required: true
-              type: number
-            limit:
-              required: true
-              type: number
+          $ref: '#/components/schemas/OffsetPaginationMeta'
       required:
         - data
         - meta
@@ -3132,20 +3090,7 @@ components:
           items:
             $ref: '#/components/schemas/RoleTag'
         meta:
-          type: object
-          properties:
-            count:
-              required: true
-              type: number
-            total:
-              required: true
-              type: number
-            offset:
-              required: true
-              type: number
-            limit:
-              required: true
-              type: number
+          $ref: '#/components/schemas/OffsetPaginationMeta'
       required:
         - data
         - meta
@@ -3157,20 +3102,7 @@ components:
           items:
             $ref: '#/components/schemas/RoleCategory'
         meta:
-          type: object
-          properties:
-            count:
-              required: true
-              type: number
-            total:
-              required: true
-              type: number
-            offset:
-              required: true
-              type: number
-            limit:
-              required: true
-              type: number
+          $ref: '#/components/schemas/OffsetPaginationMeta'
       required:
         - data
         - meta
@@ -3200,27 +3132,26 @@ components:
     Polygon:
       type: object
       properties:
+        coordinates:
+          type: array
+          description: |-
+            Coordinates of the polygon
+            Must follow the GeoJSON standard
+          items:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+                format: double
         type:
           type: string
           description: Type of the polygon
           example: Polygon
           default: Polygon
-        coordinates:
-          type: array
-          items:
-            name: coordinates
-            type: array
-            items:
-              required: true
-              description: |-
-                Coordinates of the polygon
-                Must follow the GeoJSON standard
-              type: array
-              items:
-                type: number
       required:
-        - type
         - coordinates
+        - type
     UpdateArea:
       type: object
       properties:
@@ -3424,6 +3355,7 @@ components:
             - DAMAGED
             - REMOVED
             - MISSING
+            - TO_BE_MOVED
           type: string
         comment:
           type: string
@@ -3851,7 +3783,7 @@ components:
         - division
         - state
         - germany
-    Statistics:
+    CampaignStatistics:
       type: object
       properties:
         poster:
@@ -3930,6 +3862,122 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/News'
+      required:
+        - data
+    ClientInfo:
+      type: object
+      properties:
+        clientIp:
+          type: string
+        clientIpVersion:
+          enum:
+            - ivp4
+            - ipv6
+          type: string
+      required:
+        - clientIp
+        - clientIpVersion
+    GnetzApplicationCategory:
+      type: object
+      properties:
+        slug:
+          type: string
+          description: Category slug
+          example: beteiligung
+        title:
+          type: string
+          description: Category title
+          example: Beteiligung
+        order:
+          type: number
+          description: The category order used for display purposes
+          example: 1
+      required:
+        - slug
+        - title
+        - order
+    GnetzApplication:
+      type: object
+      properties:
+        shortDescription:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            de_DE: Beschreibung in Deutsch
+            en_US: description in english
+        description:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            de_DE: Beschreibung in Deutsch
+            en_US: description in english
+        slug:
+          type: string
+          description: Application slug
+          example: wolke
+        url:
+          type: string
+          nullable: true
+          description: URL to the application
+          example: https://wolke.netzbegruenung.de
+        title:
+          type: string
+          description: Application title
+          example: Wolke
+        documentation:
+          type: string
+          nullable: true
+          description: URL to the documentation
+          example: https://netz.gruene.de/de/wissenswerk/2024-08/wolke
+        googleStore:
+          type: string
+          nullable: true
+          description: URL to google play store
+          example: https://play.google.com/store/apps/details?id=com.nextcloud.client
+        appleStore:
+          type: string
+          nullable: true
+          description: URL to apple store
+          example: https://apps.apple.com/us/app/nextcloud/id1125420102
+        supportMail:
+          type: string
+          nullable: true
+          description: support email
+          example: support@example.com
+        icon:
+          type: string
+          nullable: true
+          description: icon as svg
+          example: >-
+            <svg width="100" height="100"
+            xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="5"
+            fill="black"/></svg>
+        categories:
+          description: Application categories
+          type: array
+          items:
+            $ref: '#/components/schemas/GnetzApplicationCategory'
+      required:
+        - shortDescription
+        - description
+        - slug
+        - url
+        - title
+        - documentation
+        - googleStore
+        - appleStore
+        - supportMail
+        - icon
+        - categories
+    FindGnetzApplicationsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GnetzApplication'
       required:
         - data
     HealthCheckResponse:

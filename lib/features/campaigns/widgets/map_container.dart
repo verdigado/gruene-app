@@ -24,6 +24,7 @@ import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:turf/turf.dart' as turf;
 
 typedef OnMapCreatedCallback = void Function(MapController controller);
 typedef AddPOIClickedCallback = void Function(LatLng location);
@@ -96,6 +97,8 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
 
   bool _showAddMarker = true;
 
+  bool _isInFocusMode = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -115,7 +118,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
       height: 0,
       width: 0,
     );
-    if (popups.isEmpty && _showAddMarker) {
+    if (popups.isEmpty && _showAddMarker & !_isInFocusMode) {
       addMarker = Center(
         child: Container(
           padding: EdgeInsets.only(
@@ -318,7 +321,15 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
       CampaignConstants.markerLayerName,
       const SymbolLayerProperties(
         iconImage: ['get', 'status_type'],
-        iconSize: 2,
+        iconSize: [
+          Expressions.interpolate,
+          ['linear'],
+          [Expressions.zoom],
+          11,
+          1,
+          16,
+          2,
+        ],
         iconAllowOverlap: true,
       ),
       enableInteraction: false,
@@ -328,6 +339,25 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
         ['has', 'point_count'],
       ],
     );
+
+    // add selected map layers
+    await _controller!.addGeoJsonSource(
+      '${CampaignConstants.markerSourceName}_selected',
+      MarkerItemHelper.transformListToGeoJson(<MarkerItemModel>[]).toJson(),
+    );
+
+    await _controller!.addSymbolLayer(
+      '${CampaignConstants.markerSourceName}_selected',
+      '${CampaignConstants.markerLayerName}_selected',
+      const SymbolLayerProperties(
+        iconImage: ['get', 'status_type'],
+        iconSize: 3,
+        iconAllowOverlap: true,
+      ),
+      enableInteraction: false,
+      minzoom: minZoomMarkerItems,
+    );
+
     // init context layers re-directed to context screens
     widget.addMapLayersForContext!(_controller!);
   }
@@ -412,6 +442,44 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
       widget,
       onEditItemClicked,
       desiredSize: desiredSize,
+    );
+  }
+
+  @override
+  Future<void> setFocusToMarkerItem(Map<String, dynamic> feature) async {
+    // removes the add_marker
+    setState(() {
+      _isInFocusMode = true;
+    });
+    // align map to show feature in center area
+    final coord = MapHelper.extractLatLngFromFeature(feature);
+    await moveMapIfItemIsOnBorder(coord, Size(150, 150));
+    // set opacity of marker layer
+    await _controller!.setLayerProperties(
+      CampaignConstants.markerLayerName,
+      SymbolLayerProperties(iconOpacity: 0.2),
+    );
+    // set data for '_selected layer'
+    var featureObject = turf.Feature<turf.Point>.fromJson(feature);
+    turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
+    await _controller!.setGeoJsonSource(
+      '${CampaignConstants.markerSourceName}_selected',
+      collection.toJson(),
+    );
+  }
+
+  @override
+  Future<void> unsetFocusToMarkerItem() async {
+    setState(() {
+      _isInFocusMode = false;
+    });
+    await _controller!.setLayerProperties(
+      CampaignConstants.markerLayerName,
+      SymbolLayerProperties(iconOpacity: 1),
+    );
+    await _controller!.setGeoJsonSource(
+      '${CampaignConstants.markerSourceName}_selected',
+      turf.FeatureCollection<turf.Point>(features: []).toJson(),
     );
   }
 
