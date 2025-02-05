@@ -20,6 +20,9 @@ class Config {
   static String get ipV4ServiceUrl => dotenv.env['IP_V4_SERVICE_URL']!;
   static String get ipV6ServiceUrl => dotenv.env['IP_V6_SERVICE_URL']!;
 
+  static String get defaultLocale => 'de_DE';
+  static String get defaultLanguageCode => 'de';
+
   static bool get androidFloss {
     // may be needed when building for f-droid store
     final configValue = dotenv.env['ANDROID_FLOSS'] ?? 'false';

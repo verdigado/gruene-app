@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
+import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
@@ -35,13 +36,7 @@ import 'package:timeago/timeago.dart' as timeago;
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
-  final locale = await LocaleSettings.useDeviceLocale();
-
-  if (locale.languageCode == 'de') {
-    timeago.setLocaleMessages('de', timeago.DeMessages());
-  } else {
-    timeago.setLocaleMessages('en', timeago.EnMessages());
-  }
+  timeago.setLocaleMessages(Config.defaultLanguageCode, timeago.DeMessages());
 
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
     await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
