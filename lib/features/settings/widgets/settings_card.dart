@@ -47,9 +47,13 @@ class SettingsCard extends StatelessWidget {
             style: theme.textTheme.titleSmall?.apply(color: isEnabled ? ThemeColors.text : ThemeColors.textDisabled),
           ),
           subtitle: Text(subtitle, style: TextStyle(color: isEnabled ? ThemeColors.text : ThemeColors.textDisabled)),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: icon,
+          leading: SizedBox(
+            height: 48,
+            width: 48,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: icon,
+            ),
           ),
           trailing: onPress != null
               ? Padding(
