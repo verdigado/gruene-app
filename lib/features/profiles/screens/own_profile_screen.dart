@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
+import 'package:gruene_app/features/profiles/helper/social_media_type_translation.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_base_data_widget.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_box.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_box_item.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -18,12 +22,75 @@ class OwnProfileScreen extends StatelessWidget {
         if (data == null) {
           return ErrorScreen(error: t.profiles.noResult, retry: fetchOwnProfile);
         }
+
+        Iterable<ProfileRole> mandateRoles =
+            data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
+        Iterable<ProfileRole> sherpaRoles = data.roles.where((role) => role.type == ProfileRoleType.role);
+        Iterable<ProfileTag> skillTags = data.tags.where((tag) => tag.type == ProfileTagType.skill);
+        DivisionMembership? kvMembership =
+            data.memberships?.firstWhere((membership) => membership.division.level == DivisionLevel.kv);
+
         return ListView(
           children: [
             SizedBox(height: 24),
             ProfileHeaderWidget(profile: data),
             SizedBox(height: 24),
             ProfileBaseDataWidget(profile: data),
+            SizedBox(height: 12),
+            if (data.memberships!.isNotEmpty) ...[
+              ProfileBox(
+                title: t.profiles.memberships,
+                items: data.memberships!
+                    .map((membership) =>
+                        ProfileBoxItem(title: '${membership.division.name1} ${membership.division.name2}'),)
+                    .toList(),
+              ),
+              SizedBox(height: 12),
+            ],
+            if (mandateRoles.isNotEmpty) ...[
+              ProfileBox(
+                title: t.profiles.mandates,
+                items: mandateRoles.map((role) => ProfileBoxItem(title: role.alias)).toList(),
+              ),
+              SizedBox(height: 12),
+            ],
+            if (sherpaRoles.isNotEmpty) ...[
+              ProfileBox(
+                title: t.profiles.sherpaRole,
+                items: sherpaRoles.map((role) => ProfileBoxItem(title: role.alias)).toList(),
+              ),
+              SizedBox(height: 12),
+            ],
+            if (skillTags.isNotEmpty) ...[
+              ProfileBox(
+                title: t.profiles.skills,
+                items: skillTags.map((tag) => ProfileBoxItem(title: tag.label)).toList(),
+              ),
+              SizedBox(height: 12),
+            ],
+            if (kvMembership!.division.urls.isNotEmpty) ...[
+              ProfileBox(
+                title: t.profiles.mykv,
+                items: kvMembership.division.urls
+                    .map((url) => ProfileBoxItem(title: t.profiles.homepage, onPress: () => openUrl(url, context)))
+                    .toList(),
+              ),
+              SizedBox(height: 12),
+            ],
+            if (data.socialMedia.isNotEmpty) ...[
+              ProfileBox(
+                title: t.profiles.socialMedia,
+                items: data.socialMedia
+                    .map(
+                      (socialMedia) => ProfileBoxItem(
+                        title: getSocialMediaTypeTranslation(socialMedia.type),
+                        onPress: () => openUrl(socialMedia.url, context),
+                      ),
+                    )
+                    .toList(),
+              ),
+              SizedBox(height: 12),
+            ],
           ],
         );
       },

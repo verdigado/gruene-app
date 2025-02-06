@@ -169,7 +169,21 @@
       "lastName": "Nachname",
       "email": "E-Mail Adresse",
       "phoneNumber": "Telefonnummer"
-    }
+    },
+    "memberships": "Mitgliedschaften",
+    "mandates": "Parteifunktionen / Mandate",
+    "sherpaRole": "Sherpa-Rolle",
+    "skills": "Kompetenzen",
+    "mykv": "Mein Kreisverband",
+    "socialMedia": "Social Media",
+    "socialMediaType": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "mastodon": "Mastodon",
+      "twitter": "Twitter",
+      "chatbegruenung": "Chatbegrünung"
+    },
+    "homepage": "Homepage"
   },
   "mfa": {
     "mfa": "Zwei-Faktor-Authentifizierung",
