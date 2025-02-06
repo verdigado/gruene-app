@@ -191,4 +191,9 @@ final ThemeData appTheme = ThemeData.light().copyWith(
       borderRadius: BorderRadius.all(Radius.circular(5)),
     ),
   ),
+  dividerTheme: DividerThemeData(
+    color: ThemeColors.textLight,
+    space: 24,
+    thickness: 0.5,
+  ),
 );
