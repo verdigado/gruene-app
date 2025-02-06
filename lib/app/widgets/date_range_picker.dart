@@ -13,11 +13,13 @@ class DateRangeFilter extends StatelessWidget {
   });
 
   Future<void> openDateRangePicker(BuildContext context) async {
+    final theme = Theme.of(context);
     final newDateRange = await showDateRangePicker(
       context: context,
       firstDate: DateTime(1980),
       lastDate: DateTime.now(),
       initialDateRange: dateRange,
+      barrierColor: theme.colorScheme.secondary,
     );
     setDateRange(newDateRange);
   }
@@ -29,7 +31,7 @@ class DateRangeFilter extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        SizedBox(width: 16),
+        SizedBox(width: 24),
         Text(t.common.dateFrom),
         SizedBox(width: 16),
         TextButton(
@@ -39,7 +41,7 @@ class DateRangeFilter extends StatelessWidget {
             side: BorderSide(color: theme.colorScheme.surfaceDim),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           ),
-          child: Text(formatDate(dateRange?.start)),
+          child: SizedBox(width: 96, child: Center(child: Text(formatDate(dateRange?.start)))),
         ),
         SizedBox(width: 16),
         Text(t.common.dateUntil),
@@ -51,9 +53,9 @@ class DateRangeFilter extends StatelessWidget {
             side: BorderSide(color: theme.colorScheme.surfaceDim),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           ),
-          child: Text(formatDate(dateRange?.end)),
+          child: SizedBox(width: 96, child: Center(child: Text(formatDate(dateRange?.end)))),
         ),
-        SizedBox(width: 16),
+        SizedBox(width: 24),
       ],
     );
   }

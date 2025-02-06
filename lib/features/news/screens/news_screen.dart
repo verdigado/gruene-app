@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/main_layout.dart';
 import 'package:gruene_app/app/widgets/rounded_icon_button.dart';
 import 'package:gruene_app/app/widgets/search_bar.dart';
-import 'package:gruene_app/features/news/widgets/filter_dropdown.dart';
+import 'package:gruene_app/features/news/widgets/news_filter_view.dart';
 import 'package:gruene_app/features/news/widgets/news_list.dart';
 
 class NewsScreen extends StatefulWidget {
@@ -13,37 +14,18 @@ class NewsScreen extends StatefulWidget {
   State<NewsScreen> createState() => _NewsScreenState();
 }
 
-void _showFullScreenDialog(BuildContext context, WidgetBuilder builder) {
-  Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      fullscreenDialog: true,
-      builder: (BuildContext context) {
-        final theme = Theme.of(context);
-        return Scaffold(
-          backgroundColor: theme.colorScheme.surfaceDim,
-          appBar: AppBar(
-            backgroundColor: theme.colorScheme.surfaceDim,
-            leading: IconButton(icon: Icon(Icons.close), onPressed: Navigator.of(context).pop),
-          ),
-          body: builder(context),
-        );
-      },
-    ),
-  );
-}
-
 class _NewsScreenState extends State<NewsScreen> {
-  bool showFilters = false;
   bool showBookmarked = false;
-  String? division;
   String query = '';
-  String? category;
+  List<String> selectedDivisions = [];
+  List<String> selectedCategories = [];
   DateTimeRange? dateRange;
+  final divisions = ['cat', 'dog', 'mouse'];
+  final categories = ['cat', 'dog', 'mouse'];
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final categories = ['cat', 'dog', 'mouse'];
     return MainLayout(
       child: Container(
         padding: EdgeInsets.only(top: 16, left: 16, right: 16),
@@ -58,6 +40,7 @@ class _NewsScreenState extends State<NewsScreen> {
                 children: [
                   Flexible(
                     child:
+                        // TODO debounce
                         CustomSearchBar(setQuery: (String query) => setState(() => this.query = query), query: query),
                   ),
                   // TODO #213: Add bookmarking functionality
@@ -72,17 +55,32 @@ class _NewsScreenState extends State<NewsScreen> {
                   // ),
                   SizedBox(width: 8),
                   RoundedIconButton(
-                    onPressed: () => _showFullScreenDialog(context, (BuildContext context) {
-                      return FilterDropdown(
-                        categories: categories,
-                        dateRange: dateRange,
-                        setDateRange: (DateTimeRange? dateRange) => setState(() => this.dateRange = dateRange),
+                    onPressed: () => showFullScreenDialog(context, (BuildContext context) {
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return FullScreenDialog(
+                            child: NewsFilterView(
+                              setDateRange: (DateTimeRange? dateRange) => setState(() {
+                                this.dateRange = dateRange;
+                              }),
+                              dateRange: dateRange,
+                              setSelectedDivisions: (List<String> selectedDivisions) {
+                                setState(() => this.selectedDivisions = selectedDivisions);
+                              },
+                              selectedDivisions: selectedDivisions,
+                              divisions: divisions,
+                              setSelectedCategories: (List<String> selectedCategories) =>
+                                  setState(() => this.selectedCategories = selectedCategories),
+                              selectedCategories: selectedCategories,
+                              categories: categories,
+                            ),
+                          );
+                        },
                       );
                     }),
                     icon: Icons.tune,
                     iconColor: ThemeColors.textDisabled,
                     backgroundColor: theme.colorScheme.surface,
-                    selected: showFilters,
                     width: 40,
                   ),
                 ],

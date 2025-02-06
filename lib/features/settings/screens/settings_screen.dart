@@ -7,7 +7,7 @@ import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
-import 'package:gruene_app/features/settings/widgets/settings_item.dart';
+import 'package:gruene_app/app/widgets/text_list_item.dart';
 import 'package:gruene_app/features/settings/widgets/version_number.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
@@ -23,34 +23,34 @@ class SettingsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(top: 32),
       children: [
         SectionTitle(title: t.settings.campaignsSettings),
-        SettingsItem(title: t.settings.inviteNonMember, onPress: () => {}, isImplemented: false),
-        SettingsItem(title: t.settings.offlineMaps, onPress: () => {}, isImplemented: false),
+        TextListItem(title: t.settings.inviteNonMember, onPress: () => {}, isImplemented: false),
+        TextListItem(title: t.settings.offlineMaps, onPress: () => {}, isImplemented: false),
         SectionTitle(title: t.settings.generalSettings),
-        SettingsItem(title: t.settings.pushNotifications, onPress: () => {}, isImplemented: false),
-        SettingsItem(title: t.settings.accessibility, onPress: () => {}, isImplemented: false),
-        SettingsItem(
+        TextListItem(title: t.settings.pushNotifications, onPress: () => {}, isImplemented: false),
+        TextListItem(title: t.settings.accessibility, onPress: () => {}, isImplemented: false),
+        TextListItem(
           title: t.settings.support.support,
           onPress: () => context.pushNamed(Routes.support.name!),
         ),
-        SettingsItem(
+        TextListItem(
           title: t.settings.actionNetwork,
           onPress: () => {},
           isExternal: true,
           isImplemented: false,
         ),
-        SettingsItem(title: t.settings.newsletter, onPress: () => {}, isExternal: true, isImplemented: false),
+        TextListItem(title: t.settings.newsletter, onPress: () => {}, isExternal: true, isImplemented: false),
         SectionTitle(title: t.settings.legalSettings),
-        SettingsItem(
+        TextListItem(
           title: t.settings.legalNotice,
           onPress: () => openUrl(legalNoticeUrl, context),
           isExternal: true,
         ),
-        SettingsItem(
+        TextListItem(
           title: t.settings.dataProtectionStatement,
           onPress: () => openUrl(dataProtectionStatementUrl, context),
           isExternal: true,
         ),
-        SettingsItem(
+        TextListItem(
           title: t.settings.termsOfUse,
           onPress: () => openUrl(termsOfUseUrl, context),
           isExternal: true,
