@@ -41,8 +41,10 @@ class OwnProfileScreen extends StatelessWidget {
               ProfileBox(
                 title: t.profiles.memberships,
                 items: data.memberships!
-                    .map((membership) =>
-                        ProfileBoxItem(title: '${membership.division.name1} ${membership.division.name2}'),)
+                    .map(
+                      (membership) =>
+                          ProfileBoxItem(title: '${membership.division.name1} ${membership.division.name2}'),
+                    )
                     .toList(),
               ),
               SizedBox(height: 12),
