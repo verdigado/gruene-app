@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:simple_animations/simple_animations.dart';
 
@@ -32,10 +31,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (currentRoute.path == Routes.campaigns.path) RefreshButton(),
         if (currentRoute.path != Routes.settings.path && isLoggedIn)
           IconButton(
-            icon: CustomIcon(
-              path: 'assets/icons/settings.svg',
-              color: ThemeColors.background,
-            ),
+            icon: Icon(Icons.settings_outlined, color: theme.colorScheme.surface),
             onPressed: () => context.push(Routes.settings.path),
           ),
       ],
@@ -76,10 +72,7 @@ class _RefreshButtonState extends State<RefreshButton> {
     const maxLabelCount = 99;
     var labelText = _currentCount > maxLabelCount ? '$maxLabelCount+' : _currentCount.toString();
 
-    getIcon() => CustomIcon(
-          path: 'assets/icons/refresh.svg',
-          color: ThemeColors.background,
-        );
+    getIcon() => Icon(Icons.sync_outlined, color: ThemeColors.background);
 
     var iconAnimated = LoopAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 2 * pi), // 0° to 360° (2π)

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
-import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class SupportButton extends StatelessWidget {
@@ -16,12 +15,7 @@ class SupportButton extends StatelessWidget {
       height: 48,
       child: FilledButton.icon(
         onPressed: () => openUrl(supportUrl, context),
-        icon: CustomIcon(
-          path: 'assets/icons/heart.svg',
-          color: theme.colorScheme.surface,
-          width: 16,
-          height: 16,
-        ),
+        icon: Icon(Icons.favorite, color: theme.colorScheme.surface),
         label: Text(
           t.login.support,
           style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),

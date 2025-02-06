@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class SettingsItem extends StatelessWidget {
@@ -27,11 +26,9 @@ class SettingsItem extends StatelessWidget {
         isImplemented ? title : '$title ${t.settings.notImplemented}',
         style: theme.textTheme.bodyLarge?.apply(color: isImplemented ? ThemeColors.text : ThemeColors.textDisabled),
       ),
-      trailing: CustomIcon(
-        path: isExternal ? 'assets/icons/external.svg' : 'assets/icons/chevron.svg',
+      trailing: Icon(
+        isExternal ? Icons.open_in_browser_outlined : Icons.chevron_right_outlined,
         color: theme.disabledColor,
-        width: 16,
-        height: 16,
       ),
       tileColor: theme.colorScheme.surface,
       contentPadding: const EdgeInsets.symmetric(horizontal: 24),
