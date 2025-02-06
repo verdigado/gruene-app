@@ -3,6 +3,12 @@
     "appName": "B90/DIE GRÜNEN",
     "error": "Fehler",
     "notImplementedYet": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
+    "divisionBundesverband": "Bundesverband",
+    "divisionLandesverband": "Landesverband",
+    "divisionKreisverband": "Kreisverband",
+    "divisionOrtsverband": "Ortsverband",
+    "dateFrom": "von",
+    "dateUntil": "bis",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
@@ -27,7 +33,12 @@
     "writtenBy": "Von ${author}",
     "updatedAt": "Stand: ${date}",
     "noResults": "Es wurden leider keine Artikel gefunden.",
-    "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden."
+    "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden.",
+    "latest": "Aktuelles",
+    "bookmarked": "Gespeichert",
+    "divisions": "Verbände",
+    "categories": "Kategorien",
+    "publicationDate": "Veröffentlichungsdatum"
   },
   "campaigns": {
     "map": {
