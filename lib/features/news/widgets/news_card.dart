@@ -109,7 +109,7 @@ class NewsCard extends StatelessWidget {
             ),
             // Top bar with type and bookmark
             Container(
-              padding: EdgeInsets.only(left: 16),
+              padding: EdgeInsets.only(left: 16, top: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -120,15 +120,15 @@ class NewsCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  IconButton(
-                    // TODO: Add bookmarking functionality
-                    onPressed: () {},
-                    icon: Icon(
-                      news.bookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
-                      color: theme.colorScheme.surface,
-                      size: 24,
-                    ),
-                  ),
+                  // IconButton(
+                  //   // TODO: Add bookmarking functionality
+                  //   onPressed: () {},
+                  //   icon: Icon(
+                  //     news.bookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
+                  //     color: theme.colorScheme.surface,
+                  //     size: 24,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

@@ -1,87 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/screens/error_screen.dart';
+import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/widgets/news_card.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 
-class NewsScreen extends StatefulWidget {
+class NewsScreen extends StatelessWidget {
   const NewsScreen({super.key});
 
   @override
-  State<NewsScreen> createState() => _NewsScreenState();
-}
-
-class _NewsScreenState extends State<NewsScreen> {
-  late Future<List<NewsModel>> _news;
-  String? errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _news = fetchNews();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<NewsModel>>(
-      future: _news,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Error: ${snapshot.error}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: ThemeColors.textWarning),
-                ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _news = fetchNews(); // Retry fetching items
-                    });
-                  },
-                  child: Text('Erneut versuchen'),
-                ),
-              ],
-            ),
-          );
-        } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-          return Center(
-            child: Text('Keine Artikel gefunden.'),
-          );
-        } else {
-          final items = snapshot.data!;
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return NewsCard(news: items[index]);
-            },
-          );
+    return FutureLoadingScreen(
+      load: fetchNews,
+      buildChild: (List<NewsModel>? data) {
+        if (data == null || data.isEmpty) {
+          return ErrorScreen(error: t.news.noResults, retry: fetchNews);
         }
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: data.length,
+          itemBuilder: (context, index) => NewsCard(news: data[index]),
+        );
       },
     );
-  }
-
-  Future<List<NewsModel>> fetchNews() async {
-    final GrueneApi api = GetIt.I<GrueneApi>();
-
-    final response = await api.v1NewsGet();
-    if (!response.isSuccessful) {
-      throw Exception(
-        'Fehler beim Laden der Artikel (Status Code: ${response.statusCode})',
-      );
-    }
-    return response.body!.data
-        .map(
-          (news) => NewsModel.fromApi(news),
-        )
-        .toList();
   }
 }
