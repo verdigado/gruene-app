@@ -4,17 +4,19 @@ import 'package:gruene_app/app/widgets/selection_list_item.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
-class SelectionView extends StatelessWidget {
-  final void Function(List<String> selectedOptions) setSelectedOptions;
+class SelectionView<T> extends StatelessWidget {
+  final void Function(List<T> selectedOptions) setSelectedOptions;
+  final String Function(T option) getLabel;
   final String? title;
-  final List<String> options;
-  final List<String> selectedOptions;
+  final List<T> options;
+  final List<T> selectedOptions;
   final void Function()? onMoreOptionsPressed;
   final bool moreOptions;
 
   const SelectionView({
     super.key,
     required this.setSelectedOptions,
+    required this.getLabel,
     required this.options,
     required this.selectedOptions,
     this.title,
@@ -22,7 +24,7 @@ class SelectionView extends StatelessWidget {
     this.moreOptions = false,
   }) : assert(moreOptions == (onMoreOptionsPressed != null));
 
-  void toggleOption(String option) => setSelectedOptions(
+  void toggleOption(T option) => setSelectedOptions(
         selectedOptions.contains(option)
             ? selectedOptions.where((it) => it != option).toList()
             : [...selectedOptions, option],
@@ -37,7 +39,7 @@ class SelectionView extends StatelessWidget {
         ...options.map(
           (option) => SelectionListItem(
             toggleSelection: () => toggleOption(option),
-            title: option,
+            title: getLabel(option),
             selected: selectedOptions.contains(option),
           ),
         ),

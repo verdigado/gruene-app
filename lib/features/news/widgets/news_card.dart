@@ -79,7 +79,7 @@ class NewsCard extends StatelessWidget {
                         margin: EdgeInsets.only(top: 16),
                         child: Chip(
                           label: Text(
-                            division.levelName,
+                            division.name1,
                             style: theme.textTheme.labelSmall,
                           ),
                           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),

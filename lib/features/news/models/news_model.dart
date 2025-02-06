@@ -9,8 +9,8 @@ class NewsModel {
   String? author;
   String image;
   String type;
-  DivisionModel? division;
-  List<String> categories;
+  Division? division;
+  List<NewsCategory> categories;
   DateTime createdAt;
   bool bookmarked;
 
@@ -40,8 +40,8 @@ class NewsModel {
       // image: news.featuredImage?.original.url ?? 'assets/graphics/placeholders/placeholder_1.jpg',
       image: 'assets/graphics/placeholders/placeholder_${int.parse(news.id) % 3 + 1}.jpg',
       type: news.categories.firstOrNull?.label ?? '',
-      division: division != null ? DivisionModel.fromApi(division) : null,
-      categories: news.categories.map((category) => category.label).toList(),
+      division: division,
+      categories: news.categories,
       createdAt: news.createdAt,
       bookmarked: false,
     );
