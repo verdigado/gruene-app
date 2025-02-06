@@ -13,8 +13,8 @@ class NewsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureLoadingScreen(
       load: fetchNews,
-      buildChild: (List<NewsModel>? data) {
-        if (data == null || data.isEmpty) {
+      buildChild: (List<NewsModel> data) {
+        if (data.isEmpty) {
           return ErrorScreen(error: t.news.noResults, retry: fetchNews);
         }
         return ListView.builder(

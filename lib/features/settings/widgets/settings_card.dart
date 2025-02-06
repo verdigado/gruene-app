@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 
 class SettingsCard extends StatelessWidget {
-  final String icon;
+  final Widget icon;
   final String title;
   final String subtitle;
   final bool isExternal;
   final bool isEnabled;
-  final void Function() onPress;
+  final void Function()? onPress;
 
   const SettingsCard({
     super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.onPress,
+    this.onPress,
     this.isExternal = false,
     this.isEnabled = true,
   });
@@ -40,30 +40,30 @@ class SettingsCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: ListTile(
-          onTap: isEnabled ? onPress : null,
+          onTap: isEnabled && onPress != null ? onPress : null,
           contentPadding: EdgeInsets.symmetric(horizontal: 12),
           title: Text(
             title,
             style: theme.textTheme.titleSmall?.apply(color: isEnabled ? ThemeColors.text : ThemeColors.textDisabled),
           ),
           subtitle: Text(subtitle, style: TextStyle(color: isEnabled ? ThemeColors.text : ThemeColors.textDisabled)),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.asset(
-              icon,
-              height: 48,
-              width: 48,
-              color: isEnabled ? null : Colors.grey,
-              colorBlendMode: isEnabled ? null : BlendMode.saturation,
+          leading: SizedBox(
+            height: 48,
+            width: 48,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: icon,
             ),
           ),
-          trailing: Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Icon(
-              isExternal ? Icons.open_in_browser_outlined : Icons.chevron_right_outlined,
-              color: theme.disabledColor,
-            ),
-          ),
+          trailing: onPress != null
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Icon(
+                    isExternal ? Icons.open_in_browser_outlined : Icons.chevron_right_outlined,
+                    color: theme.disabledColor,
+                  ),
+                )
+              : null,
         ),
       ),
     );
