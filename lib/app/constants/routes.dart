@@ -44,7 +44,7 @@ class Routes {
   static GoRoute mfaTokenScan = buildRoute('token-scan', t.mfa.tokenScan.title, TokenScanScreen());
   static GoRoute mfaTokenInput = buildRoute('token-input', t.mfa.tokenInput.title, TokenInputScreen());
   static GoRoute mfa = buildRoute('/mfa', t.mfa.mfa, MfaScreen(), routes: [mfaTokenScan, mfaTokenInput]);
-  static GoRoute tools = buildRoute('/tools', t.tools.tools, ToolsScreen());
+  static GoRoute tools = buildRoute('/tools', t.tools.tools, ToolsScreen(), withMainLayout: false);
   static GoRoute login = buildRoute('/login', t.login.login, LoginScreen(), withMainLayout: false);
   static GoRoute support = buildRoute('support', t.settings.support.support, SupportScreen());
   static GoRoute settings = buildRoute(

@@ -25,7 +25,13 @@ class SupportScreen extends StatelessWidget {
         SettingsCard(
           title: t.settings.support.generalFeedback,
           subtitle: supportEnabled ? grueneSupportMail : '',
-          icon: 'assets/icons/gruene.png',
+          icon: Image.asset(
+            'assets/icons/gruene.png',
+            height: 48,
+            width: 48,
+            color: supportEnabled ? null : Colors.grey,
+            colorBlendMode: supportEnabled ? null : BlendMode.saturation,
+          ),
           onPress: () => openMail(grueneSupportMail, context),
           isExternal: true,
           isEnabled: supportEnabled,
@@ -33,7 +39,13 @@ class SupportScreen extends StatelessWidget {
         SettingsCard(
           title: t.settings.support.campaignSupport,
           subtitle: supportEnabled ? pollionSupportMail : '',
-          icon: 'assets/icons/pollion.png',
+          icon: Image.asset(
+            'assets/icons/pollion.png',
+            height: 48,
+            width: 48,
+            color: supportEnabled ? null : Colors.grey,
+            colorBlendMode: supportEnabled ? null : BlendMode.saturation,
+          ),
           onPress: () => openMail(pollionSupportMail, context),
           isExternal: true,
           isEnabled: supportEnabled,
@@ -41,7 +53,13 @@ class SupportScreen extends StatelessWidget {
         SettingsCard(
           title: t.settings.support.otherSupport,
           subtitle: supportEnabled ? verdigadoSupportMail : '',
-          icon: 'assets/icons/verdigado.png',
+          icon: Image.asset(
+            'assets/icons/verdigado.png',
+            height: 48,
+            width: 48,
+            color: supportEnabled ? null : Colors.grey,
+            colorBlendMode: supportEnabled ? null : BlendMode.saturation,
+          ),
           onPress: () => openMail(verdigadoSupportMail, context),
           isExternal: true,
           isEnabled: supportEnabled,
