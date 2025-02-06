@@ -38,7 +38,7 @@ class Routes {
       child: MainLayout(child: NewsDetailScreen(newsId: state.pathParameters['newsId']!)),
     ),
   );
-  static GoRoute news = buildRoute('/news', t.news.news, NewsScreen(), routes: [newsDetail]);
+  static GoRoute news = buildRoute('/news', t.news.news, NewsScreen(), routes: [newsDetail], withMainLayout: false);
   static GoRoute campaigns = buildRoute('/campaigns', t.campaigns.campaigns, CampaignsScreen());
   static GoRoute profiles = buildRoute('/profiles', t.profiles.profiles, OwnProfileScreen());
   static GoRoute mfaTokenScan = buildRoute('token-scan', t.mfa.tokenScan.title, TokenScanScreen());

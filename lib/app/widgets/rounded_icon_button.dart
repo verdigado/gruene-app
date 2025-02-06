@@ -6,6 +6,8 @@ class RoundedIconButton extends StatelessWidget {
   final Color iconColor;
   final Color backgroundColor;
   final bool selected;
+  final double width;
+  final double height;
 
   const RoundedIconButton({
     super.key,
@@ -14,28 +16,30 @@ class RoundedIconButton extends StatelessWidget {
     required this.iconColor,
     required this.backgroundColor,
     required this.selected,
+    this.width = 48,
+    this.height = 48,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: selected ? backgroundColor : iconColor, width: 1),
-        shape: BoxShape.circle,
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: selected ? backgroundColor : iconColor, width: 1),
+        ),
       ),
-      child: Ink(
-        width: 40,
-        height: 40,
+      child: Container(
+        width: width,
+        height: height,
         decoration: ShapeDecoration(
           color: selected ? iconColor : backgroundColor,
-          shape: CircleBorder(),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
         child: IconButton(
-          icon: Icon(
-            Icons.filter_list_rounded,
-            color: selected ? backgroundColor : iconColor,
-          ),
+          icon: Icon(icon, color: selected ? backgroundColor : iconColor),
           onPressed: onPressed,
+          style: IconButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
         ),
       ),
     );
