@@ -9,8 +9,6 @@ KEYSTORE_PASSWORD = ENV["KEYSTORE_PASSWORD"]
 SIGNING_REPOSITORY_KEYSTORE_PATH = "signing/android/gruene-app.jks.gpg"
 LOCAL_KEYSTORE_PATH = "#{ENV['HOME']}/keystore.jks"
 
-default_platform(:android)
-
 platform :android do
   desc "Download and decrypt the JKS"
   lane :keystore do
@@ -25,7 +23,9 @@ platform :android do
     sh("gpg --verbose --passphrase #{SIGNING_REPOSITORY_KEYSTORE_PASSWORD} --pinentry-mode loopback -o #{LOCAL_KEYSTORE_PATH} -d #{SIGNING_REPOSITORY_KEYSTORE_PATH}")
   end
 
-
+  # The following parameters have to be passed:
+  # version_name: The version name the build should use
+  # version_code: The version code the build should use
   desc "Create an android release build"
   lane :build do |options|
     version_code = options[:version_code]
@@ -96,13 +96,12 @@ platform :android do
       version_code: version_code,
       version_name: version_name,
       package_name: APPLICATION_ID,
-      track: production_delivery === true ? "production" : "beta",
+      track: production_delivery ? "production" : "beta",
       skip_upload_changelogs: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_metadata: true,
-      # TODO change to "completed"
-      release_status: production_delivery === true ? "draft" : "completed",
+      release_status: production_delivery ? "draft" : "completed",
       skip_upload_apk: true,
       aab: "#{ENV['HOME']}/#{aab_path}",
       json_key_data: ENV["GOOGLE_SERVICE_ACCOUNT_JSON"]
@@ -110,7 +109,7 @@ platform :android do
   end
 
   desc "Promote the android app from beta to production"
-  lane :promote do |options|
+  lane :promote do
     ensure_env_vars(
       env_vars: ["GOOGLE_SERVICE_ACCOUNT_JSON"]
     )
@@ -144,10 +143,9 @@ platform :android do
       skip_upload_screenshots: true,
       skip_upload_metadata: true,
       skip_upload_apk: true,
-      # TODO change to "completed"
+      skip_upload_aab: true,
       release_status: "draft",
       json_key_data: ENV["GOOGLE_SERVICE_ACCOUNT_JSON"]
     )
   end
-
 end

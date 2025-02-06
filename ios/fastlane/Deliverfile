@@ -1,0 +1,5 @@
+languages(['de-DE'])
+
+release_notes({
+  'default' => "Wir haben die App für Dich verbessert"
+})

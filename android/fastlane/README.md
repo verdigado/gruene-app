@@ -23,37 +23,29 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Download and decrypt the JKS
 
-### android validate_play_store_key
-
-```sh
-[bundle exec] fastlane android validate_play_store_key
-```
-
-Validate Play Store Key
-
 ### android build
 
 ```sh
 [bundle exec] fastlane android build
 ```
 
-Build Android App
+Create an android release build
 
-### android upload_to_playstore
-
-```sh
-[bundle exec] fastlane android upload_to_playstore
-```
-
-Upload Android App to Google Play
-
-### android playstore_promote
+### android upload
 
 ```sh
-[bundle exec] fastlane android playstore_promote
+[bundle exec] fastlane android upload
 ```
 
-Promote the most recent version in the beta track to the production track in the Play Store.
+Deliver android app to beta or production
+
+### android promote
+
+```sh
+[bundle exec] fastlane android promote
+```
+
+Promote the android app from beta to production
 
 ----
 
