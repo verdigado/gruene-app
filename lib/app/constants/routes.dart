@@ -9,7 +9,7 @@ import 'package:gruene_app/features/mfa/screens/token_input_screen.dart';
 import 'package:gruene_app/features/mfa/screens/token_scan_screen.dart';
 import 'package:gruene_app/features/news/screens/news_detail_screen.dart';
 import 'package:gruene_app/features/news/screens/news_screen.dart';
-import 'package:gruene_app/features/profiles/screens/profiles_screen.dart';
+import 'package:gruene_app/features/profiles/screens/own_profile_screen.dart';
 import 'package:gruene_app/features/settings/screens/settings_screen.dart';
 import 'package:gruene_app/features/settings/screens/support_screen.dart';
 import 'package:gruene_app/features/tools/screens/tools_screen.dart';
@@ -40,7 +40,7 @@ class Routes {
   );
   static GoRoute news = buildRoute('/news', t.news.news, NewsScreen(), routes: [newsDetail]);
   static GoRoute campaigns = buildRoute('/campaigns', t.campaigns.campaigns, CampaignsScreen());
-  static GoRoute profiles = buildRoute('/profiles', t.profiles.profiles, ProfilesScreen());
+  static GoRoute profiles = buildRoute('/profiles', t.profiles.profiles, OwnProfileScreen());
   static GoRoute mfaTokenScan = buildRoute('token-scan', t.mfa.tokenScan.title, TokenScanScreen());
   static GoRoute mfaTokenInput = buildRoute('token-input', t.mfa.tokenInput.title, TokenInputScreen());
   static GoRoute mfa = buildRoute('/mfa', t.mfa.mfa, MfaScreen(), routes: [mfaTokenScan, mfaTokenInput]);
