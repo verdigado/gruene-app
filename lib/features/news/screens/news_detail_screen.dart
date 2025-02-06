@@ -60,6 +60,11 @@ class NewsDetailScreen extends StatelessWidget {
                             Html(
                               data: news.content,
                               onLinkTap: (url, _, __) => url != null ? openUrl(url, context) : null,
+                              style: {
+                                'body': Style(
+                                  margin: Margins.zero,
+                                ),
+                              },
                             ),
                           ],
                         ),

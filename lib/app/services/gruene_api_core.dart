@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart';
-import 'package:chopper/chopper.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/services/access_token_authenticator.dart';

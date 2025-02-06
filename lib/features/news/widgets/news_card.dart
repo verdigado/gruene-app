@@ -109,7 +109,7 @@ class NewsCard extends StatelessWidget {
             ),
             // Top bar with type and bookmark
             Container(
-              padding: EdgeInsets.only(left: 16),
+              padding: EdgeInsets.only(left: 16, top: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
