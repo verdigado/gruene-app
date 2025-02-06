@@ -9,6 +9,7 @@
     "divisionOrtsverband": "Ortsverband",
     "dateFrom": "von",
     "dateUntil": "bis",
+    "search": "Suche",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
