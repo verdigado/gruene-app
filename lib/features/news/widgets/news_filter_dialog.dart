@@ -67,13 +67,11 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final divisions = widget.allNews.divisions();
-    divisions.forEach((it) => print(it));
     final divisionBundesverband = divisions.bundesverband();
     final divisionsLandesverband = divisions.filterAndSortByLevel(DivisionLevel.lv);
     final divisionsKreisverband = divisions.filterAndSortByLevel(DivisionLevel.kv);
 
     final categories = widget.allNews.categories();
-    categories.forEach((it) => print(it));
     final prominentCategories = categories.where((it) => prominentCategoryIds.contains(it.id)).toList();
     final moreCategories = categories.where((it) => !prominentCategoryIds.contains(it.id)).toList();
 
