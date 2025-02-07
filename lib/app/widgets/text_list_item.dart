@@ -30,7 +30,7 @@ class TextListItem extends StatelessWidget {
           isImplemented ? title : '$title ${t.settings.notImplemented}',
           style: theme.textTheme.bodyLarge?.apply(color: isImplemented ? ThemeColors.text : ThemeColors.textDisabled),
         ),
-        trailing: Container(
+        trailing: SizedBox(
           height: 24,
           width: 24,
           child: trailing ??

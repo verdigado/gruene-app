@@ -13,6 +13,7 @@ class FullScreenDialog extends StatelessWidget {
       backgroundColor: theme.colorScheme.surfaceDim,
       appBar: AppBar(
         backgroundColor: theme.colorScheme.surfaceDim,
+        surfaceTintColor: theme.colorScheme.surfaceDim,
         leading: IconButton(icon: Icon(Icons.close), onPressed: Navigator.of(context).pop),
         actions: appBarActions,
       ),

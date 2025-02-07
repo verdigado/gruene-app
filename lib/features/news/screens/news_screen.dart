@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/main_layout.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
@@ -33,9 +34,16 @@ class NewsScreen extends StatefulWidget {
 class _NewsScreenState extends State<NewsScreen> {
   bool _showBookmarked = false;
   String _query = '';
-  List<Division> _selectedDivisions = [];
+  late List<Division> _selectedDivisions;
   List<NewsCategory> _selectedCategories = [];
   DateTimeRange? _dateRange;
+
+  @override
+  void initState() {
+    super.initState();
+    final divisions = widget.news.map((it) => it.division).nonNulls.toSet();
+    _selectedDivisions = [divisions.bundesverband()];
+  }
 
   @override
   Widget build(BuildContext context) {

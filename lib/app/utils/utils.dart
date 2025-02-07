@@ -23,3 +23,7 @@ extension ContainsAny<T> on List<T> {
     return any((element) => other.contains(element));
   }
 }
+
+extension WithDividers on Iterable<Widget> {
+  List<Widget> withDividers([Widget? divider]) => expand((item) => [item, Divider()]).toList()..removeLast();
+}

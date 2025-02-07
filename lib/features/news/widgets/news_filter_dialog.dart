@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/date_range_picker.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
+import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+
+const prominentCategoryIds = ['653', '88764', '2680268'];
 
 class NewsFilterDialog extends StatefulWidget {
   final List<NewsModel> allNews;
@@ -47,11 +51,12 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   }
 
   void resetFilters() {
-    widget.setSelectedDivisions([]);
+    final divisions = widget.allNews.map((it) => it.division).nonNulls.toSet();
+    widget.setSelectedDivisions([divisions.bundesverband()]);
     widget.setSelectedCategories([]);
     widget.setDateRange(null);
     setState(() {
-      _localSelectedDivisions = [];
+      _localSelectedDivisions = [divisions.bundesverband()];
       _localSelectedCategories = [];
       _localDateRange = null;
     });
@@ -59,13 +64,21 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final divisions = widget.allNews.map((it) => it.division).nonNulls.toSet().toList();
-    final categories = widget.allNews.map((it) => it.categories).expand((it) => it).toSet().toList();
-    final customFilterSet =
-        _localSelectedDivisions.isNotEmpty || _localSelectedCategories.isNotEmpty || _localDateRange != null;
+    final divisions = widget.allNews.divisions();
+    final divisionBundesverband = divisions.bundesverband();
+    final divisionsLandesverband = divisions.filterAndSortByLevel(DivisionLevel.lv);
+    final divisionsKreisverband = divisions.filterAndSortByLevel(DivisionLevel.kv);
+
+    final categories = widget.allNews.categories();
+    final prominentCategories = categories.where((it) => prominentCategoryIds.contains(it.id)).toList();
+    final moreCategories = categories.where((it) => !prominentCategoryIds.contains(it.id)).toList();
+
+    final customFilterSelected =
+        isCustomFilterSelected(_localSelectedDivisions, _localSelectedCategories, _localDateRange);
+
     final theme = Theme.of(context);
     return FullScreenDialog(
-      appBarActions: customFilterSet
+      appBarActions: customFilterSelected
           ? [
               TextButton(
                 onPressed: resetFilters,
@@ -81,9 +94,12 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
               widget.setSelectedDivisions(divisions);
             },
             title: t.news.divisions,
-            options: divisions,
+            options: [divisionBundesverband, ...divisionsLandesverband],
+            moreOptionsTitle: t.news.moreDivisions,
+            moreOptions: divisionsKreisverband,
             selectedOptions: _localSelectedDivisions,
-            getLabel: (division) => division.name1,
+            getLabel: (division) =>
+                division.level.value == 'BV' ? division.name2 : '${division.name1} ${division.name2}',
           ),
           SelectionView(
             setSelectedOptions: (categories) {
@@ -91,7 +107,9 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
               widget.setSelectedCategories(categories);
             },
             title: t.news.categories,
-            options: categories,
+            options: prominentCategories,
+            moreOptionsTitle: t.news.moreCategories,
+            moreOptions: moreCategories,
             selectedOptions: _localSelectedCategories,
             getLabel: (category) => category.label,
           ),
