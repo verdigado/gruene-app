@@ -176,7 +176,28 @@
   },
   "profiles": {
     "profiles": "Mitglieder",
-    "label": "Mitglieder"
+    "label": "Mitglieder",
+    "noResult": "Leider gab es einen Fehler beim Laden des Profils.",
+    "baseData": {
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail Adresse",
+      "phoneNumber": "Telefonnummer"
+    },
+    "memberships": "Mitgliedschaften",
+    "mandates": "Parteifunktionen / Mandate",
+    "sherpaRole": "Sherpa-Rolle",
+    "skills": "Kompetenzen",
+    "myKreisverband": "Mein Kreisverband",
+    "socialMedia": "Social Media",
+    "socialMediaType": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "mastodon": "Mastodon",
+      "twitter": "Twitter",
+      "chatbegruenung": "Chatbegrünung"
+    },
+    "homepage": "Homepage"
   },
   "mfa": {
     "mfa": "Zwei-Faktor-Authentifizierung",
