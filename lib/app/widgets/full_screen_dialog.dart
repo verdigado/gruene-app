@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class FullScreenDialog extends StatelessWidget {
   final Widget? child;
+  final List<Widget>? appBarActions;
 
-  const FullScreenDialog({super.key, this.child});
+  const FullScreenDialog({super.key, this.child, this.appBarActions});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,7 @@ class FullScreenDialog extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: theme.colorScheme.surfaceDim,
         leading: IconButton(icon: Icon(Icons.close), onPressed: Navigator.of(context).pop),
+        actions: appBarActions,
       ),
       body: child,
     );

@@ -4,8 +4,11 @@ import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/rounded_icon_button.dart';
 import 'package:gruene_app/app/widgets/search_bar.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
-import 'package:gruene_app/features/news/widgets/news_filter_view.dart';
+import 'package:gruene_app/features/news/widgets/news_filter_dialog.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+
+const defaultFilterCategories = [];
 
 class NewsSearchFilterBar extends StatelessWidget {
   final List<NewsModel> allNews;
@@ -38,6 +41,7 @@ class NewsSearchFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final customFilterSet = selectedDivisions.isNotEmpty || selectedCategories.isNotEmpty || dateRange != null;
     return SizedBox(
       height: 48,
       child: Row(
@@ -60,22 +64,21 @@ class NewsSearchFilterBar extends StatelessWidget {
           SizedBox(width: 8),
           RoundedIconButton(
             icon: Icons.tune,
-            iconColor: ThemeColors.textDisabled,
+            iconColor: customFilterSet ? theme.colorScheme.secondary : ThemeColors.textDisabled,
             backgroundColor: theme.colorScheme.surface,
             width: 40,
-            onPressed: () => showFullScreenDialog(context, (BuildContext context) {
-              return FullScreenDialog(
-                child: NewsFilterView(
-                  allNews: allNews,
-                  setSelectedDivisions: setSelectedDivisions,
-                  selectedDivisions: selectedDivisions,
-                  setSelectedCategories: setSelectedCategories,
-                  selectedCategories: selectedCategories,
-                  setDateRange: setDateRange,
-                  dateRange: dateRange,
-                ),
-              );
-            }),
+            onPressed: () => showFullScreenDialog(
+              context,
+              (_) => NewsFilterDialog(
+                allNews: allNews,
+                setSelectedDivisions: setSelectedDivisions,
+                selectedDivisions: selectedDivisions,
+                setSelectedCategories: setSelectedCategories,
+                selectedCategories: selectedCategories,
+                setDateRange: setDateRange,
+                dateRange: dateRange,
+              ),
+            ),
           ),
         ],
       ),
