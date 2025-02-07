@@ -18,6 +18,9 @@ Future<List<NewsModel>> fetchNews({
   return getFromApi(
     // TODO Actually use all arguments (start, end, bookmarked)
     request: (api) => api.v1NewsGet(divisionKey: division, search: query, category: categories),
-    map: (data) => data.data.map(NewsModel.fromApi).toList(),
+    map: (data) {
+      print(data.data.map((it) => it.id));
+      return data.data.map(NewsModel.fromApi).toList();
+    },
   );
 }

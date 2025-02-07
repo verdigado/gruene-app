@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/debouncer.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class CustomSearchBar extends StatelessWidget {
@@ -11,8 +12,9 @@ class CustomSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final debouncer = Debouncer();
     return SearchBar(
-      onChanged: setQuery,
+      onChanged: (query) => debouncer.run(() => setQuery(query)),
       leading: Icon(Icons.search_outlined, color: ThemeColors.textDisabled),
       hintText: t.common.search,
       hintStyle: WidgetStatePropertyAll(const TextStyle(color: ThemeColors.textDisabled)),

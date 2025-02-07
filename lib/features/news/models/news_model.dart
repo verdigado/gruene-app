@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class NewsModel {
@@ -44,5 +46,22 @@ class NewsModel {
       createdAt: news.createdAt,
       bookmarked: false,
     );
+  }
+}
+
+extension Filter on List<NewsModel> {
+  List<NewsModel> filter(
+    List<Division> divisions,
+    List<NewsCategory> categories,
+    bool bookmarked,
+    DateTimeRange? dateRange,
+  ) {
+    return where(
+      (it) =>
+          (divisions.isEmpty || divisions.contains(it.division)) &&
+          (categories.isEmpty || categories.containsAny(it.categories)) &&
+          (!bookmarked || it.bookmarked) &&
+          (dateRange == null || it.createdAt.isBetween(dateRange)),
+    ).toList();
   }
 }

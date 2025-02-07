@@ -66,7 +66,7 @@ class _NewsScreenState extends State<NewsScreen> {
               selectedDivisions: _selectedDivisions,
               selectedCategories: _selectedCategories,
               dateRange: _dateRange,
-              bookmarked: _showBookmarked,
+              showBookmarked: _showBookmarked,
             ),
           ),
         ],
