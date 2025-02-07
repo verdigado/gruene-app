@@ -6,7 +6,6 @@ import 'package:gruene_app/app/widgets/search_bar.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_filter_dialog.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class NewsSearchFilterBar extends StatelessWidget {
@@ -46,10 +45,7 @@ class NewsSearchFilterBar extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Flexible(
-            // TODO debounce
-            child: CustomSearchBar(setQuery: setQuery, query: query),
-          ),
+          Flexible(child: CustomSearchBar(setQuery: setQuery, query: query)),
           // TODO #213: Add bookmarking functionality
           // SizedBox(width: 8),
           // RoundedIconButton(

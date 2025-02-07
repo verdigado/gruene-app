@@ -1,5 +1,9 @@
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
+extension DivisionExtension on Division {
+  String shortDisplayName() => level == DivisionLevel.bv ? name2 : '${level.value} $name2';
+}
+
 extension DivisionFilter on Iterable<Division> {
   List<Division> filterAndSortByLevel(DivisionLevel level) {
     final filtered = where((division) => division.level == level).toList();

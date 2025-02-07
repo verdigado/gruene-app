@@ -9,7 +9,9 @@ import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-const prominentCategoryIds = ['653', '88764', '2680268'];
+// TODO Temporary workaround for the categories prominently highlighted in the filter dialog
+// The categories are Bundesvorstand, Digitalisierung and Wahlen & Wahlkampf
+const prominentCategoryIds = ['2680259', '88764', '653'];
 
 class NewsFilterDialog extends StatefulWidget {
   final List<NewsModel> allNews;
@@ -51,12 +53,12 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   }
 
   void resetFilters() {
-    final divisions = widget.allNews.map((it) => it.division).nonNulls.toSet();
-    widget.setSelectedDivisions([divisions.bundesverband()]);
+    final bundesverband = widget.allNews.divisions().bundesverband();
+    widget.setSelectedDivisions([bundesverband]);
     widget.setSelectedCategories([]);
     widget.setDateRange(null);
     setState(() {
-      _localSelectedDivisions = [divisions.bundesverband()];
+      _localSelectedDivisions = [bundesverband];
       _localSelectedCategories = [];
       _localDateRange = null;
     });
@@ -65,11 +67,13 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final divisions = widget.allNews.divisions();
+    divisions.forEach((it) => print(it));
     final divisionBundesverband = divisions.bundesverband();
     final divisionsLandesverband = divisions.filterAndSortByLevel(DivisionLevel.lv);
     final divisionsKreisverband = divisions.filterAndSortByLevel(DivisionLevel.kv);
 
     final categories = widget.allNews.categories();
+    categories.forEach((it) => print(it));
     final prominentCategories = categories.where((it) => prominentCategoryIds.contains(it.id)).toList();
     final moreCategories = categories.where((it) => !prominentCategoryIds.contains(it.id)).toList();
 
@@ -118,7 +122,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
             color: theme.colorScheme.surface,
             padding: const EdgeInsets.symmetric(vertical: 8),
             width: double.infinity,
-            child: DateRangeFilter(
+            child: DateRangePicker(
               setDateRange: (dateRange) {
                 setState(() => _localDateRange = dateRange);
                 widget.setDateRange(dateRange);

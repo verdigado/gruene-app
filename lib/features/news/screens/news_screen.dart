@@ -4,6 +4,7 @@ import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/main_layout.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
+import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_list.dart';
 import 'package:gruene_app/features/news/widgets/news_search_filter_bar.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -41,7 +42,7 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   void initState() {
     super.initState();
-    final divisions = widget.news.map((it) => it.division).nonNulls.toSet();
+    final divisions = widget.news.divisions();
     _selectedDivisions = [divisions.bundesverband()];
   }
 

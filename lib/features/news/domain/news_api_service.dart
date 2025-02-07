@@ -6,18 +6,7 @@ Future<NewsModel> fetchNewsById(String newsId) async => getFromApi(
       map: NewsModel.fromApi,
     );
 
-Future<List<NewsModel>> fetchNews({
-  String? division,
-  String? query,
-  String? category,
-  DateTime? start,
-  DateTime? end,
-  bool? bookmarked,
-}) async {
-  final List<String> categories = category == null ? [] : [category];
-  return getFromApi(
-    // TODO Actually use all arguments (start, end, bookmarked)
-    request: (api) => api.v1NewsGet(divisionKey: division, search: query, category: categories, limit: 100),
-    map: (data) => data.data.map(NewsModel.fromApi).toList(),
-  );
-}
+Future<List<NewsModel>> fetchNews({String? query}) async => getFromApi(
+      request: (api) => api.v1NewsGet(search: query, limit: 100),
+      map: (data) => data.data.map(NewsModel.fromApi).toList(),
+    );

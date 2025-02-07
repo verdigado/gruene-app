@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
-class DateRangeFilter extends StatelessWidget {
+class DateRangePicker extends StatelessWidget {
   final void Function(DateTimeRange?) setDateRange;
   final DateTimeRange? dateRange;
 
-  const DateRangeFilter({
+  const DateRangePicker({
     super.key,
     required this.setDateRange,
     required this.dateRange,
