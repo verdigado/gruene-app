@@ -195,8 +195,6 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
     String? fileLocation;
     if (reducedImage != null) {
       fileLocation = await MediaHelper.storeImage(reducedImage);
-      var exists = await File(fileLocation).exists();
-      debugPrint(exists.toString());
     }
     _saveAndReturn(fileLocation);
   }

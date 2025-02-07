@@ -63,20 +63,23 @@ class PosterDetail extends StatelessWidget {
                   child: FutureBuilder(
                     future: Future.delayed(
                       Duration.zero,
-                      () => poi.thumbnailUrl == null ? null : (thumbnailUrl: poi.thumbnailUrl),
+                      () {
+                        var lastPhoto = poi.latestPhoto();
+                        return lastPhoto == null ? null : (thumbnailUrl: lastPhoto.thumbnailUrl);
+                      },
                     ),
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData && !snapshot.hasError) {
+                      if (!snapshot.hasData || snapshot.hasError) {
                         return Image.asset(CampaignConstants.dummyImageAssetName);
                       }
-                      if (snapshot.data!.thumbnailUrl!.isNetworkImageUrl()) {
+                      if (snapshot.data!.thumbnailUrl.isNetworkImageUrl()) {
                         return FadeInImage.assetNetwork(
                           placeholder: CampaignConstants.dummyImageAssetName,
-                          image: snapshot.data!.thumbnailUrl!,
+                          image: snapshot.data!.thumbnailUrl,
                         );
                       } else {
                         return Image.file(
-                          File(snapshot.data!.thumbnailUrl!),
+                          File(snapshot.data!.thumbnailUrl),
                         );
                       }
                     },

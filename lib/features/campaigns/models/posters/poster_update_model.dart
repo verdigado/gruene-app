@@ -1,6 +1,7 @@
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
+import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -12,21 +13,21 @@ class PosterUpdateModel {
   final AddressModel address;
   final PosterStatus status;
   final String comment;
-  final String? newImageFileLocation;
   @LatLongConverter()
   final LatLng location;
-  final bool removePreviousPhotos;
   final PosterDetailModel oldPosterDetail;
+  final List<String> deletedPhotoIds;
+  final List<PosterPhotoModel> newPhotos;
 
   PosterUpdateModel({
     required this.id,
     required this.address,
     required this.status,
     required this.comment,
-    required this.removePreviousPhotos,
     required this.location,
-    this.newImageFileLocation,
     required this.oldPosterDetail,
+    required this.deletedPhotoIds,
+    required this.newPhotos,
   });
 
   factory PosterUpdateModel.fromJson(Map<String, dynamic> json) => _$PosterUpdateModelFromJson(json);
@@ -38,9 +39,9 @@ class PosterUpdateModel {
     AddressModel? address,
     PosterStatus? status,
     String? comment,
-    String? newImageFileLocation,
     LatLng? location,
-    bool? removePreviousPhotos,
+    List<String>? deletedPhotoIds,
+    List<PosterPhotoModel>? newPhotos,
     PosterDetailModel? oldPosterDetail,
   }) {
     return PosterUpdateModel(
@@ -48,9 +49,9 @@ class PosterUpdateModel {
       address: address ?? this.address,
       status: status ?? this.status,
       comment: comment ?? this.comment,
-      newImageFileLocation: newImageFileLocation ?? this.newImageFileLocation,
       location: location ?? this.location,
-      removePreviousPhotos: removePreviousPhotos ?? this.removePreviousPhotos,
+      deletedPhotoIds: deletedPhotoIds ?? this.deletedPhotoIds,
+      newPhotos: newPhotos ?? this.newPhotos,
       oldPosterDetail: oldPosterDetail ?? this.oldPosterDetail,
     );
   }

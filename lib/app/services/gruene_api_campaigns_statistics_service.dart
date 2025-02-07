@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_set.dart';
@@ -12,14 +11,8 @@ class GrueneApiCampaignsStatisticsService {
   }
 
   Future<CampaignStatisticsModel> getStatistics() async {
-    try {
-      var statResult = await grueneApi.v1CampaignsStatisticsGet();
-      return statResult.body!.asCampaignStatistics();
-    } catch (e, s) {
-      debugPrint(e.toString());
-      debugPrint(s.toString());
-      rethrow;
-    }
+    var statResult = await grueneApi.v1CampaignsStatisticsGet();
+    return statResult.body!.asCampaignStatistics();
   }
 }
 

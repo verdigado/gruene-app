@@ -14,8 +14,16 @@ extension PosterCreateModelParsing on PosterCreateModel {
       id: temporaryId,
       status: PosterStatus.ok,
       address: address,
-      thumbnailUrl: imageFileLocation,
-      imageUrl: imageFileLocation,
+      photos: imageFileLocation == null
+          ? []
+          : [
+              PosterPhotoModel(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                imageUrl: imageFileLocation!,
+                thumbnailUrl: imageFileLocation!,
+                createdAt: DateTime.now(),
+              ),
+            ],
       location: location,
       comment: '',
       createdAt: '${DateTime.now().getAsLocalDateTimeString()}*', // should mark this as preliminary

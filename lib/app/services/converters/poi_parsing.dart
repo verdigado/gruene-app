@@ -34,8 +34,7 @@ extension PoiParsing on Poi {
     }
     return PosterDetailModel(
       id: poi.id,
-      thumbnailUrl: _getThumbnailImageUrl(poi),
-      imageUrl: _getImageUrl(poi),
+      photos: _getPosterPhotos(),
       address: poi.address.transformToAddressModel(),
       status: poi.poster!.status.transformToModelPosterStatus(),
       location: coords.transformToLatLng(),
@@ -63,10 +62,11 @@ extension PoiParsing on Poi {
     if (poi.type != PoiType.poster) {
       throw Exception('Unexpected PoiType');
     }
+
     return PosterListItemModel(
       id: poi.id,
-      thumbnailUrl: _getThumbnailImageUrl(poi),
-      imageUrl: _getImageUrl(poi),
+      thumbnailUrl: _getLatestThumbnailImageUrl(),
+      imageUrl: _getLatestImageUrl(),
       address: poi.address.transformToAddressModel(),
       status: poi.poster!.status.translatePosterStatus(),
       lastChangeStatus: poi._getLastChangeStatus(),
@@ -79,21 +79,39 @@ extension PoiParsing on Poi {
     return createdAt == updatedAt ? t.campaigns.poster.created : t.campaigns.poster.updated;
   }
 
-  String? _getThumbnailImageUrl(Poi poi) {
-    if (poi.photos.isEmpty) {
-      return null;
-    }
-
-    final thumbnail = poi.photos.expand((x) => x.srcset).where((x) => x.type == 'thumbnail').first;
-    return thumbnail.url;
+  List<PosterPhotoModel> _getPosterPhotos() {
+    return photos.map((x) => x.getAsPosterPhoto()).toList();
   }
 
-  String? _getImageUrl(Poi poi) {
+  String? _getLatestThumbnailImageUrl() {
+    var poi = this;
+    if (poi.photos.isEmpty) {
+      return null;
+    }
+    var photos = _getPosterPhotos();
+    photos.sortByIdDescending();
+    return photos.first.thumbnailUrl;
+  }
+
+  String? _getLatestImageUrl() {
+    var poi = this;
     if (poi.photos.isEmpty) {
       return null;
     }
 
-    final image = poi.photos.map((x) => x.original).first;
-    return image.url;
+    var photos = _getPosterPhotos();
+    photos.sortByIdDescending();
+    return photos.first.imageUrl;
+  }
+}
+
+extension on ImageSrcSet {
+  PosterPhotoModel getAsPosterPhoto() {
+    return PosterPhotoModel(
+      id: id,
+      imageUrl: original.url,
+      thumbnailUrl: srcset.where((x) => x.type == 'thumbnail').first.url,
+      createdAt: DateTime.now(),
+    );
   }
 }

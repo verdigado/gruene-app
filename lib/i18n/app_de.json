@@ -68,6 +68,7 @@
       "photoConsentMessage": "Bitte achte darauf, dass keine Personen, Kennzeichen oder andere sensible, personenbezogene Daten auf Deinen Plakatfotos zu sehen sind.",
       "date_format": "dd.MM.yyyy",
       "time_format": "HH:mm",
+      "timestamp_format": "yyyyMMdd_HHmmss",
       "datetime_display_template": "{date} um {time}",
       "info_poster_guidelines": "Wusstest Du, dass es je nach Region unterschiedliche gesetzliche Vorgaben und Regeln für das Aufhängen von Plakaten gibt? Bitte wende Dich an Deinen Orts- oder Kreisverband für weitere Informationen, bevor Du Plakate aufhängst!",
       "status": {
@@ -90,6 +91,19 @@
         "ok": {
           "label": "Plakat hängt",
           "description": "Plakat hängt, kein Handlungsbedarf."
+        }
+      },
+      "photoEditActions": {
+        "acquireNewPhoto": "Foto aufnehmen",
+        "uploadFile": "Datei hochladen",
+        "downloadPicture": "Foto herunterladen",
+        "replacePhoto": "Foto ersetzen",
+        "deletePhoto": "Foto löschen",
+        "confirmation_dialog": {
+          "title_delete": "Wirklich löschen?",
+          "text_delete": "Fotos sind wichtig, um die Plakate zuordnen und den Verlauf nachvollziehen zu können. Bitte lösche sie mit Bedacht!",
+          "title_replace": "Wirklich ersetzen?",
+          "text_replace": "Bist Du Dir sicher, dass Du das Bild unwiderruflich ersetzen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden."
         }
       },
       "comment": {

@@ -44,10 +44,11 @@ extension CampaignActionParsing on CampaignAction {
 
   PosterListItemModel getPosterUpdateAsPosterListItem(DateTime originalCreatedAt) {
     var updateModel = getAsPosterUpdate().transformToPosterDetailModel();
+    var lastPhoto = updateModel.latestPhoto();
     return PosterListItemModel(
       id: updateModel.id,
-      thumbnailUrl: updateModel.thumbnailUrl,
-      imageUrl: updateModel.imageUrl,
+      thumbnailUrl: lastPhoto!.thumbnailUrl,
+      imageUrl: lastPhoto.imageUrl,
       address: updateModel.address,
       status: updateModel.status.translatePosterStatus(),
       lastChangeStatus: t.campaigns.poster.updated,
@@ -59,10 +60,11 @@ extension CampaignActionParsing on CampaignAction {
 
   PosterListItemModel getPosterCreateAsPosterListItem() {
     var createModel = getAsPosterCreate().transformToPosterDetailModel(poiTempId.toString());
+    var lastPhoto = createModel.latestPhoto();
     return PosterListItemModel(
       id: createModel.id,
-      thumbnailUrl: createModel.thumbnailUrl,
-      imageUrl: createModel.imageUrl,
+      thumbnailUrl: lastPhoto!.thumbnailUrl,
+      imageUrl: lastPhoto.imageUrl,
       address: createModel.address,
       status: createModel.status.translatePosterStatus(),
       lastChangeStatus: t.campaigns.poster.updated,

@@ -1,6 +1,7 @@
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
+import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -22,8 +23,7 @@ enum PosterStatus {
 @JsonSerializable()
 class PosterDetailModel {
   String id;
-  String? thumbnailUrl;
-  String? imageUrl;
+  List<PosterPhotoModel> photos;
 
   final AddressModel address;
   final String comment;
@@ -35,8 +35,7 @@ class PosterDetailModel {
 
   PosterDetailModel({
     required this.id,
-    required this.thumbnailUrl,
-    required this.imageUrl,
+    required this.photos,
     required this.address,
     required this.status,
     required this.comment,
@@ -47,8 +46,7 @@ class PosterDetailModel {
 
   PosterDetailModel copyWith({
     String? id,
-    String? thumbnailUrl,
-    String? imageUrl,
+    List<PosterPhotoModel>? photos,
     AddressModel? address,
     String? comment,
     PosterStatus? status,
@@ -58,8 +56,7 @@ class PosterDetailModel {
   }) {
     return PosterDetailModel(
       id: id ?? this.id,
-      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
-      imageUrl: imageUrl ?? this.imageUrl,
+      photos: photos ?? this.photos,
       address: address ?? this.address,
       comment: comment ?? this.comment,
       status: status ?? this.status,

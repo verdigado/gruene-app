@@ -46,16 +46,15 @@ class GrueneApiPosterService extends GrueneApiCampaignsService {
     );
     var updatePoiResponse = await grueneApi.v1CampaignsPoisPoiIdPut(poiId: posterUpdate.id, body: dtoUpdate);
 
-    if (posterUpdate.newImageFileLocation != null || posterUpdate.removePreviousPhotos) {
-      for (var photo in updatePoiResponse.body!.photos) {
-        updatePoiResponse = await grueneApi.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(
-          poiId: posterUpdate.id,
-          photoId: photo.id,
-        );
-      }
+    for (var photoId in posterUpdate.deletedPhotoIds) {
+      updatePoiResponse = await grueneApi.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(
+        poiId: posterUpdate.id,
+        photoId: photoId,
+      );
     }
-    if (posterUpdate.newImageFileLocation != null) {
-      updatePoiResponse = await _storeNewPhoto(posterUpdate.id, posterUpdate.newImageFileLocation!);
+
+    for (var newPhoto in posterUpdate.newPhotos) {
+      updatePoiResponse = await _storeNewPhoto(posterUpdate.id, newPhoto.imageUrl);
     }
 
     return updatePoiResponse.body!.transformToMarkerItem();
