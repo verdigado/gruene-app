@@ -3,10 +3,6 @@
     "appName": "B90/DIE GRÜNEN",
     "error": "Fehler",
     "notImplementedYet": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
-    "divisionBundesverband": "Bundesverband",
-    "divisionLandesverband": "Landesverband",
-    "divisionKreisverband": "Kreisverband",
-    "divisionOrtsverband": "Ortsverband",
     "dateFrom": "von",
     "dateUntil": "bis",
     "search": "Suche",
@@ -42,7 +38,8 @@
     "moreDivisions": "Weitere Verbände",
     "categories": "Schlagworte",
     "moreCategories": "Weitere Schlagworte",
-    "publicationDate": "Veröffentlichungsdatum"
+    "publicationDate": "Veröffentlichungsdatum",
+    "applyFilter": "Filter anwenden"
   },
   "campaigns": {
     "map": {

@@ -68,8 +68,8 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   Widget build(BuildContext context) {
     final divisions = widget.allNews.divisions();
     final divisionBundesverband = divisions.bundesverband();
-    final divisionsLandesverband = divisions.filterAndSortByLevel(DivisionLevel.lv);
-    final divisionsKreisverband = divisions.filterAndSortByLevel(DivisionLevel.kv);
+    final divisionsLandesverband = divisions.filterByLevel(DivisionLevel.lv);
+    final divisionsKreisverband = divisions.filterByLevel(DivisionLevel.kv);
 
     final categories = widget.allNews.categories();
     final prominentCategories = categories.where((it) => prominentCategoryIds.contains(it.id)).toList();
@@ -126,6 +126,17 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
                 widget.setDateRange(dateRange);
               },
               dateRange: _localDateRange,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: FilledButton(
+              onPressed: Navigator.of(context).pop,
+              style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
+              child: Text(
+                t.news.applyFilter,
+                style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+              ),
             ),
           ),
         ],
