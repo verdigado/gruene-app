@@ -248,7 +248,7 @@ class StatisticsScreen extends StatelessWidget {
   }
 
   Widget _getDataRow(String key, int value, ThemeData theme) {
-    var formatter = NumberFormat('#,##,##0', t.$meta.locale.languageCode);
+    var formatter = NumberFormat.decimalPattern(t.$meta.locale.languageCode);
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
