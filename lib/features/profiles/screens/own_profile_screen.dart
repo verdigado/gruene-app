@@ -4,10 +4,10 @@ import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/helper/social_media_type_translation.dart';
-import 'package:gruene_app/features/profiles/widgets/profile_base_data_widget.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_base_data.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_box.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_box_item.dart';
-import 'package:gruene_app/features/profiles/widgets/profile_header_widget.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -33,63 +33,57 @@ class OwnProfileScreen extends StatelessWidget {
         return ListView(
           children: [
             SizedBox(height: 24),
-            ProfileHeaderWidget(profile: data),
+            ProfileHeader(profile: data),
             SizedBox(height: 24),
-            ProfileBaseDataWidget(profile: data),
+            ProfileBaseData(profile: data),
             SizedBox(height: 12),
-            if (data.memberships!.isNotEmpty) ...[
+            if (data.memberships?.isNotEmpty ?? false) ...[
               ProfileBox(
                 title: t.profiles.memberships,
-                items: data.memberships!
-                    .map(
-                      (membership) =>
-                          ProfileBoxItem(title: '${membership.division.name1} ${membership.division.name2}'),
-                    )
-                    .toList(),
+                items: data.memberships!.map(
+                  (membership) => ProfileBoxItem(title: '${membership.division.name1} ${membership.division.name2}'),
+                ),
               ),
               SizedBox(height: 12),
             ],
             if (mandateRoles.isNotEmpty) ...[
               ProfileBox(
                 title: t.profiles.mandates,
-                items: mandateRoles.map((role) => ProfileBoxItem(title: role.alias)).toList(),
+                items: mandateRoles.map((role) => ProfileBoxItem(title: role.alias)),
               ),
               SizedBox(height: 12),
             ],
             if (sherpaRoles.isNotEmpty) ...[
               ProfileBox(
                 title: t.profiles.sherpaRole,
-                items: sherpaRoles.map((role) => ProfileBoxItem(title: role.alias)).toList(),
+                items: sherpaRoles.map((role) => ProfileBoxItem(title: role.alias)),
               ),
               SizedBox(height: 12),
             ],
             if (skillTags.isNotEmpty) ...[
               ProfileBox(
                 title: t.profiles.skills,
-                items: skillTags.map((tag) => ProfileBoxItem(title: tag.label)).toList(),
+                items: skillTags.map((tag) => ProfileBoxItem(title: tag.label)),
               ),
               SizedBox(height: 12),
             ],
-            if (kvMembership!.division.urls.isNotEmpty) ...[
+            if (kvMembership?.division.urls.isNotEmpty ?? false) ...[
               ProfileBox(
-                title: t.profiles.mykv,
-                items: kvMembership.division.urls
-                    .map((url) => ProfileBoxItem(title: t.profiles.homepage, onPress: () => openUrl(url, context)))
-                    .toList(),
+                title: t.profiles.myKreisverband,
+                items: kvMembership!.division.urls
+                    .map((url) => ProfileBoxItem(title: t.profiles.homepage, onPress: () => openUrl(url, context))),
               ),
               SizedBox(height: 12),
             ],
             if (data.socialMedia.isNotEmpty) ...[
               ProfileBox(
                 title: t.profiles.socialMedia,
-                items: data.socialMedia
-                    .map(
-                      (socialMedia) => ProfileBoxItem(
-                        title: getSocialMediaTypeTranslation(socialMedia.type),
-                        onPress: () => openUrl(socialMedia.url, context),
-                      ),
-                    )
-                    .toList(),
+                items: data.socialMedia.map(
+                  (socialMedia) => ProfileBoxItem(
+                    title: getSocialMediaTypeTranslation(socialMedia.type),
+                    onPress: () => openUrl(socialMedia.url, context),
+                  ),
+                ),
               ),
               SizedBox(height: 12),
             ],

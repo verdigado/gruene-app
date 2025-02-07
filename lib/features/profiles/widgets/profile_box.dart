@@ -4,7 +4,7 @@ import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 
 class ProfileBox extends StatelessWidget {
   final String title;
-  final List<ProfileBoxItem> items;
+  final Iterable<ProfileBoxItem> items;
 
   const ProfileBox({
     super.key,
@@ -17,19 +17,17 @@ class ProfileBox extends StatelessWidget {
     return Column(
       children: [
         ProfileCard(
-          child: SizedBox(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                SizedBox(height: 12),
-                ...items.expand((item) => [item, Divider()]).toList()..removeLast(),
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 8),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(height: 8),
+              ...items.expand((item) => [item, Divider()]).toList()..removeLast(),
+            ],
           ),
         ),
       ],

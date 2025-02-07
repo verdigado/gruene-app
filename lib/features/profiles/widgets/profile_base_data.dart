@@ -3,10 +3,10 @@ import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class ProfileBaseDataWidget extends StatelessWidget {
+class ProfileBaseData extends StatelessWidget {
   final Profile profile;
 
-  const ProfileBaseDataWidget({super.key, required this.profile});
+  const ProfileBaseData({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +33,18 @@ class ProfileBaseDataWidget extends StatelessWidget {
 
   Widget _buildValueRow(BuildContext context, String title, String value) {
     final theme = Theme.of(context);
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: theme.textTheme.titleMedium,
-          ),
-          SizedBox(height: 12),
-          Text(
-            value,
-            style: theme.textTheme.bodyLarge?.apply(color: theme.colorScheme.primary),
-          ),
-        ],
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(
+        title,
+        style: theme.textTheme.titleMedium,
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Text(
+          value,
+          style: theme.textTheme.bodyLarge?.apply(color: theme.colorScheme.primary),
+        ),
       ),
     );
   }

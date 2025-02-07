@@ -13,28 +13,14 @@ class ProfileBoxItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GestureDetector(
-      onTap: onPress,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: theme.textTheme.bodyLarge,
-              ),
-            ),
-            if (onPress != null)
-              Icon(
-                Icons.open_in_browser_outlined,
-                color: theme.primaryColor,
-              ),
-          ],
-        ),
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 4),
+      title: Text(
+        title,
+        style: theme.textTheme.bodyLarge,
       ),
+      onTap: onPress,
+      trailing: onPress != null ? Icon(Icons.open_in_browser_outlined, color: theme.primaryColor) : null,
     );
   }
 }

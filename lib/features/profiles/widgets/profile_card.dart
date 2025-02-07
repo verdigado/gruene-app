@@ -26,7 +26,7 @@ class ProfileCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Padding(padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16), child: child),
+          child: Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: child),
         ),
       ),
     );

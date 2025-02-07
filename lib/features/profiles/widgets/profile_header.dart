@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class ProfileHeaderWidget extends StatelessWidget {
+class ProfileHeader extends StatelessWidget {
   final Profile profile;
 
-  const ProfileHeaderWidget({super.key, required this.profile});
+  const ProfileHeader({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +17,11 @@ class ProfileHeaderWidget extends StatelessWidget {
           height: 90,
           child: CircleAvatar(
             radius: 45,
-            backgroundColor: Colors.grey,
+            backgroundColor: ThemeColors.textDisabled,
             backgroundImage: profile.image?.thumbnail.url != null ? NetworkImage(profile.image!.thumbnail.url) : null,
-            child: profile.image?.thumbnail.url == null ? Icon(Icons.person, size: 90, color: Colors.white) : null,
+            child: profile.image?.thumbnail.url == null
+                ? Icon(Icons.person, size: 90, color: theme.colorScheme.surface)
+                : null,
           ),
         ),
         SizedBox(height: 6),

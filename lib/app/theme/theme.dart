@@ -193,7 +193,7 @@ final ThemeData appTheme = ThemeData.light().copyWith(
   ),
   dividerTheme: DividerThemeData(
     color: ThemeColors.textLight,
-    space: 24,
+    space: 0.5,
     thickness: 0.5,
   ),
 );
