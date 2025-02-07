@@ -196,4 +196,5 @@ final ThemeData appTheme = ThemeData.light().copyWith(
     space: 0.5,
     thickness: 0.5,
   ),
+  datePickerTheme: DatePickerThemeData(rangeSelectionBackgroundColor: ThemeColors.textDisabled),
 );

@@ -6,7 +6,7 @@ Future<NewsModel> fetchNewsById(String newsId) async => getFromApi(
       map: NewsModel.fromApi,
     );
 
-Future<List<NewsModel>> fetchNews() async => getFromApi(
-      request: (api) => api.v1NewsGet(),
+Future<List<NewsModel>> fetchNews({String? query}) async => getFromApi(
+      request: (api) => api.v1NewsGet(search: query, limit: 100),
       map: (data) => data.data.map(NewsModel.fromApi).toList(),
     );

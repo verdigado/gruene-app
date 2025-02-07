@@ -1,4 +1,5 @@
-import 'package:gruene_app/app/models/division_model.dart';
+import 'package:flutter/material.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class NewsModel {
@@ -9,8 +10,8 @@ class NewsModel {
   String? author;
   String image;
   String type;
-  DivisionModel? division;
-  List<String> categories;
+  Division? division;
+  List<NewsCategory> categories;
   DateTime createdAt;
   bool bookmarked;
 
@@ -40,10 +41,27 @@ class NewsModel {
       // image: news.featuredImage?.original.url ?? 'assets/graphics/placeholders/placeholder_1.jpg',
       image: 'assets/graphics/placeholders/placeholder_${int.parse(news.id) % 3 + 1}.jpg',
       type: news.categories.firstOrNull?.label ?? '',
-      division: division != null ? DivisionModel.fromApi(division) : null,
-      categories: news.categories.map((category) => category.label).toList(),
+      division: division,
+      categories: news.categories,
       createdAt: news.createdAt,
       bookmarked: false,
     );
+  }
+}
+
+extension Filter on List<NewsModel> {
+  List<NewsModel> filter(
+    List<Division> divisions,
+    List<NewsCategory> categories,
+    bool bookmarked,
+    DateTimeRange? dateRange,
+  ) {
+    return where(
+      (it) =>
+          (divisions.isEmpty || divisions.contains(it.division)) &&
+          (categories.isEmpty || categories.containsAny(it.categories)) &&
+          (!bookmarked || it.bookmarked) &&
+          (dateRange == null || it.createdAt.isBetween(dateRange)),
+    ).toList();
   }
 }

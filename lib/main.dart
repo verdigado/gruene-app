@@ -30,12 +30,17 @@ import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/domain/mfa_factory.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:keycloak_authenticator/api.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
+  final locale = await LocaleSettings.useDeviceLocale();
+  Intl.defaultLocale = locale.underscoreTag;
+  await initializeDateFormatting();
   timeago.setLocaleMessages(Config.defaultLanguageCode, timeago.DeMessages());
 
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {

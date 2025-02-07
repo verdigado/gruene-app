@@ -16,7 +16,10 @@ class AccessTokenAuthenticator implements Authenticator {
 
   @override
   FutureOr<Request?> authenticate(Request request, Response<dynamic> response, [Request? originalRequest]) async {
-    logger.d('${request.method} ${request.baseUri} ${request.uri}, ${request.parameters}, body: ${request.body}');
+    logger.d('${request.method} ${request.url}');
+    if (request.body != null) {
+      logger.d('Body: ${request.body}');
+    }
     logger.d('Response: ${response.statusCode}');
 
     if (response.statusCode == HttpStatus.unauthorized) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 
 const double imageHeight = 160;
@@ -78,10 +79,7 @@ class NewsCard extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: 16),
                         child: Chip(
-                          label: Text(
-                            division.levelName,
-                            style: theme.textTheme.labelSmall,
-                          ),
+                          label: Text(division.shortDisplayName(), style: theme.textTheme.labelSmall),
                           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                           visualDensity: VisualDensity(vertical: -4),
                           backgroundColor: theme.colorScheme.surface,
@@ -121,7 +119,7 @@ class NewsCard extends StatelessWidget {
                     ),
                   ),
                   // IconButton(
-                  //   // TODO: Add bookmarking functionality
+                  // TODO #213: Add bookmarking functionality
                   //   onPressed: () {},
                   //   icon: Icon(
                   //     news.bookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,

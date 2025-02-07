@@ -3,6 +3,9 @@
     "appName": "B90/DIE GRÜNEN",
     "error": "Fehler",
     "notImplementedYet": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
+    "dateFrom": "von",
+    "dateUntil": "bis",
+    "search": "Suche",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
@@ -11,7 +14,8 @@
       "consent": "Verstanden",
       "settings": "Einstellungen",
       "openSettings": "Einstellungen öffnen",
-      "close": "Schließen"
+      "close": "Schließen",
+      "reset": "Filter zurücksetzen"
     }
   },
   "error": {
@@ -27,7 +31,15 @@
     "writtenBy": "Von ${author}",
     "updatedAt": "Stand: ${date}",
     "noResults": "Es wurden leider keine Artikel gefunden.",
-    "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden."
+    "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden.",
+    "latest": "Aktuelles",
+    "bookmarked": "Gespeichert",
+    "divisions": "Verbände",
+    "moreDivisions": "Weitere Verbände",
+    "categories": "Schlagworte",
+    "moreCategories": "Weitere Schlagworte",
+    "publicationDate": "Veröffentlichungsdatum",
+    "applyFilter": "Filter anwenden"
   },
   "campaigns": {
     "map": {

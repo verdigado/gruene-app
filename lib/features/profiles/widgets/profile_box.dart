@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_box_item.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 
@@ -29,10 +30,7 @@ class ProfileBox extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8),
-              ...items
-                  .expand((item) => [item, Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Divider())])
-                  .toList()
-                ..removeLast(),
+              ...items.withDividers(Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Divider())),
             ],
           ),
         ),

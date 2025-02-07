@@ -23,6 +23,15 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
   }
 
   @override
+  void didUpdateWidget(covariant FutureLoadingScreen<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.load != oldWidget.load) {
+      setState(() {});
+      _data = widget.load();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final layoutBuilder = widget.layoutBuilder ?? (Widget child) => child;
     return FutureBuilder<T>(
