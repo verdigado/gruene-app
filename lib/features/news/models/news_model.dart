@@ -1,4 +1,3 @@
-import 'package:gruene_app/app/models/division_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class NewsModel {

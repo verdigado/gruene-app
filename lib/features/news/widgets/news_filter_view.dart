@@ -17,8 +17,8 @@ class NewsFilterView extends StatefulWidget {
 
   const NewsFilterView({
     super.key,
-    required this.setSelectedDivisions,
     required this.allNews,
+    required this.setSelectedDivisions,
     required this.selectedDivisions,
     required this.setSelectedCategories,
     required this.selectedCategories,
@@ -31,6 +31,18 @@ class NewsFilterView extends StatefulWidget {
 }
 
 class _NewsFilterViewState extends State<NewsFilterView> {
+  late List<Division> _localSelectedDivisions;
+  late List<NewsCategory> _localSelectedCategories;
+  late DateTimeRange? _localDateRange;
+
+  @override
+  void initState() {
+    super.initState();
+    _localSelectedDivisions = widget.selectedDivisions;
+    _localSelectedCategories = widget.selectedCategories;
+    _localDateRange = widget.dateRange;
+  }
+
   @override
   Widget build(BuildContext context) {
     final divisions = widget.allNews.map((it) => it.division).nonNulls.toSet().toList();
@@ -39,17 +51,23 @@ class _NewsFilterViewState extends State<NewsFilterView> {
     return ListView(
       children: [
         SelectionView(
-          setSelectedOptions: widget.setSelectedDivisions,
+          setSelectedOptions: (divisions) {
+            setState(() => _localSelectedDivisions = divisions);
+            widget.setSelectedDivisions(divisions);
+          },
           title: t.news.divisions,
           options: divisions,
-          selectedOptions: widget.selectedDivisions,
+          selectedOptions: _localSelectedDivisions,
           getLabel: (division) => division.name1,
         ),
         SelectionView(
-          setSelectedOptions: widget.setSelectedCategories,
+          setSelectedOptions: (categories) {
+            setState(() => _localSelectedCategories = categories);
+            widget.setSelectedCategories(categories);
+          },
           title: t.news.categories,
           options: categories,
-          selectedOptions: widget.selectedCategories,
+          selectedOptions: _localSelectedCategories,
           getLabel: (category) => category.label,
         ),
         SectionTitle(title: t.news.publicationDate),
@@ -58,8 +76,11 @@ class _NewsFilterViewState extends State<NewsFilterView> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           width: double.infinity,
           child: DateRangeFilter(
-            setDateRange: widget.setDateRange,
-            dateRange: widget.dateRange,
+            setDateRange: (dateRange) {
+              setState(() => _localDateRange = dateRange);
+              widget.setDateRange(dateRange);
+            },
+            dateRange: _localDateRange,
           ),
         ),
       ],

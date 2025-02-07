@@ -56,8 +56,6 @@ class NewsList extends StatelessWidget {
         if (news.isEmpty) {
           return ErrorScreen(error: t.news.noResults, retry: fetchNews);
         }
-        print(data.length);
-        print(news.length);
         return ListView.builder(
           itemCount: news.length,
           itemBuilder: (context, index) => NewsCard(news: news[index]),
