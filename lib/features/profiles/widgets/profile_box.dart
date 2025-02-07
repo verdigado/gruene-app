@@ -21,12 +21,18 @@ class ProfileBox extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(height: 8),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
               ),
               SizedBox(height: 8),
-              ...items.expand((item) => [item, Divider()]).toList()..removeLast(),
+              ...items
+                  .expand((item) => [item, Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Divider())])
+                  .toList()
+                ..removeLast(),
             ],
           ),
         ),

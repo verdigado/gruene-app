@@ -13,18 +13,21 @@ class ProfileBaseData extends StatelessWidget {
     return Column(
       children: [
         ProfileCard(
-          child: Column(
-            children: [
-              _buildValueRow(context, t.profiles.baseData.firstName, profile.firstName),
-              Divider(),
-              _buildValueRow(context, t.profiles.baseData.lastName, profile.lastName),
-              Divider(),
-              _buildValueRow(context, t.profiles.baseData.email, profile.email),
-              if (profile.phoneNumbers.isNotEmpty) ...[
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                _buildValueRow(context, t.profiles.baseData.firstName, profile.firstName),
                 Divider(),
-                _buildValueRow(context, t.profiles.baseData.phoneNumber, profile.phoneNumbers.first.number),
+                _buildValueRow(context, t.profiles.baseData.lastName, profile.lastName),
+                Divider(),
+                _buildValueRow(context, t.profiles.baseData.email, profile.email),
+                if (profile.phoneNumbers.isNotEmpty) ...[
+                  Divider(),
+                  _buildValueRow(context, t.profiles.baseData.phoneNumber, profile.phoneNumbers.first.number),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ],

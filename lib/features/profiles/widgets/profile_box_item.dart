@@ -14,7 +14,7 @@ class ProfileBoxItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 4),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16),
       title: Text(
         title,
         style: theme.textTheme.bodyLarge,
