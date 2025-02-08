@@ -6,6 +6,7 @@ import 'package:gruene_app/app/utils/format_date.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
+import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class NewsDetailScreen extends StatelessWidget {
@@ -35,7 +36,7 @@ class NewsDetailScreen extends StatelessWidget {
                     children: [
                       SizedBox(
                         height: 288,
-                        child: Image.asset(news.image, fit: BoxFit.cover),
+                        child: featuredImage(news),
                       ),
                       Container(
                         padding: EdgeInsets.all(20),
@@ -90,5 +91,12 @@ class NewsDetailScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  Image featuredImage(NewsModel news) {
+    if (news.image != null) {
+      return Image.network(news.image!);
+    }
+    return Image.asset(getPlaceholderImage(news.id));
   }
 }

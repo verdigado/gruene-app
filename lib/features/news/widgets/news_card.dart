@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
+import 'package:gruene_app/features/news/utils/utils.dart';
 
 const double imageHeight = 160;
 
@@ -37,10 +38,7 @@ class NewsCard extends StatelessWidget {
               height: imageHeight,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-                image: DecorationImage(
-                  image: AssetImage(news.image),
-                  fit: BoxFit.fitWidth,
-                ),
+                image: featuredImage(news),
               ),
             ),
             // Linear gradient on teaser image
@@ -133,6 +131,13 @@ class NewsCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  DecorationImage featuredImage(NewsModel news) {
+    return DecorationImage(
+      image: news.image != null ? NetworkImage(news.image!) : AssetImage(getPlaceholderImage(news.id)),
+      fit: BoxFit.fitWidth,
     );
   }
 }
