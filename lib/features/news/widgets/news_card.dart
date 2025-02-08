@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -136,7 +137,7 @@ class NewsCard extends StatelessWidget {
 
   DecorationImage featuredImage(NewsModel news) {
     return DecorationImage(
-      image: news.image != null ? NetworkImage(news.image!) : AssetImage(getPlaceholderImage(news.id)),
+      image: news.image != null ? CachedNetworkImageProvider(news.image!) : AssetImage(getPlaceholderImage(news.id)),
       fit: BoxFit.fitWidth,
     );
   }
