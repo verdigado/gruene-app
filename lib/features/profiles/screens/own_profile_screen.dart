@@ -28,7 +28,7 @@ class OwnProfileScreen extends StatelessWidget {
         Iterable<ProfileRole> sherpaRoles = data.roles.where((role) => role.type == ProfileRoleType.role);
         Iterable<ProfileTag> skillTags = data.tags.where((tag) => tag.type == ProfileTagType.skill);
         DivisionMembership? kvMembership =
-            data.memberships?.firstWhere((membership) => membership.division.level == DivisionLevel.kv);
+            data.memberships?.where((membership) => membership.division.level == DivisionLevel.kv).firstOrNull;
 
         return ListView(
           children: [
