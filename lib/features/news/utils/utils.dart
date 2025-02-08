@@ -20,3 +20,7 @@ bool isCustomFilterSelected(
     !(selectedDivisions.length == 1 && selectedDivisions[0].level == DivisionLevel.bv) ||
     selectedCategories.isNotEmpty ||
     dateRange != null;
+
+String getPlaceholderImage(String id) {
+  return 'assets/graphics/placeholders/placeholder_${int.parse(id) % 3 + 1}.jpg';
+}

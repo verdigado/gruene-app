@@ -8,7 +8,7 @@ class NewsModel {
   String summary;
   String content;
   String? author;
-  String image;
+  String? image;
   String type;
   Division? division;
   List<NewsCategory> categories;
@@ -37,9 +37,7 @@ class NewsModel {
       summary: news.summary ?? 'Leere Zusammenfassung.',
       content: news.body.content,
       author: null,
-      // TODO: Use placeholder as long as drupal blocks image access
-      // image: news.featuredImage?.original.url ?? 'assets/graphics/placeholders/placeholder_1.jpg',
-      image: 'assets/graphics/placeholders/placeholder_${int.parse(news.id) % 3 + 1}.jpg',
+      image: news.featuredImage?.original.url,
       type: news.categories.firstOrNull?.label ?? '',
       division: division,
       categories: news.categories,
