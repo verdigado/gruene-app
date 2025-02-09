@@ -97,7 +97,7 @@ class NewsDetailScreen extends StatelessWidget {
   Widget featuredImage(NewsModel news) {
     if (news.image != null) {
       return CachedNetworkImage(
-        imageUrl: news.image!,
+        imageUrl: selectImageVariant(news.image!, 'wide'),
       );
     }
     return Image.asset(getPlaceholderImage(news.id));
