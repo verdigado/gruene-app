@@ -24,3 +24,12 @@ bool isCustomFilterSelected(
 String getPlaceholderImage(String id) {
   return 'assets/graphics/placeholders/placeholder_${int.parse(id) % 3 + 1}.jpg';
 }
+
+String selectImageVariant(ImageSrcSet image, String type) {
+  for (var variant in image.srcset) {
+    if (variant.type == type) {
+      return variant.url;
+    }
+  }
+  return image.original.url;
+}

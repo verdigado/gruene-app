@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
@@ -93,9 +94,11 @@ class NewsDetailScreen extends StatelessWidget {
     );
   }
 
-  Image featuredImage(NewsModel news) {
+  Widget featuredImage(NewsModel news) {
     if (news.image != null) {
-      return Image.network(news.image!);
+      return CachedNetworkImage(
+        imageUrl: selectImageVariant(news.image!, 'wide'),
+      );
     }
     return Image.asset(getPlaceholderImage(news.id));
   }

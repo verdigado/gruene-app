@@ -8,7 +8,7 @@ class NewsModel {
   String summary;
   String content;
   String? author;
-  String? image;
+  ImageSrcSet? image;
   String type;
   Division? division;
   List<NewsCategory> categories;
@@ -37,7 +37,7 @@ class NewsModel {
       summary: news.summary ?? 'Leere Zusammenfassung.',
       content: news.body.content,
       author: null,
-      image: news.featuredImage?.original.url,
+      image: news.featuredImage,
       type: news.categories.firstOrNull?.label ?? '',
       division: division,
       categories: news.categories,
