@@ -52,7 +52,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".development"
+            resValue "string", "app_name", "B90 DEV"
+        }
         release {
+            resValue "string", "app_name", "B90/DIE GRÜNEN"
             if (project.hasProperty("KEYSTORE_PATH")) {
                 signingConfig signingConfigs.release
             } else {
