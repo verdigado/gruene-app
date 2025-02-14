@@ -15,7 +15,7 @@ class BottomNavigation extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (!visible) {
-      return Container();
+      return SizedBox.shrink();
     }
 
     final items = bottomNavigationItems.map((item) {
