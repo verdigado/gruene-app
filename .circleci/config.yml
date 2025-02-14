@@ -80,34 +80,8 @@ commands:
                     - ios
                 type: enum
         steps:
-            - when:
-                condition:
-                    equal:
-                        - << parameters.precache >>
-                        - ios
-                steps:
-                    - run:
-                        command: |
-                            brew tap dart-lang/dart
-                            brew install dart@3.5.3
-                            brew link dart@3.5.3
-                        name: Install Dart Mac
-            - unless:
-                condition:
-                    equal:
-                        - << parameters.precache >>
-                        - ios
-                steps:
-                    - run:
-                        command: |
-                            curl -o dart.deb https://storage.googleapis.com/dart-archive/channels/stable/release/3.5.3/linux_packages/dart_3.5.3-1_amd64.deb
-                            sudo dpkg -i dart.deb
-                        name: Install Dart Linux
             - run:
-                command: |
-                    dart pub global activate fvm
-                    echo 'export PATH=$HOME/.pub-cache/bin:$PATH' >> $BASH_ENV
-                    export PATH="$PATH":"$HOME/.pub-cache/bin"
+                command: curl -fsSL https://fvm.app/install.sh | bash
                 name: Install FVM
             - restore_cache:
                 keys:

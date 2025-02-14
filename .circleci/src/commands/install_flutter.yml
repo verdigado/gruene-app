@@ -4,38 +4,9 @@ parameters:
     default: none
     enum: [none, android, ios]
 steps:
-# Recommended installation not working at the moment, see https://github.com/leoafarias/fvm/issues/796
-#  - run:
-#      name: Install FVM
-#      command: curl -fsSL https://fvm.app/install.sh | bash
-# Therefore use workaround by installing dart first:
-# Workaround start
-  - when:
-      condition:
-        equal: [<< parameters.precache >>, ios]
-      steps:
-        - run:
-            name: Install Dart Mac
-            command: |
-              brew tap dart-lang/dart
-              brew install dart@3.5.3
-              brew link dart@3.5.3
-  - unless:
-      condition:
-        equal: [<< parameters.precache >>, ios]
-      steps:
-        - run:
-            name: Install Dart Linux
-            command: |
-              curl -o dart.deb https://storage.googleapis.com/dart-archive/channels/stable/release/3.5.3/linux_packages/dart_3.5.3-1_amd64.deb
-              sudo dpkg -i dart.deb
   - run:
       name: Install FVM
-      command: |
-        dart pub global activate fvm
-        echo 'export PATH=$HOME/.pub-cache/bin:$PATH' >> $BASH_ENV
-        export PATH="$PATH":"$HOME/.pub-cache/bin"
-# Workaround end
+      command: curl -fsSL https://fvm.app/install.sh | bash
   - restore_cache:
       keys:
         - v1-fvm-{{ arch }}-{{ checksum ".fvmrc" }}-{{ checksum "pubspec.yaml" }}-{{ checksum "pubspec.lock"  }}
