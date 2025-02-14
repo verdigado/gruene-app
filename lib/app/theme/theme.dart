@@ -41,16 +41,13 @@ class ThemeColors {
 }
 
 class _ThemeTextStyles {
-  // TODO use GrueneType font
-  static TextStyle displayMedium = GoogleFonts.ptSans(
-    textStyle: TextStyle(
-      fontSize: 18,
-      fontWeight: FontWeight.w900,
-      fontStyle: FontStyle.italic,
-      height: 1.6,
-      letterSpacing: 0.02,
-      color: ThemeColors.text,
-    ),
+  static TextStyle displayMedium = TextStyle(
+    fontFamily: 'GrueneType',
+    fontSize: 18,
+    fontWeight: FontWeight.w900,
+    height: 1.6,
+    letterSpacing: 0.02,
+    color: ThemeColors.text,
   );
   static TextStyle displayLarge = displayMedium.copyWith(fontSize: 34, height: 1.2, letterSpacing: 0.03);
 

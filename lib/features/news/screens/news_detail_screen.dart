@@ -47,7 +47,7 @@ class NewsDetailScreen extends StatelessWidget {
                             author != null ? Text(t.news.writtenBy(author: author)) : Container(),
                             Text(
                               news.title,
-                              style: theme.textTheme.titleLarge,
+                              style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
                             ),
                             SizedBox(height: 16),
                             Text(
