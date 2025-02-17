@@ -65,7 +65,12 @@ class NewsCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(news.title, style: theme.textTheme.titleLarge, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    Text(
+                      news.title,
+                      style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     SizedBox(height: 8),
                     Expanded(
                       child: Text(

@@ -101,6 +101,10 @@ flutter:
     - assets/symbols/flyer/
     - assets/maps/
     - .env
+  fonts:
+    - family: GrueneType
+      fonts:
+        - asset: assets/fonts/GrueneType.otf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
