@@ -31,48 +31,45 @@ class NewsDetailScreen extends StatelessWidget {
           child: Stack(
             children: [
               Positioned.fill(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(
-                        height: 288,
-                        child: featuredImage(news),
+                child: ListView(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: FullWidthImage(news: news),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          author != null ? Text(t.news.writtenBy(author: author)) : Container(),
+                          Text(
+                            news.title,
+                            style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            t.news.updatedAt(date: formatDate(news.createdAt)),
+                            style: theme.textTheme.labelSmall,
+                          ),
+                          Text(
+                            news.summary,
+                            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(height: 24),
+                          Html(
+                            data: news.content,
+                            onLinkTap: (url, _, __) => url != null ? openUrl(url, context) : null,
+                            style: {
+                              'body': Style(
+                                margin: Margins.zero,
+                              ),
+                            },
+                          ),
+                        ],
                       ),
-                      Container(
-                        padding: EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            author != null ? Text(t.news.writtenBy(author: author)) : Container(),
-                            Text(
-                              news.title,
-                              style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              t.news.updatedAt(date: formatDate(news.createdAt)),
-                              style: theme.textTheme.labelSmall,
-                            ),
-                            Text(
-                              news.summary,
-                              style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                            ),
-                            SizedBox(height: 24),
-                            Html(
-                              data: news.content,
-                              onLinkTap: (url, _, __) => url != null ? openUrl(url, context) : null,
-                              style: {
-                                'body': Style(
-                                  margin: Margins.zero,
-                                ),
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               // Positioned(
@@ -93,13 +90,26 @@ class NewsDetailScreen extends StatelessWidget {
       },
     );
   }
+}
 
-  Widget featuredImage(NewsModel news) {
-    if (news.image != null) {
-      return CachedNetworkImage(
-        imageUrl: selectImageVariant(news.image!, 'wide'),
-      );
+class FullWidthImage extends StatelessWidget {
+  final NewsModel news;
+
+  const FullWidthImage({super.key, required this.news});
+
+  @override
+  Widget build(BuildContext context) {
+    final image = news.image;
+    if (image == null) {
+      return Image.asset(getPlaceholderImage(news.id));
     }
-    return Image.asset(getPlaceholderImage(news.id));
+
+    final imageVariant = image.variant('wide');
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final imageHeight = imageVariant.height * screenWidth / imageVariant.width;
+    return CachedNetworkImage(
+      placeholder: (_, __) => SizedBox(height: imageHeight),
+      imageUrl: imageVariant.url,
+    );
   }
 }

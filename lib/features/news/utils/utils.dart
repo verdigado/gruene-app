@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Image;
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -25,11 +26,6 @@ String getPlaceholderImage(String id) {
   return 'assets/graphics/placeholders/placeholder_${int.parse(id) % 3 + 1}.jpg';
 }
 
-String selectImageVariant(ImageSrcSet image, String type) {
-  for (var variant in image.srcset) {
-    if (variant.type == type) {
-      return variant.url;
-    }
-  }
-  return image.original.url;
+extension ImageVariant on ImageSrcSet {
+  Image variant(String type) => srcset.firstWhereOrNull((image) => image.type == type) ?? original;
 }

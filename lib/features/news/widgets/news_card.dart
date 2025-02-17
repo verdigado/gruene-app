@@ -141,9 +141,10 @@ class NewsCard extends StatelessWidget {
   }
 
   DecorationImage featuredImage(NewsModel news) {
+    final image = news.image;
     return DecorationImage(
-      image: news.image != null
-          ? CachedNetworkImageProvider(selectImageVariant(news.image!, 'large'))
+      image: image != null
+          ? CachedNetworkImageProvider(image.variant('large').url)
           : AssetImage(getPlaceholderImage(news.id)),
       fit: BoxFit.fitWidth,
     );
