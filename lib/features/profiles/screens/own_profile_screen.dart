@@ -16,19 +16,40 @@ import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class OwnProfileScreen extends StatelessWidget {
+class OwnProfileScreen extends StatefulWidget {
   const OwnProfileScreen({super.key});
+
+  @override
+  State<OwnProfileScreen> createState() => _OwnProfileScreenState();
+}
+
+class _OwnProfileScreenState extends State<OwnProfileScreen> {
+  late Future<Profile?> _profileFuture;
+  Profile? _currentProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileFuture = fetchOwnProfile();
+  }
+
+  void _updateProfile(Profile updatedProfile) {
+    setState(() {
+      _currentProfile = updatedProfile;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.profiles),
       body: FutureLoadingScreen(
-        load: fetchOwnProfile,
-        buildChild: (Profile? data) {
-          if (data == null) {
-            return ErrorScreen(errorMessage: t.profiles.noResult, retry: fetchOwnProfile);
-          }
+        load: () async {
+          final profile = await _profileFuture;
+          _currentProfile ??= profile;
+          return _currentProfile!;
+        },
+        buildChild: (Profile data) {
 
           Iterable<ProfileRole> mandateRoles =
               data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
@@ -39,7 +60,10 @@ class OwnProfileScreen extends StatelessWidget {
           return ListView(
             children: [
               SizedBox(height: 24),
-              ProfileHeader(profile: data),
+              ProfileHeader(
+                  profile: data,
+                  onProfileUpdated: _updateProfile,
+              ),
               SizedBox(height: 24),
               TextListItem(
                 title: t.profiles.digitalMembershipCard.title,

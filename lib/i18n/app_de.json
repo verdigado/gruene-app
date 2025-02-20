@@ -199,6 +199,12 @@
     "profiles": "Mitglieder",
     "label": "Mitglieder",
     "noResult": "Leider gab es einen Fehler beim Laden des Profils.",
+    "profileImage": {
+      "update": "Foto bearbeiten",
+      "crop": "Ausschnitt wählen",
+      "delete": "Profilbild löschen",
+      "error": "Beim Hochladen des Profilbildes ist leider ein Fehler aufgetreten."
+    },
     "baseData": {
       "firstName": "Vorname",
       "lastName": "Nachname",
