@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_image_deleter.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_image_uploader.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -37,7 +38,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             children: [
               CircleAvatar(
                 radius: 45,
-                backgroundColor: Colors.grey[300],
+                backgroundColor: ThemeColors.textDisabled,
                 backgroundImage: widget.profile.image?.thumbnail.url != null
                     ? NetworkImage(widget.profile.image!.thumbnail.url)
                     : null,
