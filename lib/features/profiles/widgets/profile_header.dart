@@ -21,6 +21,7 @@ class ProfileHeader extends StatefulWidget {
 
 class _ProfileHeaderState extends State<ProfileHeader> {
   bool _isUploading = false;
+  bool _isDeleting = false;
 
   Future<void> _pickAndUploadImage() async {
     final ImagePicker picker = ImagePicker();
@@ -36,7 +37,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: t.profiles.profileImage.crop,
-          toolbarColor: theme.primaryColor,
+          toolbarColor: theme.colorScheme.primary,
           activeControlsWidgetColor: theme.colorScheme.secondary,
           toolbarWidgetColor: Colors.white,
           lockAspectRatio: true,
@@ -69,10 +70,56 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
       widget.onProfileUpdated(response);
     } catch (e) {
-      _showError('${t.profiles.profileImage.error} $e');
+      _showError('${t.profiles.profileImage.updateError} $e');
     }
 
     setState(() => _isUploading = false);
+  }
+
+  Future<void> _deleteProfileImage() async {
+    final BuildContext context = this.context;
+    final theme = Theme.of(context);
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(t.profiles.profileImage.confirmDelete.title),
+          titleTextStyle: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark),
+          content: Text(t.profiles.profileImage.confirmDelete.text),
+          contentTextStyle: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDark),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(
+                t.common.actions.cancel,
+                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textCancel),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                t.common.actions.delete,
+                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) return;
+
+    setState(() => _isDeleting = true);
+
+    try {
+      final response = await deleteProfileImage(profileId: widget.profile.id);
+
+      widget.onProfileUpdated(response);
+    } catch (e) {
+      _showError('${t.profiles.profileImage.deleteError} $e');
+    }
+
+    setState(() => _isDeleting = false);
   }
 
   void _showError(String message) {
@@ -102,7 +149,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                     ? Icon(Icons.person, size: 90, color: theme.colorScheme.surface)
                     : null,
               ),
-              if (_isUploading)
+              if (_isUploading || _isDeleting)
                 Container(
                   width: 90,
                   height: 90,
@@ -120,8 +167,14 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           '${widget.profile.firstName} ${widget.profile.lastName}',
           style: theme.textTheme.titleLarge,
         ),
+        SizedBox(height: 6),
         TextButton(
           onPressed: _isUploading ? null : _pickAndUploadImage,
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
           child: Text(
             t.profiles.profileImage.update,
             style: theme.textTheme.bodyMedium!.apply(
@@ -130,6 +183,22 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             ),
           ),
         ),
+        if (widget.profile.image != null)
+          TextButton(
+            onPressed: _isDeleting ? null : _deleteProfileImage,
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              t.profiles.profileImage.delete,
+              style: theme.textTheme.bodyMedium!.apply(
+                color: ThemeColors.text,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
       ],
     );
   }

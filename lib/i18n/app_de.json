@@ -202,8 +202,13 @@
     "profileImage": {
       "update": "Foto bearbeiten",
       "crop": "Ausschnitt wählen",
+      "updateError": "Beim Hochladen des Profilbildes ist leider ein Fehler aufgetreten.",
       "delete": "Profilbild löschen",
-      "error": "Beim Hochladen des Profilbildes ist leider ein Fehler aufgetreten."
+      "deleteError": "Beim Löschen des Profilbildes ist leider ein Fehler aufgetreten.",
+      "confirmDelete": {
+        "title": "Profilbild löschen",
+        "text": "Soll dein Profilbild wirklich gelöscht werden?"
+      }
     },
     "baseData": {
       "firstName": "Vorname",
