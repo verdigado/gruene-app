@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
@@ -11,29 +10,51 @@ import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class OwnProfileScreen extends StatelessWidget {
+class OwnProfileScreen extends StatefulWidget {
   const OwnProfileScreen({super.key});
+
+  @override
+  State<OwnProfileScreen> createState() => _OwnProfileScreenState();
+}
+
+class _OwnProfileScreenState extends State<OwnProfileScreen> {
+  late Future<Profile?> _profileFuture;
+  Profile? _currentProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileFuture = fetchOwnProfile();
+  }
+
+  void _updateProfile(Profile updatedProfile) {
+    setState(() {
+      _currentProfile = updatedProfile;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureLoadingScreen(
-      load: fetchOwnProfile,
-      buildChild: (Profile? data) {
-        if (data == null) {
-          return ErrorScreen(error: t.profiles.noResult, retry: fetchOwnProfile);
-        }
-
+      load: () async {
+        final profile = await _profileFuture;
+        _currentProfile ??= profile;
+        return _currentProfile!;
+      },
+      buildChild: (Profile data) {
         Iterable<ProfileRole> mandateRoles =
             data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
         Iterable<ProfileRole> sherpaRoles = data.roles.where((role) => role.type == ProfileRoleType.role);
         Iterable<ProfileTag> skillTags = data.tags.where((tag) => tag.type == ProfileTagType.skill);
         DivisionMembership? kvMembership =
             data.memberships?.where((membership) => membership.division.level == DivisionLevel.kv).firstOrNull;
-
         return ListView(
           children: [
             SizedBox(height: 24),
-            ProfileHeader(profile: data),
+            ProfileHeader(
+              profile: data,
+              onProfileUpdated: _updateProfile,
+            ),
             SizedBox(height: 24),
             ProfileBaseData(profile: data),
             SizedBox(height: 12),
