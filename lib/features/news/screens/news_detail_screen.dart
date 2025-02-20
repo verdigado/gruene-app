@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/format_date.dart';
-import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/widgets/html.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
@@ -57,15 +56,7 @@ class NewsDetailScreen extends StatelessWidget {
                             style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                           ),
                           SizedBox(height: 24),
-                          Html(
-                            data: news.content,
-                            onLinkTap: (url, _, __) => url != null ? openUrl(url, context) : null,
-                            style: {
-                              'body': Style(
-                                margin: Margins.zero,
-                              ),
-                            },
-                          ),
+                          CustomHtml(data: news.content),
                         ],
                       ),
                     ),
