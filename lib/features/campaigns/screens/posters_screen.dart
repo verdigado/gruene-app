@@ -187,6 +187,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
     getPoiDetailWidget(PosterDetailModel poster) {
       return PosterDetail(
         poi: poster,
+        onSave: savePoi,
       );
     }
 

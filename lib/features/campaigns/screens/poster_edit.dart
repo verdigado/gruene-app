@@ -351,16 +351,14 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
       newPhotosReduced.add(newPhoto);
     }
 
-    final updateModel = PosterUpdateModel(
-      id: widget.poster.id,
-      address: getAddress(),
-      status: _selectedPosterStatus,
-      comment: commentTextController.text,
-      location: widget.poster.location,
-      deletedPhotoIds: _deletedPhotoIds,
-      newPhotos: newPhotosReduced,
-      oldPosterDetail: widget.poster,
-    );
+    final updateModel = widget.poster.asPosterUpdate().copyWith(
+          address: getAddress(),
+          status: _selectedPosterStatus,
+          comment: commentTextController.text,
+          location: widget.poster.location,
+          deletedPhotoIds: _deletedPhotoIds,
+          newPhotos: newPhotosReduced,
+        );
     await widget.onSave(updateModel);
 
     _closeDialog(ModalEditResult.save);

@@ -7,13 +7,15 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
+import 'package:gruene_app/features/campaigns/screens/poster_edit.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class PosterDetail extends StatelessWidget {
   final PosterDetailModel poi;
+  final OnSavePosterCallback onSave;
 
-  const PosterDetail({super.key, required this.poi});
+  const PosterDetail({super.key, required this.poi, required this.onSave});
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +43,46 @@ class PosterDetail extends StatelessWidget {
     }
 
     var theme = Theme.of(context);
+
+    var widgetHeight = 250.0;
+    var extraRows = <Widget>[];
+    if (poi.status != PosterStatus.removed) {
+      // set extra height for additional button
+      widgetHeight += 55;
+      extraRows.add(
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: 12, right: 12, bottom: 6),
+                child: ElevatedButton(
+                  onPressed: () => onPosterRemoved(context),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: ThemeColors.background,
+                    backgroundColor: ThemeColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                      side: BorderSide(
+                        color: ThemeColors.primary,
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    t.campaigns.poster.status.removed.quick_action_label,
+                    style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () => _closeDialog(context, result: ModalDetailResult.edit),
       child: SizedBox(
-        height: 250,
+        height: widgetHeight,
         child: Column(
           children: [
             Container(
@@ -92,6 +130,7 @@ class PosterDetail extends StatelessWidget {
                 ),
               ],
             ),
+            ...extraRows,
             Expanded(
               child: Container(
                 color: getStatusColor(),
@@ -120,5 +159,28 @@ class PosterDetail extends StatelessWidget {
 
   void _closeDialog(BuildContext context, {ModalDetailResult result = ModalDetailResult.close}) {
     Navigator.maybePop(context, result);
+  }
+
+  void onPosterRemoved(BuildContext context) {
+    var oldStatus = poi.status;
+    var poiUpdate = poi.asPosterUpdate().copyWith(status: PosterStatus.removed);
+    onSave(poiUpdate);
+    _closeDialog(context);
+
+    var scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    scaffoldMessenger.removeCurrentSnackBar();
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        action: SnackBarAction(
+          label: t.common.actions.undo,
+          onPressed: () {
+            var poiReverted = poiUpdate.copyWith(status: oldStatus);
+            onSave(poiReverted);
+          },
+        ),
+        content: Text(t.campaigns.poster.status.removed.quick_action_result),
+      ),
+    );
   }
 }
