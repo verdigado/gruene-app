@@ -24,13 +24,12 @@ class GrueneApiPosterService extends GrueneApiCampaignsService {
       address: newPoster.address.transformToPoiAddress(),
     );
     // saving POI
-    final newPoiResponse = await grueneApi.v1CampaignsPoisPost(body: requestParam);
+    var newPoiResponse = handleApiError(await grueneApi.v1CampaignsPoisPost(body: requestParam));
 
     if (newPoiResponse.error == null && newPoster.imageFileLocation != null) {
       // saving Photo along with POI
       var poiId = newPoiResponse.body!.id;
-
-      await _storeNewPhoto(poiId, newPoster.imageFileLocation!);
+      newPoiResponse = handleApiError(await _storeNewPhoto(poiId, newPoster.imageFileLocation!));
     }
 
     return newPoiResponse.body!.transformToMarkerItem();
@@ -44,17 +43,20 @@ class GrueneApiPosterService extends GrueneApiCampaignsService {
         comment: posterUpdate.comment.isEmpty ? null : posterUpdate.comment,
       ),
     );
-    var updatePoiResponse = await grueneApi.v1CampaignsPoisPoiIdPut(poiId: posterUpdate.id, body: dtoUpdate);
+    var updatePoiResponse =
+        handleApiError(await grueneApi.v1CampaignsPoisPoiIdPut(poiId: posterUpdate.id, body: dtoUpdate));
 
     for (var photoId in posterUpdate.deletedPhotoIds) {
-      updatePoiResponse = await grueneApi.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(
-        poiId: posterUpdate.id,
-        photoId: photoId,
+      updatePoiResponse = handleApiError(
+        await grueneApi.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(
+          poiId: posterUpdate.id,
+          photoId: photoId,
+        ),
       );
     }
 
     for (var newPhoto in posterUpdate.newPhotos) {
-      updatePoiResponse = await _storeNewPhoto(posterUpdate.id, newPhoto.imageUrl);
+      updatePoiResponse = handleApiError(await _storeNewPhoto(posterUpdate.id, newPhoto.imageUrl));
     }
 
     return updatePoiResponse.body!.transformToMarkerItem();
@@ -64,14 +66,15 @@ class GrueneApiPosterService extends GrueneApiCampaignsService {
     var timeStamp = DateFormat('yyMMdd_HHmmss').format(DateTime.now());
     var fileManager = GetIt.I<FileManager>();
     var photo = await fileManager.retrieveFileData(imageFileLocation);
-    // ignore: unused_local_variable
-    final savePoiPhotoResponse = await grueneApi.v1CampaignsPoisPoiIdPhotosPost(
-      poiId: poiId,
-      image: http.MultipartFile.fromBytes(
-        'image',
-        photo,
-        filename: 'poi_${poiId}_$timeStamp.jpg',
-        contentType: MediaType('image', 'jpeg'),
+    final savePoiPhotoResponse = handleApiError(
+      await grueneApi.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: poiId,
+        image: http.MultipartFile.fromBytes(
+          'image',
+          photo,
+          filename: 'poi_${poiId}_$timeStamp.jpg',
+          contentType: MediaType('image', 'jpeg'),
+        ),
       ),
     );
     fileManager.deleteFile(imageFileLocation);
@@ -86,10 +89,8 @@ class GrueneApiPosterService extends GrueneApiCampaignsService {
     return getPoi(poiId, (p) => p.transformToPosterListItem());
   }
 
-  Future<List<PosterListItemModel>> getMyPosters() async {
-    final getPoisType = poiType.transformToApiSelfGetType();
-
-    final getPoisResult = await grueneApi.v1CampaignsPoisSelfGet(type: getPoisType);
-    return getPoisResult.body!.data.map((p) => p.transformToPosterListItem()).toList();
-  }
+  Future<List<PosterListItemModel>> getMyPosters() async => getFromApi(
+        apiRequest: (api) => api.v1CampaignsPoisSelfGet(type: poiType.transformToApiSelfGetType()),
+        map: (result) => result.data.map((p) => p.transformToPosterListItem()).toList(),
+      );
 }

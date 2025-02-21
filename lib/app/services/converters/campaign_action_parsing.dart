@@ -1,6 +1,8 @@
 part of '../converters.dart';
 
 extension CampaignActionParsing on CampaignAction {
+  int coalescedPoiId() => poiId ?? poiTempId;
+
   PosterCreateModel getAsPosterCreate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = PosterCreateModel.fromJson(data.convertLatLongField());

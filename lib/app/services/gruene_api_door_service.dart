@@ -10,34 +10,34 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class GrueneApiDoorService extends GrueneApiCampaignsService {
   GrueneApiDoorService() : super(poiType: PoiServiceType.door);
 
-  Future<MarkerItemModel> createNewDoor(DoorCreateModel newDoor) async {
-    final requestParam = CreatePoi(
-      coords: newDoor.location.transformToGeoJsonCoords(),
-      type: poiType.transformToApiCreateType(),
-      address: newDoor.address.transformToPoiAddress(),
-      house: PoiHouse(
-        countOpenedDoors: newDoor.openedDoors.toDouble(),
-        countClosedDoors: newDoor.closedDoors.toDouble(),
-      ),
-    );
-    // saving POI
-    final newPoiResponse = await grueneApi.v1CampaignsPoisPost(body: requestParam);
+  Future<MarkerItemModel> createNewDoor(DoorCreateModel newDoor) async => getFromApi(
+        apiRequest: (api) => api.v1CampaignsPoisPost(
+          body: CreatePoi(
+            coords: newDoor.location.transformToGeoJsonCoords(),
+            type: poiType.transformToApiCreateType(),
+            address: newDoor.address.transformToPoiAddress(),
+            house: PoiHouse(
+              countOpenedDoors: newDoor.openedDoors.toDouble(),
+              countClosedDoors: newDoor.closedDoors.toDouble(),
+            ),
+          ),
+        ),
+        map: (result) => result.transformToMarkerItem(),
+      );
 
-    return newPoiResponse.body!.transformToMarkerItem();
-  }
-
-  Future<MarkerItemModel> updateDoor(DoorUpdateModel doorUpdate) async {
-    var dtoUpdate = UpdatePoi(
-      address: doorUpdate.address.transformToPoiAddress(),
-      house: PoiHouse(
-        countOpenedDoors: doorUpdate.openedDoors.toDouble(),
-        countClosedDoors: doorUpdate.closedDoors.toDouble(),
-      ),
-    );
-    var updatePoiResponse = await grueneApi.v1CampaignsPoisPoiIdPut(poiId: doorUpdate.id, body: dtoUpdate);
-
-    return updatePoiResponse.body!.transformToMarkerItem();
-  }
+  Future<MarkerItemModel> updateDoor(DoorUpdateModel doorUpdate) async => getFromApi(
+        apiRequest: (api) => api.v1CampaignsPoisPoiIdPut(
+          poiId: doorUpdate.id,
+          body: UpdatePoi(
+            address: doorUpdate.address.transformToPoiAddress(),
+            house: PoiHouse(
+              countOpenedDoors: doorUpdate.openedDoors.toDouble(),
+              countClosedDoors: doorUpdate.closedDoors.toDouble(),
+            ),
+          ),
+        ),
+        map: (result) => result.transformToMarkerItem(),
+      );
 
   Future<DoorDetailModel> getPoiAsDoorDetail(String poiId) {
     return getPoi(poiId, (p) => p.transformPoiToDoorDetail());

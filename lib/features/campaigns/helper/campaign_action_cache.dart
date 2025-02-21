@@ -1,13 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/campaign_action_database.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
+import 'package:gruene_app/app/services/gruene_api_campaigns_service.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
 import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
@@ -189,8 +192,9 @@ class CampaignActionCache extends ChangeNotifier {
       poiType.getCacheDeleteAction().index,
     ];
     final posterCacheList = await campaignActionDatabase.readAllByActionType(posterActions);
+    posterCacheList.sort((a, b) => b.poiTempId.compareTo(a.poiTempId)); //reverse sort list by tempId (timestamped ID)
     for (var action in posterCacheList) {
-      if (markerItems.any((m) => m.id! == action.id)) continue;
+      if (markerItems.any((m) => m.id == action.coalescedPoiId())) continue;
       switch (action.actionType) {
         case CampaignActionType.addPoster:
           var model = action.getAsPosterCreate();
@@ -297,67 +301,72 @@ class CampaignActionCache extends ChangeNotifier {
       var doorApiService = GetIt.I<GrueneApiDoorService>();
       var flyerApiService = GetIt.I<GrueneApiFlyerService>();
       final allActions = await campaignActionDatabase.readAll();
+      var failingPoiIds = <int>[];
 
       for (int i = 0; i < allActions.length; i++) {
         var action = allActions[i];
 
-        switch (action.actionType) {
-          case CampaignActionType.addPoster:
-            var model = action.getAsPosterCreate();
-            var newPosterMarker = await posterApiService.createNewPoster(model);
-            await _updateIdsInCache(
+        if (failingPoiIds.contains(action.coalescedPoiId())) continue;
+
+        updateIds(int newPoiId) async => await _updateIdsInCache(
               oldId: action.poiTempId,
-              newId: newPosterMarker.id!,
+              newId: newPoiId,
               startIndex: i + 1,
               allActions: allActions,
             );
-            campaignActionDatabase.delete(action.id!);
 
-          case CampaignActionType.editPoster:
-            var model = action.getAsPosterUpdate();
-            await posterApiService.updatePoster(model);
-            campaignActionDatabase.delete(action.id!);
+        try {
+          switch (action.actionType) {
+            case CampaignActionType.addPoster:
+              var model = action.getAsPosterCreate();
+              var newPosterMarker = await posterApiService.createNewPoster(model);
+              await updateIds(newPosterMarker.id!);
+              campaignActionDatabase.delete(action.id!);
 
-          case CampaignActionType.addDoor:
-            var model = action.getAsDoorCreate();
-            var newDoorMarker = await doorApiService.createNewDoor(model);
-            await _updateIdsInCache(
-              oldId: action.poiTempId,
-              newId: newDoorMarker.id!,
-              startIndex: i + 1,
-              allActions: allActions,
-            );
-            campaignActionDatabase.delete(action.id!);
+            case CampaignActionType.editPoster:
+              var model = action.getAsPosterUpdate();
+              await posterApiService.updatePoster(model);
+              campaignActionDatabase.delete(action.id!);
 
-          case CampaignActionType.editDoor:
-            var model = action.getAsDoorUpdate();
-            await doorApiService.updateDoor(model);
-            campaignActionDatabase.delete(action.id!);
+            case CampaignActionType.addDoor:
+              var model = action.getAsDoorCreate();
+              var newDoorMarker = await doorApiService.createNewDoor(model);
+              await updateIds(newDoorMarker.id!);
+              campaignActionDatabase.delete(action.id!);
 
-          case CampaignActionType.addFlyer:
-            var model = action.getAsFlyerCreate();
-            var newDoorMarker = await flyerApiService.createNewFlyer(model);
-            await _updateIdsInCache(
-              oldId: action.poiTempId,
-              newId: newDoorMarker.id!,
-              startIndex: i + 1,
-              allActions: allActions,
-            );
-            campaignActionDatabase.delete(action.id!);
-          case CampaignActionType.editFlyer:
-            var model = action.getAsFlyerUpdate();
-            await flyerApiService.updateFlyer(model);
-            campaignActionDatabase.delete(action.id!);
+            case CampaignActionType.editDoor:
+              var model = action.getAsDoorUpdate();
+              await doorApiService.updateDoor(model);
+              campaignActionDatabase.delete(action.id!);
 
-          case CampaignActionType.deleteDoor:
-          case CampaignActionType.deletePoster:
-          case CampaignActionType.deleteFlyer:
-            await posterApiService.deletePoi(action.poiId!.toString());
-            campaignActionDatabase.delete(action.id!);
+            case CampaignActionType.addFlyer:
+              var model = action.getAsFlyerCreate();
+              var newFlyerMarker = await flyerApiService.createNewFlyer(model);
+              await updateIds(newFlyerMarker.id!);
+              campaignActionDatabase.delete(action.id!);
+            case CampaignActionType.editFlyer:
+              var model = action.getAsFlyerUpdate();
+              await flyerApiService.updateFlyer(model);
+              campaignActionDatabase.delete(action.id!);
 
-          case CampaignActionType.unknown:
-          case null:
-            throw UnimplementedError();
+            case CampaignActionType.deleteDoor:
+            case CampaignActionType.deletePoster:
+            case CampaignActionType.deleteFlyer:
+              await posterApiService.deletePoi(action.poiId!.toString());
+              campaignActionDatabase.delete(action.id!);
+
+            case CampaignActionType.unknown:
+            case null:
+              throw UnimplementedError();
+          }
+        } on ApiException catch (e) {
+          if (_handleError(e, action.actionType!)) {
+            campaignActionDatabase.delete(action.id!);
+          } else {
+            logger.e('Flushing Campaign Action (${action.actionType!.name}) failed: ${e.statusCode}');
+            failingPoiIds.add(action.coalescedPoiId());
+            continue;
+          }
         }
         notifyListeners();
       }
@@ -450,5 +459,34 @@ class CampaignActionCache extends ChangeNotifier {
 
   void setCurrentMapController(MapControllerSimplified controller) {
     _currentMapController = controller;
+  }
+
+  Future<bool> storeCacheOnDevice() async {
+    var now = DateTime.now();
+    var fileName = 'cache_dump_${now.getAsTimeStamp()}.json';
+
+    final allActions = await campaignActionDatabase.readAll();
+    var jsonContent = jsonEncode(allActions);
+    List<int> byteList = utf8.encode(jsonContent);
+
+    final params = SaveFileDialogParams(data: Uint8List.fromList(byteList), fileName: fileName);
+    var result = await FlutterFileDialog.saveFile(params: params);
+    return result != null;
+  }
+
+  bool _handleError(ApiException e, CampaignActionType currentAction) {
+    var itemNotFoundActions = [
+      PoiServiceType.door.getCacheEditAction(),
+      PoiServiceType.door.getCacheDeleteAction(),
+      PoiServiceType.flyer.getCacheEditAction(),
+      PoiServiceType.flyer.getCacheDeleteAction(),
+      PoiServiceType.poster.getCacheEditAction(),
+      PoiServiceType.poster.getCacheDeleteAction(),
+    ];
+    if (e.statusCode == 404 && itemNotFoundActions.contains(currentAction)) {
+      // POI seems to be deleted (before) and cannot be edited afterwards
+      return true;
+    }
+    return false;
   }
 }

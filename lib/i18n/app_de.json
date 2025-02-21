@@ -43,6 +43,10 @@
     "applyFilter": "Filter anwenden"
   },
   "campaigns": {
+    "debug": {
+      "confirm_storing_cache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
+      "storing_cache_success": "Die lokalen Änderungen wurden nun gespeichert. Bitte sende diese per E-Mail an beteiligung@gruene.de. Damit unterstützt Du uns bei der Problemlösung!"
+    },
     "map": {
       "mapData": "Kartendaten",
       "osmContributors": "OpenStreetMap Mitwirkende",
@@ -82,7 +86,7 @@
       "date_format": "dd.MM.yyyy",
       "time_format": "HH:mm",
       "timestamp_format": "yyyyMMdd_HHmmss",
-      "datetime_display_template": "{date} um {time}",
+      "datetime_display_template": "${date} um ${time}",
       "info_poster_guidelines": "Wusstest Du, dass es je nach Region unterschiedliche gesetzliche Vorgaben und Regeln für das Aufhängen von Plakaten gibt? Bitte wende Dich an Deinen Orts- oder Kreisverband für weitere Informationen, bevor Du Plakate aufhängst!",
       "status": {
         "damaged": {
