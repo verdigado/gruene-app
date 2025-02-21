@@ -7,7 +7,6 @@ class NewsModel {
   String title;
   String summary;
   String content;
-  String? author;
   ImageSrcSet? image;
   String type;
   Division? division;
@@ -20,7 +19,6 @@ class NewsModel {
     required this.title,
     required this.summary,
     required this.content,
-    required this.author,
     required this.image,
     required this.type,
     required this.division,
@@ -36,7 +34,6 @@ class NewsModel {
       title: news.title,
       summary: news.summary ?? 'Leere Zusammenfassung.',
       content: news.body.content,
-      author: null,
       image: news.featuredImage,
       type: news.categories.firstOrNull?.label ?? '',
       division: division,

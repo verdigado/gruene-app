@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/format_date.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
@@ -24,7 +25,7 @@ class NewsDetailScreen extends StatelessWidget {
         if (news == null) {
           return ErrorScreen(error: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
         }
-        final author = news.author;
+        final division = news.division;
         return SizedBox(
           width: double.infinity,
           height: double.infinity,
@@ -42,7 +43,7 @@ class NewsDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          author != null ? Text(t.news.writtenBy(author: author)) : Container(),
+                          division != null ? Text(division.shortDisplayName()) : Container(),
                           Text(
                             news.title,
                             style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
