@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:chopper/chopper.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
@@ -18,33 +18,50 @@ abstract class GrueneApiCampaignsService {
     grueneApi = GetIt.I<GrueneApi>();
   }
 
-  Future<List<MarkerItemModel>> loadPoisInRegion(LatLng locationSW, LatLng locationNE) async {
-    final getPoisType = poiType.transformToApiGetType();
+  Future<List<MarkerItemModel>> loadPoisInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+        apiRequest: (api) => api.v1CampaignsPoisGet(
+          type: poiType.transformToApiGetType(),
+          bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
+        ),
+        map: (result) => result.data.map((p) => p.transformToMarkerItem()).toList(),
+      );
 
-    final getPoisResult = await grueneApi.v1CampaignsPoisGet(
-      type: getPoisType,
-      bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
-    );
-    if (getPoisResult.error != null) debugPrint(getPoisResult.error!.toString());
+  Future<List<MapLayerModel>> loadFocusAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+        apiRequest: (api) => api.v1CampaignsFocusAreasGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
+        map: (result) => result.data.map((layerItem) => layerItem.transformToMapLayer()).toList(),
+      );
 
-    return getPoisResult.body!.data.map((p) => p.transformToMarkerItem()).toList();
+  Future<T> getPoi<T>(String poiId, T Function(Poi) transform) async => getFromApi(
+        apiRequest: (api) => api.v1CampaignsPoisPoiIdGet(poiId: poiId),
+        map: transform,
+      );
+
+  Future<void> deletePoi(String poiId) async => getFromApi(
+        apiRequest: (api) => api.v1CampaignsPoisPoiIdDelete(poiId: poiId),
+        map: (p) {},
+      );
+
+  Future<T> getFromApi<S, T>({
+    required Future<Response<S>> Function(GrueneApi api) apiRequest,
+    required T Function(S data) map,
+  }) async {
+    final response = await apiRequest(grueneApi);
+
+    handleApiError(response);
+
+    final body = response.body as S;
+    return map(body);
   }
 
-  Future<List<MapLayerModel>> loadFocusAreasInRegion(LatLng locationSW, LatLng locationNE) async {
-    var transformToGeoJsonBBoxString = locationSW.transformToGeoJsonBBoxString(locationNE);
-    final getPoisResult = await grueneApi.v1CampaignsFocusAreasGet(
-      bbox: transformToGeoJsonBBoxString,
-    );
-    return getPoisResult.body!.data.map((layerItem) => layerItem.transformToMapLayer()).toList();
+  Response<T> handleApiError<T>(Response<T> response) {
+    if (!response.isSuccessful || response.body == null) {
+      throw ApiException(statusCode: response.statusCode);
+    }
+    return response;
   }
+}
 
-  Future<T> getPoi<T>(String poiId, T Function(Poi) transform) async {
-    final poiResponse = await grueneApi.v1CampaignsPoisPoiIdGet(poiId: poiId);
-    return transform(poiResponse.body!);
-  }
-
-  Future<void> deletePoi(String poiId) async {
-    // ignore: unused_local_variable
-    final deletePoiResponse = await grueneApi.v1CampaignsPoisPoiIdDelete(poiId: poiId);
-  }
+class ApiException implements Exception {
+  int statusCode;
+  ApiException({required this.statusCode});
 }

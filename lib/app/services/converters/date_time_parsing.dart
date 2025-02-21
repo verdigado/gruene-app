@@ -6,9 +6,7 @@ extension DateTimeParsing on DateTime {
     DateTime localDateTime = utcDateTime.toLocal();
     final dateString = DateFormat(t.campaigns.poster.date_format).format(localDateTime);
     final timeString = DateFormat(t.campaigns.poster.time_format).format(localDateTime);
-    return t.campaigns.poster.datetime_display_template
-        .replaceAll('{date}', dateString)
-        .replaceAll('{time}', timeString);
+    return t.campaigns.poster.datetime_display_template(date: dateString, time: timeString);
   }
 
   String getAsTimeStamp() {
