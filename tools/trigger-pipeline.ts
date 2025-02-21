@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 
 import { MAIN_BRANCH } from './constants.js'
 
-const CIRCLECI_URL = 'https://circleci.com/api/v2/project/github/verdigado/gruene_app/pipeline'
+const CIRCLECI_URL = 'https://circleci.com/api/v2/project/github/verdigado/gruene-app/pipeline'
 const WORKFLOW_TYPES = [
   'none',
   'beta_delivery',

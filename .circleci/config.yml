@@ -84,7 +84,7 @@ commands:
                 command: curl -fsSL https://raw.githubusercontent.com/leoafarias/fvm/refs/heads/main/scripts/install.sh | bash
                 name: Install FVM
             - run:
-                command: curl -sL https://raw.githubusercontent.com/leoafarias/fvm/refs/heads/main/scripts/install.sh | sha256sum
+                command: curl -sL https://raw.githubusercontent.com/leoafarias/fvm/refs/heads/main/scripts/install.sh | shasum -a 256
                 name: FVM Install Script Checksum
             - restore_cache:
                 keys:
