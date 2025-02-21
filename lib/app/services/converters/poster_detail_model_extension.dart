@@ -6,6 +6,19 @@ extension PosterDetailModelExtension on PosterDetailModel {
     photos.sortByIdDescending();
     return photos.first;
   }
+
+  PosterUpdateModel asPosterUpdate() {
+    return PosterUpdateModel(
+      id: id,
+      address: address,
+      status: status,
+      comment: comment,
+      location: location,
+      oldPosterDetail: this,
+      deletedPhotoIds: [],
+      newPhotos: [],
+    );
+  }
 }
 
 extension PosterPhotoModelListExtension on List<PosterPhotoModel> {

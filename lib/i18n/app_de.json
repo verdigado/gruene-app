@@ -11,6 +11,7 @@
       "cancel": "Abbrechen",
       "delete": "Löschen",
       "edit": "Bearbeiten",
+      "undo": "Rückgängig",
       "consent": "Verstanden",
       "settings": "Einstellungen",
       "openSettings": "Einstellungen öffnen",
@@ -94,7 +95,9 @@
         },
         "removed": {
           "label": "Abgehängt",
-          "description": "Plakat wurde abgehängt."
+          "description": "Plakat wurde abgehängt.",
+          "quick_action_label": "Plakat abgehängt",
+          "quick_action_result": "Als abgehängt markiert"
         },
         "to_be_moved": {
           "label": "Umzuhängen",
