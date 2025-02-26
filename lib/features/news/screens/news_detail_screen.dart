@@ -52,11 +52,6 @@ class NewsDetailScreen extends StatelessWidget {
                             t.news.updatedAt(date: formatDate(news.createdAt)),
                             style: theme.textTheme.labelSmall,
                           ),
-                          Text(
-                            news.summary,
-                            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                          ),
-                          SizedBox(height: 24),
                           CustomHtml(data: news.content),
                         ],
                       ),
