@@ -6,6 +6,7 @@
     "dateFrom": "von",
     "dateUntil": "bis",
     "search": "Suche",
+    "multiSelect": "Mehrfachauswahl (${count})",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
@@ -50,7 +51,8 @@
     "map": {
       "mapData": "Kartendaten",
       "osmContributors": "OpenStreetMap Mitwirkende",
-      "noMapDataInfo": "Bitte zoome in die Karte, um mehr Informationen zu sehen."
+      "noMapDataInfo": "Bitte zoome in die Karte, um mehr Informationen zu sehen.",
+      "identicalPositions": "Identische Position"
     },
     "campaigns": "Wahlkampf",
     "label": "Wahlkampf",
@@ -78,7 +80,7 @@
       "addPoster": "Plakat eintragen",
       "editPoster": "Plakat bearbeiten",
       "my_posters_action": "Meine Plakate",
-      "my_posters_title": "Meine aufgehängten Plakate",
+      "my_posters_title": "Meine aufgehängten Plakate (${count})",
       "created": "aufgehängt",
       "updated": "aktualisiert",
       "noPhotoWarning": "Bitte wähle ein Foto oder nimm eins mit der Kamera auf!",

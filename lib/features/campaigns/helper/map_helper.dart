@@ -49,4 +49,11 @@ class MapHelper {
     if (properties['is_virtual'] == null) return false;
     return bool.parse(properties['is_virtual'].toString());
   }
+
+  static String extractStatusTypeFromFeature(Map<String, dynamic> feature) {
+    if (feature['properties'] == null) return '';
+    final properties = feature['properties'] as Map<String, dynamic>;
+    if (properties['status_type'] == null) return '';
+    return properties['status_type'].toString();
+  }
 }

@@ -8,7 +8,6 @@ import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
-import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
@@ -33,7 +32,7 @@ class PostersScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _PostersScreenState();
 }
 
-class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, PosterUpdateModel> {
+class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, PosterDetailModel, PosterUpdateModel> {
   static const _poiType = PoiServiceType.poster;
   final _grueneApiService = GetIt.I<GrueneApiPosterService>();
 
@@ -82,6 +81,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
       addMapLayersForContext: addMapLayersForContext,
       loadDataLayers: loadDataLayers,
       showMapInfoAfterCameraMove: showMapInfoAfterCameraMove,
+      getBasicPoiFromFeature: (feature) => getPoiFromFeature<BasicPoi>(feature),
     );
 
     final theme = Theme.of(localContext);
@@ -158,21 +158,23 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
     };
   }
 
-  Future<PosterDetailModel> _getPoi(String poiId) async {
+  @override
+  Future<PosterDetailModel> getPoi(String poiId) async {
     final poster = await campaignService.getPoiAsPosterDetail(poiId);
     return poster;
   }
 
-  Future<PosterDetailModel> _getCachedPoi(String poiId) async {
+  @override
+  Future<PosterDetailModel> getCachedPoi(String poiId) async {
     final poster = await campaignActionCache.getPoiAsPosterDetail(poiId);
     return poster;
   }
 
   Future<PosterDetailModel> _getPoiFromCacheOrApi(String poiId) async {
     if (await campaignActionCache.isCached(poiId)) {
-      return _getCachedPoi(poiId);
+      return getCachedPoi(poiId);
     } else {
-      return _getPoi(poiId);
+      return getPoi(poiId);
     }
   }
 
@@ -182,7 +184,6 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
 
   void _onFeatureClick(dynamic rawFeature) async {
     final feature = rawFeature as Map<String, dynamic>;
-    final isCached = MapHelper.extractIsCachedFromFeature(feature);
 
     getPoiDetailWidget(PosterDetailModel poster) {
       return PosterDetail(
@@ -191,11 +192,9 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
       );
     }
 
-    var getPoiFromCacheOrApi = isCached ? _getCachedPoi : _getPoi;
-
     super.onFeatureClick<PosterDetailModel>(
       rawFeature,
-      getPoiFromCacheOrApi,
+      () => getPoiFromFeature<PosterDetailModel>(feature),
       getPoiDetailWidget,
       _getEditPosterWidget,
       desiredSize: Size(150, 150),

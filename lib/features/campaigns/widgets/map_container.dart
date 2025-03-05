@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
@@ -18,6 +20,7 @@ import 'package:gruene_app/features/campaigns/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
 import 'package:gruene_app/features/campaigns/models/map_layer_model.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/attribution_dialog.dart';
 import 'package:gruene_app/features/campaigns/widgets/location_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
@@ -33,6 +36,7 @@ typedef LoadCachedItemsCallback = void Function();
 typedef LoadDataLayersCallBack = void Function(LatLng locationSW, LatLng locationNE);
 typedef GetMarkerImagesCallback = Map<String, String> Function();
 typedef OnFeatureClickCallback = void Function(dynamic feature);
+typedef GetBasicPoiFromFeatureCallback = Future<BasicPoi> Function(Map<String, dynamic> feature);
 typedef OnNoFeatureClickCallback = void Function(Point<double> point);
 typedef OnEditItemClickedCallback = void Function();
 typedef ShowMapInfoAfterCameraMoveCallback = void Function();
@@ -45,6 +49,7 @@ class MapContainer extends StatefulWidget {
   final LoadCachedItemsCallback? loadCachedItems;
   final LoadDataLayersCallBack? loadDataLayers;
   final GetMarkerImagesCallback? getMarkerImages;
+  final GetBasicPoiFromFeatureCallback getBasicPoiFromFeature;
   final OnFeatureClickCallback? onFeatureClick;
   final OnNoFeatureClickCallback? onNoFeatureClick;
   final AddMapLayersForContextCallback? addMapLayersForContext;
@@ -61,6 +66,7 @@ class MapContainer extends StatefulWidget {
     required this.getMarkerImages,
     required this.onFeatureClick,
     required this.onNoFeatureClick,
+    required this.getBasicPoiFromFeature,
     this.loadDataLayers,
     this.addMapLayersForContext,
     required this.locationAvailable,
@@ -85,6 +91,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
 
   static const minZoomMarkerItems = 11.5;
   static const double zoomLevelUserLocation = 16;
+  static const double multiSelectZoomThreshold = 16.5;
   static const double zoomLevelSearchLocation = 14.5;
   static const double zoomLevelUserOverview = 5.2;
 
@@ -256,7 +263,25 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     }).toList();
 
     if (features.isNotEmpty && onFeatureClick != null) {
-      final feature = MapHelper.getClosestFeature(features, targetLatLng);
+      logger.d('Features: ${features.length} Zoom: ${_controller!.cameraPosition!.zoom.toString()}');
+      dynamic feature;
+      var allPositions = features.map(MapHelper.extractLatLngFromFeature).toList();
+      var hasDuplicates = allPositions.map((item) => allPositions.where((x) => x == item).length).any((x) => x > 1);
+
+      // Either the list contains position duplicates or the zoom level is high enough so that a user-select makes sense
+      if (hasDuplicates || (features.length > 1 && _controller!.cameraPosition!.zoom > multiSelectZoomThreshold)) {
+        features.sort((itemA, itemB) {
+          // sort list by distance from tapped map location
+          var distanceA = targetLatLng.getDistance(MapHelper.extractLatLngFromFeature(itemA));
+          var distanceB = targetLatLng.getDistance(MapHelper.extractLatLngFromFeature(itemB));
+          return distanceA.compareTo(distanceB);
+        });
+
+        feature = await _userMultiSelect(features);
+      } else {
+        feature = MapHelper.getClosestFeature(features, targetLatLng);
+      }
+      if (feature == null) return;
       onFeatureClick(feature);
     } else if (onNoFeatureClick != null) {
       onNoFeatureClick(point);
@@ -758,6 +783,105 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     if (!mounted) return;
     _markerItemManager.resetAllMarkers();
     _loadDataOnMap(init: true);
+  }
+
+  Future<Map<String, dynamic>?> _userMultiSelect(List<Map<String, dynamic>> features) async {
+    var theme = Theme.of(context);
+
+    var selectedFeature = await showDialog<Map<String, dynamic>>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return SimpleDialog(
+          backgroundColor: ThemeColors.backgroundSecondary,
+          children: [
+            Container(
+              padding: EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      t.common.multiSelect(count: features.length),
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: 250),
+                    child: RawScrollbar(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: features.map((item) {
+                            var itemsOnSamePos = features
+                                .map(MapHelper.extractLatLngFromFeature)
+                                .where((x) => x == MapHelper.extractLatLngFromFeature(item));
+                            var isDuplicate = itemsOnSamePos.length > 1;
+                            return _getMultiSelectRow(item, isDuplicate);
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    return selectedFeature;
+  }
+
+  Widget _getMultiSelectRow(Map<String, dynamic> feature, bool isDuplicate) {
+    final markerImages = widget.getMarkerImages!();
+    var theme = Theme.of(context);
+    return FutureBuilder(
+      future: widget.getBasicPoiFromFeature(feature),
+      builder: (context, AsyncSnapshot<BasicPoi> snapshot) {
+        if (!snapshot.hasData || snapshot.hasError) return Text('...');
+        var poi = snapshot.data!;
+        return GestureDetector(
+          onTap: () => Navigator.maybePop(context, feature),
+          child: Card(
+            color: theme.colorScheme.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            shadowColor: ThemeColors.textDisabled,
+            child: InkWell(
+              child: Container(
+                padding: EdgeInsets.all(6),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(6),
+                      child: SizedBox(
+                        height: 20,
+                        child: Image.asset(markerImages[MapHelper.extractStatusTypeFromFeature(feature)]!),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        if (isDuplicate)
+                          Text(
+                            t.campaigns.map.identicalPositions,
+                            style: TextStyle(color: ThemeColors.textWarning),
+                          ),
+                        Text(
+                          '${poi.address.street} ${poi.address.houseNumber}\n${poi.address.zipCode} ${poi.address.city}',
+                          style: theme.textTheme.labelMedium!.copyWith(color: ThemeColors.text),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
