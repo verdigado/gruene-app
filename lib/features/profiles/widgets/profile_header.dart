@@ -26,6 +26,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final imageUrl = widget.profile.image?.thumbnail.url;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,10 +40,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
               CircleAvatar(
                 radius: 45,
                 backgroundColor: ThemeColors.textDisabled,
-                backgroundImage: widget.profile.image?.thumbnail.url != null
-                    ? NetworkImage(widget.profile.image!.thumbnail.url)
+                backgroundImage: imageUrl != null
+                    ? NetworkImage(imageUrl)
                     : null,
-                child: widget.profile.image?.thumbnail.url == null
+                child: imageUrl == null
                     ? Icon(Icons.person, size: 90, color: theme.colorScheme.surface)
                     : null,
               ),
