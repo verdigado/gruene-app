@@ -40,12 +40,8 @@ class _ProfileHeaderState extends State<ProfileHeader> {
               CircleAvatar(
                 radius: 45,
                 backgroundColor: ThemeColors.textDisabled,
-                backgroundImage: imageUrl != null
-                    ? NetworkImage(imageUrl)
-                    : null,
-                child: imageUrl == null
-                    ? Icon(Icons.person, size: 90, color: theme.colorScheme.surface)
-                    : null,
+                backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
+                child: imageUrl == null ? Icon(Icons.person, size: 90, color: theme.colorScheme.surface) : null,
               ),
               if (_isProcessing)
                 Container(

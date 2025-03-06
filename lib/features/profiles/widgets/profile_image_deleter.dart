@@ -23,34 +23,9 @@ class ProfileImageDeleter extends StatefulWidget {
 
 class _ProfileImageDeleterState extends State<ProfileImageDeleter> {
   Future<void> _deleteProfileImage() async {
-    final BuildContext context = this.context;
-    final theme = Theme.of(context);
     final bool? confirmed = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(t.profiles.profileImage.confirmDelete.title),
-          titleTextStyle: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark),
-          content: Text(t.profiles.profileImage.confirmDelete.text),
-          contentTextStyle: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDark),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(
-                t.common.actions.cancel,
-                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textCancel),
-              ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(
-                t.common.actions.delete,
-                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
-              ),
-            ),
-          ],
-        );
-      },
+      builder: (context) => DeleteProfileImageDialog(),
     );
 
     if (confirmed != true) return;
@@ -87,6 +62,37 @@ class _ProfileImageDeleterState extends State<ProfileImageDeleter> {
           decoration: TextDecoration.underline,
         ),
       ),
+    );
+  }
+}
+
+class DeleteProfileImageDialog extends StatelessWidget {
+  const DeleteProfileImageDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AlertDialog(
+      title: Text(t.profiles.profileImage.confirmDelete.title),
+      titleTextStyle: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark),
+      content: Text(t.profiles.profileImage.confirmDelete.text),
+      contentTextStyle: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDark),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(
+            t.common.actions.cancel,
+            style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textCancel),
+          ),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(
+            t.common.actions.delete,
+            style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
+          ),
+        ),
+      ],
     );
   }
 }
