@@ -20,7 +20,7 @@ class NewsScreenContainer extends StatelessWidget {
       appBar: MainAppBar(title: t.news.news),
       body: FutureLoadingScreen(
         load: () async => (await fetchNews(), await readDivisionFilterKeys()),
-        buildChild: (params) {
+        buildChild: (params, _) {
           final (news, divisionFilterKeys) = params;
           final initialDivisionFilters = divisionFilterKeys == null
               ? [news.divisions().bundesverband()]

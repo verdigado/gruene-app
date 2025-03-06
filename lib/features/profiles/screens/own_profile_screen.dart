@@ -24,32 +24,13 @@ class OwnProfileScreen extends StatefulWidget {
 }
 
 class _OwnProfileScreenState extends State<OwnProfileScreen> {
-  late Future<Profile?> _profileFuture;
-  Profile? _currentProfile;
-
-  @override
-  void initState() {
-    super.initState();
-    _profileFuture = fetchOwnProfile();
-  }
-
-  void _updateProfile(Profile updatedProfile) {
-    setState(() {
-      _currentProfile = updatedProfile;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.profiles),
       body: FutureLoadingScreen(
-        load: () async {
-          final profile = await _profileFuture;
-          _currentProfile ??= profile;
-          return _currentProfile!;
-        },
-        buildChild: (Profile data) {
+        load: fetchOwnProfile,
+        buildChild: (Profile data, updateData) {
 
           Iterable<ProfileRole> mandateRoles =
               data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
@@ -62,7 +43,7 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
               SizedBox(height: 24),
               ProfileHeader(
                   profile: data,
-                  onProfileUpdated: _updateProfile,
+                  onProfileUpdated: updateData,
               ),
               SizedBox(height: 24),
               TextListItem(

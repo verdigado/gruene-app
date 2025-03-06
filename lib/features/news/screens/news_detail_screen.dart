@@ -26,7 +26,7 @@ class NewsDetailScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.news.newsDetail),
       body: FutureLoadingScreen<NewsModel?>(
         load: newsItem == null ? () => fetchNewsById(newsId) : () async => newsItem,
-        buildChild: (NewsModel? news) {
+        buildChild: (NewsModel? news, _) {
           if (news == null) {
             return ErrorScreen(errorMessage: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
           }
