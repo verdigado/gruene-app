@@ -40,7 +40,7 @@ class _ProfileImageUploaderState extends State<ProfileImageUploader> {
           toolbarTitle: t.profiles.profileImage.crop,
           toolbarColor: theme.colorScheme.primary,
           activeControlsWidgetColor: theme.colorScheme.secondary,
-          toolbarWidgetColor: Colors.white,
+          toolbarWidgetColor: theme.colorScheme.surface,
           lockAspectRatio: true,
         ),
         IOSUiSettings(
