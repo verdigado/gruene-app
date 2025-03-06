@@ -15,7 +15,7 @@ class ToolsScreen extends StatelessWidget {
     return FutureLoadingScreen(
       load: fetchTools,
       layoutBuilder: (Widget child) => MainLayout(child: child),
-      buildChild: (List<GnetzApplication> data) {
+      buildChild: (List<GnetzApplication> data, _) {
         final tabs = getToolCategories(data)
             .map(
               (category) => TabModel(
