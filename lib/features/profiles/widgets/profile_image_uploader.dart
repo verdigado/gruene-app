@@ -70,8 +70,8 @@ class _ProfileImageUploaderState extends State<ProfileImageUploader> {
       );
 
       widget.onProfileUpdated(response);
-    } catch (e) {
-      _showError('${t.profiles.profileImage.updateError} $e');
+    } catch (error) {
+      _showError(error is ClientException ? t.error.offlineError : t.profiles.profileImage.updateError);
     }
 
     widget.onProcessing(false);

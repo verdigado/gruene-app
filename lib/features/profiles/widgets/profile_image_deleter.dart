@@ -3,6 +3,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:http/http.dart';
 
 class ProfileImageDeleter extends StatefulWidget {
   final Profile profile;
@@ -59,8 +60,8 @@ class _ProfileImageDeleterState extends State<ProfileImageDeleter> {
     try {
       final response = await deleteProfileImage(profileId: widget.profile.id);
       widget.onProfileUpdated(response);
-    } catch (e) {
-      _showError('${t.profiles.profileImage.deleteError} $e');
+    } catch (error) {
+      _showError(error is ClientException ? t.error.offlineError : t.profiles.profileImage.deleteError);
     }
 
     widget.onProcessing(false);
