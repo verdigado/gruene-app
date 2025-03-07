@@ -20,7 +20,7 @@ class NewsDetailScreen extends StatelessWidget {
     final theme = Theme.of(context);
     return FutureLoadingScreen<NewsModel?>(
       load: () => fetchNewsById(newsId),
-      buildChild: (NewsModel? news) {
+      buildChild: (NewsModel? news, _) {
         if (news == null) {
           return ErrorScreen(error: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
         }

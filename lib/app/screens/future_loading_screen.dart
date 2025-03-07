@@ -4,7 +4,7 @@ import 'package:gruene_app/i18n/translations.g.dart';
 
 class FutureLoadingScreen<T> extends StatefulWidget {
   final Future<T> Function() load;
-  final Widget Function(T data) buildChild;
+  final Widget Function(T data, void Function(T newData) update) buildChild;
   final Widget Function(Widget child)? layoutBuilder;
 
   const FutureLoadingScreen({super.key, required this.load, required this.buildChild, this.layoutBuilder});
@@ -19,16 +19,27 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
   @override
   void initState() {
     super.initState();
-    _data = widget.load();
+    _loadData();
   }
 
   @override
   void didUpdateWidget(covariant FutureLoadingScreen<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.load != oldWidget.load) {
-      setState(() {});
-      _data = widget.load();
+      _loadData();
     }
+  }
+
+  void _loadData() {
+    setState(() {
+      _data = widget.load();
+    });
+  }
+
+  void _setData(T newData) {
+    setState(() {
+      _data = Future.value(newData); // Force FutureBuilder to update
+    });
   }
 
   @override
@@ -46,15 +57,12 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
           return layoutBuilder(
             ErrorScreen(
               error: snapshot.error?.toString() ?? t.error.unknownError,
-              retry: () {
-                setState(() {});
-                _data = widget.load();
-              },
+              retry: _loadData,
             ),
           );
         }
 
-        return widget.buildChild(data);
+        return widget.buildChild(data, _setData);
       },
     );
   }

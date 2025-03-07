@@ -17,7 +17,7 @@ class NewsScreenContainer extends StatelessWidget {
     return MainLayout(
       child: FutureLoadingScreen(
         load: fetchNews,
-        buildChild: (List<NewsModel> news) => NewsScreen(news: news),
+        buildChild: (List<NewsModel> news, _) => NewsScreen(news: news),
       ),
     );
   }
