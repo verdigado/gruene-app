@@ -13,6 +13,7 @@ import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/marker_item_helper.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
@@ -24,12 +25,12 @@ import 'package:motion_toast/motion_toast.dart';
 typedef GetAdditionalDataBeforeCallback<T> = Future<T?> Function(BuildContext);
 typedef GetAddScreenCallback<T, U> = T Function(LatLng, AddressModel?, U?);
 typedef SaveNewAndGetMarkerCallback<T> = Future<MarkerItemModel> Function(T);
-typedef GetPoiCallback<T> = Future<T> Function(String);
+typedef GetPoiCallback<T> = Future<T> Function();
 typedef GetPoiDetailWidgetCallback<T> = Widget Function(T);
 typedef GetPoiEditWidgetCallback<T> = Widget Function(T);
 typedef OnDeletePoiCallback = Future<void> Function(String poiId);
 
-abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiUpdateType> extends State<T>
+abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailType, PoiUpdateType> extends State<T>
     with FocusAreaInfo, SearchMixin<T> {
   late MapController mapController;
 
@@ -109,19 +110,17 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiUpdateTyp
   }
 
   void onFeatureClick<U>(
-    dynamic rawFeature,
+    Map<String, dynamic> feature,
     GetPoiCallback<U> getPoi,
     GetPoiDetailWidgetCallback<U> getPoiDetail,
     GetPoiEditWidgetCallback<U> getPoiEdit, {
     Size desiredSize = const Size(100, 100),
     bool useBottomSheet = false,
   }) async {
-    final feature = rawFeature as Map<String, dynamic>;
-    final poiId = MapHelper.extractPoiIdFromFeature(feature);
-    U poi = await getPoi(poiId);
+    U poi = await getPoi();
     final poiDetailWidget = getPoiDetail(poi);
     if (useBottomSheet) {
-      await mapController.setFocusToMarkerItem(rawFeature);
+      await mapController.setFocusToMarkerItem(feature);
       var result = await showDetailBottomSheet(poiDetailWidget);
       if (result != null && result == ModalDetailResult.edit) {
         _editPoi(() => getPoiEdit(poi));
@@ -229,6 +228,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiUpdateTyp
   }
 
   String get focusAreaFillLayerId => '${_focusAreadId}_layer';
+
   void loadDataLayers(LatLng locationSW, LatLng locationNE) async {
     if (focusAreasVisible) {
       loadFocusAreaLayer();
@@ -372,4 +372,14 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiUpdateTyp
 
   Future<MarkerItemModel> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
       await campaignActionCache.storeNewPoi(poiType, newPoi);
+
+  Future<U> getPoiFromFeature<U extends BasicPoi>(Map<String, dynamic> feature) {
+    final isCached = MapHelper.extractIsCachedFromFeature(feature);
+    var getPoiFromCacheOrApi = isCached ? getCachedPoi : getPoi;
+    final poiId = MapHelper.extractPoiIdFromFeature(feature);
+    return getPoiFromCacheOrApi(poiId) as Future<U>;
+  }
+
+  Future<PoiDetailType> getCachedPoi(String poiId);
+  Future<PoiDetailType> getPoi(String poiId);
 }

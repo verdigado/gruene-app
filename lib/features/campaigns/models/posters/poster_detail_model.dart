@@ -21,10 +21,12 @@ enum PosterStatus {
 }
 
 @JsonSerializable()
-class PosterDetailModel {
-  String id;
+class PosterDetailModel implements BasicPoi {
+  @override
+  final String id;
   List<PosterPhotoModel> photos;
 
+  @override
   final AddressModel address;
   final String comment;
   final PosterStatus status;
@@ -70,4 +72,9 @@ class PosterDetailModel {
       _$PosterDetailModelFromJson(json.convertLatLongField());
 
   Map<String, dynamic> toJson() => _$PosterDetailModelToJson(this);
+}
+
+abstract class BasicPoi {
+  abstract final String id;
+  abstract final AddressModel address;
 }

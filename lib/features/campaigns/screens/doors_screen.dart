@@ -6,10 +6,10 @@ import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
-import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dart';
+import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/screens/door_edit.dart';
 import 'package:gruene_app/features/campaigns/screens/doors_add_screen.dart';
 import 'package:gruene_app/features/campaigns/screens/doors_detail.dart';
@@ -26,7 +26,7 @@ class DoorsScreen extends StatefulWidget {
   State<DoorsScreen> createState() => _DoorsScreenState();
 }
 
-class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorUpdateModel> {
+class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDetailModel, DoorUpdateModel> {
   static const _poiType = PoiServiceType.door;
   final Map<String, List<String>> doorsExclusions = <String, List<String>>{
     t.campaigns.filters.focusAreas: [t.campaigns.filters.visited_areas],
@@ -79,6 +79,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorUp
       addMapLayersForContext: addMapLayersForContext,
       loadDataLayers: loadDataLayers,
       showMapInfoAfterCameraMove: showMapInfoAfterCameraMove,
+      getBasicPoiFromFeature: (feature) => getPoiFromFeature<BasicPoi>(feature),
     );
 
     return Column(
@@ -113,19 +114,6 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorUp
 
   void _onFeatureClick(dynamic rawFeature) async {
     final feature = rawFeature as Map<String, dynamic>;
-    final isCached = MapHelper.extractIsCachedFromFeature(feature);
-
-    getPoi(String poiId) async {
-      final door = await campaignService.getPoiAsDoorDetail(poiId);
-      return door;
-    }
-
-    getCachedPoi(String poiId) async {
-      final door = await campaignActionCache.getPoiAsDoorDetail(poiId);
-      return door;
-    }
-
-    var getPoiFromCacheOrApi = isCached ? getCachedPoi : getPoi;
 
     getPoiDetail(DoorDetailModel door) {
       return DoorsDetail(
@@ -139,11 +127,21 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorUp
 
     super.onFeatureClick<DoorDetailModel>(
       rawFeature,
-      getPoiFromCacheOrApi,
+      () => getPoiFromFeature<DoorDetailModel>(feature),
       getPoiDetail,
       getEditPoiWidget,
       desiredSize: Size(145, 110),
     );
+  }
+
+  @override
+  getPoi(String poiId) {
+    return campaignService.getPoiAsDoorDetail(poiId);
+  }
+
+  @override
+  getCachedPoi(String poiId) {
+    return campaignActionCache.getPoiAsDoorDetail(poiId);
   }
 
   void _onNoFeatureClick(Point<double> point) {

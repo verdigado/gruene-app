@@ -11,9 +11,11 @@ import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_mo
 import 'package:gruene_app/features/campaigns/screens/map_consumer.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
+typedef GetPoiByIdCallback<T> = Future<T> Function(String poiId);
+
 class MyPosterListScreen extends StatefulWidget {
   final List<PosterListItemModel> myPosters;
-  final GetPoiCallback<PosterDetailModel> getPoi;
+  final GetPoiByIdCallback<PosterDetailModel> getPoi;
   final GetPoiEditWidgetCallback<PosterDetailModel> getPoiEdit;
   final Future<PosterListItemModel> Function(String id) reloadPosterListItem;
 
@@ -51,7 +53,7 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                t.campaigns.poster.my_posters_title,
+                t.campaigns.poster.my_posters_title(count: currentPosters.length),
                 style: theme.textTheme.titleMedium,
               ),
             ),

@@ -9,6 +9,7 @@ class MapWithLocation extends StatelessWidget {
   final LoadCachedItemsCallback? loadCachedItems;
   final LoadDataLayersCallBack? loadDataLayers;
   final GetMarkerImagesCallback? getMarkerImages;
+  final GetBasicPoiFromFeatureCallback getBasicPoiFromFeature;
   final OnFeatureClickCallback? onFeatureClick;
   final OnNoFeatureClickCallback? onNoFeatureClick;
   final AddMapLayersForContextCallback? addMapLayersForContext;
@@ -21,6 +22,7 @@ class MapWithLocation extends StatelessWidget {
     required this.loadVisibleItems,
     required this.loadCachedItems,
     required this.getMarkerImages,
+    required this.getBasicPoiFromFeature,
     required this.onFeatureClick,
     required this.onNoFeatureClick,
     required this.showMapInfoAfterCameraMove,
@@ -49,6 +51,7 @@ class MapWithLocation extends StatelessWidget {
           onFeatureClick: onFeatureClick,
           onNoFeatureClick: onNoFeatureClick,
           addMapLayersForContext: addMapLayersForContext,
+          getBasicPoiFromFeature: getBasicPoiFromFeature,
           loadDataLayers: loadDataLayers,
           showMapInfoAfterCameraMove: showMapInfoAfterCameraMove,
           locationAvailable: position?.isAvailable() ?? false,

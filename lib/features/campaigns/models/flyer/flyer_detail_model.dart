@@ -2,14 +2,17 @@
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
+import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 part 'flyer_detail_model.g.dart';
 
 @JsonSerializable()
-class FlyerDetailModel {
+class FlyerDetailModel extends BasicPoi {
+  @override
   final String id;
+  @override
   final AddressModel address;
   final int flyerCount;
   final String createdAt;
