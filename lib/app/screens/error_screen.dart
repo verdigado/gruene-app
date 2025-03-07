@@ -9,7 +9,7 @@ class ErrorScreen<T> extends StatelessWidget {
   final T Function() retry;
 
   const ErrorScreen({super.key, required this.retry, this.error, this.errorMessage})
-      : assert((error == null) != (errorMessage == null));
+      : assert((error == null) != (errorMessage == null) && error is! String);
 
   @override
   Widget build(BuildContext context) {
