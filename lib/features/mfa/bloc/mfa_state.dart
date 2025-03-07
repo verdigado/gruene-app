@@ -5,7 +5,7 @@ enum MfaStatus { init, setup, ready, verify }
 
 class MfaState extends Equatable {
   final MfaStatus status;
-  final String? error;
+  final Object? error;
   final bool isLoading;
   final LoginAttemptDto? loginAttempt;
   final DateTime? lastRefresh;
@@ -22,7 +22,7 @@ class MfaState extends Equatable {
 
   MfaState copyWith({
     MfaStatus? status,
-    String? error,
+    Object? error,
     bool? isLoading,
     LoginAttemptDto? loginAttempt,
     DateTime? lastRefresh,

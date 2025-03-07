@@ -29,10 +29,10 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
           loginAttempt: null,
         ),
       );
-    } catch (err) {
+    } catch (error) {
       emit(
         state.copyWith(
-          error: err.toString(),
+          error: error,
           loginAttempt: null,
         ),
       );
