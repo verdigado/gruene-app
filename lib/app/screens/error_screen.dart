@@ -4,14 +4,12 @@ import 'package:gruene_app/app/utils/error_message.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class ErrorScreen<T> extends StatelessWidget {
-  final Object error;
+  final Object? error;
+  final String? errorMessage;
   final T Function() retry;
 
-  const ErrorScreen({
-    super.key,
-    required this.error,
-    required this.retry,
-  });
+  const ErrorScreen({super.key, required this.retry, this.error, this.errorMessage})
+      : assert((error == null) != (errorMessage == null));
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +18,7 @@ class ErrorScreen<T> extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            getErrorMessage(error),
+            errorMessage ?? getErrorMessage(error!),
             textAlign: TextAlign.center,
             style: TextStyle(color: ThemeColors.textWarning),
           ),

@@ -51,13 +51,8 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
           loginAttempt: null,
         ),
       );
-    } catch (err) {
-      emit(
-        state.copyWith(
-          error: err.toString(),
-          isLoading: false,
-        ),
-      );
+    } catch (error) {
+      emit(state.copyWith(error: error, isLoading: false));
     }
   }
 
@@ -72,8 +67,8 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
           lastRefresh: null,
         ),
       );
-    } catch (err) {
-      emit(state.copyWith(error: err.toString()));
+    } catch (error) {
+      emit(state.copyWith(error: error));
     }
   }
 
@@ -107,29 +102,17 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
           ),
         );
       }
-    } on KeycloakClientException catch (err) {
-      if (err.type == KeycloakExceptionType.notRegistered) {
+    } on KeycloakClientException catch (error) {
+      if (error.type == KeycloakExceptionType.notRegistered) {
         try {
           await _service.delete(_authenticator!);
           _authenticator = null;
           emit(state.copyWith(status: MfaStatus.setup));
         } catch (_) {}
       }
-      emit(
-        state.copyWith(
-          error: err.toString(),
-          loginAttempt: null,
-          isLoading: false,
-        ),
-      );
-    } catch (err) {
-      emit(
-        state.copyWith(
-          error: err.toString(),
-          loginAttempt: null,
-          isLoading: false,
-        ),
-      );
+      emit(state.copyWith(error: event.raiseError ? error : null, loginAttempt: null, isLoading: false));
+    } catch (error) {
+      emit(state.copyWith(error: event.raiseError ? error : null, loginAttempt: null, isLoading: false));
     }
   }
 
@@ -149,14 +132,8 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
           lastGrantedLoginAttempt: event.granted ? state.loginAttempt : null,
         ),
       );
-    } catch (err) {
-      emit(
-        state.copyWith(
-          status: MfaStatus.ready,
-          error: err.toString(),
-          isLoading: false,
-        ),
-      );
+    } catch (error) {
+      emit(state.copyWith(status: MfaStatus.ready, error: error, isLoading: false));
     }
   }
 
