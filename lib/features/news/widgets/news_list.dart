@@ -32,7 +32,7 @@ class NewsList extends StatelessWidget {
       buildChild: (List<NewsModel> data) {
         final news = data.filter(selectedDivisions, selectedCategories, showBookmarked, dateRange);
         if (news.isEmpty) {
-          return ErrorScreen(error: t.news.noResults, retry: fetchNews);
+          return ErrorScreen(errorMessage: t.news.noResults, retry: fetchNews);
         }
         return ListView.builder(
           itemCount: news.length,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/routes.dart';
+import 'package:gruene_app/app/utils/error_message.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
@@ -27,12 +29,9 @@ class _TokenInputScreenState extends State<TokenInputScreen> {
 
     if (!context.mounted) return;
 
-    if (bloc.state.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(bloc.state.error.toString()),
-        ),
-      );
+    final error = bloc.state.error;
+    if (error != null) {
+      showSnackBar(context, getErrorMessage(error));
     }
 
     Future<void> waitForReadyStatus() async {

@@ -20,7 +20,7 @@ class OwnProfileScreen extends StatelessWidget {
       load: fetchOwnProfile,
       buildChild: (Profile? data) {
         if (data == null) {
-          return ErrorScreen(error: t.profiles.noResult, retry: fetchOwnProfile);
+          return ErrorScreen(errorMessage: t.profiles.noResult, retry: fetchOwnProfile);
         }
 
         Iterable<ProfileRole> mandateRoles =
