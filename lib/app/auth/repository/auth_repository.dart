@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -47,19 +48,38 @@ class AuthRepository {
     return false;
   }
 
-  Future<void> logout() async {
-    final idToken = await _secureStorage.read(key: SecureStorageKeys.idToken);
+  /// Performs a back-channel logout to revoke the offline session.
+  /// The flutter_appauth library uses a front-channel logout by default.
+  Future<void> _endSession(String refreshToken) async {
+    final dio = Dio();
 
-    await _appAuth.endSession(
-      EndSessionRequest(
-        idTokenHint: idToken,
-        postLogoutRedirectUrl: Config.oidcCallbackPath,
-        discoveryUrl: '${Config.oidcIssuer}/.well-known/openid-configuration',
-        allowInsecureConnections: Config.isDevelopment,
+    final Response<dynamic> response = await dio.post<dynamic>(
+      '${Config.oidcIssuer}/protocol/openid-connect/logout',
+      data: {
+        'client_id': Config.oidcClientId,
+        'refresh_token': refreshToken,
+      },
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
       ),
     );
 
-    logger.d('Logout successful');
+    if (response.statusCode != null && (response.statusCode! < 200 || response.statusCode! >= 300)) {
+      throw Exception('Back-channel logout failed with status: ${response.statusCode}');
+    }
+  }
+
+  Future<void> logout() async {
+    final refreshToken = await _secureStorage.read(key: SecureStorageKeys.refreshToken);
+    if (refreshToken != null) {
+      try {
+        await _endSession(refreshToken);
+        logger.d('Logout successful');
+      } catch (e) {
+        logger.w('Logout failed: $e');
+      }
+    }
+
     await _deleteTokens();
   }
 
