@@ -18,6 +18,8 @@ class ProfileImageDeleter extends StatelessWidget {
   });
 
   Future<void> _deleteProfileImage(BuildContext context) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => const DeleteProfileImageDialog(),
@@ -31,14 +33,12 @@ class ProfileImageDeleter extends StatelessWidget {
       final response = await deleteProfileImage(profileId: profile.id);
       onProfileUpdated(response);
     } catch (error) {
-      _showError(context, error is ClientException ? t.error.offlineError : t.profiles.profileImage.deleteError);
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text(error is ClientException ? t.error.offlineError : t.profiles.profileImage.deleteError)),
+      );
     }
 
     onProcessing(false);
-  }
-
-  void _showError(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
