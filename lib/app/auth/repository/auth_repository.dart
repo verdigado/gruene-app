@@ -64,7 +64,8 @@ class AuthRepository {
       ),
     );
 
-    if (response.statusCode != null && (response.statusCode! < 200 || response.statusCode! >= 300)) {
+    final statusCode = response.statusCode;
+    if (statusCode != null && (statusCode < 200 || statusCode >= 300)) {
       throw Exception('Back-channel logout failed with status: ${response.statusCode}');
     }
   }
