@@ -5,7 +5,7 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
 
-class ProfileImageDeleter extends StatefulWidget {
+class ProfileImageDeleter extends StatelessWidget {
   final Profile profile;
   final ValueChanged<Profile> onProfileUpdated;
   final ValueChanged<bool> onProcessing;
@@ -17,32 +17,27 @@ class ProfileImageDeleter extends StatefulWidget {
     required this.onProcessing,
   });
 
-  @override
-  State<ProfileImageDeleter> createState() => _ProfileImageDeleterState();
-}
-
-class _ProfileImageDeleterState extends State<ProfileImageDeleter> {
-  Future<void> _deleteProfileImage() async {
+  Future<void> _deleteProfileImage(BuildContext context) async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => DeleteProfileImageDialog(),
+      builder: (context) => const DeleteProfileImageDialog(),
     );
 
     if (confirmed != true) return;
 
-    widget.onProcessing(true);
+    onProcessing(true);
 
     try {
-      final response = await deleteProfileImage(profileId: widget.profile.id);
-      widget.onProfileUpdated(response);
+      final response = await deleteProfileImage(profileId: profile.id);
+      onProfileUpdated(response);
     } catch (error) {
-      _showError(error is ClientException ? t.error.offlineError : t.profiles.profileImage.deleteError);
+      _showError(context, error is ClientException ? t.error.offlineError : t.profiles.profileImage.deleteError);
     }
 
-    widget.onProcessing(false);
+    onProcessing(false);
   }
 
-  void _showError(String message) {
+  void _showError(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
@@ -50,9 +45,9 @@ class _ProfileImageDeleterState extends State<ProfileImageDeleter> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return TextButton(
-      onPressed: _deleteProfileImage,
+      onPressed: () => _deleteProfileImage(context),
       style: TextButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),

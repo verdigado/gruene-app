@@ -8,7 +8,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfileImageUploader extends StatefulWidget {
+class ProfileImageUploader extends StatelessWidget {
   final Profile profile;
   final ValueChanged<Profile> onProfileUpdated;
   final ValueChanged<bool> onProcessing;
@@ -20,14 +20,10 @@ class ProfileImageUploader extends StatefulWidget {
     required this.onProcessing,
   });
 
-  @override
-  State<ProfileImageUploader> createState() => _ProfileImageUploaderState();
-}
-
-class _ProfileImageUploaderState extends State<ProfileImageUploader> {
-  Future<void> _pickAndUploadImage() async {
+  Future<void> _pickAndUploadImage(BuildContext context) async {
     final ImagePicker picker = ImagePicker();
     final theme = Theme.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile == null) return;
@@ -61,31 +57,29 @@ class _ProfileImageUploaderState extends State<ProfileImageUploader> {
       contentType: MediaType('image', 'jpeg'),
     );
 
-    widget.onProcessing(true);
+    onProcessing(true);
 
     try {
       final response = await updateProfileImage(
-        profileId: widget.profile.id,
+        profileId: profile.id,
         profileImage: multipartFile,
       );
 
-      widget.onProfileUpdated(response);
+      onProfileUpdated(response);
     } catch (error) {
-      _showError(error is ClientException ? t.error.offlineError : t.profiles.profileImage.updateError);
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text(error is ClientException ? t.error.offlineError : t.profiles.profileImage.updateError)),
+      );
     }
 
-    widget.onProcessing(false);
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    onProcessing(false);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return TextButton(
-      onPressed: _pickAndUploadImage,
+      onPressed: () => _pickAndUploadImage(context),
       style: TextButton.styleFrom(
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         minimumSize: Size.zero,

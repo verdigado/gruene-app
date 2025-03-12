@@ -16,14 +16,9 @@ import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class OwnProfileScreen extends StatefulWidget {
+class OwnProfileScreen extends StatelessWidget {
   const OwnProfileScreen({super.key});
 
-  @override
-  State<OwnProfileScreen> createState() => _OwnProfileScreenState();
-}
-
-class _OwnProfileScreenState extends State<OwnProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
