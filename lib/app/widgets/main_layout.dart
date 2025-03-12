@@ -11,8 +11,8 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
-      bottomNavigationBar: const BottomNavigation(),
+      body: SafeArea(child: child),
+      bottomNavigationBar: SafeArea(child: const BottomNavigation()),
       appBar: appBar ?? MainAppBar(),
     );
   }
