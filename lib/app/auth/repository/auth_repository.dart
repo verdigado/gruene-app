@@ -53,7 +53,7 @@ class AuthRepository {
   Future<void> _endSession(String refreshToken) async {
     final dio = Dio();
 
-    final Response<dynamic> response = await dio.post<dynamic>(
+    final Response<void> response = await dio.post(
       '${Config.oidcIssuer}/protocol/openid-connect/logout',
       data: {
         'client_id': Config.oidcClientId,
