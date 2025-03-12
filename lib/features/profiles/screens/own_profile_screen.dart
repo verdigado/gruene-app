@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
@@ -18,22 +17,20 @@ class OwnProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureLoadingScreen(
       load: fetchOwnProfile,
-      buildChild: (Profile? data) {
-        if (data == null) {
-          return ErrorScreen(error: t.profiles.noResult, retry: fetchOwnProfile);
-        }
-
+      buildChild: (Profile data, updateData) {
         Iterable<ProfileRole> mandateRoles =
             data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
         Iterable<ProfileRole> sherpaRoles = data.roles.where((role) => role.type == ProfileRoleType.role);
         Iterable<ProfileTag> skillTags = data.tags.where((tag) => tag.type == ProfileTagType.skill);
         DivisionMembership? kvMembership =
             data.memberships?.where((membership) => membership.division.level == DivisionLevel.kv).firstOrNull;
-
         return ListView(
           children: [
             SizedBox(height: 24),
-            ProfileHeader(profile: data),
+            ProfileHeader(
+              profile: data,
+              onProfileUpdated: updateData,
+            ),
             SizedBox(height: 24),
             ProfileBaseData(profile: data),
             SizedBox(height: 12),
