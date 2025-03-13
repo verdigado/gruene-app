@@ -9,6 +9,7 @@ import 'package:gruene_app/features/mfa/screens/token_input_screen.dart';
 import 'package:gruene_app/features/mfa/screens/token_scan_screen.dart';
 import 'package:gruene_app/features/news/screens/news_detail_screen.dart';
 import 'package:gruene_app/features/news/screens/news_screen.dart';
+import 'package:gruene_app/features/profiles/screens/digital_membership_card_screen.dart';
 import 'package:gruene_app/features/profiles/screens/own_profile_screen.dart';
 import 'package:gruene_app/features/settings/screens/settings_screen.dart';
 import 'package:gruene_app/features/settings/screens/support_screen.dart';
@@ -41,7 +42,10 @@ class Routes {
   static GoRoute news =
       buildRoute('/news', t.news.news, NewsScreenContainer(), routes: [newsDetail], withMainLayout: false);
   static GoRoute campaigns = buildRoute('/campaigns', t.campaigns.campaigns, CampaignsScreen());
-  static GoRoute profiles = buildRoute('/profiles', t.profiles.profiles, OwnProfileScreen());
+  static GoRoute digitalMembershipCard =
+      buildRoute('digital-membership-card', t.profiles.digitalMembershipCard.title, DigitalMembershipCardScreen());
+  static GoRoute profiles =
+      buildRoute('/profiles', t.profiles.profiles, OwnProfileScreen(), routes: [digitalMembershipCard]);
   static GoRoute mfaTokenScan = buildRoute('token-scan', t.mfa.tokenScan.title, TokenScanScreen());
   static GoRoute mfaTokenInput = buildRoute('token-input', t.mfa.tokenInput.title, TokenInputScreen());
   static GoRoute mfa = buildRoute('/mfa', t.mfa.mfa, MfaScreen(), routes: [mfaTokenScan, mfaTokenInput]);
