@@ -29,22 +29,18 @@ class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 0,
-      length: widget.tabs.length,
-      child: Scaffold(
-        appBar: widget.appBarBuilder(
-          CustomTabBar(
-            tabController: _tabController,
-            tabs: widget.tabs,
-            onTap: (index) => setState(() => _tabController.index = index),
-          ),
+    return Scaffold(
+      appBar: widget.appBarBuilder(
+        CustomTabBar(
+          tabController: _tabController,
+          tabs: widget.tabs,
+          onTap: (index) => setState(() => _tabController.index = index),
         ),
-        body: TabBarView(
-          controller: _tabController,
-          physics: widget.scrollableBody ? null : NeverScrollableScrollPhysics(),
-          children: widget.tabs.map((tab) => tab.view).toList(),
-        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        physics: widget.scrollableBody ? null : NeverScrollableScrollPhysics(),
+        children: widget.tabs.map((tab) => tab.view).toList(),
       ),
     );
   }

@@ -34,7 +34,7 @@ class BottomNavigation extends StatelessWidget {
         backgroundColor: theme.colorScheme.surface,
         items: items,
         currentIndex: navigationShell.currentIndex,
-        onTap: (int index) => navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex),
+        onTap: (index) => navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex),
       ),
     );
   }
