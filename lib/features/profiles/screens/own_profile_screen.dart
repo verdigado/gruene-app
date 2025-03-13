@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/widgets/text_list_item.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/helper/social_media_type_translation.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_base_data.dart';
@@ -34,6 +37,11 @@ class OwnProfileScreen extends StatelessWidget {
           children: [
             SizedBox(height: 24),
             ProfileHeader(profile: data),
+            SizedBox(height: 24),
+            TextListItem(
+              title: t.profiles.digitalMembershipCard.title,
+              onPress: () => context.pushNamed(Routes.digitalMembershipCard.name!),
+            ),
             SizedBox(height: 24),
             ProfileBaseData(profile: data),
             SizedBox(height: 12),

@@ -218,7 +218,15 @@
       "twitter": "Twitter",
       "chatbegruenung": "Chatbegrünung"
     },
-    "homepage": "Homepage"
+    "homepage": "Homepage",
+    "digitalMembershipCard": {
+      "title": "Mein Mitgliedsausweis",
+      "card": {
+        "title": "Mitgliedskarte",
+        "party": "Bündnis 90/DIE GRÜNEN",
+        "membershipNumber": "Mitgliedernummer:"
+      }
+    }
   },
   "mfa": {
     "mfa": "Zwei-Faktor-Authentifizierung",

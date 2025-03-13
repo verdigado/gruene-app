@@ -66,6 +66,7 @@ dependencies:
   carousel_slider_plus: ^7.1.0
   flutter_file_dialog: ^3.0.2
   cached_network_image: ^3.4.1
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
 
