@@ -7,6 +7,7 @@ import 'package:gruene_app/features/campaigns/screens/flyer_screen.dart';
 import 'package:gruene_app/features/campaigns/screens/posters_screen.dart';
 import 'package:gruene_app/features/campaigns/screens/statistics_screen.dart';
 import 'package:gruene_app/features/campaigns/screens/teams_screen.dart';
+import 'package:gruene_app/features/campaigns/widgets/refresh_button.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class CampaignsScreen extends StatelessWidget {
@@ -25,6 +26,7 @@ class CampaignsScreen extends StatelessWidget {
     return TabScreen(
       appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(
         title: t.campaigns.campaigns,
+        appBarAction: RefreshButton(),
         tabBar: tabBar,
       ),
       tabs: campaignTabs,
