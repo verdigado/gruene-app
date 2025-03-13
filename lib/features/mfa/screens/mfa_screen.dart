@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gruene_app/app/utils/error_message.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
@@ -14,12 +16,9 @@ class MfaScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<MfaBloc, MfaState>(
       listener: (context, state) {
-        if (state.error != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error!),
-            ),
-          );
+        final error = state.error;
+        if (error != null) {
+          showSnackBar(context, getErrorMessage(error));
         }
       },
       builder: (context, state) {
