@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
 
 class FutureLoadingScreen<T> extends StatefulWidget {
   final Future<T> Function() load;
