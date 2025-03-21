@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,6 +38,35 @@ import 'package:intl/intl.dart';
 import 'package:keycloak_authenticator/api.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+// Example for push notification handling
+Future<void> handlePushNotification(RemoteMessage message, String type) async {
+  debugPrint('PUSH NOTIFICATION: $type');
+  debugPrint('PUSH NOTIFICATION: Title: ${message.notification?.title}');
+  debugPrint('PUSH NOTIFICATION: Body: ${message.notification?.body}');
+  debugPrint('PUSH NOTIFICATION: Payload: ${message.data}');
+}
+
+Future<void> handleBackgroundMessage(RemoteMessage message) async {
+  await handlePushNotification(message, 'BACKGROUND');
+}
+
+Future<void> setupFirebaseMessagingSubscriptions() async {
+  final fbMessaging = FirebaseMessaging.instance;
+  await fbMessaging.requestPermission();
+
+  // the registration token can be send to the backend
+  // to send push notifications to individual devices
+  final token = await fbMessaging.getToken();
+  debugPrint('TESTPN: Firebase token: $token');
+
+  await fbMessaging.subscribeToTopic('news');
+  // await _firebaseMessaging.unsubscribeFromTopic('news');
+
+  // NOTE: you cannot pass an arrow or unnamed function to onBackgroundMessage
+  FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) => handlePushNotification(message, 'FOREGROUND'));
+}
+
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,6 +98,10 @@ Future<void> main() async {
   GetIt.I.registerFactory<GrueneApiCampaignsStatisticsService>(() => GrueneApiCampaignsStatisticsService());
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+
+  await setupFirebaseMessagingSubscriptions();
 
   // setupCachePeriodicFlushing();
 
