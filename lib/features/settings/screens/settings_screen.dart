@@ -26,7 +26,10 @@ class SettingsScreen extends StatelessWidget {
         TextListItem(title: t.settings.inviteNonMember, onPress: () => {}, isImplemented: false),
         TextListItem(title: t.settings.offlineMaps, onPress: () => {}, isImplemented: false),
         SectionTitle(title: t.settings.generalSettings),
-        TextListItem(title: t.settings.pushNotifications, onPress: () => {}, isImplemented: false),
+        TextListItem(
+          title: t.settings.pushNotifications.pushNotifications,
+          onPress: () => context.pushNamed(Routes.pushNotifications.name!),
+        ),
         TextListItem(title: t.settings.accessibility, onPress: () => {}, isImplemented: false),
         TextListItem(
           title: t.settings.support.support,
