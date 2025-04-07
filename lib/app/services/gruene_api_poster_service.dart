@@ -91,6 +91,6 @@ class GrueneApiPosterService extends GrueneApiCampaignsService {
 
   Future<List<PosterListItemModel>> getMyPosters() async => getFromApi(
         apiRequest: (api) => api.v1CampaignsPoisSelfGet(type: poiType.transformToApiSelfGetType()),
-        map: (result) => result.data.map((p) => p.transformToPosterListItem()).toList(),
+        map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToPosterListItem()).toList(),
       );
 }
