@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/features/campaigns/models/map_layer_model.dart';
@@ -23,7 +24,7 @@ abstract class GrueneApiCampaignsService {
           type: poiType.transformToApiGetType(),
           bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
         ),
-        map: (result) => result.data.map((p) => p.transformToMarkerItem()).toList(),
+        map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToMarkerItem()).toList(),
       );
 
   Future<List<MapLayerModel>> loadFocusAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
@@ -58,6 +59,18 @@ abstract class GrueneApiCampaignsService {
       throw ApiException(statusCode: response.statusCode);
     }
     return response;
+  }
+
+  bool filterByCutOffDate(Poi poi) {
+    if (Config.poiFilterCutOffDate == null) return true;
+
+    if (poi.createdAt.millisecondsSinceEpoch > Config.poiFilterCutOffDate!.millisecondsSinceEpoch) return true;
+
+    if (poi.type == PoiType.poster && poi.poster!.status == PoiPosterStatus.ok) {
+      return true;
+    }
+
+    return false;
   }
 }
 
