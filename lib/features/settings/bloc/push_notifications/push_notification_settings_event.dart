@@ -10,3 +10,5 @@ class TogglePushNotificationSetting extends PushNotificationSettingsEvent {
 }
 
 class DisableAllToggles extends PushNotificationSettingsEvent {}
+
+class UpdateFirebaseSubscriptions extends PushNotificationSettingsEvent {}

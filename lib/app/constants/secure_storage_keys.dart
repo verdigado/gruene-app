@@ -5,4 +5,5 @@ class SecureStorageKeys {
   static const String pushNotificationsBV = 'push_notifications_bv';
   static const String pushNotificationsLV = 'push_notifications_lv';
   static const String pushNotificationsKV = 'push_notifications_kv';
+  static const String subscribedTopics = 'subscribed_topics';
 }

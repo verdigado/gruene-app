@@ -4,8 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 
-GoRouter createAppRouter(BuildContext context) {
+GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigatorKey) {
   return GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: Routes.news.path,
     routes: [
       Routes.news,

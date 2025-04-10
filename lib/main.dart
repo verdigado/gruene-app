@@ -1,19 +1,22 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
+import 'package:gruene_app/app/services/fcm_notification_service.dart';
+import 'package:gruene_app/app/services/fcm_topic_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
@@ -40,35 +43,6 @@ import 'package:intl/intl.dart';
 import 'package:keycloak_authenticator/api.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-// Example for push notification handling
-Future<void> handlePushNotification(RemoteMessage message, String type) async {
-  debugPrint('PUSH NOTIFICATION: $type');
-  debugPrint('PUSH NOTIFICATION: Title: ${message.notification?.title}');
-  debugPrint('PUSH NOTIFICATION: Body: ${message.notification?.body}');
-  debugPrint('PUSH NOTIFICATION: Payload: ${message.data}');
-}
-
-Future<void> handleBackgroundMessage(RemoteMessage message) async {
-  await handlePushNotification(message, 'BACKGROUND');
-}
-
-Future<void> setupFirebaseMessagingSubscriptions() async {
-  final fbMessaging = FirebaseMessaging.instance;
-  await fbMessaging.requestPermission();
-
-  // the registration token can be send to the backend
-  // to send push notifications to individual devices
-  final token = await fbMessaging.getToken();
-  debugPrint('TESTPN: Firebase token: $token');
-
-  await fbMessaging.subscribeToTopic('news');
-  // await _firebaseMessaging.unsubscribeFromTopic('news');
-
-  // NOTE: you cannot pass an arrow or unnamed function to onBackgroundMessage
-  FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) => handlePushNotification(message, 'FOREGROUND'));
-}
-
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,6 +57,14 @@ Future<void> main() async {
   }
 
   registerSecureStorage();
+
+  await Firebase.initializeApp();
+
+  final navigatorKey = GlobalKey<NavigatorState>();
+  final fcmService = FcmNotificationService(navigatorKey);
+  GetIt.I.registerSingleton<FcmNotificationService>(fcmService);
+  await fcmService.initialize();
+
   GetIt.I.registerSingleton<AppSettings>(AppSettings());
   GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
   GetIt.I.registerSingleton<IpService>(IpService());
@@ -93,7 +75,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<CampaignActionCache>(CampaignActionCache());
   GetIt.I.registerSingleton<CampaignActionCacheTimer>(CampaignActionCacheTimer());
   GetIt.I.registerSingleton<FileManager>(FileManager());
-
+  GetIt.I.registerSingleton<FcmTopicService>(FcmTopicService());
   GetIt.I.registerFactory<GrueneApiPosterService>(() => GrueneApiPosterService());
   GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
   GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());
@@ -101,17 +83,15 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
-
-  await setupFirebaseMessagingSubscriptions();
-
   // setupCachePeriodicFlushing();
 
-  runApp(TranslationProvider(child: const MyApp()));
+  runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  const MyApp({super.key, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +111,7 @@ class MyApp extends StatelessWidget {
         builder: (context) {
           return BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
-              final router = createAppRouter(context);
+              final router = createAppRouter(context, navigatorKey);
               final isLoginLoading = authState is AuthLoading;
 
               // Prevent flickering if current login state is not yet known
@@ -142,6 +122,14 @@ class MyApp extends StatelessWidget {
                   home: CleanLayout(showAppBar: false),
                 );
               }
+
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                final newsId = GetIt.I<FcmNotificationService>().initialNewsId;
+                final context = navigatorKey.currentContext;
+                if (newsId != null && context != null) {
+                  GoRouter.of(context).go('/news/$newsId');
+                }
+              });
 
               return MaterialApp.router(
                 debugShowCheckedModeBanner: false,

@@ -17,15 +17,17 @@ class PushNotificationsScreen extends StatelessWidget {
       SecureStorageKeys.pushNotificationsLV: t.settings.pushNotifications.pushNotificationsLV,
       SecureStorageKeys.pushNotificationsKV: t.settings.pushNotifications.pushNotificationsKV,
     };
+
     return BlocBuilder<PushNotificationSettingsBloc, PushNotificationSettingsState>(
       builder: (context, state) {
         final bloc = context.read<PushNotificationSettingsBloc>();
 
+        final availableToggleEntries =
+            state.toggles.entries.where((entry) => state.availableToggles.contains(entry.key)).toList();
+
         return ListView(
           children: [
-            SizedBox(
-              height: 36,
-            ),
+            SizedBox(height: 36),
             ToggleListItem(
               title: t.settings.pushNotifications.disableAll,
               value: state.allDisabled,
@@ -35,7 +37,7 @@ class PushNotificationsScreen extends StatelessWidget {
                 }
               },
             ),
-            ...state.toggles.entries.map((entry) {
+            ...availableToggleEntries.map((entry) {
               return ToggleListItem(
                 title: localizedTitles[entry.key]!,
                 value: entry.value,
