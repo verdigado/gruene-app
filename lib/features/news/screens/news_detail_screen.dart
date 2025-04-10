@@ -22,7 +22,7 @@ class NewsDetailScreen extends StatelessWidget {
       load: () => fetchNewsById(newsId),
       buildChild: (NewsModel? news) {
         if (news == null) {
-          return ErrorScreen(error: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
+          return ErrorScreen(errorMessage: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
         }
         final division = news.division;
         return SizedBox(

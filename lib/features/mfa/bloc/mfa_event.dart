@@ -20,7 +20,11 @@ class SetupMfa extends MfaEvent {
 
 class DeleteMfa extends MfaEvent {}
 
-class RefreshMfa extends MfaEvent {}
+class RefreshMfa extends MfaEvent {
+  final bool raiseError;
+
+  const RefreshMfa({this.raiseError = true});
+}
 
 class SendReply extends MfaEvent {
   final bool granted;
