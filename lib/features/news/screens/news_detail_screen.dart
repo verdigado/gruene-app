@@ -8,6 +8,7 @@ import 'package:gruene_app/app/widgets/html.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
+import 'package:gruene_app/features/news/widgets/bookmark_button.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class NewsDetailScreen extends StatelessWidget {
@@ -59,18 +60,10 @@ class NewsDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              // Positioned(
-              //   right: 0,
-              //   child: IconButton(
-              // TODO #213: Add bookmarking functionality
-              //     onPressed: () {},
-              //     icon: Icon(
-              //       news.bookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
-              //       color: theme.colorScheme.surface,
-              //       size: 24,
-              //     ),
-              //   ),
-              // ),
+              Positioned(
+                right: 0,
+                child: BookmarkButton(newsId: news.id),
+              ),
             ],
           ),
         );

@@ -29,6 +29,8 @@ import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/domain/mfa_factory.dart';
+import 'package:gruene_app/features/news/bloc/bookmark_bloc.dart';
+import 'package:gruene_app/features/news/bloc/bookmark_event.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -87,6 +89,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => MfaBloc()..add(InitMfa()),
+        ),
+        BlocProvider<BookmarkBloc>(
+          create: (context) => BookmarkBloc()..add(LoadBookmarks()),
         ),
       ],
       child: Builder(

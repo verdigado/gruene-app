@@ -1831,6 +1831,14 @@ paths:
             minimum: 1
             default: 20
             type: number
+        - name: bookmarked
+          required: false
+          in: query
+          schema:
+            enum:
+              - 'true'
+              - 'false'
+            type: string
         - name: offset
           required: false
           in: query
@@ -1919,6 +1927,66 @@ paths:
                 $ref: '#/components/schemas/FindGnetzApplicationsResponse'
       tags:
         - gnetz-applications
+  /v1/bookmarks:
+    get:
+      operationId: findBookmarks
+      summary: List bookmarks for the authenticated user
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindBookmarksResponse'
+        '401':
+          description: ''
+      tags:
+        - bookmarks
+      security:
+        - bearer: []
+    post:
+      operationId: createBookmark
+      summary: Create bookmark
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookmark'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+        '401':
+          description: ''
+      tags:
+        - bookmarks
+      security:
+        - bearer: []
+  /v1/bookmarks/{bookmarkId}:
+    delete:
+      operationId: deleteBookmark
+      summary: Delete bookmark
+      parameters:
+        - name: bookmarkId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '401':
+          description: ''
+      tags:
+        - bookmarks
+      security:
+        - bearer: []
   /health:
     get:
       tags:
@@ -1959,10 +2027,10 @@ info:
   contact: {}
 tags: []
 servers:
+  - url: http://0.0.0.0:5000
+    description: localhost
   - url: https://api.gruene.de
     description: Production
-  - url: http://192.168.178.35:5000
-    description: Development
 components:
   securitySchemes:
     basic:
@@ -3708,11 +3776,29 @@ components:
           type: number
           minimum: 1
           maximum: 5
+        scoreProgressiveConservative:
+          type: number
+          nullable: true
+          minimum: 1
+          maximum: 5
+        scoreDominantParty:
+          type: number
+          nullable: true
+          minimum: 1
+          maximum: 5
+        scoreAction:
+          type: number
+          nullable: true
+          minimum: 1
+          maximum: 5
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
         - description
         - score
+        - scoreProgressiveConservative
+        - scoreDominantParty
+        - scoreAction
         - polygon
     CreateFocusArea:
       type: object
@@ -3726,12 +3812,30 @@ components:
           type: number
           minimum: 1
           maximum: 5
+        scoreProgressiveConservative:
+          type: number
+          nullable: true
+          minimum: 1
+          maximum: 5
+        scoreDominantParty:
+          type: number
+          nullable: true
+          minimum: 1
+          maximum: 5
+        scoreAction:
+          type: number
+          nullable: true
+          minimum: 1
+          maximum: 5
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
         - key
         - description
         - score
+        - scoreProgressiveConservative
+        - scoreDominantParty
+        - scoreAction
         - polygon
     FocusArea:
       type: object
@@ -3749,6 +3853,15 @@ components:
           nullable: true
         score:
           type: number
+        scoreProgressiveConservative:
+          type: number
+          nullable: true
+        scoreDominantParty:
+          type: number
+          nullable: true
+        scoreAction:
+          type: number
+          nullable: true
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
@@ -3757,6 +3870,9 @@ components:
         - createdAt
         - description
         - score
+        - scoreProgressiveConservative
+        - scoreDominantParty
+        - scoreAction
         - polygon
     FindFocusAreasResponse:
       type: object
@@ -3819,6 +3935,25 @@ components:
       required:
         - type
         - content
+    Bookmark:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - NEWS
+        itemId:
+          type: string
+          description: The id of the item that is being bookmarked.
+        url:
+          type: string
+      required:
+        - id
+        - type
+        - itemId
+        - url
     News:
       type: object
       properties:
@@ -3846,6 +3981,10 @@ components:
             - $ref: '#/components/schemas/ImageSrcSet'
         body:
           $ref: '#/components/schemas/NewsBody'
+        bookmark:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Bookmark'
       required:
         - id
         - title
@@ -3855,6 +3994,7 @@ components:
         - summary
         - featuredImage
         - body
+        - bookmark
     FindNewsResponse:
       type: object
       properties:
@@ -3980,6 +4120,27 @@ components:
             $ref: '#/components/schemas/GnetzApplication'
       required:
         - data
+    FindBookmarksResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bookmark'
+      required:
+        - data
+    CreateBookmark:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - NEWS
+        itemId:
+          type: string
+      required:
+        - type
+        - itemId
     HealthCheckResponse:
       type: object
       properties:
