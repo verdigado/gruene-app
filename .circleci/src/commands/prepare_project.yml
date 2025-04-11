@@ -12,3 +12,7 @@ steps:
       name: Restore google-services.json
       command: |
         echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json
+  - run:
+      name: Restore GoogleService-Info.plist
+      command: |
+        echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > ios/Runner/GoogleService-Info.plist
