@@ -5,6 +5,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
+import 'package:gruene_app/features/news/widgets/bookmark_button.dart';
 
 const double imageHeight = 160;
 
@@ -122,15 +123,7 @@ class NewsCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  // IconButton(
-                  // TODO #213: Add bookmarking functionality
-                  //   onPressed: () {},
-                  //   icon: Icon(
-                  //     news.bookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
-                  //     color: theme.colorScheme.surface,
-                  //     size: 24,
-                  //   ),
-                  // ),
+                  BookmarkButton(newsId: news.id),
                 ],
               ),
             ),

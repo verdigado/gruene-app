@@ -1,4 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gruene_app/app/utils/format_date.dart';
+import 'package:intl/intl.dart';
 
 class Config {
   static String get appId => 'de.gruene.wkapp';
@@ -22,6 +24,8 @@ class Config {
 
   static String get defaultLocale => 'de_DE';
   static String get defaultLanguageCode => 'de';
+
+  static DateTime? get poiFilterCutOffDate => DateFormat(dateFormat).tryParse(dotenv.env['POI_FILTER_DATE'] ?? '');
 
   static bool get androidFloss {
     // may be needed when building for f-droid store
