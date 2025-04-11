@@ -66,6 +66,9 @@ dependencies:
   carousel_slider_plus: ^7.1.0
   flutter_file_dialog: ^3.0.2
   cached_network_image: ^3.4.1
+  firebase_messaging: ^15.0.0
+  firebase_core: ^3.12.1
+  flutter_local_notifications: 17.2.1
 
 dev_dependencies:
 

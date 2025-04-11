@@ -6,5 +6,9 @@ steps:
       name: Apply Production Environment
       command: cp .env.prod .env
   - run:
-      command: fvm dart run build_runner build
       name: Generate Swagger API
+      command: fvm dart run build_runner build
+  - run:
+      name: Restore google-services.json
+      command: |
+        echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json

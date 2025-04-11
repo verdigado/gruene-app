@@ -10,6 +10,7 @@ import 'package:gruene_app/features/mfa/screens/token_scan_screen.dart';
 import 'package:gruene_app/features/news/screens/news_detail_screen.dart';
 import 'package:gruene_app/features/news/screens/news_screen.dart';
 import 'package:gruene_app/features/profiles/screens/own_profile_screen.dart';
+import 'package:gruene_app/features/settings/screens/push_notifications_screen.dart';
 import 'package:gruene_app/features/settings/screens/settings_screen.dart';
 import 'package:gruene_app/features/settings/screens/support_screen.dart';
 import 'package:gruene_app/features/tools/screens/tools_screen.dart';
@@ -48,10 +49,12 @@ class Routes {
   static GoRoute tools = buildRoute('/tools', t.tools.tools, ToolsScreen(), withMainLayout: false);
   static GoRoute login = buildRoute('/login', t.login.login, LoginScreen(), withMainLayout: false);
   static GoRoute support = buildRoute('support', t.settings.support.support, SupportScreen());
+  static GoRoute pushNotifications =
+      buildRoute('push-notifications', t.settings.pushNotifications.pushNotifications, PushNotificationsScreen());
   static GoRoute settings = buildRoute(
     '/settings',
     t.settings.settings,
     SettingsScreen(),
-    routes: [support],
+    routes: [pushNotifications, support],
   );
 }

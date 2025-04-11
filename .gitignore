@@ -207,3 +207,4 @@ report.xml
 node_modules
 
 /lib/swagger_generated_code/
+android/app/google-services.json

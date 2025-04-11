@@ -1,17 +1,22 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
+import 'package:gruene_app/app/services/fcm_notification_service.dart';
+import 'package:gruene_app/app/services/fcm_topic_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
@@ -29,6 +34,8 @@ import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/domain/mfa_factory.dart';
+import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_bloc.dart';
+import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_event.dart';
 import 'package:gruene_app/features/news/bloc/bookmark_bloc.dart';
 import 'package:gruene_app/features/news/bloc/bookmark_event.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -52,6 +59,14 @@ Future<void> main() async {
   }
 
   registerSecureStorage();
+
+  await Firebase.initializeApp();
+
+  final navigatorKey = GlobalKey<NavigatorState>();
+  final fcmService = FcmNotificationService(navigatorKey);
+  GetIt.I.registerSingleton<FcmNotificationService>(fcmService);
+  await fcmService.initialize();
+
   GetIt.I.registerSingleton<AppSettings>(AppSettings());
   GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
   GetIt.I.registerSingleton<IpService>(IpService());
@@ -62,7 +77,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<CampaignActionCache>(CampaignActionCache());
   GetIt.I.registerSingleton<CampaignActionCacheTimer>(CampaignActionCacheTimer());
   GetIt.I.registerSingleton<FileManager>(FileManager());
-
+  GetIt.I.registerSingleton<FcmTopicService>(FcmTopicService());
   GetIt.I.registerFactory<GrueneApiPosterService>(() => GrueneApiPosterService());
   GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
   GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());
@@ -72,11 +87,13 @@ Future<void> main() async {
 
   // setupCachePeriodicFlushing();
 
-  runApp(TranslationProvider(child: const MyApp()));
+  runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  const MyApp({super.key, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +107,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => MfaBloc()..add(InitMfa()),
         ),
+        BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadPushNotificationSettings())),
         BlocProvider<BookmarkBloc>(
           create: (context) => BookmarkBloc()..add(LoadBookmarks()),
         ),
@@ -98,7 +116,7 @@ class MyApp extends StatelessWidget {
         builder: (context) {
           return BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
-              final router = createAppRouter(context);
+              final router = createAppRouter(context, navigatorKey);
               final isLoginLoading = authState is AuthLoading;
 
               // Prevent flickering if current login state is not yet known
@@ -109,6 +127,14 @@ class MyApp extends StatelessWidget {
                   home: CleanLayout(showAppBar: false),
                 );
               }
+
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                final newsId = GetIt.I<FcmNotificationService>().initialNewsId;
+                final context = navigatorKey.currentContext;
+                if (newsId != null && context != null) {
+                  GoRouter.of(context).go('/news/$newsId');
+                }
+              });
 
               return MaterialApp.router(
                 debugShowCheckedModeBanner: false,

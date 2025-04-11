@@ -276,8 +276,14 @@
     "inviteNonMember": "Nicht-Mitglied einladen",
     "offlineMaps": "Offline-Karten",
     "generalSettings": "App",
-    "pushNotifications": "Push Nachrichten",
     "accessibility": "Barrierefreiheit",
+    "pushNotifications": {
+      "pushNotifications": "Push Nachrichten",
+      "disableAll": "Vollständig deaktivieren",
+      "pushNotificationsBV": "News Bundesverband",
+      "pushNotificationsLV": "News Landesverband",
+      "pushNotificationsKV": "News Kreisverband"
+    },
     "support": {
       "support": "Support & Feedback",
       "contacts": "Kontakte für Support & Feedback zur App",
