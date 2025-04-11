@@ -49,9 +49,16 @@ class FcmNotificationService {
       }
     });
 
+    const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
+      requestSoundPermission: true,
+      requestBadgePermission: true,
+      requestAlertPermission: true,
+    );
+
     _localNotifications.initialize(
       const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: initializationSettingsDarwin,
       ),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         final payload = response.payload;
