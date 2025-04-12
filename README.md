@@ -23,9 +23,9 @@ fvm install
 ```
 
 4. [Optional] Open IntelliJ settings and
-    - Install the Android plugin and set the Android SDK path
-    - Install the Dart plugin and set the Dart SDK path
-    - Install the Flutter plugin and set the Flutter SDK path
+  - Install the Android plugin and set the Android SDK path
+  - Install the Dart plugin and set the Dart SDK path
+  - Install the Flutter plugin and set the Flutter SDK path
 
 #### API Setup
 
