@@ -52,11 +52,7 @@ class WelcomeView extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: OutlinedButton(
-            onPressed: () => {
-              context.push(
-                Routes.mfaLogin.path,
-              ),
-            },
+            onPressed: () => context.push(Routes.mfaLogin.path),
             child: Text(
               t.login.mfa,
               style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),

@@ -32,9 +32,9 @@ class Routes {
   static GoRoute news = buildRoute('/news', NewsScreenContainer(), routes: [newsDetail]);
   static GoRoute campaigns = buildRoute('/campaigns', CampaignsScreen());
   static GoRoute profiles = buildRoute('/profiles', OwnProfileScreen());
-  static GoRoute mfaTokenScan = buildRoute('token-scan', TokenScanScreen());
   static GoRoute mfaTokenInput = buildRoute('token-input', TokenInputScreen());
-  static GoRoute mfa = buildRoute('/mfa', MfaScreen(), routes: [mfaTokenScan, mfaTokenInput]);
+  static GoRoute mfaTokenScan = buildRoute('token-scan', TokenScanScreen(), routes: [mfaTokenInput]);
+  static GoRoute mfa = buildRoute('/mfa', MfaScreen(), routes: [mfaTokenScan]);
   static GoRoute tools = buildRoute('/tools', ToolsScreen());
   static GoRoute mfaLogin = buildRoute('/mfa-login', MfaScreen(), routes: [mfaTokenScan, mfaTokenInput]);
   static GoRoute login = buildRoute('/login', LoginScreen());

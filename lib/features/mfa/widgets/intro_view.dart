@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class IntroView extends StatelessWidget {
@@ -53,7 +53,7 @@ class IntroView extends StatelessWidget {
             ),
           ),
           FilledButton(
-            onPressed: () => context.push('${Routes.mfa.path}/${Routes.mfaTokenScan.path}'),
+            onPressed: () => context.pushNested(Routes.mfaTokenScan.path),
             style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
             child: Text(
               t.mfa.intro.startSetup,
@@ -77,6 +77,7 @@ class IntroView extends StatelessWidget {
               style: theme.textTheme.labelSmall,
             ),
           ),
+          const SizedBox(height: 24),
         ],
       ),
     );
