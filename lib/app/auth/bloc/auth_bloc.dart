@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
+import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/fcm_topic_service.dart';
 
 class AuthEvent {}
@@ -22,6 +24,7 @@ class Unauthenticated extends AuthState {}
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
   final FcmTopicService _fcmTopicService = GetIt.instance<FcmTopicService>();
+  final _secureStorage = GetIt.instance<FlutterSecureStorage>();
 
   Stream<AuthState> get authStateStream => stream;
 
@@ -31,7 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final success = await authRepository.login();
       if (success) {
         emit(Authenticated());
-        _triggerTopicUpdates();
+        _enableDefaultPushNotifications();
       } else {
         emit(Unauthenticated());
       }
@@ -59,6 +62,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
     });
+  }
+
+  Future<void> _enableDefaultPushNotifications() async {
+    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsBV, value: 'true');
+    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsLV, value: 'true');
+    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsKV, value: 'true');
+
+    await _triggerTopicUpdates();
   }
 
   Future<void> _triggerTopicUpdates() async {
