@@ -54,7 +54,7 @@ class WelcomeView extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () => {
               context.push(
-                Routes.mfa.path,
+                Routes.mfaLogin.path,
               ),
             },
             child: Text(

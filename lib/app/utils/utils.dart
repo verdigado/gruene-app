@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 extension IterableX<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T) test) {
@@ -26,4 +27,11 @@ extension ContainsAny<T> on List<T> {
 
 extension WithDividers on Iterable<Widget> {
   List<Widget> withDividers([Widget? divider]) => expand((item) => [item, Divider()]).toList()..removeLast();
+}
+
+extension PushNested on BuildContext {
+  void pushNested(String nestedSlug) {
+    final currentPath = GoRouterState.of(this).fullPath;
+    push('$currentPath/$nestedSlug');
+  }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
 import 'package:gruene_app/features/settings/widgets/version_number.dart';
@@ -28,13 +28,10 @@ class SettingsScreen extends StatelessWidget {
         SectionTitle(title: t.settings.generalSettings),
         TextListItem(
           title: t.settings.pushNotifications.pushNotifications,
-          onPress: () => context.pushNamed(Routes.pushNotifications.name!),
+          onPress: () => context.pushNested(Routes.pushNotifications.path),
         ),
         TextListItem(title: t.settings.accessibility, onPress: () => {}, isImplemented: false),
-        TextListItem(
-          title: t.settings.support.support,
-          onPress: () => context.pushNamed(Routes.support.name!),
-        ),
+        TextListItem(title: t.settings.support.support, onPress: () => context.pushNested(Routes.support.path)),
         TextListItem(
           title: t.settings.actionNetwork,
           onPress: () => {},

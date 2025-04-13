@@ -14,8 +14,9 @@ import 'package:simple_animations/simple_animations.dart';
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? appBarAction;
   final PreferredSizeWidget? tabBar;
+  final String title;
 
-  const MainAppBar({super.key, this.appBarAction, this.tabBar});
+  const MainAppBar({super.key, required this.title, this.appBarAction, this.tabBar});
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +24,10 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
     final authBloc = context.read<AuthBloc>();
     final isLoggedIn = authBloc.state is Authenticated;
     final theme = Theme.of(context);
+    final foregroundColor = isLoggedIn ? theme.colorScheme.surface : ThemeColors.text;
     return AppBar(
-      title: Text(
-        currentRoute.name ?? '',
-        style: theme.textTheme.displayMedium?.apply(color: isLoggedIn ? theme.colorScheme.surface : ThemeColors.text),
-      ),
-      foregroundColor: isLoggedIn ? theme.colorScheme.surface : ThemeColors.text,
+      title: Text(title, style: theme.textTheme.displayMedium?.apply(color: foregroundColor)),
+      foregroundColor: foregroundColor,
       backgroundColor: isLoggedIn ? theme.primaryColor : theme.colorScheme.surfaceDim,
       centerTitle: true,
       bottom: tabBar,

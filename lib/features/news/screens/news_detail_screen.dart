@@ -4,6 +4,7 @@ import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/format_date.dart';
+import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/html.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
@@ -19,55 +20,58 @@ class NewsDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return FutureLoadingScreen<NewsModel?>(
-      load: () => fetchNewsById(newsId),
-      buildChild: (NewsModel? news) {
-        if (news == null) {
-          return ErrorScreen(errorMessage: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
-        }
-        final division = news.division;
-        return SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: ListView(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: FullWidthImage(news: news),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          division != null ? Text(division.shortDisplayName()) : Container(),
-                          Text(
-                            news.title,
-                            style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            t.news.updatedAt(date: formatDate(news.createdAt)),
-                            style: theme.textTheme.labelSmall,
-                          ),
-                          CustomHtml(data: news.content),
-                        ],
+    return Scaffold(
+      appBar: MainAppBar(title: t.news.newsDetail),
+      body: FutureLoadingScreen<NewsModel?>(
+        load: () => fetchNewsById(newsId),
+        buildChild: (NewsModel? news) {
+          if (news == null) {
+            return ErrorScreen(errorMessage: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
+          }
+          final division = news.division;
+          return SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: ListView(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: FullWidthImage(news: news),
                       ),
-                    ),
-                  ],
+                      Container(
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            division != null ? Text(division.shortDisplayName()) : Container(),
+                            Text(
+                              news.title,
+                              style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              t.news.updatedAt(date: formatDate(news.createdAt)),
+                              style: theme.textTheme.labelSmall,
+                            ),
+                            CustomHtml(data: news.content),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Positioned(
-                right: 0,
-                child: BookmarkButton(newsId: news.id),
-              ),
-            ],
-          ),
-        );
-      },
+                Positioned(
+                  right: 0,
+                  child: BookmarkButton(newsId: news.id),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
