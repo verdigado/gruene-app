@@ -290,8 +290,8 @@
       "generalFeedback": "Allgemeines Feedback",
       "campaignSupport": "Support Wahlkampf-Bereich",
       "otherSupport": "Support andere Bereiche",
-      "supportDisabledHint": "Aufgrund der hohen Anzahl an Anfragen bitten wir darum, keine Anfragen per E-Mail zu senden.\nMehr Informationen zum Prozess \"Feedback & Fehlermeldungen\" findest Du im Wissenswerk-Artikel zur App. Danke für Dein Verständnis!",
-      "appArticleLinkLabel": "zum Wissenswerk-Artikel"
+      "supportDisabledHint(rich)": "Aufgrund der hohen Anzahl an Anfragen bitten wir darum, keine Anfragen per E-Mail zu senden.\nMehr Informationen zum Prozess \"Feedback & Fehlermeldungen\" findest Du im ${openGrueneAppArticle(Wissenswerk-Artikel)} zur App. Danke für Dein Verständnis!",
+      "appFeedbackFormLabel": "zum Feedback-Formular"
     },
     "actionNetwork": "Action Network",
     "newsletter": "Newsletter",
