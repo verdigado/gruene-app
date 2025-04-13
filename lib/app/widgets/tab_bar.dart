@@ -16,19 +16,15 @@ class CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
 
   const CustomTabBar({super.key, required this.tabController, required this.tabs, required this.onTap});
 
-  void safeOnTap(int index) {
-    if (!tabs[index].disabled) {
-      onTap(index);
-    }
-  }
+  void safeOnTap(int index) => onTap(tabs[index].disabled ? tabController.previousIndex : index);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
+    return Material(
       color: theme.colorScheme.surfaceDim,
       child: TabBar(
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.symmetric(horizontal: 4),
         indicatorColor: theme.colorScheme.secondary,
         dividerColor: ThemeColors.textLight,
         dividerHeight: 2,

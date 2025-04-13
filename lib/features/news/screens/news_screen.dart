@@ -17,30 +17,28 @@ class NewsScreenContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MainAppBar(title: t.news.news),
-      body: TabScreen(
-        tabs: [
-          TabModel(
-            label: t.news.latest,
-            view: Builder(
-              builder: (context) => FutureLoadingScreen<List<NewsModel>>(
-                load: fetchNews,
-                buildChild: (List<NewsModel> news) => NewsScreen(news: news),
-              ),
+    return TabScreen(
+      appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(title: t.news.news, tabBar: tabBar),
+      tabs: [
+        TabModel(
+          label: t.news.latest,
+          view: Builder(
+            builder: (context) => FutureLoadingScreen<List<NewsModel>>(
+              load: fetchNews,
+              buildChild: (List<NewsModel> news) => NewsScreen(news: news),
             ),
           ),
-          TabModel(
-            label: t.news.bookmarked,
-            view: Builder(
-              builder: (context) => FutureLoadingScreen<List<NewsModel>>(
-                load: () => fetchNews(bookmarked: true),
-                buildChild: (List<NewsModel> news) => NewsScreen(news: news),
-              ),
+        ),
+        TabModel(
+          label: t.news.bookmarked,
+          view: Builder(
+            builder: (context) => FutureLoadingScreen<List<NewsModel>>(
+              load: () => fetchNews(bookmarked: true),
+              buildChild: (List<NewsModel> news) => NewsScreen(news: news),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
