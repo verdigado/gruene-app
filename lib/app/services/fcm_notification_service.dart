@@ -62,8 +62,8 @@ class FcmNotificationService {
       ),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         final payload = response.payload;
-        if (payload != null && payload.startsWith('news:')) {
-          final newsId = payload.replaceFirst('news:', '');
+        if (payload != null && payload.startsWith('news.')) {
+          final newsId = payload.replaceFirst('news.', '');
           _navigateTo('/news/$newsId');
         }
       },
@@ -99,7 +99,7 @@ class FcmNotificationService {
             icon: '@mipmap/ic_launcher',
           ),
         ),
-        payload: newsId != null ? 'news:$newsId' : null,
+        payload: newsId != null ? 'news.$newsId' : null,
       );
     }
   }
