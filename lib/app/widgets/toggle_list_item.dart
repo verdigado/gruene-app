@@ -4,7 +4,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 class ToggleListItem extends StatelessWidget {
   final String title;
   final bool value;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
 
   const ToggleListItem({
     super.key,
@@ -30,7 +30,7 @@ class ToggleListItem extends StatelessWidget {
           value: value,
           onChanged: onChanged,
           activeColor: Colors.white,
-          activeTrackColor: theme.colorScheme.primary,
+          activeTrackColor: onChanged != null ? theme.colorScheme.primary : ThemeColors.textDisabled,
         ),
       ),
     );

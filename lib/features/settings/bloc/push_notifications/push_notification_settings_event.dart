@@ -1,14 +1,14 @@
+import 'package:gruene_app/app/enums/push_notification_topic_enum.dart';
+
 abstract class PushNotificationSettingsEvent {}
 
-class LoadPushNotificationSettings extends PushNotificationSettingsEvent {}
+class LoadSettings extends PushNotificationSettingsEvent {}
 
-class TogglePushNotificationSetting extends PushNotificationSettingsEvent {
-  final String key;
+class ToggleTopic extends PushNotificationSettingsEvent {
+  final PushNotificationTopic topic;
   final bool value;
 
-  TogglePushNotificationSetting(this.key, this.value);
+  ToggleTopic(this.topic, this.value);
 }
 
-class DisableAllToggles extends PushNotificationSettingsEvent {}
-
-class UpdateFirebaseSubscriptions extends PushNotificationSettingsEvent {}
+class ToggleEnabled extends PushNotificationSettingsEvent {}

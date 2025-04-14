@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
-import 'package:gruene_app/app/services/fcm_topic_service.dart';
+import 'package:gruene_app/app/services/push_notification_service.dart';
 
 class AuthEvent {}
 
@@ -21,7 +21,7 @@ class Unauthenticated extends AuthState {}
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
-  final FcmTopicService _fcmTopicService = GetIt.instance<FcmTopicService>();
+  final PushNotificationService _pushNotificationService = GetIt.instance<PushNotificationService>();
 
   Stream<AuthState> get authStateStream => stream;
 
@@ -31,15 +31,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final success = await authRepository.login();
       if (success) {
         emit(Authenticated());
-        _triggerTopicUpdates();
+        await _pushNotificationService.updateSubscriptions();
       } else {
         emit(Unauthenticated());
       }
     });
 
     on<LogoutRequested>((event, emit) async {
-      await _fcmTopicService.unsubscribeFromAllTopics();
       await authRepository.logout();
+      await _pushNotificationService.updateSubscriptions();
       emit(Unauthenticated());
     });
 
@@ -48,22 +48,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final isValid = await authRepository.isTokenValid();
       if (isValid) {
         emit(Authenticated());
-        _triggerTopicUpdates();
       } else {
         final refreshed = await authRepository.refreshToken();
+        await _pushNotificationService.updateSubscriptions();
         if (refreshed) {
           emit(Authenticated());
-          _triggerTopicUpdates();
         } else {
           emit(Unauthenticated());
         }
       }
     });
-  }
-
-  Future<void> _triggerTopicUpdates() async {
-    if (state is Authenticated) {
-      await _fcmTopicService.updateSubscriptions();
-    }
   }
 }
