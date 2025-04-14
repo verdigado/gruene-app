@@ -11,22 +11,24 @@ import 'package:gruene_app/app/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class PushNotificationService {
-  late PushNotificationSettingsModel _settings;
+  PushNotificationSettingsModel _settings = PushNotificationSettingsModel(enabled: true, topics: {});
   final FlutterSecureStorage _secureStorage = GetIt.instance<FlutterSecureStorage>();
+  var _firebaseInitialized = false;
 
   Future<void> initialize() async {
-    await Firebase.initializeApp();
-
-    final fb = FirebaseMessaging.instance;
-    await fb.requestPermission();
+    try {
+      _settings = await _loadSettings();
+    } catch (e) {
+      logger.e('Failed to load push notification settings', error: e);
+    }
 
     try {
-      await fb.requestPermission();
+      await Firebase.initializeApp();
+      await FirebaseMessaging.instance.requestPermission();
+      _firebaseInitialized = true;
     } catch (e) {
       logger.e('Failed to initialize Firebase Messaging: $e');
     }
-
-    _settings = await _loadSettings();
   }
 
   /// Load Push Notification settings from secure storage
@@ -36,20 +38,17 @@ class PushNotificationService {
 
   /// Load Push Notification settings from secure storage
   Future<PushNotificationSettingsModel> _loadSettings() async {
-    // load enabled flag from storage
-    final enabledVal = await _secureStorage.read(key: SecureStorageKeys.pnEnabled);
-    final enabled = enabledVal != null ? jsonDecode(enabledVal) as bool : true;
+    final enabledJson = await _secureStorage.read(key: SecureStorageKeys.pushNotificationsEnabled);
+    final enabled = enabledJson != null ? jsonDecode(enabledJson) as bool : true;
 
-    // load topics from storage
-    final topicsVal = await _secureStorage.read(key: SecureStorageKeys.pnTopicMap);
+    final topicMapJson = await _secureStorage.read(key: SecureStorageKeys.pushNotificationsTopicMap);
+    final Map<String, dynamic> topicMap =
+        topicMapJson != null ? (jsonDecode(topicMapJson) as Map<String, dynamic>) : const {};
 
-    final Map<String, dynamic> storedTopics =
-        topicsVal != null ? (jsonDecode(topicsVal) as Map<String, dynamic>) : const {};
-
-    // initialze all unset topics with true
+    // initialize all unset topics with true
     final Map<PushNotificationTopic, bool> topics = {};
     for (final topic in PushNotificationTopic.values) {
-      topics[topic] = storedTopics[topic.name] as bool? ?? true;
+      topics[topic] = topicMap[topic.name] as bool? ?? true;
     }
 
     return PushNotificationSettingsModel(
@@ -60,19 +59,18 @@ class PushNotificationService {
 
   /// Save Push Notification settings to secure storage
   Future<void> _saveSettings(PushNotificationSettingsModel model) async {
-    await _secureStorage.write(key: SecureStorageKeys.pnEnabled, value: jsonEncode(model.enabled));
-    // convert the topics map to a string map
+    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsEnabled, value: jsonEncode(model.enabled));
     final Map<String, bool> topicMap = {};
     for (final entry in model.topics.entries) {
       topicMap[entry.key.name] = entry.value;
     }
 
-    await _secureStorage.write(key: SecureStorageKeys.pnTopicMap, value: jsonEncode(topicMap));
+    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsTopicMap, value: jsonEncode(topicMap));
   }
 
   // get fcm topic subscriptions stored in secure storage
   Future<List<String>> _loadSubscribedFcmTopics() async {
-    final topicsVal = await _secureStorage.read(key: SecureStorageKeys.pnFcmTopics);
+    final topicsVal = await _secureStorage.read(key: SecureStorageKeys.pushNotificationsFcmTopics);
     if (topicsVal == null) {
       return const [];
     }
@@ -91,6 +89,9 @@ class PushNotificationService {
   }
 
   Future<void> updateSubscriptions() async {
+    if (!_firebaseInitialized) {
+      return;
+    }
     String? accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
     if (accessToken == null) {
       await _unsubscribeAll();
@@ -100,18 +101,18 @@ class PushNotificationService {
 
     List<String> groups = [];
     if (token['groups'] != null) {
-      groups = token['groups'] as List<String>;
+      groups = (token['groups'] as List<dynamic>).map((v) => v.toString()).toList();
     }
     final newTopics = _getFcmTopics(groups);
     final currentTopics = (await _loadSubscribedFcmTopics()).toSet();
 
-    final fb = FirebaseMessaging.instance;
+    final firebase = FirebaseMessaging.instance;
 
     // Subscribe to new topics not currently subscribed
     final topicsToSubscribe = newTopics.difference(currentTopics);
     for (var topic in topicsToSubscribe) {
       try {
-        await fb.subscribeToTopic(topic);
+        await firebase.subscribeToTopic(topic);
         logger.d('Subscribed to topic: $topic');
       } catch (e) {
         logger.w('Error subscribing to topic $topic: $e');
@@ -122,7 +123,7 @@ class PushNotificationService {
     final topicsToUnsubscribe = currentTopics.difference(newTopics);
     for (var topic in topicsToUnsubscribe) {
       try {
-        await fb.unsubscribeFromTopic(topic);
+        await firebase.unsubscribeFromTopic(topic);
         logger.d('Unsubscribed from topic: $topic');
       } catch (e) {
         logger.w('Error unsubscribing from topic $topic: $e');
@@ -130,7 +131,10 @@ class PushNotificationService {
     }
 
     // Save the updated topics to secure storage
-    await _secureStorage.write(key: SecureStorageKeys.pnFcmTopics, value: jsonEncode(newTopics.toList()));
+    await _secureStorage.write(
+      key: SecureStorageKeys.pushNotificationsFcmTopics,
+      value: jsonEncode(newTopics.toList()),
+    );
   }
 
   /// Calculate the new list of all topics the user should be subscribed to
@@ -144,20 +148,31 @@ class PushNotificationService {
 
     topicEnabled(PushNotificationTopic topic) => _settings.topics[topic] ?? true;
 
+    // Any user that is able to authenticate is allowed to receive
+    // news on level Bundesverband
     if (topicEnabled(PushNotificationTopic.newsBv)) {
       topics.add('news.10000000');
     }
 
     for (final group in groups) {
+      // Filter out roles in the format `{group}_{role}`.
+      // We only want division memberships.
       if (group.contains('_')) {
         continue;
       }
 
+      // Subscribe to news on level Landesverband.
+      // If the user has a membership in Grüne Jugend, use the division from Bundesverband
+      // by swapping the 2 prefix with 1.
       if (group.length == 3 && topicEnabled(PushNotificationTopic.newsLv)) {
         final divisionKey = group.replaceFirst(RegExp(r'^2'), '1').padRight(8, '0');
         topics.add('news.$divisionKey');
       }
 
+      // Subscribe to news on level Kreisverband.
+      // For direct memberships, the unshortened division key is added.
+      // To always subscribe to the KV level, we need to replace the last digits with '00'.
+      // Use same logic for Grüne Jugend memberships as for level Landesverband
       if (group.length == 8 && topicEnabled(PushNotificationTopic.newsKv)) {
         final divisionKey = group.substring(0, 6).replaceFirst(RegExp(r'^2'), '1').padRight(8, '0');
         topics.add('news.$divisionKey');
@@ -169,16 +184,19 @@ class PushNotificationService {
 
   // unsubscribe from all fcm topics, this does not clear the topic settings
   Future<void> _unsubscribeAll() async {
-    final fb = FirebaseMessaging.instance;
+    if (!_firebaseInitialized) {
+      return;
+    }
+    final firebase = FirebaseMessaging.instance;
     final topics = await _loadSubscribedFcmTopics();
     for (final topic in topics) {
       try {
-        await fb.unsubscribeFromTopic(topic);
+        await firebase.unsubscribeFromTopic(topic);
       } catch (e) {
         logger.w('Error unsubscribing from topic $topic: $e');
       }
     }
 
-    await _secureStorage.write(key: SecureStorageKeys.pnFcmTopics, value: jsonEncode([]));
+    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsFcmTopics, value: jsonEncode([]));
   }
 }

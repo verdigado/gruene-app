@@ -4,7 +4,7 @@ class SecureStorageKeys {
   static const String idToken = 'id_token';
   static const String refreshToken = 'refresh_token';
   // push notifications
-  static const String pnEnabled = 'push_notifications.enabled';
-  static const String pnTopicMap = 'push_notifications.topic_map';
-  static const String pnFcmTopics = 'push_notifications.subscribed_fcm_topics';
+  static const String pushNotificationsEnabled = 'push_notifications.enabled';
+  static const String pushNotificationsTopicMap = 'push_notifications.topic_map';
+  static const String pushNotificationsFcmTopics = 'push_notifications.subscribed_fcm_topics';
 }
