@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 
-class FcmNotificationService {
+class PushNotificationListener {
   final GlobalKey<NavigatorState> navigatorKey;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
@@ -19,12 +19,9 @@ class FcmNotificationService {
   String? _initialNewsId;
   String? get initialNewsId => _initialNewsId;
 
-  FcmNotificationService(this.navigatorKey);
+  PushNotificationListener(this.navigatorKey);
 
   Future<void> initialize() async {
-    await Firebase.initializeApp();
-    await _firebaseMessaging.requestPermission();
-
     await _setupLocalNotifications();
     _registerForegroundMessageHandler();
     _registerNotificationTapHandler();

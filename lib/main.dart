@@ -14,7 +14,6 @@ import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
-import 'package:gruene_app/app/services/fcm_notification_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
@@ -22,6 +21,7 @@ import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/push_notification_listener.dart';
 import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/services/secure_storage_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -65,9 +65,9 @@ Future<void> main() async {
   await pushNotificationService.initialize();
   GetIt.I.registerSingleton<PushNotificationService>(pushNotificationService);
 
-  final fcmService = FcmNotificationService(navigatorKey);
-  await fcmService.initialize();
-  GetIt.I.registerSingleton<FcmNotificationService>(fcmService);
+  final pushNotificationListener = PushNotificationListener(navigatorKey);
+  await pushNotificationListener.initialize();
+  GetIt.I.registerSingleton<PushNotificationListener>(pushNotificationListener);
 
   GetIt.I.registerSingleton<AppSettings>(AppSettings());
   GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
@@ -130,7 +130,7 @@ class MyApp extends StatelessWidget {
               }
 
               SchedulerBinding.instance.addPostFrameCallback((_) {
-                final newsId = GetIt.I<FcmNotificationService>().initialNewsId;
+                final newsId = GetIt.I<PushNotificationListener>().initialNewsId;
                 final context = navigatorKey.currentContext;
                 if (newsId != null && context != null) {
                   GoRouter.of(context).go('/news/$newsId');
