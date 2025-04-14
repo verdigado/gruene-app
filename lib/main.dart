@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -16,7 +15,6 @@ import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
 import 'package:gruene_app/app/services/fcm_notification_service.dart';
-import 'package:gruene_app/app/services/fcm_topic_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
@@ -24,6 +22,7 @@ import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/services/secure_storage_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/clean_layout.dart';
@@ -60,12 +59,15 @@ Future<void> main() async {
 
   registerSecureStorage();
 
-  await Firebase.initializeApp();
-
   final navigatorKey = GlobalKey<NavigatorState>();
+
+  final pushNotificationService = PushNotificationService();
+  await pushNotificationService.initialize();
+  GetIt.I.registerSingleton<PushNotificationService>(pushNotificationService);
+
   final fcmService = FcmNotificationService(navigatorKey);
-  GetIt.I.registerSingleton<FcmNotificationService>(fcmService);
   await fcmService.initialize();
+  GetIt.I.registerSingleton<FcmNotificationService>(fcmService);
 
   GetIt.I.registerSingleton<AppSettings>(AppSettings());
   GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
@@ -77,7 +79,6 @@ Future<void> main() async {
   GetIt.I.registerSingleton<CampaignActionCache>(CampaignActionCache());
   GetIt.I.registerSingleton<CampaignActionCacheTimer>(CampaignActionCacheTimer());
   GetIt.I.registerSingleton<FileManager>(FileManager());
-  GetIt.I.registerSingleton<FcmTopicService>(FcmTopicService());
   GetIt.I.registerFactory<GrueneApiPosterService>(() => GrueneApiPosterService());
   GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
   GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());
@@ -107,7 +108,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => MfaBloc()..add(InitMfa()),
         ),
-        BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadPushNotificationSettings())),
+        BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadSettings())),
         BlocProvider<BookmarkBloc>(
           create: (context) => BookmarkBloc()..add(LoadBookmarks()),
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gruene_app/app/constants/secure_storage_keys.dart';
+import 'package:gruene_app/app/enums/push_notification_topic_enum.dart';
 import 'package:gruene_app/app/widgets/toggle_list_item.dart';
 import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_bloc.dart';
 import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_event.dart';
@@ -12,39 +12,47 @@ class PushNotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, String> localizedTitles = {
-      SecureStorageKeys.pushNotificationsBV: t.settings.pushNotifications.pushNotificationsBV,
-      SecureStorageKeys.pushNotificationsLV: t.settings.pushNotifications.pushNotificationsLV,
-      SecureStorageKeys.pushNotificationsKV: t.settings.pushNotifications.pushNotificationsKV,
+    final Map<PushNotificationTopic, String> localizedTitles = {
+      PushNotificationTopic.newsBv: t.settings.pushNotifications.pushNotificationsBV,
+      PushNotificationTopic.newsLv: t.settings.pushNotifications.pushNotificationsLV,
+      PushNotificationTopic.newsKv: t.settings.pushNotifications.pushNotificationsKV,
     };
 
     return BlocBuilder<PushNotificationSettingsBloc, PushNotificationSettingsState>(
       builder: (context, state) {
         final bloc = context.read<PushNotificationSettingsBloc>();
 
-        final availableToggleEntries =
-            state.toggles.entries.where((entry) => state.availableToggles.contains(entry.key)).toList();
-
         return ListView(
           children: [
             SizedBox(height: 36),
             ToggleListItem(
               title: t.settings.pushNotifications.disableAll,
-              value: state.allDisabled,
+              value: !state.enabled,
               onChanged: (value) {
-                if (value) {
-                  bloc.add(DisableAllToggles());
-                }
+                bloc.add(ToggleEnabled());
               },
             ),
-            ...availableToggleEntries.map((entry) {
-              return ToggleListItem(
-                title: localizedTitles[entry.key]!,
-                value: entry.value,
-                onChanged: (bool newValue) {
-                  bloc.add(TogglePushNotificationSetting(entry.key, newValue));
-                },
-              );
+            ...state.getTopicGroups().expand((group) {
+              return [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                  child: Text(
+                    group.name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                ...group.topics.entries.map((entry) {
+                  return ToggleListItem(
+                    title: localizedTitles[entry.key]!,
+                    value: entry.value,
+                    onChanged: state.enabled
+                        ? (bool newValue) {
+                            bloc.add(ToggleTopic(entry.key, newValue));
+                          }
+                        : null,
+                  );
+                }),
+              ];
             }),
           ],
         );

@@ -1,23 +1,54 @@
-class PushNotificationSettingsState {
-  final Map<String, bool> toggles;
-  final Set<String> availableToggles;
-  final bool allDisabled;
+import 'package:gruene_app/app/enums/push_notification_topic_enum.dart';
 
-  const PushNotificationSettingsState(
-    this.toggles, {
-    this.availableToggles = const {},
-    this.allDisabled = false,
+class PushNotificationTopicGroup {
+  final String name;
+  final Map<PushNotificationTopic, bool> topics;
+
+  const PushNotificationTopicGroup({
+    required this.name,
+    required this.topics,
+  });
+}
+
+class PushNotificationSettingsState {
+  // flag to toggle overall push notifications
+  final bool enabled;
+  final Map<PushNotificationTopic, bool> topics;
+
+  const PushNotificationSettingsState({
+    this.enabled = true,
+    this.topics = const {},
   });
 
   PushNotificationSettingsState copyWith({
-    Map<String, bool>? toggles,
-    Set<String>? availableToggles,
-    bool? allDisabled,
+    bool? enabled,
+    final Map<PushNotificationTopic, bool>? topics,
   }) {
     return PushNotificationSettingsState(
-      toggles ?? this.toggles,
-      availableToggles: availableToggles ?? this.availableToggles,
-      allDisabled: allDisabled ?? this.allDisabled,
+      enabled: enabled ?? this.enabled,
+      topics: topics ?? this.topics,
     );
+  }
+
+  List<PushNotificationTopicGroup> getTopicGroups() {
+    final List<PushNotificationTopicGroup> topicGroups = [];
+
+    // add news group
+    topicGroups.add(
+      PushNotificationTopicGroup(
+        name: 'News',
+        topics: Map.fromEntries(
+          topics.entries.where(
+            (entry) => [
+              PushNotificationTopic.newsBv,
+              PushNotificationTopic.newsLv,
+              PushNotificationTopic.newsKv,
+            ].contains(entry.key),
+          ),
+        ),
+      ),
+    );
+
+    return topicGroups;
   }
 }
