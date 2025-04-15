@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/urls.dart';
+import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/settings/widgets/settings_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -69,20 +71,27 @@ class SupportScreen extends StatelessWidget {
             : [
                 Container(
                   margin: EdgeInsets.fromLTRB(8, 8, 8, 24),
-                  child: Text(
-                    t.settings.support.supportDisabledHint,
+                  child: Text.rich(
+                    t.settings.support.supportDisabledHint(
+                      openGrueneAppArticle: (text) => TextSpan(
+                        text: text,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: ThemeColors.primary,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        recognizer: TapGestureRecognizer()..onTap = () => openUrl(grueneAppArticleUrl, context),
+                      ),
+                    ),
                     style: theme.textTheme.bodyMedium,
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: OutlinedButton(
-                    onPressed: () => openUrl(
-                      grueneAppArticleUrl,
-                      context,
-                    ),
+                    onPressed: () => openUrl(grueneAppFeedbackUrl, context),
                     child: Text(
-                      t.settings.support.appArticleLinkLabel,
+                      t.settings.support.appFeedbackFormLabel,
                       style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
                     ),
                   ),
