@@ -299,7 +299,7 @@
     "legalNotice": "Impressum",
     "dataProtectionStatement": "Datenschutzerklärung",
     "termsOfUse": "Nutzungsbedingungen",
-    "logout": "Ausloggen",
+    "logout": "Abmelden",
     "version": "Version ${version}",
     "notImplemented": "(folgt)"
   },
