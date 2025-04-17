@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/config.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 extension IterableX<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T) test) {
@@ -26,4 +28,10 @@ extension ContainsAny<T> on List<T> {
 
 extension WithDividers on Iterable<Widget> {
   List<Widget> withDividers([Widget? divider]) => expand((item) => [item, Divider()]).toList()..removeLast();
+}
+
+Future<bool> hasInternetAccess() async {
+  final customCheckOptions = [InternetCheckOption(uri: Uri.parse(Config.ipV4ServiceUrl))];
+  final connection = InternetConnection.createInstance(customCheckOptions: customCheckOptions);
+  return await connection.hasInternetAccess;
 }
