@@ -5,6 +5,7 @@ import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
+import 'package:gruene_app/features/news/repository/news_repository.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -52,13 +53,17 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
     _localDateRange = widget.dateRange;
   }
 
+  void setDivisions(List<Division> divisions) {
+    widget.setSelectedDivisions(divisions);
+    setState(() => _localSelectedDivisions = divisions);
+    writeDivisionFilterKeys(divisions);
+  }
+
   void resetFilters() {
-    final bundesverband = widget.allNews.divisions().bundesverband();
-    widget.setSelectedDivisions([bundesverband]);
+    setDivisions([widget.allNews.divisions().bundesverband()]);
     widget.setSelectedCategories([]);
     widget.setDateRange(null);
     setState(() {
-      _localSelectedDivisions = [bundesverband];
       _localSelectedCategories = [];
       _localDateRange = null;
     });
@@ -91,10 +96,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
       child: ListView(
         children: [
           SelectionView(
-            setSelectedOptions: (divisions) {
-              setState(() => _localSelectedDivisions = divisions);
-              widget.setSelectedDivisions(divisions);
-            },
+            setSelectedOptions: setDivisions,
             title: t.news.divisions,
             options: [divisionBundesverband, ...divisionsLandesverband],
             moreOptionsTitle: t.news.moreDivisions,
