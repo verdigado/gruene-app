@@ -17,6 +17,9 @@ class AuthRepository {
   final AuthenticatorService _authenticatorService = GetIt.I<AuthenticatorService>();
   final IpService _ipService = GetIt.I<IpService>();
 
+  Future<String?> getAccessToken() async => await _secureStorage.read(key: SecureStorageKeys.accessToken);
+  Future<String?> getRefreshToken() async => await _secureStorage.read(key: SecureStorageKeys.refreshToken);
+
   Future<bool> login() async {
     final authenticator = await _authenticatorService.getFirst();
     final pollingTimer = authenticator != null ? _pollForChallenge(authenticator) : null;
@@ -71,7 +74,7 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
-    final refreshToken = await _secureStorage.read(key: SecureStorageKeys.refreshToken);
+    final refreshToken = await getRefreshToken();
     if (refreshToken != null) {
       try {
         await _endSession(refreshToken);
@@ -82,10 +85,6 @@ class AuthRepository {
     }
 
     await _deleteTokens();
-  }
-
-  Future<String?> getAccessToken() async {
-    return await _secureStorage.read(key: SecureStorageKeys.accessToken);
   }
 
   Future<bool> isTokenValid() async {
@@ -101,7 +100,7 @@ class AuthRepository {
   }
 
   Future<bool> refreshToken() async {
-    final refreshToken = await _secureStorage.read(key: SecureStorageKeys.refreshToken);
+    final refreshToken = await getRefreshToken();
     if (refreshToken == null) {
       logger.d('No refresh token found');
       return false;
