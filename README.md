@@ -5,6 +5,7 @@
 - [Setup](#setup)
 - [Initial Setup](#initial-setup)
 - [Run the App](#run-the-app)
+- [Release Workflow](docs/release-workflow.md)
 - [Conventions](docs/conventions.md)
 - [CI/CD](docs/cicd.md)
 
