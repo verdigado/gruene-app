@@ -4,9 +4,9 @@ import 'package:gruene_app/app/screens/error_screen.dart';
 class FutureLoadingScreen<T> extends StatefulWidget {
   final Future<T> Function() load;
   final Widget Function(T data) buildChild;
-  final Widget Function(Widget child)? layoutBuilder;
+  final Widget Function(Widget child)? loadingLayoutBuilder;
 
-  const FutureLoadingScreen({super.key, required this.load, required this.buildChild, this.layoutBuilder});
+  const FutureLoadingScreen({super.key, required this.load, required this.buildChild, this.loadingLayoutBuilder});
 
   @override
   State<FutureLoadingScreen<T>> createState() => _FutureLoadingScreenState<T>();
@@ -32,7 +32,7 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final layoutBuilder = widget.layoutBuilder ?? (Widget child) => child;
+    final layoutBuilder = widget.loadingLayoutBuilder ?? (Widget child) => child;
     return FutureBuilder<T>(
       future: _data,
       builder: (context, snapshot) {

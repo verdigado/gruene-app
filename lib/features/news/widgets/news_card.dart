@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/bookmark_button.dart';
@@ -103,7 +103,7 @@ class NewsCard extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => context.push('/news/${news.id}'),
+                  onTap: () => context.pushNested(news.id),
                   customBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/widgets/app_bar.dart';
-import 'package:gruene_app/app/widgets/main_layout.dart';
 import 'package:gruene_app/app/widgets/tab_bar.dart';
 
 class TabScreen extends StatefulWidget {
+  final PreferredSizeWidget Function(PreferredSizeWidget tabBar) appBarBuilder;
   final List<TabModel> tabs;
+  final bool scrollableBody;
 
-  const TabScreen({super.key, required this.tabs});
+  const TabScreen({super.key, required this.tabs, required this.appBarBuilder, this.scrollableBody = true});
 
   @override
   State<TabScreen> createState() => _TabScreenState();
@@ -29,16 +29,17 @@ class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(
-      appBar: MainAppBar(
-        tabBar: CustomTabBar(
+    return Scaffold(
+      appBar: widget.appBarBuilder(
+        CustomTabBar(
           tabController: _tabController,
           tabs: widget.tabs,
           onTap: (index) => setState(() => _tabController.index = index),
         ),
       ),
-      child: TabBarView(
+      body: TabBarView(
         controller: _tabController,
+        physics: widget.scrollableBody ? null : NeverScrollableScrollPhysics(),
         children: widget.tabs.map((tab) => tab.view).toList(),
       ),
     );

@@ -5,21 +5,15 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 
 class BottomNavigation extends StatelessWidget {
-  const BottomNavigation({super.key});
+  final StatefulNavigationShell navigationShell;
+
+  const BottomNavigation({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
-    final topRoute = GoRouter.of(context).routerDelegate.currentConfiguration.matches[0].route as GoRoute;
-    final topRouteIndex = bottomNavigationItems.indexWhere((item) => item.route == topRoute.path);
-    final visible = topRouteIndex != -1;
     final theme = Theme.of(context);
-
-    if (!visible) {
-      return SizedBox.shrink();
-    }
-
     final items = bottomNavigationItems.map((item) {
-      final isSelected = item.route == topRoute.path;
+      final isSelected = bottomNavigationItems.indexOf(item) == navigationShell.currentIndex;
       final color = isSelected ? theme.colorScheme.primary : ThemeColors.textDisabled;
       final icon = item.icon != null
           ? Icon(item.icon, size: 32, color: color)
@@ -39,8 +33,8 @@ class BottomNavigation extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         backgroundColor: theme.colorScheme.surface,
         items: items,
-        currentIndex: topRouteIndex,
-        onTap: (index) => context.go(bottomNavigationItems[index].route),
+        currentIndex: navigationShell.currentIndex,
+        onTap: (index) => navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex),
       ),
     );
   }

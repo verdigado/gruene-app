@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/screens/tab_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/tab_bar.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
@@ -17,6 +18,7 @@ class NewsScreenContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TabScreen(
+      appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(title: t.news.news, tabBar: tabBar),
       tabs: [
         TabModel(
           label: t.news.latest,

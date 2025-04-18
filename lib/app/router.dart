@@ -3,19 +3,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
+import 'package:gruene_app/app/widgets/bottom_navigation.dart';
+
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigatorKey) {
   return GoRouter(
-    navigatorKey: navigatorKey,
+    navigatorKey: _rootNavigatorKey,
     initialLocation: Routes.news.path,
     routes: [
-      Routes.news,
-      Routes.campaigns,
-      Routes.profiles,
-      Routes.mfa,
-      Routes.tools,
-      Routes.settings,
       Routes.login,
+      Routes.mfaLogin,
+      Routes.settings,
+      StatefulShellRoute.indexedStack(
+        builder: (context, __, navigationShell) {
+          final theme = Theme.of(context);
+          return Scaffold(
+            appBar: AppBar(backgroundColor: theme.colorScheme.primary, toolbarHeight: 0),
+            body: SafeArea(child: navigationShell),
+            bottomNavigationBar: SafeArea(child: BottomNavigation(navigationShell: navigationShell)),
+          );
+        },
+        branches: [
+          StatefulShellBranch(routes: [Routes.news]),
+          StatefulShellBranch(routes: [Routes.campaigns]),
+          StatefulShellBranch(routes: [Routes.profiles]),
+          StatefulShellBranch(routes: [Routes.mfa]),
+          StatefulShellBranch(routes: [Routes.tools]),
+        ],
+      ),
     ],
     redirect: (context, state) {
       final currentPath = state.uri.toString();

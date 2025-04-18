@@ -83,9 +83,7 @@ class _ReadyViewState extends State<ReadyView> {
                       content: Text(t.mfa.ready.delete.text),
                       actions: <Widget>[
                         TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
+                          onPressed: () => Navigator.of(context).pop(),
                           child: Text(t.common.actions.cancel),
                         ),
                         TextButton(
