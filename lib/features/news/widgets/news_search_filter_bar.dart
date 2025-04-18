@@ -46,16 +46,15 @@ class NewsSearchFilterBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           Flexible(child: CustomSearchBar(setQuery: setQuery, query: query)),
-          // TODO #213: Add bookmarking functionality
-          // SizedBox(width: 8),
-          // RoundedIconButton(
-          //   onPressed: () => setState(() => showBookmarked = !showBookmarked),
-          //   icon: Icons.bookmark_outline,
-          //   iconColor: ThemeColors.textDisabled,
-          //   backgroundColor: theme.colorScheme.surface,
-          //   selected: showBookmarked,
-          //   width: 40,
-          // ),
+          SizedBox(width: 8),
+          RoundedIconButton(
+            onPressed: () => setShowBookmarked(!showBookmarked),
+            icon: Icons.bookmark_outline,
+            iconColor: ThemeColors.textDisabled,
+            backgroundColor: theme.colorScheme.surface,
+            selected: showBookmarked,
+            width: 40,
+          ),
           SizedBox(width: 8),
           RoundedIconButton(
             icon: Icons.tune,

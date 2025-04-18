@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/screens/tab_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
-import 'package:gruene_app/app/widgets/tab_bar.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
@@ -17,28 +15,12 @@ class NewsScreenContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TabScreen(
-      appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(title: t.news.news, tabBar: tabBar),
-      tabs: [
-        TabModel(
-          label: t.news.latest,
-          view: Builder(
-            builder: (context) => FutureLoadingScreen<List<NewsModel>>(
-              load: fetchNews,
-              buildChild: (List<NewsModel> news) => NewsScreen(news: news),
-            ),
-          ),
-        ),
-        TabModel(
-          label: t.news.bookmarked,
-          view: Builder(
-            builder: (context) => FutureLoadingScreen<List<NewsModel>>(
-              load: () => fetchNews(bookmarked: true),
-              buildChild: (List<NewsModel> news) => NewsScreen(news: news),
-            ),
-          ),
-        ),
-      ],
+    return Scaffold(
+      appBar: MainAppBar(title: t.news.news),
+      body: FutureLoadingScreen(
+        load: fetchNews,
+        buildChild: (List<NewsModel> news) => NewsScreen(news: news),
+      ),
     );
   }
 }

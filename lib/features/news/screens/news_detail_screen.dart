@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
@@ -19,11 +20,12 @@ class NewsDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final newsItem = GoRouterState.of(context).extra as NewsModel?;
     final theme = Theme.of(context);
     return Scaffold(
       appBar: MainAppBar(title: t.news.newsDetail),
       body: FutureLoadingScreen<NewsModel?>(
-        load: () => fetchNewsById(newsId),
+        load: newsItem == null ? () => fetchNewsById(newsId) : () async => newsItem,
         buildChild: (NewsModel? news) {
           if (news == null) {
             return ErrorScreen(errorMessage: t.news.newsNotFound, retry: () => fetchNewsById(newsId));

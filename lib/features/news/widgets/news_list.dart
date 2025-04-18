@@ -28,9 +28,11 @@ class NewsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureLoadingScreen(
-      load: query.isNotEmpty ? () => fetchNews(query: query) : () async => allNews,
+      load: query.isNotEmpty || showBookmarked
+          ? () => fetchNews(query: query, bookmarked: showBookmarked)
+          : () async => allNews,
       buildChild: (List<NewsModel> data) {
-        final news = data.filter(selectedDivisions, selectedCategories, showBookmarked, dateRange);
+        final news = data.filter(selectedDivisions, selectedCategories, false, dateRange);
         if (news.isEmpty) {
           return ErrorScreen(errorMessage: t.news.noResults, retry: fetchNews);
         }
