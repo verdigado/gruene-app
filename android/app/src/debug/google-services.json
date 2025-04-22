@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "938158619395",
+    "project_id": "gruene-app-development",
+    "storage_bucket": "gruene-app-development.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938158619395:android:f2cd74986c6b33f2f74736",
+        "android_client_info": {
+          "package_name": "de.gruene.wkapp.development"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZBMTb5J6o9-IdAJ3LjjaKkHy9n5_NrWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
