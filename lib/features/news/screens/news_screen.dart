@@ -4,6 +4,7 @@ import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
+import 'package:gruene_app/features/news/repository/news_repository.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_list.dart';
 import 'package:gruene_app/features/news/widgets/news_search_filter_bar.dart';
@@ -18,8 +19,14 @@ class NewsScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.news.news),
       body: FutureLoadingScreen(
-        load: fetchNews,
-        buildChild: (List<NewsModel> news) => NewsScreen(news: news),
+        load: () async => (await fetchNews(), await readDivisionFilterKeys()),
+        buildChild: (params) {
+          final (news, divisionFilterKeys) = params;
+          final initialDivisionFilters = divisionFilterKeys == null
+              ? [news.divisions().bundesverband()]
+              : news.divisions().where((division) => divisionFilterKeys.contains(division.divisionKey)).toList();
+          return NewsScreen(news: news, initialDivisionFilters: initialDivisionFilters);
+        },
       ),
     );
   }
@@ -27,8 +34,9 @@ class NewsScreenContainer extends StatelessWidget {
 
 class NewsScreen extends StatefulWidget {
   final List<NewsModel> news;
+  final List<Division> initialDivisionFilters;
 
-  const NewsScreen({super.key, required this.news});
+  const NewsScreen({super.key, required this.news, required this.initialDivisionFilters});
 
   @override
   State<NewsScreen> createState() => _NewsScreenState();
@@ -44,8 +52,7 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   void initState() {
     super.initState();
-    final divisions = widget.news.divisions();
-    _selectedDivisions = [divisions.bundesverband()];
+    _selectedDivisions = widget.initialDivisionFilters;
   }
 
   @override
