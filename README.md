@@ -1,4 +1,6 @@
-# Gruene App
+![B90/DIE GRÜNEN](android/app/src/main/res/mipmap-hdpi/ic_launcher.png)
+
+# B90/DIE GRÜNEN App
 
 ## Contents
 
