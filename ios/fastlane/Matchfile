@@ -1,8 +1,9 @@
-git_url("git@github.com:verdigado/app-signing.git")
-git_branch("main")
-storage_mode("git")
+git_url "git@github.com:verdigado/app-signing.git"
+git_branch "main"
+storage_mode "git"
 
-app_identifier("de.gruene.wkapp")
-username("app@verdigado.com")
+team_id "BH3ML3K6G2"
+app_identifier "de.gruene.wkapp"
+username "app@verdigado.com"
 
 # The docs are available on https://docs.fastlane.tools/actions/match
