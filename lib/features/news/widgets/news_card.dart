@@ -103,7 +103,7 @@ class NewsCard extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => context.pushNested(news.id),
+                  onTap: () => context.pushNested(news.id, extra: news),
                   customBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
