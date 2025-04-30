@@ -226,7 +226,7 @@
     "intro": {
       "title": "Du hast noch keinen zweiten Faktor eingerichtet.",
       "info": {
-        "easyLogin": "Mit der Zwei-Faktor-Authentifizierung kannst Du Dich ganz einfach im Grünen Netz einloggen.",
+        "easyLogin": "Mit der Zwei-Faktor-Authentifizierung kannst Du Dich ganz einfach im Grünen Netz anmelden.",
         "noShortMessageNeeded": "Kein Code per SMS mehr notwendig!",
         "scanQRCode(rich)": "Zur Einrichtung des zweiten Faktors musst Du nur mit Deiner Kamera den QR-Code in den ${openMfaSettings(Einstellungen Deines Grünen Netz-Accounts)} einscannen.",
         "notificationOnLogin": "Im Anschluss öffne die App jedes mal, wenn du eine Anmeldung im Grünen Netz freigeben willst."
@@ -257,7 +257,7 @@
       "betaVersion": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
       "delete": {
         "title": "App als zweiten Faktor deaktivieren",
-        "text": "Bitte entferne die App in Deiner Account Console bevor Du sie hier als zweiten Faktor deaktivierst. Sollte diese App Dein einziger konfigurierter zweiter Faktor sein, wirst Du dich ansonsten nach dem Deaktivieren nicht mehr einloggen können.",
+        "text": "Bitte entferne die App in Deiner Account Console bevor Du sie hier als zweiten Faktor deaktivierst. Sollte diese App Dein einziger konfigurierter zweiter Faktor sein, wirst Du dich ansonsten nach dem Deaktivieren nicht mehr anmelden können.",
         "submit": "Jetzt deaktivieren"
       }
     },
@@ -299,7 +299,7 @@
     "legalNotice": "Impressum",
     "dataProtectionStatement": "Datenschutzerklärung",
     "termsOfUse": "Nutzungsbedingungen",
-    "logout": "Ausloggen",
+    "logout": "Abmelden",
     "version": "Version ${version}",
     "notImplemented": "(folgt)"
   },
@@ -311,8 +311,8 @@
     "login": "Anmeldung",
     "support": "Unterstützen",
     "welcome": "Willkommen!",
-    "loginMembers": "Jetzt einloggen",
-    "loginNonMembers": "Login für Nicht-Parteimitglieder",
+    "loginMembers": "Jetzt anmelden",
+    "loginNonMembers": "Anmeldung für Nicht-Parteimitglieder",
     "mfa": "Zur Zwei-Faktor-Authentifizierung",
     "dataProtection": "Datenschutz",
     "legalNotice": "Impressum",
