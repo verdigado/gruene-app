@@ -22,10 +22,7 @@ class NewsCard extends StatelessWidget {
     final theme = Theme.of(context);
     final division = news.division;
     return Container(
-      height: 384,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
       child: Card(
         color: theme.colorScheme.surface,
         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -36,12 +33,48 @@ class NewsCard extends StatelessWidget {
         child: Stack(
           children: [
             // Teaser image
-            Container(
-              height: imageHeight,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-                image: featuredImage(news),
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: imageHeight,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+                    image: featuredImage(news),
+                  ),
+                ),
+                // Card content
+                Container(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        news.title,
+                        style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 8),
+                      Text(news.summary, maxLines: 3, overflow: TextOverflow.ellipsis),
+                      if (division != null)
+                        Container(
+                          margin: EdgeInsets.only(top: 16),
+                          child: Chip(
+                            label: Text(division.shortDisplayName(), style: theme.textTheme.labelSmall),
+                            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                            visualDensity: VisualDensity(vertical: -4),
+                            backgroundColor: theme.colorScheme.surface,
+                            shape: StadiumBorder(),
+                            side: BorderSide(
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             // Linear gradient on teaser image
             Container(
@@ -54,46 +87,6 @@ class NewsCard extends StatelessWidget {
                   colors: [
                     ThemeColors.text.withOpacity(0.5),
                     Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-            // Card content
-            Positioned.fill(
-              top: imageHeight,
-              child: Container(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      news.title,
-                      style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 8),
-                    Expanded(
-                      child: Text(
-                        news.summary,
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (division != null)
-                      Container(
-                        margin: EdgeInsets.only(top: 16),
-                        child: Chip(
-                          label: Text(division.shortDisplayName(), style: theme.textTheme.labelSmall),
-                          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                          visualDensity: VisualDensity(vertical: -4),
-                          backgroundColor: theme.colorScheme.surface,
-                          shape: StadiumBorder(),
-                          side: BorderSide(
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
