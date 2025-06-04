@@ -55,7 +55,7 @@ class _ThemeTextStyles {
     textStyle: TextStyle(
       fontSize: 42,
       fontWeight: FontWeight.w700,
-      height: 1.02,
+      height: 1,
       letterSpacing: 0.02,
     ),
   );
