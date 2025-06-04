@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/membership.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
@@ -21,8 +21,7 @@ class DigitalMembershipCardScreen extends StatelessWidget {
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
         buildChild: (Profile data) {
-          DivisionMembership? kvMembership =
-              data.memberships?.where((membership) => membership.division.level == DivisionLevel.kv).firstOrNull;
+          DivisionMembership? kvMembership = extractKvMembership(data.memberships);
 
           return Padding(
             padding: const EdgeInsets.all(16),

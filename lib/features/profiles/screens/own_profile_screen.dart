@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/membership.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
@@ -33,8 +34,7 @@ class OwnProfileScreen extends StatelessWidget {
               data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
           Iterable<ProfileRole> sherpaRoles = data.roles.where((role) => role.type == ProfileRoleType.role);
           Iterable<ProfileTag> skillTags = data.tags.where((tag) => tag.type == ProfileTagType.skill);
-          DivisionMembership? kvMembership =
-              data.memberships?.where((membership) => membership.division.level == DivisionLevel.kv).firstOrNull;
+          DivisionMembership? kvMembership = extractKvMembership(data.memberships);
 
           return ListView(
             children: [
