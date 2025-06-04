@@ -51,6 +51,15 @@ class _ThemeTextStyles {
   );
   static TextStyle displayLarge = displayMedium.copyWith(fontSize: 34, height: 1.2, letterSpacing: 0.03);
 
+  static TextStyle headlineLarge = GoogleFonts.ptSans(
+    textStyle: TextStyle(
+      fontSize: 42,
+      fontWeight: FontWeight.w700,
+      height: 1,
+      letterSpacing: 0.02,
+    ),
+  );
+
   static TextStyle titleMedium = GoogleFonts.ptSans(
     textStyle: TextStyle(
       fontSize: 18,
@@ -144,6 +153,7 @@ final ThemeData appTheme = ThemeData.light().copyWith(
   textTheme: TextTheme(
     displayLarge: _ThemeTextStyles.displayLarge,
     displayMedium: _ThemeTextStyles.displayMedium,
+    headlineLarge: _ThemeTextStyles.headlineLarge,
     titleLarge: _ThemeTextStyles.titleLarge,
     titleMedium: _ThemeTextStyles.titleMedium,
     titleSmall: _ThemeTextStyles.titleSmall,
