@@ -20,7 +20,7 @@ class DigitalMembershipCardScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.digitalMembershipCard.title),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile data) {
+        buildChild: (Profile data, _) {
           DivisionMembership? kvMembership = extractKvMembership(data.memberships);
 
           return Padding(

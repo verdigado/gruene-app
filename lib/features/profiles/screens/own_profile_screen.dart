@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/routes.dart';
-import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/membership.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
@@ -26,7 +25,6 @@ class OwnProfileScreen extends StatelessWidget {
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
         buildChild: (Profile data, updateData) {
-
           Iterable<ProfileRole> mandateRoles =
               data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
           Iterable<ProfileRole> sherpaRoles = data.roles.where((role) => role.type == ProfileRoleType.role);
@@ -37,8 +35,8 @@ class OwnProfileScreen extends StatelessWidget {
             children: [
               SizedBox(height: 24),
               ProfileHeader(
-                  profile: data,
-                  onProfileUpdated: updateData,
+                profile: data,
+                onProfileUpdated: updateData,
               ),
               SizedBox(height: 24),
               TextListItem(

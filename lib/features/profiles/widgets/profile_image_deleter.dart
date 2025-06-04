@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -67,27 +66,56 @@ class DeleteProfileImageDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return AlertDialog(
-      title: Text(t.profiles.profileImage.confirmDelete.title),
-      titleTextStyle: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark),
-      content: Text(t.profiles.profileImage.confirmDelete.text),
-      contentTextStyle: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDark),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: Text(
-            t.common.actions.cancel,
-            style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textCancel),
-          ),
+
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              t.profiles.profileImage.confirmDelete.title,
+              style: theme.textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16.0),
+            Text(
+              t.profiles.profileImage.confirmDelete.text,
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 24.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  style: TextButton.styleFrom(
+                    foregroundColor: theme.colorScheme.primary,
+                  ),
+                  child: Text(
+                    t.common.actions.cancel.toUpperCase(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: TextButton.styleFrom(
+                    foregroundColor: theme.colorScheme.primary,
+                  ),
+                  child: Text(
+                    t.common.actions.delete.toUpperCase(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(
-            t.common.actions.delete,
-            style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

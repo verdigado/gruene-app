@@ -27,7 +27,7 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
     if (widget.load != oldWidget.load) {
       setState(() {});
       _data = widget.load();
-    });
+    }
   }
 
   void _setData(T newData) {
