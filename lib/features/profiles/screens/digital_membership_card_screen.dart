@@ -20,11 +20,7 @@ class DigitalMembershipCardScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.digitalMembershipCard.title),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile? data) {
-          if (data == null) {
-            return ErrorScreen(error: t.profiles.noResult, retry: fetchOwnProfile);
-          }
-
+        buildChild: (Profile data) {
           DivisionMembership? kvMembership =
               data.memberships?.where((membership) => membership.division.level == DivisionLevel.kv).firstOrNull;
 
