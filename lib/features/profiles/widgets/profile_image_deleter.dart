@@ -21,7 +21,20 @@ class ProfileImageDeleter extends StatelessWidget {
 
     final bool? confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => const DeleteProfileImageDialog(),
+      builder: (context) {
+        final theme = Theme.of(context);
+        return AlertDialog(
+          title: Text(t.profiles.profileImage.confirmDelete.title, style: theme.textTheme.titleLarge),
+          content: Text(t.profiles.profileImage.confirmDelete.text),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+          contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 8),
+          actionsPadding: EdgeInsets.all(8),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(t.common.actions.cancel)),
+            TextButton(onPressed: () => Navigator.of(context).pop(true), child: Text(t.common.actions.delete)),
+          ],
+        );
+      },
     );
 
     if (confirmed != true) return;
@@ -54,66 +67,6 @@ class ProfileImageDeleter extends StatelessWidget {
         t.profiles.profileImage.delete,
         style: theme.textTheme.bodyMedium!.apply(
           decoration: TextDecoration.underline,
-        ),
-      ),
-    );
-  }
-}
-
-class DeleteProfileImageDialog extends StatelessWidget {
-  const DeleteProfileImageDialog({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              t.profiles.profileImage.confirmDelete.title,
-              style: theme.textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16.0),
-            Text(
-              t.profiles.profileImage.confirmDelete.text,
-              style: theme.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 24.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  style: TextButton.styleFrom(
-                    foregroundColor: theme.colorScheme.primary,
-                  ),
-                  child: Text(
-                    t.common.actions.cancel.toUpperCase(),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  style: TextButton.styleFrom(
-                    foregroundColor: theme.colorScheme.primary,
-                  ),
-                  child: Text(
-                    t.common.actions.delete.toUpperCase(),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );
