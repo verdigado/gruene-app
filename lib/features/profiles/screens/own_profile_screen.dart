@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/routes.dart';
-import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/membership.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
@@ -25,11 +24,7 @@ class OwnProfileScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.profiles),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile? data) {
-          if (data == null) {
-            return ErrorScreen(errorMessage: t.profiles.noResult, retry: fetchOwnProfile);
-          }
-
+        buildChild: (Profile data, updateData) {
           Iterable<ProfileRole> mandateRoles =
               data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
           Iterable<ProfileRole> sherpaRoles = data.roles.where((role) => role.type == ProfileRoleType.role);
@@ -39,7 +34,10 @@ class OwnProfileScreen extends StatelessWidget {
           return ListView(
             children: [
               SizedBox(height: 24),
-              ProfileHeader(profile: data),
+              ProfileHeader(
+                profile: data,
+                onProfileUpdated: updateData,
+              ),
               SizedBox(height: 24),
               TextListItem(
                 title: t.profiles.digitalMembershipCard.title,

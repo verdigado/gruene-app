@@ -31,7 +31,7 @@ class NewsList extends StatelessWidget {
       load: query.isNotEmpty || showBookmarked
           ? () => fetchNews(query: query, bookmarked: showBookmarked)
           : () async => allNews,
-      buildChild: (List<NewsModel> data) {
+      buildChild: (List<NewsModel> data, _) {
         final news = data.filter(selectedDivisions, selectedCategories, false, dateRange);
         if (news.isEmpty) {
           return ErrorScreen(errorMessage: t.news.noResults, retry: fetchNews);

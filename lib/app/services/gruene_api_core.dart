@@ -26,7 +26,7 @@ Future<GrueneApi> createGrueneApiClient() async {
 
 Future<T> getFromApi<S, T>({
   required Future<Response<S>> Function(GrueneApi api) request,
-  required T Function(S data) map,
+  T Function(S data)? map,
 }) async {
   final GrueneApi api = GetIt.I<GrueneApi>();
 
@@ -37,7 +37,7 @@ Future<T> getFromApi<S, T>({
     throw Exception('${t.error.apiError(statusCode: response.statusCode)}\n${response.base.request?.url}');
   }
 
-  return map(body);
+  return (map ?? (data) => data as T)(body);
 }
 
 Future<T> postToApi<S, T>({
