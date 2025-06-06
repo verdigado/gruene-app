@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/config.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 extension IterableX<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T) test) {
@@ -34,4 +36,10 @@ extension PushNested on BuildContext {
     final currentPath = GoRouterState.of(this).fullPath;
     push('$currentPath/$nestedSlug', extra: extra);
   }
+}
+
+Future<bool> hasInternetAccess() async {
+  final customCheckOptions = [InternetCheckOption(uri: Uri.parse(Config.ipV4ServiceUrl))];
+  final connection = InternetConnection.createInstance(customCheckOptions: customCheckOptions);
+  return await connection.hasInternetAccess;
 }
