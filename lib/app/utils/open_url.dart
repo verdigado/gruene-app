@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
+import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> _openInAppBrowser(String url, BuildContext context) async {
-  final browser = ChromeSafariBrowser();
-  await browser.open(
-    url: WebUri(url),
-    settings: ChromeSafariBrowserSettings(toolbarBackgroundColor: Theme.of(context).primaryColor),
+  FlutterWebBrowser.openWebPage(
+    url: url,
+    customTabsOptions: CustomTabsOptions(
+      defaultColorSchemeParams: CustomTabsColorSchemeParams(toolbarColor: Theme.of(context).primaryColor),
+      shareState: CustomTabsShareState.off,
+    ),
+    safariVCOptions: SafariViewControllerOptions(
+      preferredBarTintColor: Theme.of(context).primaryColor,
+      preferredControlTintColor: ThemeColors.background,
+    ),
   );
 }
 
