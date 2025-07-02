@@ -1,53 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
-import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
+import 'package:gruene_app/app/utils/format_date.dart';
+import 'package:gruene_app/features/mfa/dtos/login_attempt_dto.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
 
 class LoginAttemptCard extends StatelessWidget {
-  const LoginAttemptCard({super.key});
+  final LoginAttemptDto loginAttempt;
+  final String? title;
+
+  const LoginAttemptCard({super.key, required this.loginAttempt, this.title});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<MfaBloc, MfaState>(
-      builder: (context, state) {
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.04), offset: Offset(2, 4), blurRadius: 16, spreadRadius: 7),
-            ],
-          ),
-          child: Card(
-            elevation: 0,
-            color: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.04),
+            offset: Offset(2, 4),
+            blurRadius: 16,
+            spreadRadius: 7),
+          ],
+        ),
+
+      child: Card(
+        elevation: 0,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ...(title != null
+                  ? [
+                      Text(title!, style: theme.textTheme.titleSmall),
+                      const SizedBox(height: 8),
+                    ]
+                  : []),
+              Table(
+                defaultColumnWidth: IntrinsicColumnWidth(),
                 children: [
-                  Text(t.mfa.ready.lastLoginAttempt, style: theme.textTheme.titleMedium),
-                  const SizedBox(height: 6),
-                  Text(t.mfa.ready.loginAttemptApproved, style: theme.textTheme.bodyMedium?.apply(fontWeightDelta: 3)),
-                  Text(state.lastGrantedLoginAttempt!.clientName, style: theme.textTheme.bodyMedium),
-                  Text(
-                    '${state.lastGrantedLoginAttempt!.browser}, ${state.lastGrantedLoginAttempt!.os} (${state.lastGrantedLoginAttempt!.ipAddress})',
-                    style: theme.textTheme.bodyMedium,
+                  TableRow(
+                    children: [
+                      Text(t.mfa.verify.application),
+                      Text(
+                        loginAttempt.clientName,
+                        style: title == null ? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700) : null,
+                      ),
+                    ],
                   ),
-                  Text(
-                    '${DateFormat('dd.MM.yyyy, HH:mm:ss').format(state.lastGrantedLoginAttempt!.loggedInAt)} ${t.mfa.ready.oclock}',
-                    style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDisabled),
+                  TableRow(
+                    children: [
+                      Text(t.mfa.verify.device),
+                      Text('${loginAttempt.browser} ${loginAttempt.os}'),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Text(t.mfa.verify.date),
+                      Text(formatDate(loginAttempt.loggedInAt)),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Text(t.mfa.verify.time),
+                      Text(
+                        t.mfa.verify.pointInTime(
+                          time: DateFormat(DateFormat.HOUR_MINUTE_SECOND).format(loginAttempt.loggedInAt),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

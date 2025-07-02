@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
@@ -54,24 +57,26 @@ class _ReadyViewState extends State<ReadyView> {
             const SizedBox(height: 60),
             Center(child: SizedBox(height: 155, child: SvgPicture.asset('assets/graphics/mfa_ready.svg'))),
             const SizedBox(height: 16),
-            TextButton(
-              onPressed: () => {context.read<MfaBloc>().add(RefreshMfa())},
-              child: Text(
-                t.mfa.ready.refresh,
-                style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.text, decoration: TextDecoration.underline),
-              ),
-            ),
-            const SizedBox(height: 3),
-            state.lastGrantedLoginAttempt != null ? LoginAttemptCard() : NoLoginAttemptCard(),
+            NoLoginAttemptCard(lastRefresh: state.lastRefresh),
             const SizedBox(height: 16),
-            Text(t.mfa.ready.betaVersion, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
-            TextButton(
-              onPressed: () => showMfaDeletionDialog(context),
-              child: Text(
-                t.mfa.ready.delete.title,
-                style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.text, decoration: TextDecoration.underline),
+            Center(
+              child: FilledButton(
+                onPressed: () => context.read<MfaBloc>().add(RefreshMfa()),
+                child: Text(
+                  t.mfa.ready.refresh,
+                  style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+                ),
               ),
             ),
+            const SizedBox(height: 16),
+            state.lastGrantedLoginAttempt != null
+                ? LoginAttemptCard(
+                    loginAttempt: state.lastGrantedLoginAttempt!,
+                    title: t.mfa.ready.lastApprovedLogin,
+                  )
+                : Container(),
+            Spacer(),
+            OutlinedButton(onPressed: () => showMfaDeletionDialog(context), child: Text(t.mfa.ready.delete.title)),
             const SizedBox(height: 32),
           ],
         ),
@@ -80,26 +85,35 @@ class _ReadyViewState extends State<ReadyView> {
   }
 
   void showMfaDeletionDialog(BuildContext context) {
+    final theme = Theme.of(context);
     showDialog<void>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Text(t.mfa.ready.delete.text),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(t.common.actions.cancel)
+      builder: (BuildContext context) => AlertDialog(
+        title: Center(child: Text(t.mfa.ready.delete.title, style: theme.textTheme.titleMedium)),
+        content: Text.rich(
+          t.mfa.ready.delete.description(
+            appName: TextSpan(text: t.common.appName),
+            openAccountSettings: (text) => TextSpan(
+              text: text,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: ThemeColors.primary,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: TapGestureRecognizer()..onTap = () => openUrl(mfaSettingsUrl, context),
             ),
-            TextButton(
-              onPressed: () {
-                context.read<MfaBloc>().add(DeleteMfa());
-                Navigator.of(context).pop();
-              },
-              child: Text(t.mfa.ready.delete.submit),
-            ),
-          ],
-        );
-      },
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: Navigator.of(context).pop, child: Text(t.common.actions.cancel)),
+          TextButton(
+            onPressed: () {
+              context.read<MfaBloc>().add(DeleteMfa());
+              Navigator.of(context).pop();
+            },
+            child: Text(t.mfa.ready.delete.submit),
+          ),
+        ],
+      ),
     );
   }
 }

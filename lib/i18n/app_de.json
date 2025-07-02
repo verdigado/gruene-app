@@ -209,7 +209,7 @@
       "deleteError": "Beim Löschen des Profilbildes ist leider ein Fehler aufgetreten.",
       "confirmDelete": {
         "title": "Profilbild löschen",
-        "text": "Soll dein Profilbild wirklich gelöscht werden?"
+        "text": "Soll Dein Profilbild wirklich gelöscht werden?"
       }
     },
     "baseData": {
@@ -242,18 +242,12 @@
     }
   },
   "mfa": {
-    "mfa": "Zwei-Faktor-Authentifizierung",
+    "mfa": "2-Faktor-Authentifizierung",
     "label": "2FA",
     "intro": {
-      "title": "Du hast noch keinen zweiten Faktor eingerichtet.",
-      "info": {
-        "easyLogin": "Mit der Zwei-Faktor-Authentifizierung kannst Du Dich ganz einfach im Grünen Netz anmelden.",
-        "noShortMessageNeeded": "Kein Code per SMS mehr notwendig!",
-        "scanQRCode(rich)": "Zur Einrichtung des zweiten Faktors musst Du nur mit Deiner Kamera den QR-Code in den ${openMfaSettings(Einstellungen Deines Grünen Netz-Accounts)} einscannen.",
-        "notificationOnLogin": "Im Anschluss öffne die App jedes mal, wenn du eine Anmeldung im Grünen Netz freigeben willst."
-      },
-      "startSetup": "Jetzt einrichten",
-      "moreInformation(rich)": "Mehr Informationen zur Einrichtung findest Du ${openMfaInformation(hier)}."
+      "title": "Nutze die App als 2-Faktor-Authentifizierung!",
+      "description(rich)": "Mit der App ${appName} als zweiten Faktor kannst Du Dich ganz einfach im Grünen Netz anmelden.\n\nFür die Einrichtung musst Du nur mit Deiner Kamera den QR-Code in ${openAccountSettings(Deiner Account-Verwaltung)} einscannen.\n\nIm Anschluss öffne die App jedes Mal, wenn Du eine Anmeldung im Grünen Netz freigeben willst.\n\nMehr Informationen zur Einrichtung findest Du ${openMfaInformation(hier)}.",
+      "startSetup": "Jetzt einrichten"
     },
     "tokenScan": {
       "title": "2FA - QR-Code scannen",
@@ -270,22 +264,24 @@
     "ready": {
       "refresh": "Aktualisieren",
       "noLoginAttempt": "Es liegen aktuell keine Anmeldeversuche vor.",
-      "lastRefreshAt": "zuletzt aktualisiert",
+      "lastRefresh": "zuletzt aktualisiert: ${time}",
       "never": "nie",
-      "lastLoginAttempt": "Letzte Anmeldung",
-      "loginAttemptApproved": "Anmeldung freigegeben",
+      "lastApprovedLogin": "Letzte freigegebene Anmeldung",
       "oclock": "Uhr",
-      "betaVersion": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
       "delete": {
-        "title": "App als zweiten Faktor deaktivieren",
-        "text": "Bitte entferne die App in Deiner Account Console bevor Du sie hier als zweiten Faktor deaktivierst. Sollte diese App Dein einziger konfigurierter zweiter Faktor sein, wirst Du dich ansonsten nach dem Deaktivieren nicht mehr anmelden können.",
-        "submit": "Jetzt deaktivieren"
+        "title": "App als zweiten Faktor löschen",
+        "description(rich)": "Bitte entferne die App in ${openAccountSettings(Deiner Account-Verwaltung)} und richte eine neue Methode ein, bevor Du sie hier deaktivierst.\n\nSollte die App ${appName} Deine einzige 2FA-Methode sein, wirst Du Dich ansonsten nach dem Deaktivieren nicht mehr anmelden können!",
+        "submit": "Jetzt löschen"
       }
     },
     "verify": {
       "title": "Bist Du das?",
-      "intro": "Ein Tool fordert Zugriff auf Deinen Account an:",
-      "oclock": "Uhr",
+      "description": "Eine Anwendung fordert Zugriff auf Deinen Account an.",
+      "application": "Anwendung:",
+      "device": "Gerät:",
+      "date": "Datum:",
+      "time": "Uhrzeit:",
+      "pointInTime": "${time} Uhr",
       "authenticateForApproval": "Bitte bestätige die Anmeldung.",
       "approve": "Anmeldung erlauben",
       "deny": "Anmeldung verweigern"
@@ -333,7 +329,7 @@
     "welcome": "Willkommen!",
     "loginMembers": "Jetzt anmelden",
     "loginNonMembers": "Anmeldung für Nicht-Parteimitglieder",
-    "mfa": "Zur Zwei-Faktor-Authentifizierung",
+    "mfa": "Zur 2-Faktor-Authentifizierung",
     "dataProtection": "Datenschutz",
     "legalNotice": "Impressum",
     "termsOfUse": "Nutzungsbedingungen",
