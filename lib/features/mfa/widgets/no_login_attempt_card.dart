@@ -1,17 +1,41 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class LastGrantedLoginAttemptWidget extends StatelessWidget {
-  const LastGrantedLoginAttemptWidget({super.key});
+class NoLoginAttemptCard extends StatefulWidget {
+  const NoLoginAttemptCard({super.key});
+
+  @override
+  State<NoLoginAttemptCard> createState() => _NoLoginAttemptCardState();
+}
+
+class _NoLoginAttemptCardState extends State<NoLoginAttemptCard> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = LocaleSettings.currentLocale.languageCode;
     return BlocBuilder<MfaBloc, MfaState>(
       builder: (context, state) {
         return Container(
@@ -38,24 +62,12 @@ class LastGrantedLoginAttemptWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    t.mfa.ready.lastLoginAttempt,
+                    t.mfa.ready.noLoginAttempt,
                     style: theme.textTheme.titleMedium,
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    t.mfa.ready.loginAttemptApproved,
-                    style: theme.textTheme.bodyMedium?.apply(fontWeightDelta: 3),
-                  ),
-                  Text(
-                    state.lastGrantedLoginAttempt!.clientName,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  Text(
-                    '${state.lastGrantedLoginAttempt!.browser}, ${state.lastGrantedLoginAttempt!.os} (${state.lastGrantedLoginAttempt!.ipAddress})',
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  Text(
-                    '${DateFormat('dd.MM.yyyy, HH:mm:ss').format(state.lastGrantedLoginAttempt!.loggedInAt)} ${t.mfa.ready.oclock}',
+                    '${t.mfa.ready.lastRefreshAt}: ${state.lastRefresh != null ? timeago.format(state.lastRefresh!, locale: locale) : 'nie'}',
                     style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDisabled),
                   ),
                 ],
