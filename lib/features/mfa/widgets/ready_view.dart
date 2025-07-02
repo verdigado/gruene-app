@@ -75,29 +75,7 @@ class _ReadyViewState extends State<ReadyView> {
               textAlign: TextAlign.center,
             ),
             TextButton(
-              onPressed: () {
-                showDialog<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: Text(t.mfa.ready.delete.text),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(t.common.actions.cancel),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            context.read<MfaBloc>().add(DeleteMfa());
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(t.mfa.ready.delete.submit),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
+              onPressed: () => showMfaDeletionDialog(context),
               child: Text(
                 t.mfa.ready.delete.title,
                 style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.text, decoration: TextDecoration.underline),
@@ -106,6 +84,30 @@ class _ReadyViewState extends State<ReadyView> {
           ],
         ),
       ),
+    );
+  }
+
+  void showMfaDeletionDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(t.mfa.ready.delete.text),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(t.common.actions.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<MfaBloc>().add(DeleteMfa());
+                Navigator.of(context).pop();
+              },
+              child: Text(t.mfa.ready.delete.submit),
+            ),
+          ],
+        );
+      },
     );
   }
 }
