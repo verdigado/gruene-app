@@ -8,14 +8,14 @@ import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class NoLoginAttemptWidget extends StatefulWidget {
-  const NoLoginAttemptWidget({super.key});
+class NoLoginAttemptCard extends StatefulWidget {
+  const NoLoginAttemptCard({super.key});
 
   @override
-  State<NoLoginAttemptWidget> createState() => _NoLoginAttemptWidgetState();
+  State<NoLoginAttemptCard> createState() => _NoLoginAttemptCardState();
 }
 
-class _NoLoginAttemptWidgetState extends State<NoLoginAttemptWidget> {
+class _NoLoginAttemptCardState extends State<NoLoginAttemptCard> {
   Timer? _timer;
 
   @override

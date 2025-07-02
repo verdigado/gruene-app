@@ -6,8 +6,8 @@ import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
 
-class LastGrantedLoginAttemptWidget extends StatelessWidget {
-  const LastGrantedLoginAttemptWidget({super.key});
+class LoginAttemptCard extends StatelessWidget {
+  const LoginAttemptCard({super.key});
 
   @override
   Widget build(BuildContext context) {

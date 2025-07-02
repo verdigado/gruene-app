@@ -7,8 +7,8 @@ import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
-import 'package:gruene_app/features/mfa/widgets/last_granted_login_attempt_widget.dart';
-import 'package:gruene_app/features/mfa/widgets/no_login_attempt_widget.dart';
+import 'package:gruene_app/features/mfa/widgets/login_attempt_card.dart';
+import 'package:gruene_app/features/mfa/widgets/no_login_attempt_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class ReadyView extends StatefulWidget {
@@ -62,7 +62,7 @@ class _ReadyViewState extends State<ReadyView> {
               ),
             ),
             const SizedBox(height: 3),
-            state.lastGrantedLoginAttempt != null ? LastGrantedLoginAttemptWidget() : NoLoginAttemptWidget(),
+            state.lastGrantedLoginAttempt != null ? LoginAttemptCard() : NoLoginAttemptCard(),
             const SizedBox(height: 16),
             Text(t.mfa.ready.betaVersion, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
             TextButton(
