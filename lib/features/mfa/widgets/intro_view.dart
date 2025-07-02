@@ -5,6 +5,7 @@ import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class IntroView extends StatelessWidget {
@@ -14,40 +15,37 @@ class IntroView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
-      child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: ExpandingScrollView(
         children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.only(top: 32, bottom: 16),
-              children: [
-                Text(t.mfa.intro.title, textAlign: TextAlign.center, style: theme.textTheme.displayLarge),
-                const SizedBox(height: 48),
-                Text(
-                  t.mfa.intro.info.easyLogin,
-                  style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                Text(t.mfa.intro.info.noShortMessageNeeded, style: theme.textTheme.bodyMedium),
-                const SizedBox(height: 16),
-                Text.rich(
-                  t.mfa.intro.info.scanQRCode(
-                    openMfaSettings: (text) => TextSpan(
-                      text: text,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: ThemeColors.primary,
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      recognizer: TapGestureRecognizer()..onTap = () => openUrl(mfaSettingsUrl, context),
-                    ),
-                  ),
-                  style: theme.textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 16),
-                Text(t.mfa.intro.info.notificationOnLogin, style: theme.textTheme.bodyMedium),
-              ],
-            ),
+          Text(
+            t.mfa.intro.title,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.displayLarge
           ),
+          const SizedBox(height: 32),
+          Text(
+            t.mfa.intro.info.easyLogin,
+            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          Text(t.mfa.intro.info.noShortMessageNeeded, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 32),
+          Text.rich(
+            t.mfa.intro.info.scanQRCode(
+              openMfaSettings: (text) => TextSpan(
+                text: text,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: ThemeColors.primary,
+                  decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.w700,
+                ),
+                recognizer: TapGestureRecognizer()..onTap = () => openUrl(mfaSettingsUrl, context),
+              ),
+            ),
+            style: theme.textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 32),
+          Text(t.mfa.intro.info.notificationOnLogin, style: theme.textTheme.bodyMedium),
           FilledButton(
             onPressed: () => context.pushNested(Routes.mfaTokenScan.path),
             style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
@@ -56,7 +54,7 @@ class IntroView extends StatelessWidget {
               style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Center(
             child: Text.rich(
               t.mfa.intro.moreInformation(
@@ -73,7 +71,7 @@ class IntroView extends StatelessWidget {
               style: theme.textTheme.labelSmall,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
         ],
       ),
     );

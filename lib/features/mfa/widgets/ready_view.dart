@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
@@ -47,9 +48,10 @@ class _ReadyViewState extends State<ReadyView> {
 
     return BlocBuilder<MfaBloc, MfaState>(
       builder: (context, state) => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 60, 24, 26),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: ExpandingScrollView(
           children: [
+            const SizedBox(height: 60),
             Center(child: SizedBox(height: 155, child: SvgPicture.asset('assets/graphics/mfa_ready.svg'))),
             const SizedBox(height: 16),
             TextButton(
@@ -70,6 +72,7 @@ class _ReadyViewState extends State<ReadyView> {
                 style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.text, decoration: TextDecoration.underline),
               ),
             ),
+            const SizedBox(height: 32),
           ],
         ),
       ),
