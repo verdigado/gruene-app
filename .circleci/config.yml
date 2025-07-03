@@ -339,7 +339,7 @@ jobs:
                 name: '[FL] Google PlayStore Upload'
                 working_directory: android
             - run:
-                command: echo "export ANDROID_RELEASE_ID='$(yarn --silent github-release create android ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME} --release-notes "Release v${NEW_VERSION_NAME}+${NEW_VERSION_CODE}")'" >> ${BASH_ENV}
+                command: echo "export ANDROID_RELEASE_ID='$(yarn --silent github-release create android ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME})'" >> ${BASH_ENV}
                 name: Create Github Release
                 working_directory: tools
             - run:
@@ -377,7 +377,7 @@ jobs:
                         name: '[FL] Apple Testflight Upload'
                         working_directory: ios
             - run:
-                command: echo "export IOS_RELEASE_ID='$(yarn --silent github-release create ios ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME} --release-notes "Release v${NEW_VERSION_NAME}+${NEW_VERSION_CODE}")'" >> ${BASH_ENV}
+                command: echo "export IOS_RELEASE_ID='$(yarn --silent github-release create ios ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME})'" >> ${BASH_ENV}
                 name: Create Github Release
                 working_directory: tools
             - run:

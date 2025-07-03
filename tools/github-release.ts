@@ -1,3 +1,4 @@
+import { Octokit } from '@octokit/rest'
 import { program } from 'commander'
 
 import { Platform, tagId } from './constants.js'
@@ -7,15 +8,35 @@ type Options = {
   githubPrivateKey: string
   owner: string
   repo: string
-  releaseNotes: string
   productionDelivery: string
+}
+
+const getGithubApiUrlForReleaseNotes = (owner: string, repo: string): string =>
+  `POST /repos/${owner}/${repo}/releases/generate-notes`
+
+const generateReleaseNotesFromGithubEndpoint = async (
+  owner: string,
+  repo: string,
+  appOctokit: Octokit,
+  tagName: string
+): Promise<string> => {
+  try {
+    const response = await appOctokit.request(getGithubApiUrlForReleaseNotes(owner, repo), {
+      owner,
+      repo,
+      tag_name: tagName
+    })
+    return response.data.body
+  } catch (e) {
+    throw new Error("Couldn't get release notes")
+  }
 }
 
 const githubRelease = async (
   platform: Platform,
   newVersionName: string,
   newVersionCode: string,
-  { githubPrivateKey, owner, repo, releaseNotes, productionDelivery }: Options,
+  { githubPrivateKey, owner, repo, productionDelivery }: Options,
 ): Promise<void> => {
   const versionCode = parseInt(newVersionCode, 10)
   if (Number.isNaN(versionCode)) {
@@ -23,19 +44,18 @@ const githubRelease = async (
   }
 
   const releaseName = `[${platform}] ${newVersionName} - ${versionCode}`
+  const tagName = tagId({ versionName: newVersionName, platform })
   const appOctokit = await authenticate({ githubPrivateKey, owner, repo })
 
   const release = await appOctokit.repos.createRelease({
     owner,
     repo,
-    tag_name: tagId({ versionName: newVersionName, platform }),
+    tag_name: tagName,
     prerelease: productionDelivery === 'false',
     make_latest: platform === 'android' ? 'true' : 'false',
     name: releaseName,
-    body: releaseNotes,
+    body: await generateReleaseNotesFromGithubEndpoint(owner, repo, appOctokit, tagName),
   })
-
-  // This command returns the release id of the created release, which is later needed to make updates for this release.
   console.log(release.data.id)
 }
 
@@ -47,9 +67,8 @@ program
     'private key of the github release bot in pem format with base64 encoding',
   )
   .requiredOption('--owner <owner>', 'owner of the current repository, usually verdigado')
-  .requiredOption('--repo <repo>', 'the current repository, should be gruene_app')
-  .requiredOption('--release-notes <release-notes>', 'the release notes (for the selected platform)')
-  .requiredOption('--production-delivery <production-delivery>', 'weather this is a production delivery or not')
+  .requiredOption('--repo <repo>', 'the current repository, should be gruene-app')
+  .requiredOption('--production-delivery <production-delivery>', 'whether this is a production delivery or not')
   .action(async (platform: Platform, newVersionName: string, newVersionCode: string, options: Options) => {
     try {
       await githubRelease(platform, newVersionName, newVersionCode, options)
