@@ -62,9 +62,7 @@ class _FlyerEditState extends State<FlyerEdit> with AddressExtension, FlyerValid
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              children: [Text(t.campaigns.flyer.editFlyer, style: theme.textTheme.titleLarge)],
-            ),
+            child: Row(children: [Text(t.campaigns.flyer.editFlyer, style: theme.textTheme.titleLarge)]),
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -84,9 +82,7 @@ class _FlyerEditState extends State<FlyerEdit> with AddressExtension, FlyerValid
             padding: EdgeInsets.symmetric(vertical: 6),
             child: Row(
               children: [
-                Expanded(
-                  child: SizedBox(),
-                ),
+                Expanded(child: SizedBox()),
                 Flexible(
                   child: EnhancedWheelSlider(
                     labelText: t.campaigns.flyer.countFlyer,
@@ -105,10 +101,7 @@ class _FlyerEditState extends State<FlyerEdit> with AddressExtension, FlyerValid
           ),
           Container(
             padding: EdgeInsets.only(top: 6, bottom: 24),
-            child: DeleteAndSaveWidget(
-              onDelete: () => confirmDelete(context, _onDeletePressed),
-              onSave: _saveFlyer,
-            ),
+            child: DeleteAndSaveWidget(onDelete: () => confirmDelete(context, _onDeletePressed), onSave: _saveFlyer),
           ),
         ],
       ),

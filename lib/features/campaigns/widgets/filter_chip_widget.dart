@@ -16,11 +16,7 @@ class FilterChipCampaign extends StatefulWidget {
   final List<FilterChipModel> filterOptions;
   final Map<String, List<String>> filterExclusions;
 
-  const FilterChipCampaign(
-    this.filterOptions,
-    this.filterExclusions, {
-    super.key,
-  });
+  const FilterChipCampaign(this.filterOptions, this.filterExclusions, {super.key});
 
   @override
   State<FilterChipCampaign> createState() => _FilterChipCampaignState();
@@ -46,12 +42,7 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
         padding: EdgeInsets.only(left: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Wrap(
-              spacing: 15.0,
-              children: widget.filterOptions.map(getFilterChipItem).toList(),
-            ),
-          ],
+          children: <Widget>[Wrap(spacing: 15.0, children: widget.filterOptions.map(getFilterChipItem).toList())],
         ),
       ),
     );
@@ -69,9 +60,7 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
       shape: StadiumBorder(),
       selected: currentActiveFilters.contains(filterItem),
       showCheckmark: false,
-      labelStyle: TextStyle(
-        color: filterItem.isEnabled ? ChipLabelColor() : ThemeColors.textDisabled,
-      ),
+      labelStyle: TextStyle(color: filterItem.isEnabled ? ChipLabelColor() : ThemeColors.textDisabled),
       onSelected: (bool selected) {
         filterItem.stateChanged!(selected);
         setState(() {

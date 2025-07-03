@@ -13,10 +13,7 @@ class MarkerItemHelper {
   static Feature<Point> transformMarkerItemToGeoJson(MarkerItemModel markerItem) {
     return Feature<Point>(
       id: markerItem.id,
-      properties: <String, dynamic>{
-        'status_type': markerItem.status,
-        'is_virtual': markerItem.isVirtual,
-      },
+      properties: <String, dynamic>{'status_type': markerItem.status, 'is_virtual': markerItem.isVirtual},
       geometry: Point(coordinates: Position(markerItem.location.longitude, markerItem.location.latitude)),
     );
   }

@@ -46,23 +46,10 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   @override
   void initState() {
     postersFilter = [
-      FilterChipModel(
-        text: t.campaigns.filters.routes,
-        isEnabled: false,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.focusAreas,
-        isEnabled: true,
-        stateChanged: onFocusAreaStateChanged,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.polling_stations,
-        isEnabled: false,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.experience_areas,
-        isEnabled: false,
-      ),
+      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
+      FilterChipModel(text: t.campaigns.filters.focusAreas, isEnabled: true, stateChanged: onFocusAreaStateChanged),
+      FilterChipModel(text: t.campaigns.filters.polling_stations, isEnabled: false),
+      FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
     ];
 
     super.initState();
@@ -102,9 +89,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
                     foregroundColor: ThemeColors.background,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(
-                        color: ThemeColors.background,
-                      ),
+                      side: BorderSide(color: ThemeColors.background),
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   ),
@@ -132,11 +117,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   }
 
   PosterAddScreen _getAddScreen(LatLng location, AddressModel? address, File? photo) {
-    return PosterAddScreen(
-      location: location,
-      address: address!,
-      photo: photo,
-    );
+    return PosterAddScreen(location: location, address: address!, photo: photo);
   }
 
   void _addPOIClicked(LatLng location) async {
@@ -186,10 +167,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
     final feature = rawFeature as Map<String, dynamic>;
 
     getPoiDetailWidget(PosterDetailModel poster) {
-      return PosterDetail(
-        poi: poster,
-        onSave: savePoi,
-      );
+      return PosterDetail(poi: poster, onSave: savePoi);
     }
 
     super.onFeatureClick<PosterDetailModel>(

@@ -10,12 +10,7 @@ class CampaignAction {
   CampaignActionType? actionType;
   String? serialized;
 
-  CampaignAction({
-    this.id,
-    this.poiId,
-    this.actionType,
-    this.serialized,
-  }) {
+  CampaignAction({this.id, this.poiId, this.actionType, this.serialized}) {
     poiTempId = DateTime.now().millisecondsSinceEpoch;
   }
 
@@ -73,13 +68,7 @@ class CampaignAction {
 
   factory CampaignAction.fromJson(String source) => CampaignAction.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  CampaignAction copyWith({
-    int? id,
-    int? poiId,
-    int? poiTempId,
-    CampaignActionType? actionType,
-    String? serialized,
-  }) {
+  CampaignAction copyWith({int? id, int? poiId, int? poiTempId, CampaignActionType? actionType, String? serialized}) {
     return CampaignAction(
       id: id ?? this.id,
       poiId: poiId ?? this.poiId,

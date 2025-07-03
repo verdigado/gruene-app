@@ -36,16 +36,11 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
             backgroundColor: ThemeColors.background,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
-              side: BorderSide(
-                color: ThemeColors.textDisabled,
-              ),
+              side: BorderSide(color: ThemeColors.textDisabled),
             ),
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           ),
-          icon: Icon(
-            Icons.search,
-            color: ThemeColors.textDisabled,
-          ),
+          icon: Icon(Icons.search, color: ThemeColors.textDisabled),
           onPressed: () => setState(() {
             var scaffoldMessenger = ScaffoldMessenger.of(context);
             scaffoldMessenger.removeCurrentSnackBar();
@@ -73,10 +68,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
             children: [
               IconButton(
                 onPressed: _searchAddress,
-                icon: Icon(
-                  Icons.search,
-                  color: foregroundColor,
-                ),
+                icon: Icon(Icons.search, color: foregroundColor),
               ),
               Expanded(
                 child: TextFormField(
@@ -109,10 +101,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
                           _searchResult!.clear();
                         });
                       },
-                      icon: Icon(
-                        Icons.close,
-                        color: foregroundColor,
-                      ),
+                      icon: Icon(Icons.close, color: foregroundColor),
                     )
                   : SizedBox(width: 24),
             ],
@@ -127,19 +116,11 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
         child: ElevatedButton(
           onPressed: _hideSearchBar,
           style: ElevatedButton.styleFrom(
-            shape: CircleBorder(
-              side: BorderSide(
-                color: foregroundColor,
-                width: 1,
-              ),
-            ),
+            shape: CircleBorder(side: BorderSide(color: foregroundColor, width: 1)),
             padding: EdgeInsets.all(12),
             backgroundColor: ThemeColors.background,
           ),
-          child: Icon(
-            Icons.keyboard_arrow_up,
-            color: foregroundColor,
-          ),
+          child: Icon(Icons.keyboard_arrow_up, color: foregroundColor),
         ),
       );
       widgets.add(collapseButton);
@@ -148,10 +129,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
     if (_showSearchBar && _searchResult!.isNotEmpty) {
       var listWidgets = _searchResult!.map((item) => _getSearchResultWidget(item, theme)).toList();
       for (var i = 0; i < listWidgets.length; i += 2) {
-        listWidgets.insert(
-          i,
-          SizedBox(height: 6),
-        );
+        listWidgets.insert(i, SizedBox(height: 6));
       }
 
       var searchResultWidget = Positioned(
@@ -159,13 +137,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
         bottom: 6,
         left: 6,
         right: 6,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              ...listWidgets,
-            ],
-          ),
-        ),
+        child: SingleChildScrollView(child: Column(children: [...listWidgets])),
       );
       widgets.add(searchResultWidget);
     }
@@ -178,8 +150,10 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
     var scaffoldMessenger = ScaffoldMessenger.of(context);
 
     var nominatimService = GetIt.I<NominatimService>();
-    var addressList =
-        await nominatimService.findStreetOrCity(_controller!.text.trim(), CampaignConstants.viewBoxGermany);
+    var addressList = await nominatimService.findStreetOrCity(
+      _controller!.text.trim(),
+      CampaignConstants.viewBoxGermany,
+    );
     final added = <String>{};
 
     final distinctAddresses = addressList.where((item) => added.add(item.displayName)).toList();
@@ -209,10 +183,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
 
   Widget _getSearchResultWidget(SearchResultItem result, ThemeData theme) {
     return Container(
-      decoration: BoxDecoration(
-        color: ThemeColors.secondary,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
+      decoration: BoxDecoration(color: ThemeColors.secondary, borderRadius: BorderRadius.all(Radius.circular(10))),
       padding: EdgeInsets.all(6),
       child: SizedBox(
         height: 91,
@@ -232,10 +203,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
             ),
             IconButton(
               onPressed: () => _moveMapTo(result.location),
-              icon: Icon(
-                Icons.arrow_forward,
-                color: ThemeColors.background,
-              ),
+              icon: Icon(Icons.arrow_forward, color: ThemeColors.background),
             ),
           ],
         ),

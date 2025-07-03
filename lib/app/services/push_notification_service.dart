@@ -42,8 +42,9 @@ class PushNotificationService {
     final enabled = enabledJson != null ? jsonDecode(enabledJson) as bool : true;
 
     final topicMapJson = await _secureStorage.read(key: SecureStorageKeys.pushNotificationsTopicMap);
-    final Map<String, dynamic> topicMap =
-        topicMapJson != null ? (jsonDecode(topicMapJson) as Map<String, dynamic>) : const {};
+    final Map<String, dynamic> topicMap = topicMapJson != null
+        ? (jsonDecode(topicMapJson) as Map<String, dynamic>)
+        : const {};
 
     // initialize all unset topics with true
     final Map<PushNotificationTopic, bool> topics = {};
@@ -51,10 +52,7 @@ class PushNotificationService {
       topics[topic] = topicMap[topic.name] as bool? ?? true;
     }
 
-    return PushNotificationSettingsModel(
-      enabled: enabled,
-      topics: topics,
-    );
+    return PushNotificationSettingsModel(enabled: enabled, topics: topics);
   }
 
   /// Save Push Notification settings to secure storage

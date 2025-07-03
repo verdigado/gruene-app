@@ -18,38 +18,22 @@ class LastGrantedLoginAttemptWidget extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.04),
-                offset: Offset(2, 4),
-                blurRadius: 16,
-                spreadRadius: 7,
-              ),
+              BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.04), offset: Offset(2, 4), blurRadius: 16, spreadRadius: 7),
             ],
           ),
           child: Card(
             elevation: 0,
             color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    t.mfa.ready.lastLoginAttempt,
-                    style: theme.textTheme.titleMedium,
-                  ),
+                  Text(t.mfa.ready.lastLoginAttempt, style: theme.textTheme.titleMedium),
                   const SizedBox(height: 6),
-                  Text(
-                    t.mfa.ready.loginAttemptApproved,
-                    style: theme.textTheme.bodyMedium?.apply(fontWeightDelta: 3),
-                  ),
-                  Text(
-                    state.lastGrantedLoginAttempt!.clientName,
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  Text(t.mfa.ready.loginAttemptApproved, style: theme.textTheme.bodyMedium?.apply(fontWeightDelta: 3)),
+                  Text(state.lastGrantedLoginAttempt!.clientName, style: theme.textTheme.bodyMedium),
                   Text(
                     '${state.lastGrantedLoginAttempt!.browser}, ${state.lastGrantedLoginAttempt!.os} (${state.lastGrantedLoginAttempt!.ipAddress})',
                     style: theme.textTheme.bodyMedium,

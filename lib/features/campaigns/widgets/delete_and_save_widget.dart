@@ -6,11 +6,7 @@ class DeleteAndSaveWidget extends StatelessWidget {
   final void Function() onDelete;
   final void Function() onSave;
 
-  const DeleteAndSaveWidget({
-    super.key,
-    required this.onDelete,
-    required this.onSave,
-  });
+  const DeleteAndSaveWidget({super.key, required this.onDelete, required this.onSave});
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +23,7 @@ class DeleteAndSaveWidget extends StatelessWidget {
               backgroundColor: theme.colorScheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24.0),
-                side: BorderSide(
-                  color: ThemeColors.textWarning,
-                ),
+                side: BorderSide(color: ThemeColors.textWarning),
               ),
             ),
             child: Text(
@@ -47,15 +41,10 @@ class DeleteAndSaveWidget extends StatelessWidget {
               backgroundColor: ThemeColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24.0),
-                side: BorderSide(
-                  color: ThemeColors.primary,
-                ),
+                side: BorderSide(color: ThemeColors.primary),
               ),
             ),
-            child: Text(
-              t.common.actions.save,
-              style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background),
-            ),
+            child: Text(t.common.actions.save, style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background)),
           ),
         ),
       ],

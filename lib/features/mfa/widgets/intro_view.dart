@@ -21,11 +21,7 @@ class IntroView extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.only(top: 32, bottom: 16),
               children: [
-                Text(
-                  t.mfa.intro.title,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.displayLarge,
-                ),
+                Text(t.mfa.intro.title, textAlign: TextAlign.center, style: theme.textTheme.displayLarge),
                 const SizedBox(height: 48),
                 Text(
                   t.mfa.intro.info.easyLogin,

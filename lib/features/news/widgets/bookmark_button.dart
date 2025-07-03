@@ -8,10 +8,7 @@ import 'package:gruene_app/features/news/bloc/bookmark_state.dart';
 class BookmarkButton extends StatelessWidget {
   final String newsId;
 
-  const BookmarkButton({
-    super.key,
-    required this.newsId,
-  });
+  const BookmarkButton({super.key, required this.newsId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +16,7 @@ class BookmarkButton extends StatelessWidget {
     return BlocBuilder<BookmarkBloc, BookmarkState>(
       builder: (context, state) {
         final isBookmarked = state.bookmarkedNewsIds.contains(newsId);
-        final bookmarkId = state.bookmarks
-            .firstWhereOrNull(
-              (b) => b.itemId == newsId,
-            )
-            ?.id;
+        final bookmarkId = state.bookmarks.firstWhereOrNull((b) => b.itemId == newsId)?.id;
 
         return IconButton(
           icon: Icon(

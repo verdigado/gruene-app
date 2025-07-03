@@ -39,10 +39,7 @@ class DigitalMembershipCardScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    t.profiles.digitalMembershipCard.card.title,
-                    style: theme.textTheme.labelLarge,
-                  ),
+                  Text(t.profiles.digitalMembershipCard.card.title, style: theme.textTheme.labelLarge),
                   const SizedBox(height: 4),
                   Text(
                     '${data.firstName}\n${data.lastName}',
@@ -71,11 +68,7 @@ class DigitalMembershipCardScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 24),
-                          CustomIcon(
-                            path: 'assets/icons/sunflower.svg',
-                            height: 48,
-                            color: ThemeColors.background,
-                          ),
+                          CustomIcon(path: 'assets/icons/sunflower.svg', height: 48, color: ThemeColors.background),
                         ],
                       ),
                       ClipRRect(

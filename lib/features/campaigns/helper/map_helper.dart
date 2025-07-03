@@ -18,15 +18,18 @@ class MapHelper {
       // LatLng encodes degrees, so we need to convert to radians.
       const double degreeToRadians = 180.0 / math.pi;
       const double earthRadius = 6371; // radius of the earth in km
-      final double x = (point2.longitude - point1.longitude) *
+      final double x =
+          (point2.longitude - point1.longitude) *
           degreeToRadians *
           math.cos(0.5 * (point2.latitude + point1.latitude) * degreeToRadians);
       final double y = (point2.latitude - point1.latitude) * degreeToRadians;
       return earthRadius * math.sqrt(x * x + y * y);
     }
 
-    final minimalDistanceFeature =
-        features.fold(null, (Tuple2<dynamic, double>? currentFeatureWithDistance, dynamic nextFeature) {
+    final minimalDistanceFeature = features.fold(null, (
+      Tuple2<dynamic, double>? currentFeatureWithDistance,
+      dynamic nextFeature,
+    ) {
       final nextFeatureLatLng = extractLatLngFromFeature(nextFeature);
       final nextFeatureDistance = calculateDistance(nextFeatureLatLng, target);
       if (currentFeatureWithDistance != null && currentFeatureWithDistance.item2 < nextFeatureDistance) {

@@ -42,29 +42,19 @@ class _NoLoginAttemptWidgetState extends State<NoLoginAttemptWidget> {
           width: double.infinity,
           decoration: BoxDecoration(
             boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.04),
-                offset: Offset(2, 4),
-                blurRadius: 16,
-                spreadRadius: 7,
-              ),
+              BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.04), offset: Offset(2, 4), blurRadius: 16, spreadRadius: 7),
             ],
           ),
           child: Card(
             elevation: 0,
             color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    t.mfa.ready.noLoginAttempt,
-                    style: theme.textTheme.titleMedium,
-                  ),
+                  Text(t.mfa.ready.noLoginAttempt, style: theme.textTheme.titleMedium),
                   const SizedBox(height: 6),
                   Text(
                     '${t.mfa.ready.lastRefreshAt}: ${state.lastRefresh != null ? timeago.format(state.lastRefresh!, locale: locale) : 'nie'}',

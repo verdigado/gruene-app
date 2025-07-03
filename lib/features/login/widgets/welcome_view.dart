@@ -18,10 +18,7 @@ class WelcomeView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Spacer(),
-        SizedBox(
-          height: 256,
-          child: Image.asset('assets/graphics/login.png'),
-        ),
+        SizedBox(height: 256, child: Image.asset('assets/graphics/login.png')),
         Center(
           child: Text(t.login.welcome, style: theme.textTheme.displayLarge?.apply(color: ThemeColors.text)),
         ),
@@ -53,10 +50,7 @@ class WelcomeView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: OutlinedButton(
             onPressed: () => context.push(Routes.mfaLogin.path),
-            child: Text(
-              t.login.mfa,
-              style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
-            ),
+            child: Text(t.login.mfa, style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary)),
           ),
         ),
         const SizedBox(height: 32),
@@ -65,10 +59,7 @@ class WelcomeView extends StatelessWidget {
           children: [
             TextButton(
               onPressed: () => openUrl(dataProtectionStatementUrl, context),
-              child: Text(
-                t.login.dataProtection,
-                style: theme.textTheme.labelSmall,
-              ),
+              child: Text(t.login.dataProtection, style: theme.textTheme.labelSmall),
             ),
             Container(
               width: 4,
@@ -77,10 +68,7 @@ class WelcomeView extends StatelessWidget {
             ),
             TextButton(
               onPressed: () => openUrl(legalNoticeUrl, context),
-              child: Text(
-                t.login.legalNotice,
-                style: theme.textTheme.labelSmall,
-              ),
+              child: Text(t.login.legalNotice, style: theme.textTheme.labelSmall),
             ),
             Container(
               width: 4,
@@ -89,10 +77,7 @@ class WelcomeView extends StatelessWidget {
             ),
             TextButton(
               onPressed: () => openUrl(termsOfUseUrl, context),
-              child: Text(
-                t.login.termsOfUse,
-                style: theme.textTheme.labelSmall,
-              ),
+              child: Text(t.login.termsOfUse, style: theme.textTheme.labelSmall),
             ),
           ],
         ),

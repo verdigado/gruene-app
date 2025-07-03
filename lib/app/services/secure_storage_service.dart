@@ -5,10 +5,6 @@ final getIt = GetIt.instance;
 
 void registerSecureStorage() {
   getIt.registerSingleton<FlutterSecureStorage>(
-    const FlutterSecureStorage(
-      aOptions: AndroidOptions(
-        encryptedSharedPreferences: true,
-      ),
-    ),
+    const FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true)),
   );
 }

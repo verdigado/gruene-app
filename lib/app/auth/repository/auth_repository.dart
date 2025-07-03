@@ -58,13 +58,8 @@ class AuthRepository {
 
     final Response<void> response = await dio.post(
       '${Config.oidcIssuer}/protocol/openid-connect/logout',
-      data: {
-        'client_id': Config.oidcClientId,
-        'refresh_token': refreshToken,
-      },
-      options: Options(
-        contentType: Headers.formUrlEncodedContentType,
-      ),
+      data: {'client_id': Config.oidcClientId, 'refresh_token': refreshToken},
+      options: Options(contentType: Headers.formUrlEncodedContentType),
     );
 
     final statusCode = response.statusCode;

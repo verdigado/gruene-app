@@ -92,26 +92,17 @@ class _EnhancedWheelSliderState extends State<EnhancedWheelSlider> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     widget.labelText,
-                    style: theme.textTheme.labelMedium?.apply(
-                      color: _labelColor,
-                      fontWeightDelta: 5,
-                    ),
+                    style: theme.textTheme.labelMedium?.apply(color: _labelColor, fontWeightDelta: 5),
                   ),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Icon(
-                    Icons.edit,
-                    size: 20,
-                    color: _sliderColor,
-                  ),
+                  child: Icon(Icons.edit, size: 20, color: _sliderColor),
                 ),
               ],
             ),
           ),
-          SizedBox(
-            height: 6,
-          ),
+          SizedBox(height: 6),
           _showSliderOrTextInput(theme),
         ],
       ),
@@ -158,16 +149,10 @@ class _EnhancedWheelSliderState extends State<EnhancedWheelSlider> {
                 padding: EdgeInsets.only(top: 10),
                 child: GestureDetector(
                   onTap: () => _changeValue(widget.sliderInterval * -1),
-                  child: Icon(
-                    Icons.remove_circle,
-                    size: iconSize,
-                    color: _actionColor,
-                  ),
+                  child: Icon(Icons.remove_circle, size: iconSize, color: _actionColor),
                 ),
               ),
-              SizedBox(
-                width: 6,
-              ),
+              SizedBox(width: 6),
               Expanded(
                 child: TextInputField(
                   labelText: widget.labelText,
@@ -176,18 +161,12 @@ class _EnhancedWheelSliderState extends State<EnhancedWheelSlider> {
                   selectAllTextOnFocus: true,
                 ),
               ),
-              SizedBox(
-                width: 6,
-              ),
+              SizedBox(width: 6),
               Container(
                 padding: EdgeInsets.only(top: 10),
                 child: GestureDetector(
                   onTap: () => _changeValue(widget.sliderInterval),
-                  child: Icon(
-                    Icons.add_circle,
-                    size: iconSize,
-                    color: _actionColor,
-                  ),
+                  child: Icon(Icons.add_circle, size: iconSize, color: _actionColor),
                 ),
               ),
             ],

@@ -18,10 +18,7 @@ mixin ConfirmDelete {
           content: Text(
             t.campaigns.deleteEntry.confirmation_dialog,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(
-              color: theme.colorScheme.surface,
-              fontSizeDelta: 1,
-            ),
+            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
@@ -36,10 +33,7 @@ mixin ConfirmDelete {
               onPressed: () => Navigator.maybePop(context, true),
               child: Text(
                 t.common.actions.delete,
-                style: theme.textTheme.labelLarge?.apply(
-                  color: ThemeColors.textWarning,
-                  fontWeightDelta: 2,
-                ),
+                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning, fontWeightDelta: 2),
               ),
             ),
           ],

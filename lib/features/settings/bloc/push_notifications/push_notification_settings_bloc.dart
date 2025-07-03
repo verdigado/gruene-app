@@ -15,57 +15,29 @@ class PushNotificationSettingsBloc extends Bloc<PushNotificationSettingsEvent, P
     on<ToggleEnabled>(_onToggleEnabled);
   }
 
-  Future<void> _onLoadSettings(
-    LoadSettings event,
-    Emitter<PushNotificationSettingsState> emit,
-  ) async {
+  Future<void> _onLoadSettings(LoadSettings event, Emitter<PushNotificationSettingsState> emit) async {
     final settings = _pushNotificationService.getSettings();
 
-    emit(
-      state.copyWith(
-        enabled: settings.enabled,
-        topics: settings.topics,
-      ),
-    );
+    emit(state.copyWith(enabled: settings.enabled, topics: settings.topics));
   }
 
-  Future<void> _onToggleTopic(
-    ToggleTopic event,
-    Emitter<PushNotificationSettingsState> emit,
-  ) async {
+  Future<void> _onToggleTopic(ToggleTopic event, Emitter<PushNotificationSettingsState> emit) async {
     final updatedTopics = Map<PushNotificationTopic, bool>.from(state.topics);
     updatedTopics[event.topic] = event.value;
 
     _pushNotificationService.updateSettings(
-      PushNotificationSettingsModel(
-        enabled: state.enabled,
-        topics: updatedTopics,
-      ),
+      PushNotificationSettingsModel(enabled: state.enabled, topics: updatedTopics),
     );
 
-    emit(
-      state.copyWith(
-        topics: updatedTopics,
-      ),
-    );
+    emit(state.copyWith(topics: updatedTopics));
   }
 
-  Future<void> _onToggleEnabled(
-    ToggleEnabled event,
-    Emitter<PushNotificationSettingsState> emit,
-  ) async {
+  Future<void> _onToggleEnabled(ToggleEnabled event, Emitter<PushNotificationSettingsState> emit) async {
     final updatedEnabled = !state.enabled;
     _pushNotificationService.updateSettings(
-      PushNotificationSettingsModel(
-        enabled: updatedEnabled,
-        topics: state.topics,
-      ),
+      PushNotificationSettingsModel(enabled: updatedEnabled, topics: state.topics),
     );
 
-    emit(
-      state.copyWith(
-        enabled: updatedEnabled,
-      ),
-    );
+    emit(state.copyWith(enabled: updatedEnabled));
   }
 }

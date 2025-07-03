@@ -6,12 +6,7 @@ class ToggleListItem extends StatelessWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
 
-  const ToggleListItem({
-    super.key,
-    required this.title,
-    required this.value,
-    required this.onChanged,
-  });
+  const ToggleListItem({super.key, required this.title, required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +17,7 @@ class ToggleListItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 1),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-        title: Text(
-          title,
-          style: theme.textTheme.bodyLarge?.apply(color: ThemeColors.text),
-        ),
+        title: Text(title, style: theme.textTheme.bodyLarge?.apply(color: ThemeColors.text)),
         trailing: Switch(
           value: value,
           onChanged: onChanged,

@@ -7,8 +7,5 @@ class PushNotificationSettingsModel {
   /// Map of topics and their enabled status
   Map<PushNotificationTopic, bool> topics;
 
-  PushNotificationSettingsModel({
-    required this.enabled,
-    required this.topics,
-  });
+  PushNotificationSettingsModel({required this.enabled, required this.topics});
 }

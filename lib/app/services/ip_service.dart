@@ -14,10 +14,7 @@ class IpService {
     try {
       final url = useIpV6 ? Config.ipV6ServiceUrl : Config.ipV4ServiceUrl;
 
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-      );
+      final response = await http.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body) as Map<String, dynamic>;

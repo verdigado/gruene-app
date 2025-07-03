@@ -10,23 +10,13 @@ class PosterPhotoModel {
   String thumbnailUrl;
   DateTime createdAt;
 
-  PosterPhotoModel({
-    required this.id,
-    required this.imageUrl,
-    required this.thumbnailUrl,
-    required this.createdAt,
-  });
+  PosterPhotoModel({required this.id, required this.imageUrl, required this.thumbnailUrl, required this.createdAt});
 
   factory PosterPhotoModel.fromJson(Map<String, dynamic> json) => _$PosterPhotoModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$PosterPhotoModelToJson(this);
 
-  PosterPhotoModel copyWith({
-    String? id,
-    String? imageUrl,
-    String? thumbnailUrl,
-    DateTime? createdAt,
-  }) {
+  PosterPhotoModel copyWith({String? id, String? imageUrl, String? thumbnailUrl, DateTime? createdAt}) {
     return PosterPhotoModel(
       id: id ?? this.id,
       imageUrl: imageUrl ?? this.imageUrl,
