@@ -48,7 +48,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   width: 90,
                   height: 90,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
                   child: Center(child: CircularProgressIndicator()),

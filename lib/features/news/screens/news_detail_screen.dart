@@ -94,7 +94,7 @@ class FullWidthImage extends StatelessWidget {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final imageHeight = imageVariant.height * screenWidth / imageVariant.width;
     return CachedNetworkImage(
-      placeholder: (_, __) => SizedBox(height: imageHeight),
+      placeholder: (_, _) => SizedBox(height: imageHeight),
       imageUrl: imageVariant.url,
     );
   }

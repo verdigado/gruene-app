@@ -171,7 +171,7 @@ final ThemeData appTheme = ThemeData.light().copyWith(
     unselectedLabelStyle: _ThemeTextStyles.labelSmall,
   ),
   scaffoldBackgroundColor: ThemeColors.backgroundSecondary,
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     indicatorColor: ThemeColors.primary,
     indicatorSize: TabBarIndicatorSize.tab,
     labelStyle: _ThemeTextStyles.titleMedium,
