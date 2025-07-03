@@ -12,7 +12,6 @@ import 'package:gruene_app/features/profiles/screens/digital_membership_card_scr
 import 'package:gruene_app/features/profiles/screens/own_profile_screen.dart';
 import 'package:gruene_app/features/settings/screens/push_notifications_screen.dart';
 import 'package:gruene_app/features/settings/screens/settings_screen.dart';
-import 'package:gruene_app/features/settings/screens/support_screen.dart';
 import 'package:gruene_app/features/tools/screens/tools_screen.dart';
 
 GoRoute buildRoute(String path, Widget child, {List<RouteBase>? routes}) => GoRoute(
@@ -40,7 +39,6 @@ class Routes {
   static GoRoute tools = buildRoute('/tools', ToolsScreen());
   static GoRoute mfaLogin = buildRoute('/mfa-login', MfaScreen(), routes: [mfaTokenScan, mfaTokenInput]);
   static GoRoute login = buildRoute('/login', LoginScreen());
-  static GoRoute support = buildRoute('support', SupportScreen());
   static GoRoute pushNotifications = buildRoute('push-notifications', PushNotificationsScreen());
-  static GoRoute settings = buildRoute('/settings', SettingsScreen(), routes: [pushNotifications, support]);
+  static GoRoute settings = buildRoute('/settings', SettingsScreen(), routes: [pushNotifications]);
 }
