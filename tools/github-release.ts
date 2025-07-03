@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest'
 import { program } from 'commander'
 
-import { Platform, tagId } from './constants.js'
+import { tagId } from './constants.js'
 import authenticate from './github-authentication.js'
 
 type Options = {
@@ -33,7 +33,6 @@ const generateReleaseNotesFromGithubEndpoint = async (
 }
 
 const githubRelease = async (
-  platform: Platform,
   newVersionName: string,
   newVersionCode: string,
   { githubPrivateKey, owner, repo, productionDelivery }: Options,
@@ -43,8 +42,8 @@ const githubRelease = async (
     throw new Error(`Failed to parse version code string: ${newVersionCode}`)
   }
 
-  const releaseName = `[${platform}] ${newVersionName} - ${versionCode}`
-  const tagName = tagId({ versionName: newVersionName, platform })
+  const releaseName = `${newVersionName} - ${versionCode}`
+  const tagName = tagId({ versionName: newVersionName })
   const appOctokit = await authenticate({ githubPrivateKey, owner, repo })
 
   const release = await appOctokit.repos.createRelease({
@@ -52,7 +51,7 @@ const githubRelease = async (
     repo,
     tag_name: tagName,
     prerelease: productionDelivery === 'false',
-    make_latest: platform === 'android' ? 'true' : 'false',
+    make_latest: productionDelivery === 'true' ? 'true' : 'false',
     name: releaseName,
     body: await generateReleaseNotesFromGithubEndpoint(owner, repo, appOctokit, tagName),
   })
@@ -60,8 +59,8 @@ const githubRelease = async (
 }
 
 program
-  .command('create <platform> <new-version-name> <new-version-code>')
-  .description('creates a new release for the specified platform')
+  .command('create <new-version-name> <new-version-code>')
+  .description('creates a new release')
   .requiredOption(
     '--github-private-key <github-private-key>',
     'private key of the github release bot in pem format with base64 encoding',
@@ -69,9 +68,9 @@ program
   .requiredOption('--owner <owner>', 'owner of the current repository, usually verdigado')
   .requiredOption('--repo <repo>', 'the current repository, should be gruene-app')
   .requiredOption('--production-delivery <production-delivery>', 'whether this is a production delivery or not')
-  .action(async (platform: Platform, newVersionName: string, newVersionCode: string, options: Options) => {
+  .action(async (newVersionName: string, newVersionCode: string, options: Options) => {
     try {
-      await githubRelease(platform, newVersionName, newVersionCode, options)
+      await githubRelease(newVersionName, newVersionCode, options)
     } catch (e) {
       console.error(e)
       process.exit(1)

@@ -6,14 +6,9 @@ environment:
   FASTLANE_SKIP_UPDATE_CHECK: true
 steps:
   - checkout
-  - install_node_modules
   - install_fastlane:
       directory: android
   - run:
       name: '[FL] Google PlayStore Promotion'
       command: bundle exec fastlane android promote
       working_directory: android
-  - run:
-      name: Remove Beta Flag from Github Release
-      command: yarn github-promote-release promote --platform android --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
-      working_directory: tools

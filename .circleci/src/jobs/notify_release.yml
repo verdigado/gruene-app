@@ -1,0 +1,25 @@
+parameters:
+  production_delivery:
+    description: Whether to deliver the build to production.
+    type: boolean
+docker:
+  - image: cimg/android:2024.08.1-node
+resource_class: small
+shell: /bin/bash -eo pipefail
+steps:
+  - checkout
+  - prepare_workspace
+  - restore_environment_variables
+  - install_node_modules
+  - run:
+      name: Create Github Release
+      command: echo "export RELEASE_ID='$(yarn --silent github-release create ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME})'" >> ${BASH_ENV}
+      working_directory: tools
+  - run:
+      name: Upload apks to github release
+      command: yarn github-release-asset upload --releaseId ${RELEASE_ID} --files "$(ls ~/attached_workspace/*.{apk,aab})" --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
+      working_directory: tools
+  - run:
+      name: Upload ipa to github release
+      command: yarn github-release-asset upload --releaseId ${RELEASE_ID} --files "$(ls ~/attached_workspace/*.ipa)" --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
+      working_directory: tools

@@ -12,18 +12,9 @@ steps:
   - checkout
   - prepare_workspace
   - restore_environment_variables
-  - install_node_modules
   - install_fastlane:
       directory: android
   - run:
       name: '[FL] Google PlayStore Upload'
       command: bundle exec fastlane android upload aab_path:attached_workspace/app-release.aab production_delivery:"<< parameters.production_delivery >>" version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
       working_directory: android
-  - run:
-      name: Create Github Release
-      command: echo "export ANDROID_RELEASE_ID='$(yarn --silent github-release create android ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME})'" >> ${BASH_ENV}
-      working_directory: tools
-  - run:
-      name: Add Builds to Github Release
-      command: yarn github-release-asset upload android --releaseId ${ANDROID_RELEASE_ID} --files "$(ls ~/attached_workspace/*.{apk,aab})" --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
-      working_directory: tools

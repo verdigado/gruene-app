@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest'
 import { program } from 'commander'
 
-import { VERSION_FILE, PLATFORMS, tagId, Platform } from './constants.js'
+import { VERSION_FILE, tagId } from './constants.js'
 import authenticate from './github-authentication.js'
 import jsYaml from 'js-yaml'
 
@@ -12,12 +12,11 @@ type TagOptions = {
   repo: string
   commitSha: string
   appOctokit: Octokit
-  platform: Platform
 }
 
-const createTag = async ({ versionName, versionCode, owner, repo, commitSha, appOctokit, platform }: TagOptions) => {
-  const id = tagId({ versionName, platform })
-  const tagMessage = `[${platform}] ${versionName} - ${versionCode}`
+const createTag = async ({ versionName, versionCode, owner, repo, commitSha, appOctokit }: TagOptions) => {
+  const id = tagId({ versionName })
+  const tagMessage = `${versionName} - ${versionCode}`
 
   const tag = await appOctokit.git.createTag({
     owner,
@@ -76,20 +75,15 @@ const commitAndTag = async (
 
   const commitSha = commit.data.commit.sha
 
-  await Promise.all(
-    PLATFORMS.map(platform =>
-      createTag({
-        versionName,
-        versionCode,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        commitSha: commitSha!,
-        appOctokit,
-        owner,
-        repo,
-        platform
-      })
-    )
-  )
+  await createTag({
+    versionName,
+    versionCode,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    commitSha: commitSha!,
+    appOctokit,
+    owner,
+    repo
+  })
 }
 
 program

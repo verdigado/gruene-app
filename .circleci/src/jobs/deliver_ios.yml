@@ -10,7 +10,6 @@ steps:
   - checkout
   - prepare_workspace
   - restore_environment_variables
-  - install_node_modules
   - install_fastlane:
       directory: ios
   - when:
@@ -27,11 +26,3 @@ steps:
             name: '[FL] Apple Testflight Upload'
             command: bundle exec fastlane ios beta_upload ipa_path:attached_workspace/app-release.ipa
             working_directory: ios
-  - run:
-      name: Create Github Release
-      command: echo "export IOS_RELEASE_ID='$(yarn --silent github-release create ios ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME})'" >> ${BASH_ENV}
-      working_directory: tools
-  - run:
-      name: Add Build to Github Release
-      command: yarn github-release-asset upload ios --releaseId ${IOS_RELEASE_ID} --files "$(ls ~/attached_workspace/*.ipa)" --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
-      working_directory: tools
