@@ -13,34 +13,31 @@ type Options = {
   repo: string
 }
 
-const getReleaseId = async ({ githubPrivateKey, owner, repo }: Options) => {
+const getReleases = async ({ githubPrivateKey, owner, repo }: Options) => {
   const appOctokit = await authenticate({ githubPrivateKey, owner, repo })
 
-  const releases: Releases = await appOctokit.rest.repos.listReleases({ owner, repo })
-
-  const release = releases.data[0]
-  if (release && release.prerelease) {
-    console.log('Unset prerelease tag of ', release.tag_name)
-    return release.id
-  }
-
-  console.log('No release found to unset the prerelease tag for. Latest release may already be non-prerelease')
-  return null
+  const releases: Releases = await appOctokit.rest.repos.listReleases({
+    owner,
+    repo
+  })
+  return releases.data
 }
 
-const removePreRelease = async ({ githubPrivateKey, owner, repo }: Options) => {
-  const releaseId = await getReleaseId({ githubPrivateKey, owner, repo })
-  if (releaseId !== null) {
-    const appOctokit = await authenticate({ githubPrivateKey, owner, repo })
-    const result = await appOctokit.rest.repos.updateRelease({
-      owner,
-      repo,
-      release_id: releaseId,
-      prerelease: false,
-      make_latest: 'true'
+const promoteReleases = async ({ githubPrivateKey, owner, repo }: Options) => {
+  const releases = await getReleases({ githubPrivateKey, owner, repo })
+  const preReleases = releases.filter(release => release.prerelease)
+  const appOctokit = await authenticate({ githubPrivateKey, owner, repo })
+  await Promise.all(
+    preReleases.map(async preRelease => {
+      await appOctokit.rest.repos.updateRelease({
+        owner,
+        repo,
+        release_id: preRelease.id,
+        prerelease: false,
+        make_latest: preRelease.id === releases[0]?.id ? 'true' : 'false',
+      })
     })
-    console.log('Http response code of updating the result: ', result.status)
-  }
+  )
 }
 
 program
@@ -54,7 +51,7 @@ program
   .requiredOption('--repo <repo>', 'the current repository, should be gruene_app')
   .action(async (options: Options) => {
     try {
-      await removePreRelease(options)
+      await promoteReleases(options)
     } catch (e) {
       console.error(e)
       process.exit(1)
