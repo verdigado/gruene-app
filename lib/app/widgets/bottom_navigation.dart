@@ -27,15 +27,12 @@ class BottomNavigation extends StatelessWidget {
       return BottomNavigationBarItem(icon: icon, label: item.label);
     }).toList();
 
-    return SizedBox(
-      height: 64,
-      child: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: theme.colorScheme.surface,
-        items: items,
-        currentIndex: navigationShell.currentIndex,
-        onTap: (index) => navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex),
-      ),
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: theme.colorScheme.surface,
+      items: items,
+      currentIndex: navigationShell.currentIndex,
+      onTap: (index) => navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex),
     );
   }
 }
