@@ -17,12 +17,7 @@ class DoorEdit extends StatefulWidget {
   final OnSaveDoorCallback onSave;
   final OnDeletePoiCallback onDelete;
 
-  const DoorEdit({
-    super.key,
-    required this.door,
-    required this.onSave,
-    required this.onDelete,
-  });
+  const DoorEdit({super.key, required this.door, required this.onSave, required this.onDelete});
 
   @override
   State<DoorEdit> createState() => _DoorEditState();
@@ -70,9 +65,7 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              children: [Text(t.campaigns.door.editDoor, style: theme.textTheme.titleLarge)],
-            ),
+            child: Row(children: [Text(t.campaigns.door.editDoor, style: theme.textTheme.titleLarge)]),
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -104,9 +97,7 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
                     sliderInputRange: SliderInputRange.numbers0To999,
                   ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 Flexible(
                   child: EnhancedWheelSlider(
                     labelText: t.campaigns.door.openedDoors,
@@ -124,10 +115,7 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
           ),
           Container(
             padding: EdgeInsets.only(top: 6, bottom: 24),
-            child: DeleteAndSaveWidget(
-              onDelete: () => confirmDelete(context, _onDeletePressed),
-              onSave: _saveDoor,
-            ),
+            child: DeleteAndSaveWidget(onDelete: () => confirmDelete(context, _onDeletePressed), onSave: _saveDoor),
           ),
         ],
       ),

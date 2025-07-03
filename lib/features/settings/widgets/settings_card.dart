@@ -24,21 +24,13 @@ class SettingsCard extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.04),
-            offset: Offset(0, 1),
-            blurRadius: 12,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.04), offset: Offset(0, 1), blurRadius: 12)],
       ),
       child: Card(
         color: theme.colorScheme.surface,
         margin: const EdgeInsets.symmetric(vertical: 8),
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: ListTile(
           onTap: isEnabled && onPress != null ? onPress : null,
           contentPadding: EdgeInsets.symmetric(horizontal: 12),
@@ -50,10 +42,7 @@ class SettingsCard extends StatelessWidget {
           leading: SizedBox(
             height: 48,
             width: 48,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: icon,
-            ),
+            child: ClipRRect(borderRadius: BorderRadius.circular(8.0), child: icon),
           ),
           trailing: onPress != null
               ? Padding(

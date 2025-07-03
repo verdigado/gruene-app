@@ -38,12 +38,7 @@ class SettingsScreen extends StatelessWidget {
             onPress: () => openUrl(grueneAppFeedbackUrl, context),
             isExternal: true,
           ),
-          TextListItem(
-            title: t.settings.actionNetwork,
-            onPress: () => {},
-            isExternal: true,
-            isImplemented: false,
-          ),
+          TextListItem(title: t.settings.actionNetwork, onPress: () => {}, isExternal: true, isImplemented: false),
           TextListItem(title: t.settings.newsletter, onPress: () => {}, isExternal: true, isImplemented: false),
           SectionTitle(title: t.settings.legalSettings),
           TextListItem(
@@ -56,11 +51,7 @@ class SettingsScreen extends StatelessWidget {
             onPress: () => openUrl(dataProtectionStatementUrl, context),
             isExternal: true,
           ),
-          TextListItem(
-            title: t.settings.termsOfUse,
-            onPress: () => openUrl(termsOfUseUrl, context),
-            isExternal: true,
-          ),
+          TextListItem(title: t.settings.termsOfUse, onPress: () => openUrl(termsOfUseUrl, context), isExternal: true),
           isLoggedIn
               ? Container(
                   padding: const EdgeInsets.only(top: 48),
@@ -68,8 +59,10 @@ class SettingsScreen extends StatelessWidget {
                     onPressed: () => context.read<AuthBloc>().add(LogoutRequested()),
                     child: Text(
                       t.settings.logout,
-                      style: theme.textTheme.bodyMedium!
-                          .apply(color: ThemeColors.text, decoration: TextDecoration.underline),
+                      style: theme.textTheme.bodyMedium!.apply(
+                        color: ThemeColors.text,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 )

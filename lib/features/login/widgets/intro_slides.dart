@@ -10,10 +10,7 @@ class IntroSlides extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          t.login.discover,
-          style: theme.textTheme.titleLarge,
-        ),
+        Text(t.login.discover, style: theme.textTheme.titleLarge),
         Text(t.login.discoverDescription, style: theme.textTheme.bodyMedium),
       ],
     );

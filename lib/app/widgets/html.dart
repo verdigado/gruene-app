@@ -46,9 +46,7 @@ class CustomHtml extends StatelessWidget {
       data: data,
       extensions: [accordionTagExtension],
       onLinkTap: (url, _, _) => url != null ? openUrl(url, context) : null,
-      style: {
-        'body': Style(margin: Margins.zero),
-      },
+      style: {'body': Style(margin: Margins.zero)},
     );
   }
 }

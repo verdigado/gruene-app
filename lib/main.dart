@@ -96,16 +96,10 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => AuthBloc(authRepository)..add(CheckTokenRequested()),
-        ),
-        BlocProvider(
-          create: (context) => MfaBloc()..add(InitMfa()),
-        ),
+        BlocProvider(create: (context) => AuthBloc(authRepository)..add(CheckTokenRequested())),
+        BlocProvider(create: (context) => MfaBloc()..add(InitMfa())),
         BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadSettings())),
-        BlocProvider<BookmarkBloc>(
-          create: (context) => BookmarkBloc()..add(LoadBookmarks()),
-        ),
+        BlocProvider<BookmarkBloc>(create: (context) => BookmarkBloc()..add(LoadBookmarks())),
       ],
       child: Builder(
         builder: (context) {

@@ -52,10 +52,7 @@ class MediaHelper {
           content: Text(
             t.campaigns.poster.photoConsentMessage,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(
-              color: theme.colorScheme.surface,
-              fontSizeDelta: 1,
-            ),
+            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
           ),
           actions: [
             TextButton(
@@ -94,19 +91,14 @@ class MediaHelper {
           desiredWidth = (img.width / img.height * maxUploadDimension).round();
         }
 
-        resized = image_lib.copyResize(
-          img,
-          width: desiredWidth,
-          height: desiredHeight,
-          maintainAspect: true,
-        );
+        resized = image_lib.copyResize(img, width: desiredWidth, height: desiredHeight, maintainAspect: true);
       } else {
         resized = img;
       }
 
       resizedImg = switch (outputType) {
         ImageType.jpeg => Uint8List.fromList(image_lib.encodeJpg(resized, quality: 60)),
-        ImageType.png => Uint8List.fromList(image_lib.encodePng(resized))
+        ImageType.png => Uint8List.fromList(image_lib.encodePng(resized)),
       };
     });
 
@@ -133,11 +125,7 @@ class MediaHelper {
               top: 20,
               child: GestureDetector(
                 onTap: () => Navigator.maybePop(context),
-                child: Icon(
-                  Icons.close,
-                  color: theme.colorScheme.surface,
-                  size: 30,
-                ),
+                child: Icon(Icons.close, color: theme.colorScheme.surface, size: 30),
               ),
             ),
           ],
@@ -172,8 +160,10 @@ class MediaHelper {
   }
 
   static Future<String> storeImage(Uint8List imageData) async {
-    var fileLocation =
-        await GetIt.I<FileManager>().storeFile('${DateTime.now().millisecondsSinceEpoch}.jpg', imageData);
+    var fileLocation = await GetIt.I<FileManager>().storeFile(
+      '${DateTime.now().millisecondsSinceEpoch}.jpg',
+      imageData,
+    );
     var exists = await File(fileLocation).exists();
     assert(exists, 'file does not exist');
     return fileLocation;

@@ -65,9 +65,7 @@ class ProfileImageDeleter extends StatelessWidget {
       ),
       child: Text(
         t.profiles.profileImage.delete,
-        style: theme.textTheme.bodyMedium!.apply(
-          decoration: TextDecoration.underline,
-        ),
+        style: theme.textTheme.bodyMedium!.apply(decoration: TextDecoration.underline),
       ),
     );
   }

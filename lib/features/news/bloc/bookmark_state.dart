@@ -14,12 +14,7 @@ class BookmarkState extends Equatable {
     this.error,
   });
 
-  BookmarkState copyWith({
-    bool? isLoading,
-    List<Bookmark>? bookmarks,
-    Set<String>? bookmarkedNewsIds,
-    String? error,
-  }) {
+  BookmarkState copyWith({bool? isLoading, List<Bookmark>? bookmarks, Set<String>? bookmarkedNewsIds, String? error}) {
     return BookmarkState(
       isLoading: isLoading ?? this.isLoading,
       bookmarks: bookmarks ?? this.bookmarks,

@@ -67,10 +67,7 @@ class _PersistentBottomSheetState extends State<PersistentBottomSheet> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     BottomSheetHandle(),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-                      child: widget.child,
-                    ),
+                    Container(padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16), child: widget.child),
                   ],
                 ),
               ],

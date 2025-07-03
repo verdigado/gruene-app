@@ -35,27 +35,15 @@ class _TokenInputScreenState extends State<TokenInputScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              t.mfa.tokenInput.intro,
-              style: theme.textTheme.titleMedium,
-            ),
+            Text(t.mfa.tokenInput.intro, style: theme.textTheme.titleMedium),
             SizedBox(height: 24),
-            Text(
-              t.mfa.tokenInput.token,
-              style: theme.textTheme.bodyMedium,
-            ),
+            Text(t.mfa.tokenInput.token, style: theme.textTheme.bodyMedium),
             SizedBox(height: 6),
-            TextField(
-              controller: urlInput,
-            ),
+            TextField(controller: urlInput),
             SizedBox(height: 55),
             FilledButton(
-              onPressed: () => {
-                onSubmit(context),
-              },
-              style: ButtonStyle(
-                minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56)),
-              ),
+              onPressed: () => {onSubmit(context)},
+              style: ButtonStyle(minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56))),
               child: Text(
                 t.mfa.tokenInput.submit,
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),

@@ -39,11 +39,7 @@ class StatisticsScreen extends StatelessWidget {
           children: [
             _getBadgeBox(statistics, context, theme),
             SizedBox(height: 12),
-            _getCategoryBox(
-              stats: statistics.houseStats,
-              theme: theme,
-              title: t.campaigns.statistic.recorded_doors,
-            ),
+            _getCategoryBox(stats: statistics.houseStats, theme: theme, title: t.campaigns.statistic.recorded_doors),
             SizedBox(height: 12),
             _getCategoryBox(
               stats: statistics.posterStats,
@@ -52,11 +48,7 @@ class StatisticsScreen extends StatelessWidget {
               subTitle: t.campaigns.statistic.including_damaged_or_taken_down,
             ),
             SizedBox(height: 12),
-            _getCategoryBox(
-              stats: statistics.flyerStats,
-              theme: theme,
-              title: t.campaigns.statistic.recorded_flyer,
-            ),
+            _getCategoryBox(stats: statistics.flyerStats, theme: theme, title: t.campaigns.statistic.recorded_flyer),
             Container(
               padding: EdgeInsets.all(16),
               child: Align(
@@ -81,25 +73,17 @@ class StatisticsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: ThemeColors.background,
         borderRadius: BorderRadius.circular(19),
-        boxShadow: [
-          BoxShadow(color: ThemeColors.textDark.withAlpha(10), offset: Offset(2, 4)),
-        ],
+        boxShadow: [BoxShadow(color: ThemeColors.textDark.withAlpha(10), offset: Offset(2, 4))],
       ),
       child: Column(
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              t.campaigns.statistic.my_badges,
-              style: theme.textTheme.titleMedium,
-            ),
+            child: Text(t.campaigns.statistic.my_badges, style: theme.textTheme.titleMedium),
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              t.campaigns.statistic.my_badges_campaign_subtitle,
-              style: theme.textTheme.labelSmall,
-            ),
+            child: Text(t.campaigns.statistic.my_badges_campaign_subtitle, style: theme.textTheme.labelSmall),
           ),
           ..._getBadges(statistics, theme),
         ],
@@ -118,21 +102,14 @@ class StatisticsScreen extends StatelessWidget {
   Widget _getBadgeRow(String title, int ownCounter, ThemeData theme) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: ThemeColors.textLight),
-        ),
+        border: Border(bottom: BorderSide(color: ThemeColors.textLight)),
       ),
       padding: EdgeInsets.all(4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              ..._getBadgeIcons(ownCounter, theme),
-            ],
-          ),
+          Row(mainAxisAlignment: MainAxisAlignment.start, children: [..._getBadgeIcons(ownCounter, theme)]),
         ],
       ),
     );
@@ -176,19 +153,16 @@ class StatisticsScreen extends StatelessWidget {
             height: iconSize,
             child: Stack(
               children: [
-                SvgPicture.asset(
-                  'assets/badges/badge_empty.svg',
-                  fit: BoxFit.fill,
-                  height: iconSize,
-                  width: iconSize,
-                ),
+                SvgPicture.asset('assets/badges/badge_empty.svg', fit: BoxFit.fill, height: iconSize, width: iconSize),
                 Positioned.fill(
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
                       currentThreshold.toString(),
-                      style: theme.textTheme.labelMedium!
-                          .apply(fontWeightDelta: 3, color: theme.colorScheme.primary.withValues(alpha: 0.3)),
+                      style: theme.textTheme.labelMedium!.apply(
+                        fontWeightDelta: 3,
+                        color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                      ),
                     ),
                   ),
                 ),
@@ -211,30 +185,18 @@ class StatisticsScreen extends StatelessWidget {
     var categoryDecoration = BoxDecoration(
       color: ThemeColors.background,
       borderRadius: BorderRadius.circular(19),
-      boxShadow: [
-        BoxShadow(color: ThemeColors.textDark.withAlpha(10), offset: Offset(2, 4)),
-      ],
+      boxShadow: [BoxShadow(color: ThemeColors.textDark.withAlpha(10), offset: Offset(2, 4))],
     );
     return Container(
       padding: EdgeInsets.all(16),
       decoration: categoryDecoration,
       child: Column(
         children: [
-          Row(
-            children: [
-              Text(
-                title,
-                style: theme.textTheme.titleMedium,
-              ),
-            ],
-          ),
+          Row(children: [Text(title, style: theme.textTheme.titleMedium)]),
           subTitle != null
               ? Row(
                   children: [
-                    Text(
-                      subTitle,
-                      style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
-                    ),
+                    Text(subTitle, style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled)),
                   ],
                 )
               : SizedBox(),
@@ -252,18 +214,13 @@ class StatisticsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: ThemeColors.textLight),
-        ),
+        border: Border(bottom: BorderSide(color: ThemeColors.textLight)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(key, style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark)),
-          Text(
-            formatter.format(value),
-            style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
-          ),
+          Text(formatter.format(value), style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark)),
         ],
       ),
     );

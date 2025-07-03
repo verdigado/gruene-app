@@ -12,10 +12,7 @@ mixin FocusAreaInfo {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.info,
-                color: ThemeColors.textCancel,
-              ),
+              Icon(Icons.info, color: ThemeColors.textCancel),
               SizedBox(width: 6),
               Text(
                 t.campaigns.infoToast.focusAreas_aboutTitle,
@@ -26,10 +23,7 @@ mixin FocusAreaInfo {
           content: Text(
             t.campaigns.infoToast.focusAreas_aboutText,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(
-              color: ThemeColors.textDark,
-              fontSizeDelta: 1,
-            ),
+            style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDark, fontSizeDelta: 1),
           ),
           actionsAlignment: MainAxisAlignment.end,
           actions: [
@@ -37,10 +31,7 @@ mixin FocusAreaInfo {
               onPressed: () => Navigator.maybePop(context),
               child: Text(
                 t.common.actions.close,
-                style: theme.textTheme.labelLarge?.apply(
-                  color: ThemeColors.textDark,
-                  fontWeightDelta: 2,
-                ),
+                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark, fontWeightDelta: 2),
               ),
             ),
           ],

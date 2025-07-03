@@ -80,8 +80,11 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
     final prominentCategories = categories.where((it) => prominentCategoryIds.contains(it.id)).toList();
     final moreCategories = categories.where((it) => !prominentCategoryIds.contains(it.id)).toList();
 
-    final customFilterSelected =
-        isCustomFilterSelected(_localSelectedDivisions, _localSelectedCategories, _localDateRange);
+    final customFilterSelected = isCustomFilterSelected(
+      _localSelectedDivisions,
+      _localSelectedCategories,
+      _localDateRange,
+    );
 
     final theme = Theme.of(context);
     return FullScreenDialog(

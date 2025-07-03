@@ -11,11 +11,6 @@ class CustomIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      path,
-      width: width,
-      height: height,
-      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-    );
+    return SvgPicture.asset(path, width: width, height: height, colorFilter: ColorFilter.mode(color, BlendMode.srcIn));
   }
 }

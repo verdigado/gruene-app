@@ -47,20 +47,14 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 Container(
                   width: 90,
                   height: 90,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.5),
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.5), shape: BoxShape.circle),
                   child: Center(child: CircularProgressIndicator()),
                 ),
             ],
           ),
         ),
         SizedBox(height: 8),
-        Text(
-          '${widget.profile.firstName} ${widget.profile.lastName}',
-          style: theme.textTheme.titleLarge,
-        ),
+        Text('${widget.profile.firstName} ${widget.profile.lastName}', style: theme.textTheme.titleLarge),
         SizedBox(height: 8),
         ProfileImageUploader(
           profile: widget.profile,

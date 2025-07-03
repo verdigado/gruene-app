@@ -16,10 +16,7 @@ class NominatimService {
 
   Future<AddressModel> getLocationAddress(LatLng location) async {
     try {
-      final place = await Nominatim.reverseSearch(
-        lat: location.latitude,
-        lon: location.longitude,
-      );
+      final place = await Nominatim.reverseSearch(lat: location.latitude, lon: location.longitude);
       String? cityOverride;
       if (place.getCity().isEmpty) {
         var osmType = switch (place.osmType) {
@@ -73,9 +70,7 @@ class NominatimService {
       final cityList = _getList(cities);
       return streetList + cityList + unstructuredList;
     } catch (e) {
-      _logger.e(
-        'Nominatim search failed on (q: $query: ${e.toString()}',
-      );
+      _logger.e('Nominatim search failed on (q: $query: ${e.toString()}');
       return <SearchResultItem>[];
     }
   }
@@ -101,9 +96,7 @@ class SearchResultItem {
 
   SearchResultItem({required this.location, required this.displayName});
 
-  SearchResultItem.fromPlace(Place place)
-      : location = LatLng(place.lat, place.lon),
-        displayName = place.getAddress();
+  SearchResultItem.fromPlace(Place place) : location = LatLng(place.lat, place.lon), displayName = place.getAddress();
 }
 
 @JsonSerializable()
@@ -123,10 +116,10 @@ class AddressModel {
   * Hopefully, this will solve most issues with that kind of address composition.
   */
   AddressModel.fromPlace(Place place, {String? cityOverride})
-      : street = place.getRoad(),
-        houseNumber = place.getHouseNumber(),
-        zipCode = place.getZipCode(),
-        city = cityOverride ?? place.getCityOrVillage();
+    : street = place.getRoad(),
+      houseNumber = place.getHouseNumber(),
+      zipCode = place.getZipCode(),
+      city = cityOverride ?? place.getCityOrVillage();
 
   /// Connect the generated [_$AddressModelFromJson] function to the `fromJson`
   /// factory.

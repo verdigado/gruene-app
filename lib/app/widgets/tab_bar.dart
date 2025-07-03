@@ -35,10 +35,7 @@ class CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
         tabs: tabs
             .map(
               (tab) => Tab(
-                child: Text(
-                  tab.label,
-                  style: tab.disabled ? TextStyle(color: ThemeColors.textDisabled) : null,
-                ),
+                child: Text(tab.label, style: tab.disabled ? TextStyle(color: ThemeColors.textDisabled) : null),
               ),
             )
             .toList(),

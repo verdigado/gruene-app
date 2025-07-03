@@ -10,5 +10,7 @@ Future<Profile> updateProfileImage({required String profileId, required Multipar
       map: (data) => data,
     );
 
-Future<Profile> deleteProfileImage({required String profileId}) async =>
-    getFromApi(request: (api) => api.v1ProfilesProfileIdImageDelete(profileId: profileId), map: (data) => data);
+Future<Profile> deleteProfileImage({required String profileId}) async => getFromApi(
+  request: (api) => api.v1ProfilesProfileIdImageDelete(profileId: profileId),
+  map: (data) => data,
+);

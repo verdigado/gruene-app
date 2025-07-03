@@ -55,15 +55,18 @@ class AccessTokenAuthenticator implements Authenticator {
     completer = Completer<String?>();
     _completer = completer;
 
-    _authRepository.refreshToken().then((success) {
-      if (success) {
-        completer?.complete(_authRepository.getAccessToken());
-      } else {
-        completer?.completeError('Failed to refresh token', StackTrace.current);
-      }
-    }).onError((error, stackTrace) {
-      completer?.completeError(error ?? 'Refresh token error', stackTrace);
-    });
+    _authRepository
+        .refreshToken()
+        .then((success) {
+          if (success) {
+            completer?.complete(_authRepository.getAccessToken());
+          } else {
+            completer?.completeError('Failed to refresh token', StackTrace.current);
+          }
+        })
+        .onError((error, stackTrace) {
+          completer?.completeError(error ?? 'Refresh token error', stackTrace);
+        });
 
     return completer.future;
   }

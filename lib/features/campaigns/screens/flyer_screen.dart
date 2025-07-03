@@ -37,23 +37,10 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
   @override
   void initState() {
     flyerFilter = [
-      FilterChipModel(
-        text: t.campaigns.filters.visited_areas,
-        isEnabled: false,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.focusAreas,
-        isEnabled: true,
-        stateChanged: onFocusAreaStateChanged,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.routes,
-        isEnabled: false,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.experience_areas,
-        isEnabled: false,
-      ),
+      FilterChipModel(text: t.campaigns.filters.visited_areas, isEnabled: false),
+      FilterChipModel(text: t.campaigns.filters.focusAreas, isEnabled: true, stateChanged: onFocusAreaStateChanged),
+      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
+      FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
     ];
     super.initState();
   }
@@ -77,14 +64,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
     return Column(
       children: [
         FilterChipCampaign(flyerFilter, <String, List<String>>{}),
-        Expanded(
-          child: Stack(
-            children: [
-              mapContainer,
-              ...getSearchWidgets(context),
-            ],
-          ),
-        ),
+        Expanded(child: Stack(children: [mapContainer, ...getSearchWidgets(context)])),
       ],
     );
   }
@@ -99,18 +79,14 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
   }
 
   Map<String, String> _getMarkerImages() {
-    return {
-      'flyer': CampaignConstants.flyerAssetName,
-    };
+    return {'flyer': CampaignConstants.flyerAssetName};
   }
 
   void _onFeatureClick(dynamic rawFeature) async {
     final feature = rawFeature as Map<String, dynamic>;
 
     getPoiDetail(FlyerDetailModel flyer) {
-      return FlyerDetail(
-        poi: flyer,
-      );
+      return FlyerDetail(poi: flyer);
     }
 
     getEditPoiWidget(FlyerDetailModel flyer) {
@@ -146,9 +122,6 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
   GrueneApiFlyerService get campaignService => _grueneApiService;
 
   FlyerAddScreen _getAddScreen(LatLng location, AddressModel? address, Object? additionalData) {
-    return FlyerAddScreen(
-      location: location,
-      address: address!,
-    );
+    return FlyerAddScreen(location: location, address: address!);
   }
 }

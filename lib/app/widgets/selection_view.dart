@@ -24,10 +24,10 @@ class SelectionView<T> extends StatelessWidget {
   });
 
   void toggleOption(T option) => setSelectedOptions(
-        selectedOptions.contains(option)
-            ? selectedOptions.where((it) => it != option).toList()
-            : [...selectedOptions, option],
-      );
+    selectedOptions.contains(option)
+        ? selectedOptions.where((it) => it != option).toList()
+        : [...selectedOptions, option],
+  );
 
   List<Widget> renderSelectionListItems(List<T> options) => options
       .map(

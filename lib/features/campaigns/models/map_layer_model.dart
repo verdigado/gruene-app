@@ -6,10 +6,5 @@ class MapLayerModel {
   final double score;
   final String? description;
 
-  const MapLayerModel({
-    required this.id,
-    required this.coords,
-    required this.score,
-    required this.description,
-  });
+  const MapLayerModel({required this.id, required this.coords, required this.score, required this.description});
 }

@@ -30,12 +30,7 @@ class PosterEdit extends StatefulWidget {
   final OnSavePosterCallback onSave;
   final OnDeletePoiCallback onDelete;
 
-  const PosterEdit({
-    super.key,
-    required this.poster,
-    required this.onSave,
-    required this.onDelete,
-  });
+  const PosterEdit({super.key, required this.poster, required this.onSave, required this.onDelete});
 
   @override
   State<PosterEdit> createState() => _PosterEditState();
@@ -148,10 +143,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
                                 child: Container(
                                   width: 12.0,
                                   height: 12.0,
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 8.0,
-                                    horizontal: 4.0,
-                                  ),
+                                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.black.withAlpha(_currentImageIndex == entry.key ? 225 : 100),
@@ -180,12 +172,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
                             shape: BoxShape.circle,
                             border: Border.all(color: ThemeColors.secondary.withAlpha(100), width: 2),
                           ),
-                          child: Center(
-                            child: Icon(
-                              Icons.photo_camera_outlined,
-                              size: 30.0,
-                            ),
-                          ),
+                          child: Center(child: Icon(Icons.photo_camera_outlined, size: 30.0)),
                         ),
                         itemBuilder: (BuildContext context) => <PopupMenuEntry<PhotoEditAction>>[
                           PopupMenuItem<PhotoEditAction>(
@@ -216,9 +203,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  children: [Text(t.campaigns.poster.editPoster, style: theme.textTheme.titleLarge)],
-                ),
+                child: Row(children: [Text(t.campaigns.poster.editPoster, style: theme.textTheme.titleLarge)]),
               ),
               Align(
                 alignment: Alignment.centerLeft,
@@ -237,11 +222,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
                 height: 217,
-                child: Column(
-                  children: [
-                    ...PosterStatusHelper.getPosterStatusList.map(_getRadioItem),
-                  ],
-                ),
+                child: Column(children: [...PosterStatusHelper.getPosterStatusList.map(_getRadioItem)]),
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
@@ -292,10 +273,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
   Widget _getPosterPreview(int itemIndex) {
     var photo = _currentPhotos[itemIndex];
     return FutureBuilder(
-      future: Future.delayed(
-        Duration.zero,
-        () => (imageUrl: photo.imageUrl),
-      ),
+      future: Future.delayed(Duration.zero, () => (imageUrl: photo.imageUrl)),
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.hasError) {
           return _getDummyAsset();
@@ -309,10 +287,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
                   image: snapshot.data!.imageUrl,
                   fit: BoxFit.cover,
                 )
-              : Image.file(
-                  File(snapshot.data!.imageUrl),
-                  fit: BoxFit.cover,
-                ),
+              : Image.file(File(snapshot.data!.imageUrl), fit: BoxFit.cover),
         );
       },
     );
@@ -352,13 +327,13 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     }
 
     final updateModel = widget.poster.asPosterUpdate().copyWith(
-          address: getAddress(),
-          status: _selectedPosterStatus,
-          comment: commentTextController.text,
-          location: widget.poster.location,
-          deletedPhotoIds: _deletedPhotoIds,
-          newPhotos: newPhotosReduced,
-        );
+      address: getAddress(),
+      status: _selectedPosterStatus,
+      comment: commentTextController.text,
+      location: widget.poster.location,
+      deletedPhotoIds: _deletedPhotoIds,
+      newPhotos: newPhotosReduced,
+    );
     await widget.onSave(updateModel);
 
     _closeDialog(ModalEditResult.save);
@@ -424,11 +399,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     return Positioned.fill(
       child: Container(
         decoration: BoxDecoration(color: ThemeColors.text.withAlpha(120)),
-        child: Center(
-          child: CircularProgressIndicator(
-            color: ThemeColors.primary,
-          ),
-        ),
+        child: Center(child: CircularProgressIndicator(color: ThemeColors.primary)),
       ),
     );
   }
@@ -462,10 +433,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
         _selectedPosterStatus = value!;
       }),
       fillColor: WidgetStatePropertyAll(ThemeColors.primary),
-      title: Text(
-        item.$2,
-        style: theme.textTheme.bodyMedium,
-      ),
+      title: Text(item.$2, style: theme.textTheme.bodyMedium),
       visualDensity: VisualDensity(vertical: VisualDensity.minimumDensity, horizontal: VisualDensity.minimumDensity),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );

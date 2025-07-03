@@ -15,10 +15,10 @@ import 'package:gruene_app/features/settings/screens/settings_screen.dart';
 import 'package:gruene_app/features/tools/screens/tools_screen.dart';
 
 GoRoute buildRoute(String path, Widget child, {List<RouteBase>? routes}) => GoRoute(
-      path: path,
-      pageBuilder: (context, state) => buildPageWithoutAnimation(context: context, state: state, child: child),
-      routes: routes ?? [],
-    );
+  path: path,
+  pageBuilder: (context, state) => buildPageWithoutAnimation(context: context, state: state, child: child),
+  routes: routes ?? [],
+);
 
 class Routes {
   static GoRoute newsDetail = GoRoute(

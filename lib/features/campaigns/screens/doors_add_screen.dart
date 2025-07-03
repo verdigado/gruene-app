@@ -100,9 +100,7 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
                     sliderInputRange: SliderInputRange.numbers0To999,
                   ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 Flexible(
                   child: EnhancedWheelSlider(
                     labelText: t.campaigns.door.openedDoors,

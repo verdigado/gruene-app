@@ -5,10 +5,6 @@ import 'package:keycloak_authenticator/api.dart';
 class MfaFactory {
   static AuthenticatorService create() {
     final secureStorage = GetIt.instance<FlutterSecureStorage>();
-    return AuthenticatorService(
-      storage: FlutterSecureStorageAdapter(
-        secureStorage,
-      ),
-    );
+    return AuthenticatorService(storage: FlutterSecureStorageAdapter(secureStorage));
   }
 }

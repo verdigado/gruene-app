@@ -20,27 +20,27 @@ abstract class GrueneApiCampaignsService {
   }
 
   Future<List<MarkerItemModel>> loadPoisInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
-        apiRequest: (api) => api.v1CampaignsPoisGet(
-          type: poiType.transformToApiGetType(),
-          bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
-        ),
-        map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToMarkerItem()).toList(),
-      );
+    apiRequest: (api) => api.v1CampaignsPoisGet(
+      type: poiType.transformToApiGetType(),
+      bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
+    ),
+    map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToMarkerItem()).toList(),
+  );
 
   Future<List<MapLayerModel>> loadFocusAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
-        apiRequest: (api) => api.v1CampaignsFocusAreasGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
-        map: (result) => result.data.map((layerItem) => layerItem.transformToMapLayer()).toList(),
-      );
+    apiRequest: (api) => api.v1CampaignsFocusAreasGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
+    map: (result) => result.data.map((layerItem) => layerItem.transformToMapLayer()).toList(),
+  );
 
   Future<T> getPoi<T>(String poiId, T Function(Poi) transform) async => getFromApi(
-        apiRequest: (api) => api.v1CampaignsPoisPoiIdGet(poiId: poiId),
-        map: transform,
-      );
+    apiRequest: (api) => api.v1CampaignsPoisPoiIdGet(poiId: poiId),
+    map: transform,
+  );
 
   Future<void> deletePoi(String poiId) async => getFromApi(
-        apiRequest: (api) => api.v1CampaignsPoisPoiIdDelete(poiId: poiId),
-        map: (p) {},
-      );
+    apiRequest: (api) => api.v1CampaignsPoisPoiIdDelete(poiId: poiId),
+    map: (p) {},
+  );
 
   Future<T> getFromApi<S, T>({
     required Future<Response<S>> Function(GrueneApi api) apiRequest,
