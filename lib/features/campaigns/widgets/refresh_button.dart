@@ -8,9 +8,7 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class RefreshButton extends StatefulWidget {
-  const RefreshButton({
-    super.key,
-  });
+  const RefreshButton({super.key});
 
   @override
   State<RefreshButton> createState() => _RefreshButtonState();
@@ -100,10 +98,7 @@ class _RefreshButtonState extends State<RefreshButton> {
           content: Text(
             t.campaigns.debug.confirm_storing_cache,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(
-              color: theme.colorScheme.surface,
-              fontSizeDelta: 1,
-            ),
+            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
@@ -118,10 +113,7 @@ class _RefreshButtonState extends State<RefreshButton> {
               onPressed: () => Navigator.maybePop(context, true),
               child: Text(
                 t.common.actions.save,
-                style: theme.textTheme.labelLarge?.apply(
-                  color: ThemeColors.textWarning,
-                  fontWeightDelta: 2,
-                ),
+                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning, fontWeightDelta: 2),
               ),
             ),
           ],
@@ -142,10 +134,7 @@ class _RefreshButtonState extends State<RefreshButton> {
           content: Text(
             t.campaigns.debug.storing_cache_success,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(
-              color: theme.colorScheme.surface,
-              fontSizeDelta: 1,
-            ),
+            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
@@ -154,10 +143,7 @@ class _RefreshButtonState extends State<RefreshButton> {
               onPressed: () => Navigator.maybePop(context),
               child: Text(
                 t.common.actions.consent,
-                style: theme.textTheme.labelLarge?.apply(
-                  color: ThemeColors.background,
-                  fontWeightDelta: 2,
-                ),
+                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.background, fontWeightDelta: 2),
               ),
             ),
           ],

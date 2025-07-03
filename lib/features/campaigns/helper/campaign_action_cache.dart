@@ -89,19 +89,13 @@ class CampaignActionCache extends ChangeNotifier {
     required Map<String, dynamic> Function(T) getJson,
     required MarkerItemModel Function(T, int) getMarker,
   }) async {
-    final action = CampaignAction(
-      actionType: poiType.getCacheAddAction(),
-      serialized: jsonEncode(getJson(poi)),
-    );
+    final action = CampaignAction(actionType: poiType.getCacheAddAction(), serialized: jsonEncode(getJson(poi)));
     await _appendActionToCache(action);
     return getMarker(poi, action.poiTempId);
   }
 
   Future<MarkerItemModel> deletePoi(PoiServiceType poiType, String poiId) async {
-    final action = CampaignAction(
-      poiId: int.parse(poiId),
-      actionType: poiType.getCacheDeleteAction(),
-    );
+    final action = CampaignAction(poiId: int.parse(poiId), actionType: poiType.getCacheDeleteAction());
 
     var poiCacheList = await _findActionsByPoiId(poiId);
     var addActions = poiCacheList.where((p) => p.actionType == poiType.getCacheAddAction()).toList();
@@ -177,11 +171,7 @@ class CampaignActionCache extends ChangeNotifier {
   }
 
   MarkerItemModel _getDeleteMarkerModel(PoiServiceType poiType, int id) {
-    return MarkerItemModel.virtual(
-      id: id,
-      status: '${poiType.name}_deleted',
-      location: LatLng(0, 0),
-    );
+    return MarkerItemModel.virtual(id: id, status: '${poiType.name}_deleted', location: LatLng(0, 0));
   }
 
   Future<List<MarkerItemModel>> getMarkerItems(PoiServiceType poiType) async {
@@ -309,11 +299,11 @@ class CampaignActionCache extends ChangeNotifier {
         if (failingPoiIds.contains(action.coalescedPoiId())) continue;
 
         updateIds(int newPoiId) async => await _updateIdsInCache(
-              oldId: action.poiTempId,
-              newId: newPoiId,
-              startIndex: i + 1,
-              allActions: allActions,
-            );
+          oldId: action.poiTempId,
+          newId: newPoiId,
+          startIndex: i + 1,
+          allActions: allActions,
+        );
 
         try {
           switch (action.actionType) {
@@ -425,8 +415,9 @@ class CampaignActionCache extends ChangeNotifier {
       var editPosterActions = posterCacheList.where((p) => p.actionType == CampaignActionType.editPoster).toList();
       if (editPosterActions.isNotEmpty) {
         var editPosterAction = editPosterActions.single;
-        var posterListItem =
-            editPosterAction.getPosterUpdateAsPosterListItem(DateTime.fromMillisecondsSinceEpoch(newPoster.poiTempId));
+        var posterListItem = editPosterAction.getPosterUpdateAsPosterListItem(
+          DateTime.fromMillisecondsSinceEpoch(newPoster.poiTempId),
+        );
         myPosters.add(posterListItem);
         continue;
       }

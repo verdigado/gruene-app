@@ -50,17 +50,10 @@ class _ReadyViewState extends State<ReadyView> {
         padding: const EdgeInsets.fromLTRB(24, 60, 24, 26),
         child: Column(
           children: [
-            Center(
-              child: SizedBox(
-                height: 155,
-                child: SvgPicture.asset('assets/graphics/mfa_ready.svg'),
-              ),
-            ),
+            Center(child: SizedBox(height: 155, child: SvgPicture.asset('assets/graphics/mfa_ready.svg'))),
             const SizedBox(height: 16),
             TextButton(
-              onPressed: () => {
-                context.read<MfaBloc>().add(RefreshMfa()),
-              },
+              onPressed: () => {context.read<MfaBloc>().add(RefreshMfa())},
               child: Text(
                 t.mfa.ready.refresh,
                 style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.text, decoration: TextDecoration.underline),
@@ -69,11 +62,7 @@ class _ReadyViewState extends State<ReadyView> {
             const SizedBox(height: 3),
             state.lastGrantedLoginAttempt != null ? LastGrantedLoginAttemptWidget() : NoLoginAttemptWidget(),
             const SizedBox(height: 16),
-            Text(
-              t.mfa.ready.betaVersion,
-              style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
+            Text(t.mfa.ready.betaVersion, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
             TextButton(
               onPressed: () {
                 showDialog<void>(
@@ -82,10 +71,7 @@ class _ReadyViewState extends State<ReadyView> {
                     return AlertDialog(
                       content: Text(t.mfa.ready.delete.text),
                       actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(t.common.actions.cancel),
-                        ),
+                        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(t.common.actions.cancel)),
                         TextButton(
                           onPressed: () {
                             context.read<MfaBloc>().add(DeleteMfa());

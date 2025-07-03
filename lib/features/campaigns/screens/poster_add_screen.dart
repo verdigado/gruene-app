@@ -70,16 +70,8 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
                         alignment: Alignment.centerRight,
                         width: 50,
                         height: 50,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                            size: 30.0,
-                          ),
-                        ),
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: Center(child: Icon(Icons.delete, color: Colors.white, size: 30.0)),
                       ),
                     )
                   : SizedBox(),
@@ -90,16 +82,8 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
                   alignment: Alignment.centerRight,
                   width: 50,
                   height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.add_photo_alternate,
-                      color: Colors.white,
-                      size: 30.0,
-                    ),
-                  ),
+                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  child: Center(child: Icon(Icons.add_photo_alternate, color: Colors.white, size: 30.0)),
                 ),
               ),
               SizedBox(width: 6),
@@ -112,9 +96,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: ThemeColors.background, width: 1),
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF03BD4E), Color(0xFF875CFF)],
-                    ),
+                    gradient: LinearGradient(colors: [Color(0xFF03BD4E), Color(0xFF875CFF)]),
                   ),
                   child: _getPhotoPreviewOrIcon(),
                 ),
@@ -130,10 +112,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
           SaveCancelOnCreateWidget(onSave: _onSavePressed),
           Row(
             children: [
-              Icon(
-                Icons.info_outline,
-                color: ThemeColors.background,
-              ),
+              Icon(Icons.info_outline, color: ThemeColors.background),
               SizedBox(width: 10),
               SizedBox(
                 width: mediaQuery.size.width - 82,
@@ -159,22 +138,11 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
         width: 150,
         height: 120,
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-        ),
-        child: Image.file(
-          _currentPhoto!,
-          fit: BoxFit.cover,
-        ),
+        decoration: BoxDecoration(shape: BoxShape.circle),
+        child: Image.file(_currentPhoto!, fit: BoxFit.cover),
       );
     } else {
-      return Center(
-        child: Icon(
-          Icons.photo_camera,
-          color: Colors.white,
-          size: 30.0,
-        ),
-      );
+      return Center(child: Icon(Icons.photo_camera, color: Colors.white, size: 30.0));
     }
   }
 
@@ -202,11 +170,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
   void _saveAndReturn(String? fileLocation) {
     Navigator.maybePop(
       context,
-      PosterCreateModel(
-        location: widget.location,
-        address: getAddress(),
-        imageFileLocation: fileLocation,
-      ),
+      PosterCreateModel(location: widget.location, address: getAddress(), imageFileLocation: fileLocation),
     );
   }
 

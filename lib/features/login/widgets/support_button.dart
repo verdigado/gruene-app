@@ -16,10 +16,7 @@ class SupportButton extends StatelessWidget {
       child: FilledButton.icon(
         onPressed: () => openUrl(supportUrl, context),
         icon: Icon(Icons.favorite, color: theme.colorScheme.surface),
-        label: Text(
-          t.login.support,
-          style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
-        ),
+        label: Text(t.login.support, style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface)),
       ),
     );
   }

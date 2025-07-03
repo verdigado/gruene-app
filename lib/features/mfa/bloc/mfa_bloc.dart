@@ -30,12 +30,7 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
         ),
       );
     } catch (error) {
-      emit(
-        state.copyWith(
-          error: error,
-          loginAttempt: null,
-        ),
-      );
+      emit(state.copyWith(error: error, loginAttempt: null));
     }
   }
 
@@ -44,13 +39,7 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     emit(state.copyWith(isLoading: true, error: null));
     try {
       _authenticator = await _service.create(event.activationToken);
-      emit(
-        state.copyWith(
-          status: MfaStatus.ready,
-          isLoading: false,
-          loginAttempt: null,
-        ),
-      );
+      emit(state.copyWith(status: MfaStatus.ready, isLoading: false, loginAttempt: null));
     } catch (error) {
       emit(state.copyWith(error: error, isLoading: false));
     }
@@ -60,13 +49,7 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     if (state.status != MfaStatus.ready || _authenticator == null) return;
     try {
       await _service.delete(_authenticator!);
-      emit(
-        state.copyWith(
-          status: MfaStatus.setup,
-          loginAttempt: null,
-          lastRefresh: null,
-        ),
-      );
+      emit(state.copyWith(status: MfaStatus.setup, loginAttempt: null, lastRefresh: null));
     } catch (error) {
       emit(state.copyWith(error: error));
     }
@@ -95,12 +78,7 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
           ),
         );
       } else {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            lastRefresh: DateTime.now(),
-          ),
-        );
+        emit(state.copyWith(isLoading: false, lastRefresh: DateTime.now()));
       }
     } on KeycloakClientException catch (error) {
       if (error.type == KeycloakExceptionType.notRegistered) {
@@ -120,10 +98,7 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     if (state.status != MfaStatus.verify || state.loginAttempt == null || state.isLoading) return;
     emit(state.copyWith(isLoading: true, error: null));
     try {
-      await _authenticator!.reply(
-        challenge: state.loginAttempt!.challenge,
-        granted: event.granted,
-      );
+      await _authenticator!.reply(challenge: state.loginAttempt!.challenge, granted: event.granted);
       emit(
         state.copyWith(
           status: MfaStatus.ready,
@@ -139,11 +114,6 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
 
   void _onIdleTimeout(IdleTimeout event, Emitter<MfaState> emit) {
     if (state.status != MfaStatus.verify || state.loginAttempt == null || state.isLoading) return;
-    emit(
-      state.copyWith(
-        status: MfaStatus.ready,
-        loginAttempt: null,
-      ),
-    );
+    emit(state.copyWith(status: MfaStatus.ready, loginAttempt: null));
   }
 }

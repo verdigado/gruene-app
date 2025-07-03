@@ -49,15 +49,9 @@ class NewsDetailScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             division != null ? Text(division.shortDisplayName()) : Container(),
-                            Text(
-                              news.title,
-                              style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType'),
-                            ),
+                            Text(news.title, style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneType')),
                             SizedBox(height: 16),
-                            Text(
-                              t.news.updatedAt(date: formatDate(news.createdAt)),
-                              style: theme.textTheme.labelSmall,
-                            ),
+                            Text(t.news.updatedAt(date: formatDate(news.createdAt)), style: theme.textTheme.labelSmall),
                             CustomHtml(data: news.content),
                           ],
                         ),
@@ -65,10 +59,7 @@ class NewsDetailScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Positioned(
-                  right: 0,
-                  child: BookmarkButton(newsId: news.id),
-                ),
+                Positioned(right: 0, child: BookmarkButton(newsId: news.id)),
               ],
             ),
           );

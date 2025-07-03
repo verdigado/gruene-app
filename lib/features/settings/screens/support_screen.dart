@@ -22,10 +22,7 @@ class SupportScreen extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: 24),
-            child: Text(
-              t.settings.support.contacts,
-              style: theme.textTheme.titleLarge,
-            ),
+            child: Text(t.settings.support.contacts, style: theme.textTheme.titleLarge),
           ),
           SettingsCard(
             title: t.settings.support.generalFeedback,

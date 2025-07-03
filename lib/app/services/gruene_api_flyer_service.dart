@@ -11,31 +11,27 @@ class GrueneApiFlyerService extends GrueneApiCampaignsService {
   GrueneApiFlyerService() : super(poiType: PoiServiceType.flyer);
 
   Future<MarkerItemModel> createNewFlyer(FlyerCreateModel newFlyer) async => getFromApi(
-        apiRequest: (api) => api.v1CampaignsPoisPost(
-          body: CreatePoi(
-            coords: newFlyer.location.transformToGeoJsonCoords(),
-            type: poiType.transformToApiCreateType(),
-            address: newFlyer.address.transformToPoiAddress(),
-            flyerSpot: PoiFlyerSpot(
-              flyerCount: newFlyer.flyerCount.toDouble(),
-            ),
-          ),
-        ),
-        map: (result) => result.transformToMarkerItem(),
-      );
+    apiRequest: (api) => api.v1CampaignsPoisPost(
+      body: CreatePoi(
+        coords: newFlyer.location.transformToGeoJsonCoords(),
+        type: poiType.transformToApiCreateType(),
+        address: newFlyer.address.transformToPoiAddress(),
+        flyerSpot: PoiFlyerSpot(flyerCount: newFlyer.flyerCount.toDouble()),
+      ),
+    ),
+    map: (result) => result.transformToMarkerItem(),
+  );
 
   Future<MarkerItemModel> updateFlyer(FlyerUpdateModel flyerUpdate) async => getFromApi(
-        apiRequest: (api) => api.v1CampaignsPoisPoiIdPut(
-          poiId: flyerUpdate.id,
-          body: UpdatePoi(
-            address: flyerUpdate.address.transformToPoiAddress(),
-            flyerSpot: PoiFlyerSpot(
-              flyerCount: flyerUpdate.flyerCount.toDouble(),
-            ),
-          ),
-        ),
-        map: (result) => result.transformToMarkerItem(),
-      );
+    apiRequest: (api) => api.v1CampaignsPoisPoiIdPut(
+      poiId: flyerUpdate.id,
+      body: UpdatePoi(
+        address: flyerUpdate.address.transformToPoiAddress(),
+        flyerSpot: PoiFlyerSpot(flyerCount: flyerUpdate.flyerCount.toDouble()),
+      ),
+    ),
+    map: (result) => result.transformToMarkerItem(),
+  );
 
   Future<FlyerDetailModel> getPoiAsFlyerDetail(String poiId) {
     return getPoi(poiId, (p) => p.transformPoiToFlyerDetail());

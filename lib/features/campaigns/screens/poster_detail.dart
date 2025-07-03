@@ -62,9 +62,7 @@ class PosterDetail extends StatelessWidget {
                     backgroundColor: ThemeColors.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24.0),
-                      side: BorderSide(
-                        color: ThemeColors.primary,
-                      ),
+                      side: BorderSide(color: ThemeColors.primary),
                     ),
                   ),
                   child: Text(
@@ -99,13 +97,10 @@ class PosterDetail extends StatelessWidget {
                   height: 150,
                   width: 120,
                   child: FutureBuilder(
-                    future: Future.delayed(
-                      Duration.zero,
-                      () {
-                        var lastPhoto = poi.latestPhoto();
-                        return lastPhoto == null ? null : (thumbnailUrl: lastPhoto.thumbnailUrl);
-                      },
-                    ),
+                    future: Future.delayed(Duration.zero, () {
+                      var lastPhoto = poi.latestPhoto();
+                      return lastPhoto == null ? null : (thumbnailUrl: lastPhoto.thumbnailUrl);
+                    }),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData || snapshot.hasError) {
                         return Image.asset(CampaignConstants.dummyImageAssetName);
@@ -116,9 +111,7 @@ class PosterDetail extends StatelessWidget {
                           image: snapshot.data!.thumbnailUrl,
                         );
                       } else {
-                        return Image.file(
-                          File(snapshot.data!.thumbnailUrl),
-                        );
+                        return Image.file(File(snapshot.data!.thumbnailUrl));
                       }
                     },
                   ),
@@ -143,10 +136,7 @@ class PosterDetail extends StatelessWidget {
                       height: 18,
                     ),
                     SizedBox(width: 12),
-                    Text(
-                      getStatusText(),
-                      style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.background),
-                    ),
+                    Text(getStatusText(), style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.background)),
                   ],
                 ),
               ),

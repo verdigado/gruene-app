@@ -25,8 +25,9 @@ class OwnProfileScreen extends StatelessWidget {
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
         buildChild: (Profile data, updateData) {
-          Iterable<ProfileRole> mandateRoles =
-              data.roles.where((role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type));
+          Iterable<ProfileRole> mandateRoles = data.roles.where(
+            (role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type),
+          );
           Iterable<ProfileRole> sherpaRoles = data.roles.where((role) => role.type == ProfileRoleType.role);
           Iterable<ProfileTag> skillTags = data.tags.where((tag) => tag.type == ProfileTagType.skill);
           DivisionMembership? kvMembership = extractKvMembership(data.memberships);
@@ -34,10 +35,7 @@ class OwnProfileScreen extends StatelessWidget {
           return ListView(
             children: [
               SizedBox(height: 24),
-              ProfileHeader(
-                profile: data,
-                onProfileUpdated: updateData,
-              ),
+              ProfileHeader(profile: data, onProfileUpdated: updateData),
               SizedBox(height: 24),
               TextListItem(
                 title: t.profiles.digitalMembershipCard.title,
@@ -79,8 +77,9 @@ class OwnProfileScreen extends StatelessWidget {
               if (kvMembership?.division.urls.isNotEmpty ?? false) ...[
                 ProfileBox(
                   title: t.profiles.myKreisverband,
-                  items: kvMembership!.division.urls
-                      .map((url) => ProfileBoxItem(title: t.profiles.homepage, onPress: () => openUrl(url, context))),
+                  items: kvMembership!.division.urls.map(
+                    (url) => ProfileBoxItem(title: t.profiles.homepage, onPress: () => openUrl(url, context)),
+                  ),
                 ),
                 SizedBox(height: 12),
               ],

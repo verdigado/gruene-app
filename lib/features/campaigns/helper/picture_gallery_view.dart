@@ -67,9 +67,8 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
               pageController: _imageSliderController,
               itemCount: allImages.length,
               backgroundDecoration: BoxDecoration(color: ThemeColors.text.withAlpha(120)),
-              builder: (context, index) => PhotoViewGalleryPageOptions(
-                imageProvider: widget.getImageProvider(allImages[index]),
-              ),
+              builder: (context, index) =>
+                  PhotoViewGalleryPageOptions(imageProvider: widget.getImageProvider(allImages[index])),
               onPageChanged: (index) {
                 setState(() => _currentImageIndex = index);
               },
@@ -85,10 +84,7 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
                   child: Container(
                     width: 12.0,
                     height: 12.0,
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 4.0,
-                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentImageIndex == entry.key ? ThemeColors.secondary : Colors.white,
@@ -112,21 +108,14 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
           Positioned(
             bottom: 6,
             right: 14,
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: _getGalleryPopUpMenu(),
-            ),
+            child: Align(alignment: Alignment.bottomRight, child: _getGalleryPopUpMenu()),
           ),
           Positioned(
             right: 20,
             top: 20,
             child: GestureDetector(
               onTap: _closeWindow,
-              child: Icon(
-                Icons.close,
-                color: theme.colorScheme.surface,
-                size: 30,
-              ),
+              child: Icon(Icons.close, color: theme.colorScheme.surface, size: 30),
             ),
           ),
         ],
@@ -138,10 +127,7 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
     return PopupMenuButton<PhotoGalleryAction>(
       color: ThemeColors.background,
       onSelected: _doGalleryAction,
-      child: Icon(
-        Icons.more_vert,
-        color: ThemeColors.background,
-      ),
+      child: Icon(Icons.more_vert, color: ThemeColors.background),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<PhotoGalleryAction>>[
         PopupMenuItem<PhotoGalleryAction>(
           value: PhotoGalleryAction.downloadPhoto,
@@ -253,17 +239,17 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
   Future<bool> _showConfirmationDialog(BuildContext context, PictureViewConfirmationDialogOptions options) async {
     var optionSet = switch (options) {
       PictureViewConfirmationDialogOptions.replace => (
-          title: t.campaigns.poster.photoEditActions.confirmation_dialog.title_replace,
-          text: t.campaigns.poster.photoEditActions.confirmation_dialog.text_replace,
-          actionText: t.campaigns.poster.photoEditActions.replacePhoto,
-          icon: Icons.camera_alt_outlined,
-        ),
+        title: t.campaigns.poster.photoEditActions.confirmation_dialog.title_replace,
+        text: t.campaigns.poster.photoEditActions.confirmation_dialog.text_replace,
+        actionText: t.campaigns.poster.photoEditActions.replacePhoto,
+        icon: Icons.camera_alt_outlined,
+      ),
       PictureViewConfirmationDialogOptions.delete => (
-          title: t.campaigns.poster.photoEditActions.confirmation_dialog.title_delete,
-          text: t.campaigns.poster.photoEditActions.confirmation_dialog.text_delete,
-          actionText: t.campaigns.poster.photoEditActions.deletePhoto,
-          icon: Icons.delete_outline,
-        ),
+        title: t.campaigns.poster.photoEditActions.confirmation_dialog.title_delete,
+        text: t.campaigns.poster.photoEditActions.confirmation_dialog.text_delete,
+        actionText: t.campaigns.poster.photoEditActions.deletePhoto,
+        icon: Icons.delete_outline,
+      ),
     };
 
     final theme = Theme.of(context);
@@ -275,20 +261,12 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
           backgroundColor: ThemeColors.backgroundSecondary,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                optionSet.title,
-                style: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark),
-              ),
-            ],
+            children: [Text(optionSet.title, style: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark))],
           ),
           content: Text(
             optionSet.text,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(
-              color: ThemeColors.textDark,
-              fontSizeDelta: 1,
-            ),
+            style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDark, fontSizeDelta: 1),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
@@ -301,10 +279,7 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
             ),
             TextButton.icon(
               onPressed: () => Navigator.maybePop(context, true),
-              label: Text(
-                optionSet.actionText,
-                style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDark),
-              ),
+              label: Text(optionSet.actionText, style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDark)),
               icon: Icon(optionSet.icon),
             ),
           ],

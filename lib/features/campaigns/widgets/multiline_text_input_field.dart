@@ -96,9 +96,8 @@ class _MultiLineTextInputFieldState extends State<MultiLineTextInputField> {
               label: null,
               floatingLabelBehavior: FloatingLabelBehavior.never,
             ),
-            buildCounter: (context, {required currentLength, required isFocused, required maxLength}) => SizedBox(
-              height: 0,
-            ),
+            buildCounter: (context, {required currentLength, required isFocused, required maxLength}) =>
+                SizedBox(height: 0),
           ),
         ],
       ),

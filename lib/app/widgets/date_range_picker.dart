@@ -6,11 +6,7 @@ class DateRangePicker extends StatelessWidget {
   final void Function(DateTimeRange?) setDateRange;
   final DateTimeRange? dateRange;
 
-  const DateRangePicker({
-    super.key,
-    required this.setDateRange,
-    required this.dateRange,
-  });
+  const DateRangePicker({super.key, required this.setDateRange, required this.dateRange});
 
   Future<void> openDateRangePicker(BuildContext context) async {
     final theme = Theme.of(context);

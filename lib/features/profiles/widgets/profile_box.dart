@@ -7,11 +7,7 @@ class ProfileBox extends StatelessWidget {
   final String title;
   final Iterable<ProfileBoxItem> items;
 
-  const ProfileBox({
-    super.key,
-    required this.title,
-    required this.items,
-  });
+  const ProfileBox({super.key, required this.title, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +20,7 @@ class ProfileBox extends StatelessWidget {
               SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                child: Text(title, style: Theme.of(context).textTheme.titleMedium),
               ),
               SizedBox(height: 8),
               ...items.withDividers(Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Divider())),

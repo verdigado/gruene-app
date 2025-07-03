@@ -12,10 +12,6 @@ extension DoorUpdateModelParsing on DoorUpdateModel {
   }
 
   MarkerItemModel transformToVirtualMarkerItem() {
-    return MarkerItemModel.virtual(
-      id: int.parse(id),
-      status: PoiServiceType.door.name,
-      location: location,
-    );
+    return MarkerItemModel.virtual(id: int.parse(id), status: PoiServiceType.door.name, location: location);
   }
 }

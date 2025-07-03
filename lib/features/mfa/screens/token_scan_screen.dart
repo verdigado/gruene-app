@@ -25,11 +25,7 @@ class TokenScanScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              t.mfa.tokenScan.intro,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium,
-            ),
+            Text(t.mfa.tokenScan.intro, textAlign: TextAlign.center, style: theme.textTheme.titleMedium),
             const SizedBox(height: 73),
             Center(
               child: Container(
