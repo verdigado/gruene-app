@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
+import 'package:gruene_app/features/mfa/widgets/login_attempt_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 
 class VerifyView extends StatefulWidget {
@@ -61,10 +61,11 @@ class _VerifyViewState extends State<VerifyView> {
 
     return BlocBuilder<MfaBloc, MfaState>(
       builder: (context, state) => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 60, 24, 26),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: ExpandingScrollView(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(height: 60),
             Center(
               child: SizedBox(
                 height: 108,
@@ -79,26 +80,12 @@ class _VerifyViewState extends State<VerifyView> {
             ),
             const SizedBox(height: 16),
             Text(
-              t.mfa.verify.intro,
+              t.mfa.verify.description,
               style: theme.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
-            Text(
-              state.loginAttempt!.clientName,
-              style: theme.textTheme.bodyMedium?.apply(fontWeightDelta: 3),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              '${state.loginAttempt!.browser}, ${state.loginAttempt!.os} (${state.loginAttempt!.ipAddress})',
-              style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              '${DateFormat('dd.MM.yyyy, HH:mm:ss').format(state.loginAttempt!.loggedInAt)} ${t.mfa.verify.oclock}',
-              style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.textDisabled),
-              textAlign: TextAlign.center,
-            ),
+            const SizedBox(height: 16),
+            LoginAttemptCard(loginAttempt: state.loginAttempt!),
             const SizedBox(height: 16),
             Spacer(),
             FilledButton(
@@ -113,7 +100,7 @@ class _VerifyViewState extends State<VerifyView> {
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             OutlinedButton(
               onPressed: () => onReply(false),
               style: ButtonStyle(
@@ -124,6 +111,7 @@ class _VerifyViewState extends State<VerifyView> {
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
               ),
             ),
+            const SizedBox(height: 32),
           ],
         ),
       ),
