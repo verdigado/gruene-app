@@ -16,7 +16,6 @@ jobs:
   - deliver_android:
       production_delivery: true
       context:
-        - github
         - gruene_google_playstore
       requires:
         - build_android
@@ -29,7 +28,14 @@ jobs:
   - deliver_ios:
       production_delivery: true
       context:
-        - github
         - gruene_apple_appstore
       requires:
         - build_ios
+
+  - notify_release:
+      production_delivery: true
+      context:
+        - github
+      requires:
+        - deliver_android
+        - deliver_ios

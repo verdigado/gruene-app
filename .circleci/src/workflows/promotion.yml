@@ -5,10 +5,15 @@ when:
 jobs:
   - promote_android:
       context:
-        - github
         - gruene_google_playstore
 
   - promote_ios:
       context:
-        - github
         - gruene_apple_appstore
+
+  - notify_promotion:
+      context:
+        - github
+      requires:
+        - promote_android
+        - promote_ios

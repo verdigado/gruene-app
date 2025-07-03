@@ -1,0 +1,15 @@
+parameters:
+  production_delivery:
+    description: Whether to deliver the build to production.
+    type: boolean
+docker:
+  - image: cimg/android:2024.08.1-node
+resource_class: small
+shell: /bin/bash -eo pipefail
+steps:
+  - checkout
+  - install_node_modules
+  - run:
+      name: Remove Beta Flag from Github Release
+      command: yarn github-promote-release promote --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
+      working_directory: tools
