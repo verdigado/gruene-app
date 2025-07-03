@@ -188,7 +188,7 @@ class StatisticsScreen extends StatelessWidget {
                     child: Text(
                       currentThreshold.toString(),
                       style: theme.textTheme.labelMedium!
-                          .apply(fontWeightDelta: 3, color: theme.colorScheme.primary.withOpacity(0.3)),
+                          .apply(fontWeightDelta: 3, color: theme.colorScheme.primary.withValues(alpha: 0.3)),
                     ),
                   ),
                 ),

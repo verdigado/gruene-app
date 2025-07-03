@@ -85,7 +85,7 @@ class NewsCard extends StatelessWidget {
                   begin: FractionalOffset.topCenter,
                   end: FractionalOffset.bottomCenter,
                   colors: [
-                    ThemeColors.text.withOpacity(0.5),
+                    ThemeColors.text.withValues(alpha: 0.5),
                     Colors.transparent,
                   ],
                 ),

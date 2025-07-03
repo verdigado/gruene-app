@@ -5,7 +5,7 @@ description: "App for the German party BÜNDNIS 90/DIE GRÜNEN"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ^3.5.3
+  sdk: ^3.8.1
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -43,7 +43,7 @@ dependencies:
 #----------------------------------------------------
   http: ^1.2.2
   turf: ^0.0.10
-  intl: ^0.19.0
+  intl: ^0.20.2
   image: ^4.3.0
   http_parser: ^4.0.2
   tuple: ^2.0.2
