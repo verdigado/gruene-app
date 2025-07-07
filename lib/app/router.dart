@@ -21,7 +21,7 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
           return Scaffold(
             appBar: AppBar(backgroundColor: theme.colorScheme.primary, toolbarHeight: 0),
             body: SafeArea(child: navigationShell),
-            bottomNavigationBar: SafeArea(child: BottomNavigation(navigationShell: navigationShell)),
+            bottomNavigationBar: BottomNavigation(navigationShell: navigationShell),
           );
         },
         branches: [
