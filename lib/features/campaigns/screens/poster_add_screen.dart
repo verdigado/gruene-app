@@ -191,6 +191,10 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
   void _onSavePressed(BuildContext localContext) async {
     if (!localContext.mounted) return;
 
+    if (_currentPhoto == null) {
+      showNoPhotoWarning();
+    }
+
     final reducedImage = await MediaHelper.resizeAndReduceImageFile(_currentPhoto);
     String? fileLocation;
     if (reducedImage != null) {
@@ -229,4 +233,42 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
   }
 
   bool get _hasPhoto => _currentPhoto != null;
+
+  Future<bool> showNoPhotoWarning() async {
+    final theme = Theme.of(context);
+    final dialogResult = await showDialog<bool>(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: ThemeColors.alertBackground,
+          content: Text(
+            t.campaigns.poster.noPhotoWarning,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelMedium?.apply(
+              color: theme.colorScheme.surface,
+              fontSizeDelta: 1,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.maybePop(context, true),
+              child: Text(
+                t.campaigns.poster.noPhotoWarningConfirm,
+                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.maybePop(context, false),
+              child: Text(
+                t.campaigns.poster.noPhotoWarningDecline,
+                style: theme.textTheme.labelLarge?.apply(color: theme.colorScheme.secondary),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    return dialogResult ?? false;
+  }
 }
