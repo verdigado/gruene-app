@@ -33,7 +33,11 @@ class SettingsScreen extends StatelessWidget {
             title: t.settings.pushNotifications.pushNotifications,
             onPress: () => context.pushNested(Routes.pushNotifications.path),
           ),
-          TextListItem(title: t.settings.support.support, onPress: () => context.pushNested(Routes.support.path)),
+          TextListItem(
+            title: t.settings.support.support,
+            onPress: () => openUrl(grueneAppFeedbackUrl, context),
+            isExternal: true,
+          ),
           TextListItem(
             title: t.settings.actionNetwork,
             onPress: () => {},
