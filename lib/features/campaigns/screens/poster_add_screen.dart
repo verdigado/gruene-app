@@ -209,10 +209,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
           content: Text(
             t.campaigns.poster.noPhotoWarning,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(
-              color: theme.colorScheme.surface,
-              fontSizeDelta: 1,
-            ),
+            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
           ),
           actions: [
             TextButton(
