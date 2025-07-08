@@ -70,10 +70,7 @@ class _ReadyViewState extends State<ReadyView> {
             ),
             const SizedBox(height: 16),
             state.lastGrantedLoginAttempt != null
-                ? LoginAttemptCard(
-                    loginAttempt: state.lastGrantedLoginAttempt!,
-                    title: t.mfa.ready.lastApprovedLogin,
-                  )
+                ? LoginAttemptCard(loginAttempt: state.lastGrantedLoginAttempt!, title: t.mfa.ready.lastApprovedLogin)
                 : Container(),
             Spacer(),
             OutlinedButton(onPressed: () => showMfaDeletionDialog(context), child: Text(t.mfa.ready.delete.title)),

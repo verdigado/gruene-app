@@ -17,13 +17,9 @@ class LoginAttemptCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.04),
-            offset: Offset(2, 4),
-            blurRadius: 16,
-            spreadRadius: 7),
-          ],
-        ),
+          BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.04), offset: Offset(2, 4), blurRadius: 16, spreadRadius: 7),
+        ],
+      ),
 
       child: Card(
         elevation: 0,
@@ -34,12 +30,7 @@ class LoginAttemptCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ...(title != null
-                  ? [
-                      Text(title!, style: theme.textTheme.titleSmall),
-                      const SizedBox(height: 8),
-                    ]
-                  : []),
+              ...(title != null ? [Text(title!, style: theme.textTheme.titleSmall), const SizedBox(height: 8)] : []),
               Table(
                 defaultColumnWidth: IntrinsicColumnWidth(),
                 children: [
@@ -52,18 +43,8 @@ class LoginAttemptCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  TableRow(
-                    children: [
-                      Text(t.mfa.verify.device),
-                      Text('${loginAttempt.browser} ${loginAttempt.os}'),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      Text(t.mfa.verify.date),
-                      Text(formatDate(loginAttempt.loggedInAt)),
-                    ],
-                  ),
+                  TableRow(children: [Text(t.mfa.verify.device), Text('${loginAttempt.browser} ${loginAttempt.os}')]),
+                  TableRow(children: [Text(t.mfa.verify.date), Text(formatDate(loginAttempt.loggedInAt))]),
                   TableRow(
                     children: [
                       Text(t.mfa.verify.time),

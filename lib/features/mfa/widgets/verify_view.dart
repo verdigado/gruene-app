@@ -38,10 +38,7 @@ class _VerifyViewState extends State<VerifyView> {
       try {
         bool authenticated = await _auth.authenticate(
           localizedReason: t.mfa.verify.authenticateForApproval,
-          options: const AuthenticationOptions(
-            useErrorDialogs: true,
-            stickyAuth: true,
-          ),
+          options: const AuthenticationOptions(useErrorDialogs: true, stickyAuth: true),
         );
         if (!mounted) return;
         context.read<MfaBloc>().add(SendReply(authenticated));
@@ -66,35 +63,18 @@ class _VerifyViewState extends State<VerifyView> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 60),
-            Center(
-              child: SizedBox(
-                height: 108,
-                child: SvgPicture.asset('assets/graphics/mfa_verify.svg'),
-              ),
-            ),
+            Center(child: SizedBox(height: 108, child: SvgPicture.asset('assets/graphics/mfa_verify.svg'))),
             const SizedBox(height: 16),
-            Text(
-              t.mfa.verify.title,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.displayLarge,
-            ),
+            Text(t.mfa.verify.title, textAlign: TextAlign.center, style: theme.textTheme.displayLarge),
             const SizedBox(height: 16),
-            Text(
-              t.mfa.verify.description,
-              style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
+            Text(t.mfa.verify.description, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
             const SizedBox(height: 16),
             LoginAttemptCard(loginAttempt: state.loginAttempt!),
             const SizedBox(height: 16),
             Spacer(),
             FilledButton(
-              onPressed: () => {
-                onReply(true),
-              },
-              style: ButtonStyle(
-                minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56)),
-              ),
+              onPressed: () => {onReply(true)},
+              style: ButtonStyle(minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56))),
               child: Text(
                 t.mfa.verify.approve,
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
@@ -103,9 +83,7 @@ class _VerifyViewState extends State<VerifyView> {
             const SizedBox(height: 8),
             OutlinedButton(
               onPressed: () => onReply(false),
-              style: ButtonStyle(
-                minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56)),
-              ),
+              style: ButtonStyle(minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56))),
               child: Text(
                 t.mfa.verify.deny,
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),

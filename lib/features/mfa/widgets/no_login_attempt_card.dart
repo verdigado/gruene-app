@@ -17,12 +17,7 @@ class NoLoginAttemptCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.04),
-            offset: Offset(2, 4),
-            blurRadius: 16,
-            spreadRadius: 7,
-          ),
+          BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.04), offset: Offset(2, 4), blurRadius: 16, spreadRadius: 7),
         ],
       ),
       child: Card(
