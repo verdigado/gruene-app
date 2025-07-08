@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/util/setup_mfa.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
@@ -31,16 +32,17 @@ class _TokenInputScreenState extends State<TokenInputScreen> {
     return Scaffold(
       appBar: MainAppBar(title: t.mfa.tokenInput.title),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 119, 24, 26),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: ExpandingScrollView(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(height: 32),
             Text(t.mfa.tokenInput.intro, style: theme.textTheme.titleMedium),
-            SizedBox(height: 24),
+            const SizedBox(height: 32),
             Text(t.mfa.tokenInput.token, style: theme.textTheme.bodyMedium),
-            SizedBox(height: 6),
+            const SizedBox(height: 8),
             TextField(controller: urlInput),
-            SizedBox(height: 55),
+            const SizedBox(height: 48),
             FilledButton(
               onPressed: () => {onSubmit(context)},
               style: ButtonStyle(minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56))),
@@ -49,6 +51,7 @@ class _TokenInputScreenState extends State<TokenInputScreen> {
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
               ),
             ),
+            const SizedBox(height: 32),
           ],
         ),
       ),
