@@ -12,20 +12,12 @@ class ProfileCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.04),
-              offset: Offset(0, 1),
-              blurRadius: 12,
-            ),
-          ],
+          boxShadow: [BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.04), offset: Offset(0, 1), blurRadius: 12)],
         ),
         child: Card(
           color: theme.colorScheme.surface,
           elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Padding(padding: EdgeInsets.symmetric(vertical: 4), child: child),
         ),
       ),

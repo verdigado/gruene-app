@@ -39,10 +39,7 @@ class PushNotificationsScreen extends StatelessWidget {
                 return [
                   Padding(
                     padding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
-                    child: Text(
-                      group.name,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                    child: Text(group.name, style: Theme.of(context).textTheme.titleMedium),
                   ),
                   ...group.topics.entries.map((entry) {
                     return ToggleListItem(

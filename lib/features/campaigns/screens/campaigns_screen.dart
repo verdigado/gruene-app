@@ -24,11 +24,8 @@ class CampaignsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TabScreen(
-      appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(
-        title: t.campaigns.campaigns,
-        appBarAction: RefreshButton(),
-        tabBar: tabBar,
-      ),
+      appBarBuilder: (PreferredSizeWidget tabBar) =>
+          MainAppBar(title: t.campaigns.campaigns, appBarAction: RefreshButton(), tabBar: tabBar),
       tabs: campaignTabs,
       scrollableBody: false,
     );

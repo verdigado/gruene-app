@@ -39,10 +39,7 @@ class ProfileImageUploader extends StatelessWidget {
           toolbarWidgetColor: theme.colorScheme.surface,
           lockAspectRatio: true,
         ),
-        IOSUiSettings(
-          title: t.profiles.profileImage.crop,
-          aspectRatioLockEnabled: true,
-        ),
+        IOSUiSettings(title: t.profiles.profileImage.crop, aspectRatioLockEnabled: true),
       ],
     );
 
@@ -60,10 +57,7 @@ class ProfileImageUploader extends StatelessWidget {
     onProcessing(true);
 
     try {
-      final response = await updateProfileImage(
-        profileId: profile.id,
-        profileImage: multipartFile,
-      );
+      final response = await updateProfileImage(profileId: profile.id, profileImage: multipartFile);
 
       onProfileUpdated(response);
     } catch (error) {
@@ -87,9 +81,7 @@ class ProfileImageUploader extends StatelessWidget {
       ),
       child: Text(
         t.profiles.profileImage.update,
-        style: theme.textTheme.bodyMedium!.apply(
-          decoration: TextDecoration.underline,
-        ),
+        style: theme.textTheme.bodyMedium!.apply(decoration: TextDecoration.underline),
       ),
     );
   }

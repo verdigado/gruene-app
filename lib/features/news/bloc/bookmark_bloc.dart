@@ -11,37 +11,21 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
     on<RemoveBookmark>(_onRemoveBookmark);
   }
 
-  Future<void> _onLoadBookmarks(
-    LoadBookmarks event,
-    Emitter<BookmarkState> emit,
-  ) async {
+  Future<void> _onLoadBookmarks(LoadBookmarks event, Emitter<BookmarkState> emit) async {
     emit(state.copyWith(isLoading: true, error: null));
     try {
       final bookmarks = await fetchBookmarks();
-      final newsBookmarks = bookmarks
-          .where(
-            (b) => b.type == BookmarkType.news,
-          )
-          .toList();
+      final newsBookmarks = bookmarks.where((b) => b.type == BookmarkType.news).toList();
 
       final bookmarkedIds = newsBookmarks.map((b) => b.itemId).toSet();
 
-      emit(
-        state.copyWith(
-          isLoading: false,
-          bookmarks: newsBookmarks,
-          bookmarkedNewsIds: bookmarkedIds,
-        ),
-      );
+      emit(state.copyWith(isLoading: false, bookmarks: newsBookmarks, bookmarkedNewsIds: bookmarkedIds));
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
-  Future<void> _onAddBookmark(
-    AddBookmark event,
-    Emitter<BookmarkState> emit,
-  ) async {
+  Future<void> _onAddBookmark(AddBookmark event, Emitter<BookmarkState> emit) async {
     emit(state.copyWith(isLoading: true, error: null));
     try {
       await createBookmark(event.newsId);
@@ -52,10 +36,7 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
     }
   }
 
-  Future<void> _onRemoveBookmark(
-    RemoveBookmark event,
-    Emitter<BookmarkState> emit,
-  ) async {
+  Future<void> _onRemoveBookmark(RemoveBookmark event, Emitter<BookmarkState> emit) async {
     emit(state.copyWith(isLoading: true, error: null));
     try {
       await deleteBookmark(event.bookmarkId);
@@ -64,13 +45,7 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
 
       final newBookmarks = state.bookmarks.where((b) => b.id != event.bookmarkId).toList();
 
-      emit(
-        state.copyWith(
-          isLoading: false,
-          bookmarks: newBookmarks,
-          bookmarkedNewsIds: newBookmarkedIds,
-        ),
-      );
+      emit(state.copyWith(isLoading: false, bookmarks: newBookmarks, bookmarkedNewsIds: newBookmarkedIds));
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }

@@ -80,9 +80,7 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
 
     return Card(
       color: theme.colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       shadowColor: ThemeColors.textDisabled,
       child: SizedBox(
         height: cardHeight,
@@ -95,18 +93,13 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
                 children: [
                   Text(
                     myPoster.status,
-                    style: theme.textTheme.bodyMedium!.apply(
-                      fontWeightDelta: 3,
-                      color: ThemeColors.textWarning,
-                    ),
+                    style: theme.textTheme.bodyMedium!.apply(fontWeightDelta: 3, color: ThemeColors.textWarning),
                   ),
                   GestureDetector(
                     onTap: () => _editPoster(myPoster),
                     child: Text(
                       t.common.actions.edit,
-                      style: theme.textTheme.bodyMedium!.apply(
-                        decoration: TextDecoration.underline,
-                      ),
+                      style: theme.textTheme.bodyMedium!.apply(decoration: TextDecoration.underline),
                     ),
                   ),
                 ],
@@ -118,9 +111,7 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
                     Container(
                       height: imageHeight,
                       width: 82,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
                       clipBehavior: Clip.hardEdge,
                       child: FittedBox(
                         fit: BoxFit.cover,
@@ -144,9 +135,7 @@ class _MyPosterListScreenState extends State<MyPosterListScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 12,
-                    ),
+                    SizedBox(width: 12),
                     SizedBox(
                       height: imageHeight,
                       width: addressBoxWidth,

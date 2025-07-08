@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 
 class AddressFieldDetail extends StatelessWidget {
-  const AddressFieldDetail({
-    super.key,
-    required this.street,
-    required this.houseNumber,
-  });
+  const AddressFieldDetail({super.key, required this.street, required this.houseNumber});
 
   final String street;
   final String houseNumber;
@@ -22,18 +18,10 @@ class AddressFieldDetail extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text(
-              street,
-              textAlign: TextAlign.right,
-              style: addressTextStyle,
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: Text(street, textAlign: TextAlign.right, style: addressTextStyle, overflow: TextOverflow.ellipsis),
           ),
           SizedBox(width: 3),
-          Text(
-            houseNumber,
-            style: addressTextStyle,
-          ),
+          Text(houseNumber, style: addressTextStyle),
         ],
       ),
     );

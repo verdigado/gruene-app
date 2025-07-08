@@ -16,11 +16,7 @@ class CampaignActionDatabase {
   Future<Database> _initDatabase() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'campaign_action_db.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDatabase,
-    );
+    return await openDatabase(path, version: 1, onCreate: _createDatabase);
   }
 
   Future<void> _createDatabase(Database db, _) async {
@@ -94,11 +90,7 @@ class CampaignActionDatabase {
 
   Future<int> delete(int id) async {
     final db = await instance.database;
-    return await db.delete(
-      CampaignActionFields.tableName,
-      where: '${CampaignActionFields.id} = ?',
-      whereArgs: [id],
-    );
+    return await db.delete(CampaignActionFields.tableName, where: '${CampaignActionFields.id} = ?', whereArgs: [id]);
   }
 
   Future<void> close() async {

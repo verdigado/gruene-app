@@ -44,9 +44,6 @@ extension PosterUpdateModelParsing on PosterUpdateModel {
       }
     }
 
-    return newPosterUpdate.copyWith(
-      deletedPhotoIds: deletedPhotoIdsConsolidated,
-      newPhotos: newPhotosConsolidated,
-    );
+    return newPosterUpdate.copyWith(deletedPhotoIds: deletedPhotoIdsConsolidated, newPhotos: newPhotosConsolidated);
   }
 }

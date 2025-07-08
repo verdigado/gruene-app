@@ -5,6 +5,7 @@ analyzer:
     - build/**
     - lib/swagger_generated_code/**
     - lib/**.g.dart
+    - packages/**
   errors:
     always_use_package_imports: error
     directives_ordering: error

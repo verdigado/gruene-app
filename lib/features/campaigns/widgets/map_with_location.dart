@@ -33,8 +33,11 @@ class MapWithLocation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: determinePosition(context, requestIfNotGranted: false, preferLastKnownPosition: true)
-          .timeout(const Duration(milliseconds: 400), onTimeout: () => RequestedPosition.unknown()),
+      future: determinePosition(
+        context,
+        requestIfNotGranted: false,
+        preferLastKnownPosition: true,
+      ).timeout(const Duration(milliseconds: 400), onTimeout: () => RequestedPosition.unknown()),
       builder: (context, AsyncSnapshot<RequestedPosition> snapshot) {
         if (!snapshot.hasData || snapshot.hasError) {
           return const Center();

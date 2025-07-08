@@ -13,10 +13,6 @@ extension FlyerCreateModelParsing on FlyerCreateModel {
   }
 
   MarkerItemModel transformToVirtualMarkerItem(int temporaryId) {
-    return MarkerItemModel.virtual(
-      id: temporaryId,
-      status: PoiServiceType.flyer.name,
-      location: location,
-    );
+    return MarkerItemModel.virtual(id: temporaryId, status: PoiServiceType.flyer.name, location: location);
   }
 }

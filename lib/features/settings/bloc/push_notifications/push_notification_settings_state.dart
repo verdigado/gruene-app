@@ -4,10 +4,7 @@ class PushNotificationTopicGroup {
   final String name;
   final Map<PushNotificationTopic, bool> topics;
 
-  const PushNotificationTopicGroup({
-    required this.name,
-    required this.topics,
-  });
+  const PushNotificationTopicGroup({required this.name, required this.topics});
 }
 
 class PushNotificationSettingsState {
@@ -15,19 +12,10 @@ class PushNotificationSettingsState {
   final bool enabled;
   final Map<PushNotificationTopic, bool> topics;
 
-  const PushNotificationSettingsState({
-    this.enabled = true,
-    this.topics = const {},
-  });
+  const PushNotificationSettingsState({this.enabled = true, this.topics = const {}});
 
-  PushNotificationSettingsState copyWith({
-    bool? enabled,
-    final Map<PushNotificationTopic, bool>? topics,
-  }) {
-    return PushNotificationSettingsState(
-      enabled: enabled ?? this.enabled,
-      topics: topics ?? this.topics,
-    );
+  PushNotificationSettingsState copyWith({bool? enabled, final Map<PushNotificationTopic, bool>? topics}) {
+    return PushNotificationSettingsState(enabled: enabled ?? this.enabled, topics: topics ?? this.topics);
   }
 
   List<PushNotificationTopicGroup> getTopicGroups() {

@@ -10,10 +10,7 @@ class TeamsScreen extends StatelessWidget {
     return Placeholder(
       color: Colors.red,
       child: Center(
-        child: Text(
-          t.campaigns.team.label,
-          style: TextStyle(fontSize: 20, color: ThemeColors.primary),
-        ),
+        child: Text(t.campaigns.team.label, style: TextStyle(fontSize: 20, color: ThemeColors.primary)),
       ),
     );
   }

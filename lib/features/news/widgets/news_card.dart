@@ -12,10 +12,7 @@ const double imageHeight = 160;
 class NewsCard extends StatelessWidget {
   final NewsModel news;
 
-  const NewsCard({
-    super.key,
-    required this.news,
-  });
+  const NewsCard({super.key, required this.news});
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +63,7 @@ class NewsCard extends StatelessWidget {
                             visualDensity: VisualDensity(vertical: -4),
                             backgroundColor: theme.colorScheme.surface,
                             shape: StadiumBorder(),
-                            side: BorderSide(
-                              color: theme.colorScheme.primary,
-                            ),
+                            side: BorderSide(color: theme.colorScheme.primary),
                           ),
                         ),
                     ],
@@ -84,10 +79,7 @@ class NewsCard extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: FractionalOffset.topCenter,
                   end: FractionalOffset.bottomCenter,
-                  colors: [
-                    ThemeColors.text.withOpacity(0.5),
-                    Colors.transparent,
-                  ],
+                  colors: [ThemeColors.text.withValues(alpha: 0.5), Colors.transparent],
                 ),
               ),
             ),
@@ -97,9 +89,7 @@ class NewsCard extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => context.pushNested(news.id, extra: news),
-                  customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
             ),

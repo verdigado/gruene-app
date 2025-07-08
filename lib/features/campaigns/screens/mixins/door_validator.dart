@@ -13,9 +13,7 @@ mixin DoorValidator {
       MotionToast.error(
         description: Text(
           t.campaigns.door.noDoorsWarning,
-          style: theme.textTheme.labelMedium!.apply(
-            color: ThemeColors.background,
-          ),
+          style: theme.textTheme.labelMedium!.apply(color: ThemeColors.background),
         ),
       ).show(context);
       return null;

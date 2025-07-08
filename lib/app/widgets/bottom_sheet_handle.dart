@@ -10,10 +10,7 @@ class BottomSheetHandle extends StatelessWidget {
       child: Container(
         width: 48,
         height: 6,
-        decoration: BoxDecoration(
-          color: ThemeColors.textLight,
-          borderRadius: BorderRadius.all(Radius.circular(18)),
-        ),
+        decoration: BoxDecoration(color: ThemeColors.textLight, borderRadius: BorderRadius.all(Radius.circular(18))),
       ),
     );
   }

@@ -45,23 +45,10 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
   @override
   void initState() {
     doorsFilter = [
-      FilterChipModel(
-        text: t.campaigns.filters.visited_areas,
-        isEnabled: false,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.routes,
-        isEnabled: false,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.focusAreas,
-        isEnabled: true,
-        stateChanged: onFocusAreaStateChanged,
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.experience_areas,
-        isEnabled: false,
-      ),
+      FilterChipModel(text: t.campaigns.filters.visited_areas, isEnabled: false),
+      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
+      FilterChipModel(text: t.campaigns.filters.focusAreas, isEnabled: true, stateChanged: onFocusAreaStateChanged),
+      FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
     ];
     super.initState();
   }
@@ -85,14 +72,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
     return Column(
       children: [
         FilterChipCampaign(doorsFilter, doorsExclusions),
-        Expanded(
-          child: Stack(
-            children: [
-              mapContainer,
-              ...getSearchWidgets(context),
-            ],
-          ),
-        ),
+        Expanded(child: Stack(children: [mapContainer, ...getSearchWidgets(context)])),
       ],
     );
   }
@@ -107,18 +87,14 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
   }
 
   Map<String, String> _getMarkerImages() {
-    return {
-      'door': CampaignConstants.doorAssetName,
-    };
+    return {'door': CampaignConstants.doorAssetName};
   }
 
   void _onFeatureClick(dynamic rawFeature) async {
     final feature = rawFeature as Map<String, dynamic>;
 
     getPoiDetail(DoorDetailModel door) {
-      return DoorsDetail(
-        poi: door,
-      );
+      return DoorsDetail(poi: door);
     }
 
     getEditPoiWidget(DoorDetailModel door) {
@@ -149,9 +125,6 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
   }
 
   DoorsAddScreen _getAddScreen(LatLng location, AddressModel? address, Object? additionalData) {
-    return DoorsAddScreen(
-      location: location,
-      address: address!,
-    );
+    return DoorsAddScreen(location: location, address: address!);
   }
 }

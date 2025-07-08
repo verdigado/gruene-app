@@ -5,10 +5,7 @@ import 'package:gruene_app/i18n/translations.g.dart';
 class SaveCancelOnCreateWidget extends StatelessWidget {
   final void Function(BuildContext) onSave;
 
-  const SaveCancelOnCreateWidget({
-    super.key,
-    required this.onSave,
-  });
+  const SaveCancelOnCreateWidget({super.key, required this.onSave});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +25,7 @@ class SaveCancelOnCreateWidget extends StatelessWidget {
                 ),
                 child: Text(
                   t.common.actions.cancel,
-                  style: theme.textTheme.titleMedium?.apply(
-                    color: ThemeColors.primary,
-                  ),
+                  style: theme.textTheme.titleMedium?.apply(color: ThemeColors.primary),
                 ),
                 onPressed: () => Navigator.maybePop(context),
               ),
@@ -47,9 +42,7 @@ class SaveCancelOnCreateWidget extends StatelessWidget {
                 ),
                 child: Text(
                   t.common.actions.save,
-                  style: theme.textTheme.titleMedium?.apply(
-                    color: ThemeColors.background,
-                  ),
+                  style: theme.textTheme.titleMedium?.apply(color: ThemeColors.background),
                 ),
                 onPressed: () => onSave(context),
               ),

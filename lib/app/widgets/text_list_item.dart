@@ -33,7 +33,8 @@ class TextListItem extends StatelessWidget {
         trailing: SizedBox(
           height: 24,
           width: 24,
-          child: trailing ??
+          child:
+              trailing ??
               Icon(
                 isExternal ? Icons.open_in_browser_outlined : Icons.chevron_right_outlined,
                 color: theme.disabledColor,

@@ -10,14 +10,8 @@ class LocationServiceDialog extends StatelessWidget {
       title: Text(t.location.activateLocationAccess),
       content: Text(t.location.activateLocationAccessSettings),
       actions: [
-        TextButton(
-          child: Text(t.common.actions.cancel),
-          onPressed: () => Navigator.of(context).pop(false),
-        ),
-        TextButton(
-          child: Text(t.common.actions.openSettings),
-          onPressed: () => Navigator.of(context).pop(true),
-        ),
+        TextButton(child: Text(t.common.actions.cancel), onPressed: () => Navigator.of(context).pop(false)),
+        TextButton(child: Text(t.common.actions.openSettings), onPressed: () => Navigator.of(context).pop(true)),
       ],
     );
   }
@@ -42,14 +36,8 @@ class RationaleDialog extends StatelessWidget {
         ],
       ),
       actions: [
-        TextButton(
-          child: Text(t.location.grantPermission),
-          onPressed: () => Navigator.of(context).pop(true),
-        ),
-        TextButton(
-          child: Text(t.common.actions.cancel),
-          onPressed: () => Navigator.of(context).pop(false),
-        ),
+        TextButton(child: Text(t.location.grantPermission), onPressed: () => Navigator.of(context).pop(true)),
+        TextButton(child: Text(t.common.actions.cancel), onPressed: () => Navigator.of(context).pop(false)),
       ],
     );
   }

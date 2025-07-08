@@ -16,6 +16,11 @@ steps:
       directory: android
   - install_gradle_dependencies
   - run:
+      # The following command is necessary since Ninja is required to build the app for android but is not included in cimg/android
+      # https://github.com/CircleCI-Public/cimg-android/issues/129
+      name: Install Ninja
+      command: sudo apt-get update && sudo apt-get install -y ninja-build
+  - run:
       name: '[FL] Prepare Android Keystore'
       command: bundle exec fastlane android keystore
       working_directory: android

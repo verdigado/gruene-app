@@ -121,20 +121,12 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
         ? CameraPosition(target: userLocation, zoom: (appSettings.campaign.lastZoomLevel ?? zoomLevelUserLocation))
         : CameraPosition(target: defaultStartLocation, zoom: zoomLevelUserOverview);
 
-    Widget addMarker = SizedBox(
-      height: 0,
-      width: 0,
-    );
+    Widget addMarker = SizedBox(height: 0, width: 0);
     if (popups.isEmpty && _showAddMarker & !_isInFocusMode) {
       addMarker = Center(
         child: Container(
-          padding: EdgeInsets.only(
-            bottom: 65, /* height of the add_marker icon to position it exactly on the middle */
-          ),
-          child: GestureDetector(
-            onTap: _onIconTap,
-            child: SvgPicture.asset(CampaignConstants.addMarkerAssetName),
-          ),
+          padding: EdgeInsets.only(bottom: 65 /* height of the add_marker icon to position it exactly on the middle */),
+          child: GestureDetector(onTap: _onIconTap, child: SvgPicture.asset(CampaignConstants.addMarkerAssetName)),
         ),
       );
     }
@@ -173,10 +165,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
               iconSize: 20,
               icon: const Icon(Icons.info_outline),
               onPressed: () {
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => const AttributionDialog(),
-                );
+                showDialog<void>(context: context, builder: (context) => const AttributionDialog());
               },
             ),
           ),
@@ -289,14 +278,8 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
   }
 
   @override
-  Future<dynamic> getClosestFeaturesInScreen(
-    Point<double> point,
-    List<String> layers,
-  ) async {
-    var features = await getFeaturesInScreen(
-      point,
-      layers,
-    );
+  Future<dynamic> getClosestFeaturesInScreen(Point<double> point, List<String> layers) async {
+    var features = await getFeaturesInScreen(point, layers);
     if (features.isNotEmpty) {
       final controller = _controller!;
       final targetLatLng = await controller.toLatLng(point);
@@ -307,10 +290,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
   }
 
   @override
-  Future<List<dynamic>> getFeaturesInScreen(
-    Point<double> point,
-    List<String> layers,
-  ) async {
+  Future<List<dynamic>> getFeaturesInScreen(Point<double> point, List<String> layers) async {
     final controller = _controller!;
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
 
@@ -374,11 +354,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     await _controller!.addSymbolLayer(
       '${CampaignConstants.markerSourceName}_selected',
       '${CampaignConstants.markerLayerName}_selected',
-      const SymbolLayerProperties(
-        iconImage: ['get', 'status_type'],
-        iconSize: 3,
-        iconAllowOverlap: true,
-      ),
+      const SymbolLayerProperties(iconImage: ['get', 'status_type'], iconSize: 3, iconAllowOverlap: true),
       enableInteraction: false,
       minzoom: minZoomMarkerItems,
     );
@@ -403,17 +379,11 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     Future<void> Function(Map<String, dynamic> data) setLayerData;
     if (sourceIds.contains(sourceId)) {
       setLayerData = (data) async {
-        await _controller!.setGeoJsonSource(
-          sourceId,
-          data,
-        );
+        await _controller!.setGeoJsonSource(sourceId, data);
       };
     } else {
       setLayerData = (data) async {
-        await _controller!.addGeoJsonSource(
-          sourceId,
-          data,
-        );
+        await _controller!.addGeoJsonSource(sourceId, data);
       };
     }
     final data = MarkerItemHelper.transformMapLayerDataToGeoJson(_mapLayerManager.getMapLayerData(sourceId)).toJson();
@@ -462,12 +432,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     await moveMapIfItemIsOnBorder(coord, desiredSize);
     final point = await getScreenPointFromLatLng(coord);
 
-    _showPopOver(
-      point,
-      widget,
-      onEditItemClicked,
-      desiredSize: desiredSize,
-    );
+    _showPopOver(point, widget, onEditItemClicked, desiredSize: desiredSize);
   }
 
   @override
@@ -480,17 +445,11 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     final coord = MapHelper.extractLatLngFromFeature(feature);
     await moveMapIfItemIsOnBorder(coord, Size(150, 150));
     // set opacity of marker layer
-    await _controller!.setLayerProperties(
-      CampaignConstants.markerLayerName,
-      SymbolLayerProperties(iconOpacity: 0.2),
-    );
+    await _controller!.setLayerProperties(CampaignConstants.markerLayerName, SymbolLayerProperties(iconOpacity: 0.2));
     // set data for '_selected layer'
     var featureObject = turf.Feature<turf.Point>.fromJson(feature);
     turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
-    await _controller!.setGeoJsonSource(
-      '${CampaignConstants.markerSourceName}_selected',
-      collection.toJson(),
-    );
+    await _controller!.setGeoJsonSource('${CampaignConstants.markerSourceName}_selected', collection.toJson());
   }
 
   @override
@@ -498,10 +457,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     setState(() {
       _isInFocusMode = false;
     });
-    await _controller!.setLayerProperties(
-      CampaignConstants.markerLayerName,
-      SymbolLayerProperties(iconOpacity: 1),
-    );
+    await _controller!.setLayerProperties(CampaignConstants.markerLayerName, SymbolLayerProperties(iconOpacity: 1));
     await _controller!.setGeoJsonSource(
       '${CampaignConstants.markerSourceName}_selected',
       turf.FeatureCollection<turf.Point>(features: []).toJson(),
@@ -542,10 +498,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
 
     if (newLongitude != null || newLatitude != null) {
       // find new target and animate camera
-      final newTarget = LatLng(
-        newLatitude ?? centerCoord.latitude,
-        newLongitude ?? centerCoord.longitude,
-      );
+      final newTarget = LatLng(newLatitude ?? centerCoord.latitude, newLongitude ?? centerCoord.longitude);
       // ignore: unused_local_variable
       await _controller!.animateCamera(
         CameraUpdate.newLatLng(newTarget),
@@ -571,9 +524,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
       popups.add(
         GestureDetector(
           behavior: HitTestBehavior.translucent,
-          child: Container(
-            color: ThemeColors.secondary.withAlpha(30),
-          ),
+          child: Container(color: ThemeColors.secondary.withAlpha(30)),
           onTap: () {
             setState(() {
               popups.clear();
@@ -591,10 +542,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
               Container(
                 width: popupWidth.toDouble(),
                 height: popupHeight.toDouble() + 5,
-                decoration: BoxDecoration(
-                  color: ThemeColors.background,
-                  borderRadius: BorderRadius.circular(5),
-                ),
+                decoration: BoxDecoration(color: ThemeColors.background, borderRadius: BorderRadius.circular(5)),
                 padding: EdgeInsets.only(top: 3, left: 5, right: 5),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -610,18 +558,13 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                                 popups.clear();
                               });
                             },
-                            child: Icon(
-                              Icons.close,
-                              size: 14,
-                            ),
+                            child: Icon(Icons.close, size: 14),
                           ),
                           GestureDetector(
                             onTap: () => onTapPopup(onEditItemClicked),
                             child: Container(
                               decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(width: 1.5, color: ThemeColors.textDark),
-                                ),
+                                border: Border(bottom: BorderSide(width: 1.5, color: ThemeColors.textDark)),
                               ),
                               child: Text(
                                 t.common.actions.edit,
@@ -650,11 +593,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
               Center(
                 child: ClipPath(
                   clipper: MyTriangle(),
-                  child: Container(
-                    color: ThemeColors.background,
-                    width: 15,
-                    height: heightArrowTriangle,
-                  ),
+                  child: Container(color: ThemeColors.background, width: 15, height: heightArrowTriangle),
                 ),
               ),
             ],
@@ -736,11 +675,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                     ),
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.info,
-                          color: ThemeColors.textCancel,
-                          size: 24,
-                        ),
+                        Icon(Icons.info, color: ThemeColors.textCancel, size: 24),
                         SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -801,10 +736,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: Text(
-                      t.common.multiSelect(count: features.length),
-                      style: theme.textTheme.titleSmall,
-                    ),
+                    child: Text(t.common.multiSelect(count: features.length), style: theme.textTheme.titleSmall),
                   ),
                   SizedBox(height: 6),
                   ConstrainedBox(
@@ -845,9 +777,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
           onTap: () => Navigator.maybePop(context, feature),
           child: Card(
             color: theme.colorScheme.surface,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
             shadowColor: ThemeColors.textDisabled,
             child: InkWell(
               child: Container(
@@ -864,10 +794,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                     Column(
                       children: [
                         if (isDuplicate)
-                          Text(
-                            t.campaigns.map.identicalPositions,
-                            style: TextStyle(color: ThemeColors.textWarning),
-                          ),
+                          Text(t.campaigns.map.identicalPositions, style: TextStyle(color: ThemeColors.textWarning)),
                         Text(
                           '${poi.address.street} ${poi.address.houseNumber}\n${poi.address.zipCode} ${poi.address.city}',
                           style: theme.textTheme.labelMedium!.copyWith(color: ThemeColors.text),
@@ -889,14 +816,7 @@ class MyTriangle extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
-    path.addPolygon(
-      [
-        Offset(0, 0),
-        Offset(size.width / 2, size.height),
-        Offset(size.width, 0),
-      ],
-      true,
-    );
+    path.addPolygon([Offset(0, 0), Offset(size.width / 2, size.height), Offset(size.width, 0)], true);
     return path;
   }
 

@@ -31,7 +31,7 @@ enum LocationStatus {
   /// Requesting the location is not supported by this device. On Android
   /// the reason for this could be that the location service is not
   /// enabled.
-  notSupported
+  notSupported,
 }
 
 extension GeolocatorExtension on LocationPermission {
@@ -63,9 +63,7 @@ class RequestedPosition {
 
   RequestedPosition(this.position, this.locationStatus);
 
-  RequestedPosition.unknown()
-      : position = null,
-        locationStatus = null;
+  RequestedPosition.unknown() : position = null, locationStatus = null;
 
   bool isAvailable() {
     return position != null;
@@ -85,10 +83,7 @@ Future<RequestedPosition> determinePosition(
 }) async {
   final Logger logger = Logger();
 
-  final permission = await checkAndRequestLocationPermission(
-    context,
-    requestIfNotGranted: requestIfNotGranted,
-  );
+  final permission = await checkAndRequestLocationPermission(context, requestIfNotGranted: requestIfNotGranted);
   if (!permission.isPermissionGranted()) {
     return RequestedPosition(null, permission);
   }
@@ -125,12 +120,15 @@ Future<LocationStatus> checkAndRequestLocationPermission(
   BuildContext context, {
   bool requestIfNotGranted = true,
 }) async {
-  final serviceEnabled =
-      Config.androidFloss ? await isNonGoogleLocationServiceEnabled() : await Geolocator.isLocationServiceEnabled();
+  final serviceEnabled = Config.androidFloss
+      ? await isNonGoogleLocationServiceEnabled()
+      : await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
     if (requestIfNotGranted && context.mounted) {
-      final bool? result =
-          await showDialog<bool>(context: context, builder: (context) => const LocationServiceDialog());
+      final bool? result = await showDialog<bool>(
+        context: context,
+        builder: (context) => const LocationServiceDialog(),
+      );
       if (result == true) {
         await Geolocator.openLocationSettings();
       }
@@ -162,10 +160,7 @@ Future<LocationStatus> checkAndRequestLocationPermission(
           );
 
           if (result == true && context.mounted) {
-            return checkAndRequestLocationPermission(
-              context,
-              requestIfNotGranted: requestIfNotGranted,
-            );
+            return checkAndRequestLocationPermission(context, requestIfNotGranted: requestIfNotGranted);
           }
         }
 

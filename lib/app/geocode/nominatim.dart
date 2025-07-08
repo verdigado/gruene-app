@@ -86,40 +86,27 @@ class Nominatim {
     assert(baseServer.scheme == 'https', 'It\'s required to have the address search on https');
 
     final notNullParameters = [lat, lon, osmType, osmId].where((e) => e != null).length;
-    assert(
-      notNullParameters == 2,
-      'Either provide lat and lon or osmType and osmId',
-    );
+    assert(notNullParameters == 2, 'Either provide lat and lon or osmType and osmId');
     assert(
       (lat != null && lon != null && osmType == null && osmId == null) ||
           (lat == null && lon == null && osmType != null && osmId != null),
       'Do not mix coordinates and OSM object',
     );
-    assert(
-      ['N', 'W', 'R', null].contains(osmType),
-      'osmType needs to be one of N, W, R',
-    );
-    assert(
-      zoom >= 0 && zoom <= 18,
-      'Zoom needs to be between 0 and 18',
-    );
+    assert(['N', 'W', 'R', null].contains(osmType), 'osmType needs to be one of N, W, R');
+    assert(zoom >= 0 && zoom <= 18, 'Zoom needs to be between 0 and 18');
 
-    final uri = Uri.https(
-      baseServer.host,
-      '${baseServer.path}/reverse',
-      {
-        'format': 'jsonv2',
-        'zoom': zoom.toString(),
-        if (lat != null) 'lat': lat.toString(),
-        if (lon != null) 'lon': lon.toString(),
-        if (osmType != null) 'osm_type': osmType,
-        if (osmId != null) 'osm_id': osmId.toString(),
-        if (addressDetails) 'addressdetails': '1',
-        if (extraTags) 'extratags': '1',
-        if (nameDetails) 'namedetails': '1',
-        if (language != null) 'accept-language': language,
-      },
-    );
+    final uri = Uri.https(baseServer.host, '${baseServer.path}/reverse', {
+      'format': 'jsonv2',
+      'zoom': zoom.toString(),
+      if (lat != null) 'lat': lat.toString(),
+      if (lon != null) 'lon': lon.toString(),
+      if (osmType != null) 'osm_type': osmType,
+      if (osmId != null) 'osm_id': osmId.toString(),
+      if (addressDetails) 'addressdetails': '1',
+      if (extraTags) 'extratags': '1',
+      if (nameDetails) 'namedetails': '1',
+      if (language != null) 'accept-language': language,
+    });
     final response = await http.get(uri);
     final data = json.decode(response.body) as Map<String, dynamic>;
     if (data['error'] != null) {
@@ -207,34 +194,30 @@ class Nominatim {
     }
     assert(limit > 0, 'Limit has to be greater than zero');
     assert(limit <= 50, 'Limit has to be smaller or equals than 50');
-    final uri = Uri.https(
-      baseServer.host,
-      '${baseServer.path}/search',
-      {
-        'format': 'jsonv2',
-        if (query != null) 'q': query,
-        if (street != null) 'street': street,
-        if (city != null) 'city': city,
-        if (county != null) 'county': county,
-        if (state != null) 'state': state,
-        if (country != null) 'country': country,
-        if (postalCode != null) 'postalcode': postalCode,
-        if (layer != null) 'layer': layer,
-        if (addressDetails) 'addressdetails': '1',
-        if (extraTags) 'extratags': '1',
-        if (nameDetails) 'namedetails': '1',
-        if (bounded) 'bounded': '1',
-        if (dedupe) 'dedupe': '1',
-        if (language != null) 'accept-language': language,
-        if (countryCodes != null && countryCodes.isNotEmpty) 'countrycodes': countryCodes.join(','),
-        if (excludePlaceIds != null && excludePlaceIds.isNotEmpty) 'exclude_place_ids': excludePlaceIds.join(','),
-        if (limit != 10) 'limit': limit.toString(),
-        if (viewBox != null)
-          'viewbox':
-              '${viewBox.westLongitude},${viewBox.southLatitude},${viewBox.eastLongitude},${viewBox.northLatitude}',
-        if (viewBox != null) 'bounded': '1',
-      },
-    );
+    final uri = Uri.https(baseServer.host, '${baseServer.path}/search', {
+      'format': 'jsonv2',
+      if (query != null) 'q': query,
+      if (street != null) 'street': street,
+      if (city != null) 'city': city,
+      if (county != null) 'county': county,
+      if (state != null) 'state': state,
+      if (country != null) 'country': country,
+      if (postalCode != null) 'postalcode': postalCode,
+      if (layer != null) 'layer': layer,
+      if (addressDetails) 'addressdetails': '1',
+      if (extraTags) 'extratags': '1',
+      if (nameDetails) 'namedetails': '1',
+      if (bounded) 'bounded': '1',
+      if (dedupe) 'dedupe': '1',
+      if (language != null) 'accept-language': language,
+      if (countryCodes != null && countryCodes.isNotEmpty) 'countrycodes': countryCodes.join(','),
+      if (excludePlaceIds != null && excludePlaceIds.isNotEmpty) 'exclude_place_ids': excludePlaceIds.join(','),
+      if (limit != 10) 'limit': limit.toString(),
+      if (viewBox != null)
+        'viewbox':
+            '${viewBox.westLongitude},${viewBox.southLatitude},${viewBox.eastLongitude},${viewBox.northLatitude}',
+      if (viewBox != null) 'bounded': '1',
+    });
     final response = await http.get(uri);
     final data = json.decode(response.body) as List<dynamic>;
     return data.map<Place>((p) => Place.fromJson(p as Map<String, dynamic>)).toList();
@@ -255,28 +238,21 @@ class Nominatim {
     final baseServer = Uri.parse(Config.addressSearchUrl);
     assert(baseServer.scheme == 'https', 'It\'s required to have the address search on https');
 
-    assert(
-      ['N', 'W', 'R', null].contains(osmType),
-      'osmType needs to be one of N, W, R',
-    );
+    assert(['N', 'W', 'R', null].contains(osmType), 'osmType needs to be one of N, W, R');
 
-    final uri = Uri.https(
-      baseServer.host,
-      '${baseServer.path}/details',
-      {
-        'format': 'json',
-        'osmtype': osmType,
-        'osmid': osmId.toString(),
-        if (className != null) 'class': className,
-        if (addressDetails) 'addressdetails': '1',
-        if (keywords) 'keywords': '1',
-        if (linkedPlaces) 'linkedplaces': '1',
-        if (hierarchy) 'hierarchy': '1',
-        if (groupHierarchy) 'group_hierarchy': '1',
-        if (polygonGeojson) 'polygon_geojson': '1',
-        if (language != null) 'accept-language': language,
-      },
-    );
+    final uri = Uri.https(baseServer.host, '${baseServer.path}/details', {
+      'format': 'json',
+      'osmtype': osmType,
+      'osmid': osmId.toString(),
+      if (className != null) 'class': className,
+      if (addressDetails) 'addressdetails': '1',
+      if (keywords) 'keywords': '1',
+      if (linkedPlaces) 'linkedplaces': '1',
+      if (hierarchy) 'hierarchy': '1',
+      if (groupHierarchy) 'group_hierarchy': '1',
+      if (polygonGeojson) 'polygon_geojson': '1',
+      if (language != null) 'accept-language': language,
+    });
     final response = await http.get(uri);
     final data = json.decode(response.body) as Map<String, dynamic>;
     return AddressDetail.fromJson(data);
@@ -307,23 +283,23 @@ class Place {
 
   // ignore: public_member_api_docs
   factory Place.fromJson(Map<String, dynamic> json) => Place(
-        placeId: json['place_id'] as int,
-        osmType: json['osm_type'] != null ? json['osm_type'] as String : null,
-        osmId: json['osm_id'] != null ? json['osm_id'] as int : null,
-        boundingBox: (json['boundingbox'] as List<dynamic>).map<String>((e) => e as String).toList(),
-        lat: double.parse(json['lat'] as String),
-        lon: double.parse(json['lon'] as String),
-        displayName: json['display_name'] as String,
-        placeRank: json['place_rank'] as int,
-        category: json['category'] as String,
-        type: json['type'] as String,
-        importance: json['importance'] is int ? (json['importance'] as int).toDouble() : json['importance'] as double,
-        icon: json['icon'] != null ? json['icon'] as String : null,
-        addressType: json['addresstype'] != null ? json['addresstype'] as String : null,
-        address: json['address'] != null ? json['address'] as Map<String, dynamic> : null,
-        extraTags: json['extratags'] != null ? json['extratags'] as Map<String, dynamic> : null,
-        nameDetails: json['namedetails'] != null ? json['namedetails'] as Map<String, dynamic> : null,
-      );
+    placeId: json['place_id'] as int,
+    osmType: json['osm_type'] != null ? json['osm_type'] as String : null,
+    osmId: json['osm_id'] != null ? json['osm_id'] as int : null,
+    boundingBox: (json['boundingbox'] as List<dynamic>).map<String>((e) => e as String).toList(),
+    lat: double.parse(json['lat'] as String),
+    lon: double.parse(json['lon'] as String),
+    displayName: json['display_name'] as String,
+    placeRank: json['place_rank'] as int,
+    category: json['category'] as String,
+    type: json['type'] as String,
+    importance: json['importance'] is int ? (json['importance'] as int).toDouble() : json['importance'] as double,
+    icon: json['icon'] != null ? json['icon'] as String : null,
+    addressType: json['addresstype'] != null ? json['addresstype'] as String : null,
+    address: json['address'] != null ? json['address'] as Map<String, dynamic> : null,
+    extraTags: json['extratags'] != null ? json['extratags'] as Map<String, dynamic> : null,
+    nameDetails: json['namedetails'] != null ? json['namedetails'] as Map<String, dynamic> : null,
+  );
 
   /// Reference to the Nominatim internal database ID
   /// See https://nominatim.org/release-docs/latest/api/Output/#place_id-is-not-a-persistent-id
@@ -382,18 +358,14 @@ class Place {
 /// A place in the nominatim system
 class AddressDetail {
   // ignore: public_member_api_docs
-  AddressDetail({
-    required this.osmType,
-    required this.osmId,
-    required this.addressTags,
-  });
+  AddressDetail({required this.osmType, required this.osmId, required this.addressTags});
 
   // ignore: public_member_api_docs
   factory AddressDetail.fromJson(Map<String, dynamic> json) => AddressDetail(
-        osmType: json['osm_type'] != null ? json['osm_type'] as String : null,
-        osmId: json['osm_id'] != null ? json['osm_id'] as int : null,
-        addressTags: json['addresstags'] != null ? json['addresstags'] as Map<String, dynamic> : null,
-      );
+    osmType: json['osm_type'] != null ? json['osm_type'] as String : null,
+    osmId: json['osm_id'] != null ? json['osm_id'] as int : null,
+    addressTags: json['addresstags'] != null ? json['addresstags'] as Map<String, dynamic> : null,
+  );
 
   /// Reference to the OSM object
   final String? osmType;
@@ -410,35 +382,13 @@ class AddressDetail {
 /// View box for searching
 class ViewBox {
   // ignore: public_member_api_docs
-  ViewBox(
-    this.northLatitude,
-    this.southLatitude,
-    this.eastLongitude,
-    this.westLongitude,
-  )   : assert(
-          northLatitude > southLatitude,
-          'north latitude has to be greater than south latitude',
-        ),
-        assert(
-          eastLongitude > westLongitude,
-          'east longitude has to be greater than west longitude',
-        ),
-        assert(
-          northLatitude <= 90,
-          'north latitude must be smaller than or equals 90',
-        ),
-        assert(
-          southLatitude >= -90,
-          'south latitude must be greater than or equals -90',
-        ),
-        assert(
-          eastLongitude <= 180,
-          'east longitude must be smaller than or equals 180',
-        ),
-        assert(
-          westLongitude >= -180,
-          'east longitude must be greater than or equals -180',
-        );
+  ViewBox(this.northLatitude, this.southLatitude, this.eastLongitude, this.westLongitude)
+    : assert(northLatitude > southLatitude, 'north latitude has to be greater than south latitude'),
+      assert(eastLongitude > westLongitude, 'east longitude has to be greater than west longitude'),
+      assert(northLatitude <= 90, 'north latitude must be smaller than or equals 90'),
+      assert(southLatitude >= -90, 'south latitude must be greater than or equals -90'),
+      assert(eastLongitude <= 180, 'east longitude must be smaller than or equals 180'),
+      assert(westLongitude >= -180, 'east longitude must be greater than or equals -180');
 
   /// North boundary of the view box
   final double northLatitude;

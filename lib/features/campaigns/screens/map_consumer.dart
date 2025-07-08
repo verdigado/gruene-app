@@ -77,9 +77,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
             future: locationAddress.timeout(const Duration(milliseconds: 1300), onTimeout: () => AddressModel()),
             builder: (context, AsyncSnapshot<AddressModel> snapshot) {
               if (!snapshot.hasData || snapshot.hasError) {
-                return Container(
-                  color: ThemeColors.secondary,
-                );
+                return Container(color: ThemeColors.secondary);
               }
 
               final address = snapshot.data;
@@ -127,18 +125,9 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       }
       await mapController.unsetFocusToMarkerItem();
     } else {
-      var popupWidget = SizedBox(
-        height: desiredSize.height,
-        width: desiredSize.width,
-        child: poiDetailWidget,
-      );
+      var popupWidget = SizedBox(height: desiredSize.height, width: desiredSize.width, child: poiDetailWidget);
       final coord = MapHelper.extractLatLngFromFeature(feature);
-      mapController.showMapPopover(
-        coord,
-        popupWidget,
-        () => _editPoi(() => getPoiEdit(poi)),
-        desiredSize,
-      );
+      mapController.showMapPopover(coord, popupWidget, () => _editPoi(() => getPoiEdit(poi)), desiredSize);
     }
   }
 
@@ -183,10 +172,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     final focusAreaBorderLayerId = '${_focusAreadId}_border';
 
     final data = MarkerItemHelper.transformMapLayerDataToGeoJson([]).toJson();
-    await mapLibreController.addGeoJsonSource(
-      _focusAreadId,
-      data,
-    );
+    await mapLibreController.addGeoJsonSource(_focusAreadId, data);
 
     await mapLibreController.addFillLayer(
       _focusAreadId,
@@ -248,10 +234,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   void showFocusAreaInfoAtPoint(Point<double> point) async {
     if (!focusAreasVisible) return;
-    var features = await mapController.getFeaturesInScreen(
-      point,
-      [focusAreaFillLayerId],
-    );
+    var features = await mapController.getFeaturesInScreen(point, [focusAreaFillLayerId]);
     if (features.isNotEmpty) {
       final feature = features.first;
       if (feature['properties'] == null) return;
@@ -293,13 +276,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
     scaffoldMessenger.removeCurrentSnackBar();
     _lastInfoSnackBar = scaffoldMessenger.showSnackBar(
-      SnackBar(
-        content: Text(
-          infoText,
-        ),
-        duration: Duration(days: 1),
-        showCloseIcon: true,
-      ),
+      SnackBar(content: Text(infoText), duration: Duration(days: 1), showCloseIcon: true),
     );
 
     _lastInfoSnackBar!.closed.then((SnackBarClosedReason reason) {
@@ -314,9 +291,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     List<Widget> showMoreInfo() {
       if (moreInfoCallback == null) return List<Widget>.empty();
       return [
-        SizedBox(
-          width: 12,
-        ),
+        SizedBox(width: 12),
         Text(
           t.campaigns.infoToast.more,
           style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDark, decoration: TextDecoration.underline),
@@ -340,12 +315,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
         onTap: tapToast,
         child: Row(
           children: [
-            Text(
-              toastText,
-              style: theme.textTheme.labelMedium!.apply(
-                color: ThemeColors.textDark,
-              ),
-            ),
+            Text(toastText, style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDark)),
             ...showMoreInfo(),
           ],
         ),

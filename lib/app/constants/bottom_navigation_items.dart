@@ -8,12 +8,8 @@ class BottomNavigationItem {
   final IconData? icon;
   final String? assetIcon;
 
-  BottomNavigationItem({
-    required this.label,
-    required this.route,
-    this.icon,
-    this.assetIcon,
-  }) : assert(icon != null || assetIcon != null);
+  BottomNavigationItem({required this.label, required this.route, this.icon, this.assetIcon})
+    : assert(icon != null || assetIcon != null);
 }
 
 final List<BottomNavigationItem> bottomNavigationItems = [

@@ -43,15 +43,13 @@ class GrueneApiPosterService extends GrueneApiCampaignsService {
         comment: posterUpdate.comment.isEmpty ? null : posterUpdate.comment,
       ),
     );
-    var updatePoiResponse =
-        handleApiError(await grueneApi.v1CampaignsPoisPoiIdPut(poiId: posterUpdate.id, body: dtoUpdate));
+    var updatePoiResponse = handleApiError(
+      await grueneApi.v1CampaignsPoisPoiIdPut(poiId: posterUpdate.id, body: dtoUpdate),
+    );
 
     for (var photoId in posterUpdate.deletedPhotoIds) {
       updatePoiResponse = handleApiError(
-        await grueneApi.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(
-          poiId: posterUpdate.id,
-          photoId: photoId,
-        ),
+        await grueneApi.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: posterUpdate.id, photoId: photoId),
       );
     }
 
@@ -90,7 +88,7 @@ class GrueneApiPosterService extends GrueneApiCampaignsService {
   }
 
   Future<List<PosterListItemModel>> getMyPosters() async => getFromApi(
-        apiRequest: (api) => api.v1CampaignsPoisSelfGet(type: poiType.transformToApiSelfGetType()),
-        map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToPosterListItem()).toList(),
-      );
+    apiRequest: (api) => api.v1CampaignsPoisSelfGet(type: poiType.transformToApiSelfGetType()),
+    map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToPosterListItem()).toList(),
+  );
 }

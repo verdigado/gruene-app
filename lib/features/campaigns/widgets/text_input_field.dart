@@ -40,24 +40,16 @@ class _TextInputFieldState extends State<TextInputField> {
         inputType = null;
       case InputFieldType.numbers:
         inputType = TextInputType.number;
-        formatters = <TextInputFormatter>[
-          FilteringTextInputFormatter.digitsOnly,
-        ];
+        formatters = <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly];
       case InputFieldType.numbers0To99:
         inputType = TextInputType.number;
-        formatters = <TextInputFormatter>[
-          NumericRangeFormatter(min: 0, max: 99),
-        ];
+        formatters = <TextInputFormatter>[NumericRangeFormatter(min: 0, max: 99)];
       case InputFieldType.numbers0To999:
         inputType = TextInputType.number;
-        formatters = <TextInputFormatter>[
-          NumericRangeFormatter(min: 0, max: 999),
-        ];
+        formatters = <TextInputFormatter>[NumericRangeFormatter(min: 0, max: 999)];
       case InputFieldType.numbers1To999:
         inputType = TextInputType.number;
-        formatters = <TextInputFormatter>[
-          NumericRangeFormatter(min: 1, max: 999),
-        ];
+        formatters = <TextInputFormatter>[NumericRangeFormatter(min: 1, max: 999)];
     }
     final theme = Theme.of(context);
     final inputBorder = switch (widget.borderColor) {
@@ -75,8 +67,10 @@ class _TextInputFieldState extends State<TextInputField> {
       child: Focus(
         onFocusChange: (value) {
           if (widget.selectAllTextOnFocus) {
-            widget.textController.selection =
-                TextSelection(baseOffset: 0, extentOffset: widget.textController.value.text.length);
+            widget.textController.selection = TextSelection(
+              baseOffset: 0,
+              extentOffset: widget.textController.value.text.length,
+            );
           }
         },
         child: TextFormField(
@@ -105,10 +99,7 @@ class NumericRangeFormatter extends TextInputFormatter {
   NumericRangeFormatter({required this.min, required this.max});
 
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.text.isEmpty) {
       return newValue;
     }

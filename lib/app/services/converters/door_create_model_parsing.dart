@@ -14,10 +14,6 @@ extension DoorCreateModelParsing on DoorCreateModel {
   }
 
   MarkerItemModel transformToVirtualMarkerItem(int temporaryId) {
-    return MarkerItemModel.virtual(
-      id: temporaryId,
-      status: PoiServiceType.door.name,
-      location: location,
-    );
+    return MarkerItemModel.virtual(id: temporaryId, status: PoiServiceType.door.name, location: location);
   }
 }

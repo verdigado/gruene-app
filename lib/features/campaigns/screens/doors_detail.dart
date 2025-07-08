@@ -15,55 +15,33 @@ class DoorsDetail extends StatelessWidget {
     final labelTextStyle = theme.textTheme.labelSmall?.apply(color: Colors.black);
     return Column(
       children: [
-        AddressFieldDetail(
-          street: poi.address.street,
-          houseNumber: poi.address.houseNumber,
-        ),
+        AddressFieldDetail(street: poi.address.street, houseNumber: poi.address.houseNumber),
         Container(
           padding: EdgeInsets.only(left: 2, right: 2, top: 6),
           child: Row(
             children: [
-              Expanded(
-                child: Text(
-                  t.campaigns.door.openedDoors,
-                  style: labelTextStyle,
-                ),
-              ),
+              Expanded(child: Text(t.campaigns.door.openedDoors, style: labelTextStyle)),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
                   padding: EdgeInsets.only(left: 6),
-                  child: Text(
-                    poi.openedDoors.toString(),
-                    style: labelTextStyle,
-                  ),
+                  child: Text(poi.openedDoors.toString(), style: labelTextStyle),
                 ),
               ),
             ],
           ),
         ),
-        Container(
-          height: 1.5,
-          color: ThemeColors.textLight,
-        ),
+        Container(height: 1.5, color: ThemeColors.textLight),
         Container(
           padding: EdgeInsets.only(left: 2, right: 2, top: 6),
           child: Row(
             children: [
-              Expanded(
-                child: Text(
-                  t.campaigns.door.closedDoors,
-                  style: labelTextStyle,
-                ),
-              ),
+              Expanded(child: Text(t.campaigns.door.closedDoors, style: labelTextStyle)),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
                   padding: EdgeInsets.only(left: 6),
-                  child: Text(
-                    poi.closedDoors.toString(),
-                    style: labelTextStyle,
-                  ),
+                  child: Text(poi.closedDoors.toString(), style: labelTextStyle),
                 ),
               ),
             ],

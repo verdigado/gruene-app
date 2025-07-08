@@ -26,9 +26,7 @@ class ContentPage extends StatelessWidget {
         alignment: alignment,
         child: SingleChildScrollView(child: child),
       ),
-      appBar: CustomAppBar(
-        title: title,
-      ),
+      appBar: CustomAppBar(title: title),
     );
   }
 }

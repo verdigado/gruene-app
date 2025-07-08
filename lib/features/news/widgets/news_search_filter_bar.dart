@@ -45,7 +45,9 @@ class NewsSearchFilterBar extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Flexible(child: CustomSearchBar(setQuery: setQuery, query: query)),
+          Flexible(
+            child: CustomSearchBar(setQuery: setQuery, query: query),
+          ),
           SizedBox(width: 8),
           RoundedIconButton(
             onPressed: () => setShowBookmarked(!showBookmarked),

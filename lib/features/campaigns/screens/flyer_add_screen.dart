@@ -73,9 +73,7 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
             padding: EdgeInsets.symmetric(vertical: 6),
             child: Row(
               children: [
-                Expanded(
-                  child: SizedBox(),
-                ),
+                Expanded(child: SizedBox()),
                 Flexible(
                   child: EnhancedWheelSlider(
                     labelText: t.campaigns.flyer.countFlyer,
@@ -95,10 +93,7 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
           SaveCancelOnCreateWidget(onSave: _onSavePressed),
           Row(
             children: [
-              Icon(
-                Icons.info_outline,
-                color: ThemeColors.background,
-              ),
+              Icon(Icons.info_outline, color: ThemeColors.background),
               SizedBox(width: 10),
               SizedBox(
                 width: mediaQuery.size.width - 82,
@@ -124,11 +119,7 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
     if (validationResult == null) return;
     Navigator.maybePop(
       context,
-      FlyerCreateModel(
-        location: widget.location,
-        address: getAddress(),
-        flyerCount: validationResult.flyerCount,
-      ),
+      FlyerCreateModel(location: widget.location, address: getAddress(), flyerCount: validationResult.flyerCount),
     );
   }
 }

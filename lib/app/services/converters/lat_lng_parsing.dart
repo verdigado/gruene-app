@@ -21,11 +21,7 @@ extension LatLngParsing on LatLng {
   }
 
   num getDistance(LatLng other) {
-    return turf.distance(
-      asPoint(),
-      other.asPoint(),
-      turf.Unit.kilometers,
-    );
+    return turf.distance(asPoint(), other.asPoint(), turf.Unit.kilometers);
   }
 
   turf.Point asPoint() {

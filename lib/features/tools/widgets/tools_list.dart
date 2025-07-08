@@ -16,21 +16,19 @@ class ToolsList extends StatelessWidget {
     final theme = Theme.of(context);
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: tools.map(
-        (tool) {
-          final icon = tool.icon;
-          final url = tool.url;
-          return SettingsCard(
-            title: tool.title,
-            subtitle: tool.shortDescription[Config.defaultLocale] as String? ?? '',
-            onPress: url != null ? () => openUrl(url, context) : null,
-            isExternal: true,
-            icon: icon == null
-                ? CustomIcon(path: 'assets/icons/sunflower.svg', color: theme.colorScheme.primary)
-                : SvgPicture.string(icon, colorFilter: ColorFilter.mode(theme.colorScheme.primary, BlendMode.srcIn)),
-          );
-        },
-      ).toList(),
+      children: tools.map((tool) {
+        final icon = tool.icon;
+        final url = tool.url;
+        return SettingsCard(
+          title: tool.title,
+          subtitle: tool.shortDescription[Config.defaultLocale] as String? ?? '',
+          onPress: url != null ? () => openUrl(url, context) : null,
+          isExternal: true,
+          icon: icon == null
+              ? CustomIcon(path: 'assets/icons/sunflower.svg', color: theme.colorScheme.primary)
+              : SvgPicture.string(icon, colorFilter: ColorFilter.mode(theme.colorScheme.primary, BlendMode.srcIn)),
+        );
+      }).toList(),
     );
   }
 }

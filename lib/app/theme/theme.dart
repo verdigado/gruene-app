@@ -52,12 +52,7 @@ class _ThemeTextStyles {
   static TextStyle displayLarge = displayMedium.copyWith(fontSize: 34, height: 1.2, letterSpacing: 0.03);
 
   static TextStyle headlineLarge = GoogleFonts.ptSans(
-    textStyle: TextStyle(
-      fontSize: 42,
-      fontWeight: FontWeight.w700,
-      height: 1,
-      letterSpacing: 0.02,
-    ),
+    textStyle: TextStyle(fontSize: 42, fontWeight: FontWeight.w700, height: 1, letterSpacing: 0.02),
   );
 
   static TextStyle titleMedium = GoogleFonts.ptSans(
@@ -95,61 +90,45 @@ class _ThemeTextStyles {
   );
 
   static TextStyle labelMedium = GoogleFonts.ptSans(
-    textStyle: TextStyle(
-      fontSize: 13,
-      fontWeight: FontWeight.w400,
-      height: 1.3,
-      letterSpacing: 0.01,
-    ),
+    textStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, height: 1.3, letterSpacing: 0.01),
   );
 
   static TextStyle labelLarge = GoogleFonts.ptSans(
-    textStyle: TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      height: 1.3,
-      letterSpacing: 0.01,
-    ),
+    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, height: 1.3, letterSpacing: 0.01),
   );
 }
 
-final WidgetStateProperty<Icon?> thumbIcon = WidgetStateProperty.resolveWith<Icon?>(
-  (Set<WidgetState> states) {
-    if (states.contains(WidgetState.selected)) {
-      return const Icon(Icons.check);
-    }
+final WidgetStateProperty<Icon?> thumbIcon = WidgetStateProperty.resolveWith<Icon?>((Set<WidgetState> states) {
+  if (states.contains(WidgetState.selected)) {
+    return const Icon(Icons.check);
+  }
+  return null;
+});
+
+final WidgetStateProperty<Color?> trackColor = WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+  if (states.contains(WidgetState.selected)) {
+    return ThemeColors.primary;
+  }
+  return ThemeColors.textDisabled;
+});
+
+final WidgetStateProperty<Color?> thumbColor = WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+  if (states.contains(WidgetState.selected)) {
     return null;
-  },
-);
-
-final WidgetStateProperty<Color?> trackColor = WidgetStateProperty.resolveWith<Color?>(
-  (Set<WidgetState> states) {
-    if (states.contains(WidgetState.selected)) {
-      return ThemeColors.primary;
-    }
-    return ThemeColors.textDisabled;
-  },
-);
-
-final WidgetStateProperty<Color?> thumbColor = WidgetStateProperty.resolveWith<Color?>(
-  (Set<WidgetState> states) {
-    if (states.contains(WidgetState.selected)) {
-      return null;
-    }
-    return ThemeColors.background;
-  },
-);
+  }
+  return ThemeColors.background;
+});
 
 final ThemeData appTheme = ThemeData.light().copyWith(
   primaryColor: ThemeColors.primary,
   disabledColor: ThemeColors.textDisabled,
   colorScheme: ThemeData.light().colorScheme.copyWith(
-        primary: ThemeColors.primary,
-        secondary: ThemeColors.secondary,
-        tertiary: ThemeColors.tertiary,
-        surface: ThemeColors.background,
-        surfaceDim: ThemeColors.backgroundSecondary,
-      ),
+    primary: ThemeColors.primary,
+    secondary: ThemeColors.secondary,
+    tertiary: ThemeColors.tertiary,
+    surface: ThemeColors.background,
+    surfaceDim: ThemeColors.backgroundSecondary,
+  ),
   textTheme: TextTheme(
     displayLarge: _ThemeTextStyles.displayLarge,
     displayMedium: _ThemeTextStyles.displayMedium,
@@ -171,7 +150,7 @@ final ThemeData appTheme = ThemeData.light().copyWith(
     unselectedLabelStyle: _ThemeTextStyles.labelSmall,
   ),
   scaffoldBackgroundColor: ThemeColors.backgroundSecondary,
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     indicatorColor: ThemeColors.primary,
     indicatorSize: TabBarIndicatorSize.tab,
     labelStyle: _ThemeTextStyles.titleMedium,
@@ -198,10 +177,6 @@ final ThemeData appTheme = ThemeData.light().copyWith(
       borderRadius: BorderRadius.all(Radius.circular(5)),
     ),
   ),
-  dividerTheme: DividerThemeData(
-    color: ThemeColors.textLight,
-    space: 0.5,
-    thickness: 0.5,
-  ),
+  dividerTheme: DividerThemeData(color: ThemeColors.textLight, space: 0.5, thickness: 0.5),
   datePickerTheme: DatePickerThemeData(rangeSelectionBackgroundColor: ThemeColors.textDisabled),
 );

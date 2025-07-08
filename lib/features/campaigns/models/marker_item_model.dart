@@ -6,15 +6,7 @@ class MarkerItemModel {
   final String? status;
   final bool isVirtual;
 
-  const MarkerItemModel({
-    required this.id,
-    required this.status,
-    required this.location,
-  }) : isVirtual = false;
+  const MarkerItemModel({required this.id, required this.status, required this.location}) : isVirtual = false;
 
-  MarkerItemModel.virtual({
-    required this.id,
-    this.status,
-    required this.location,
-  }) : isVirtual = true;
+  MarkerItemModel.virtual({required this.id, this.status, required this.location}) : isVirtual = true;
 }

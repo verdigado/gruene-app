@@ -38,16 +38,10 @@ class ProfileBaseData extends StatelessWidget {
     final theme = Theme.of(context);
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text(
-        title,
-        style: theme.textTheme.titleMedium,
-      ),
+      title: Text(title, style: theme.textTheme.titleMedium),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 8),
-        child: Text(
-          value,
-          style: theme.textTheme.bodyLarge?.apply(color: theme.colorScheme.primary),
-        ),
+        child: Text(value, style: theme.textTheme.bodyLarge?.apply(color: theme.colorScheme.primary)),
       ),
     );
   }
