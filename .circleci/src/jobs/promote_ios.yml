@@ -4,14 +4,9 @@ environment:
   FASTLANE_SKIP_UPDATE_CHECK: true
 steps:
   - checkout
-  - install_node_modules
   - install_fastlane:
       directory: ios
   - run:
       name: '[FL] Apple AppStore Promotion'
       command: bundle exec fastlane ios promote
       working_directory: ios
-  - run:
-      name: Remove Beta Flag from Github Release
-      command: yarn github-promote-release promote --platform ios --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
-      working_directory: tools

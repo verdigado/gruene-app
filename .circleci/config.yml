@@ -334,21 +334,12 @@ jobs:
             - checkout
             - prepare_workspace
             - restore_environment_variables
-            - install_node_modules
             - install_fastlane:
                 directory: android
             - run:
                 command: bundle exec fastlane android upload aab_path:attached_workspace/app-release.aab production_delivery:"<< parameters.production_delivery >>" version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
                 name: '[FL] Google PlayStore Upload'
                 working_directory: android
-            - run:
-                command: echo "export ANDROID_RELEASE_ID='$(yarn --silent github-release create android ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME} --release-notes "Release v${NEW_VERSION_NAME}+${NEW_VERSION_CODE}")'" >> ${BASH_ENV}
-                name: Create Github Release
-                working_directory: tools
-            - run:
-                command: yarn github-release-asset upload android --releaseId ${ANDROID_RELEASE_ID} --files "$(ls ~/attached_workspace/*.{apk,aab})" --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
-                name: Add Builds to Github Release
-                working_directory: tools
     deliver_ios:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
@@ -362,7 +353,6 @@ jobs:
             - checkout
             - prepare_workspace
             - restore_environment_variables
-            - install_node_modules
             - install_fastlane:
                 directory: ios
             - when:
@@ -379,13 +369,47 @@ jobs:
                         command: bundle exec fastlane ios beta_upload ipa_path:attached_workspace/app-release.ipa
                         name: '[FL] Apple Testflight Upload'
                         working_directory: ios
+    notify_promotion:
+        docker:
+            - image: cimg/android:2024.08.1-node
+        parameters:
+            production_delivery:
+                description: Whether to deliver the build to production.
+                type: boolean
+        resource_class: small
+        shell: /bin/bash -eo pipefail
+        steps:
+            - checkout
+            - install_node_modules
             - run:
-                command: echo "export IOS_RELEASE_ID='$(yarn --silent github-release create ios ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME} --release-notes "Release v${NEW_VERSION_NAME}+${NEW_VERSION_CODE}")'" >> ${BASH_ENV}
+                command: yarn github-promote-release promote --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
+                name: Remove Beta Flag from Github Release
+                working_directory: tools
+    notify_release:
+        docker:
+            - image: cimg/android:2024.08.1-node
+        parameters:
+            production_delivery:
+                description: Whether to deliver the build to production.
+                type: boolean
+        resource_class: small
+        shell: /bin/bash -eo pipefail
+        steps:
+            - checkout
+            - prepare_workspace
+            - restore_environment_variables
+            - install_node_modules
+            - run:
+                command: echo "export RELEASE_ID='$(yarn --silent github-release create ${NEW_VERSION_NAME} ${NEW_VERSION_CODE} --production-delivery << parameters.production_delivery >> --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME})'" >> ${BASH_ENV}
                 name: Create Github Release
                 working_directory: tools
             - run:
-                command: yarn github-release-asset upload ios --releaseId ${IOS_RELEASE_ID} --files "$(ls ~/attached_workspace/*.ipa)" --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
-                name: Add Build to Github Release
+                command: yarn github-release-asset upload --releaseId ${RELEASE_ID} --files "$(ls ~/attached_workspace/*.{apk,aab})" --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
+                name: Upload apks to github release
+                working_directory: tools
+            - run:
+                command: yarn github-release-asset upload --releaseId ${RELEASE_ID} --files "$(ls ~/attached_workspace/*.ipa)" --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
+                name: Upload ipa to github release
                 working_directory: tools
     promote_android:
         docker:
@@ -396,17 +420,12 @@ jobs:
         shell: /bin/bash -eo pipefail
         steps:
             - checkout
-            - install_node_modules
             - install_fastlane:
                 directory: android
             - run:
                 command: bundle exec fastlane android promote
                 name: '[FL] Google PlayStore Promotion'
                 working_directory: android
-            - run:
-                command: yarn github-promote-release promote --platform android --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
-                name: Remove Beta Flag from Github Release
-                working_directory: tools
     promote_ios:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
@@ -414,17 +433,12 @@ jobs:
             xcode: 16.1.0
         steps:
             - checkout
-            - install_node_modules
             - install_fastlane:
                 directory: ios
             - run:
                 command: bundle exec fastlane ios promote
                 name: '[FL] Apple AppStore Promotion'
                 working_directory: ios
-            - run:
-                command: yarn github-promote-release promote --platform ios --github-private-key ${GITHUB_PRIVATE_KEY} --owner ${CIRCLE_PROJECT_USERNAME} --repo ${CIRCLE_PROJECT_REPONAME}
-                name: Remove Beta Flag from Github Release
-                working_directory: tools
 parameters:
     api_triggered:
         default: false
@@ -453,7 +467,6 @@ workflows:
                     - bump_version
             - deliver_android:
                 context:
-                    - github
                     - gruene_google_playstore
                 production_delivery: false
                 requires:
@@ -465,11 +478,17 @@ workflows:
                     - bump_version
             - deliver_ios:
                 context:
-                    - github
                     - gruene_apple_appstore
                 production_delivery: false
                 requires:
                     - build_ios
+            - notify_release:
+                context:
+                    - github
+                production_delivery: false
+                requires:
+                    - deliver_android
+                    - deliver_ios
         when:
             and:
                 - << pipeline.parameters.api_triggered >>
@@ -519,7 +538,6 @@ workflows:
                     - bump_version
             - deliver_android:
                 context:
-                    - github
                     - gruene_google_playstore
                 production_delivery: true
                 requires:
@@ -531,11 +549,17 @@ workflows:
                     - bump_version
             - deliver_ios:
                 context:
-                    - github
                     - gruene_apple_appstore
                 production_delivery: true
                 requires:
                     - build_ios
+            - notify_release:
+                context:
+                    - github
+                production_delivery: true
+                requires:
+                    - deliver_android
+                    - deliver_ios
         when:
             and:
                 - << pipeline.parameters.api_triggered >>
@@ -546,12 +570,16 @@ workflows:
         jobs:
             - promote_android:
                 context:
-                    - github
                     - gruene_google_playstore
             - promote_ios:
                 context:
-                    - github
                     - gruene_apple_appstore
+            - notify_promotion:
+                context:
+                    - github
+                requires:
+                    - promote_android
+                    - promote_ios
         when:
             and:
                 - << pipeline.parameters.api_triggered >>
