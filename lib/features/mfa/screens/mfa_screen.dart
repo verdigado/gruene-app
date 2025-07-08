@@ -34,7 +34,6 @@ class MfaScreen extends StatelessWidget {
             case MfaStatus.verify:
               return const VerifyView();
             case MfaStatus.init:
-            default:
               return const _InitView();
           }
         },

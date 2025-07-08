@@ -16,7 +16,7 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
       Routes.mfaLogin,
       Routes.settings,
       StatefulShellRoute.indexedStack(
-        builder: (context, __, navigationShell) {
+        builder: (context, _, navigationShell) {
           final theme = Theme.of(context);
           return Scaffold(
             appBar: AppBar(backgroundColor: theme.colorScheme.primary, toolbarHeight: 0),
