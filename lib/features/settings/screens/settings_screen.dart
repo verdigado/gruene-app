@@ -7,6 +7,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
 import 'package:gruene_app/features/settings/widgets/version_number.dart';
@@ -22,9 +23,9 @@ class SettingsScreen extends StatelessWidget {
     final isLoggedIn = authBloc.state is Authenticated;
     return Scaffold(
       appBar: MainAppBar(title: t.settings.settings),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 32),
+      body: ExpandingScrollView(
         children: [
+          const SizedBox(height: 16),
           SectionTitle(title: t.settings.campaignsSettings),
           TextListItem(title: t.settings.inviteNonMember, onPress: () => {}, isImplemented: false),
           TextListItem(title: t.settings.offlineMaps, onPress: () => {}, isImplemented: false),
@@ -52,9 +53,10 @@ class SettingsScreen extends StatelessWidget {
             isExternal: true,
           ),
           TextListItem(title: t.settings.termsOfUse, onPress: () => openUrl(termsOfUseUrl, context), isExternal: true),
+          Spacer(),
           isLoggedIn
-              ? Container(
-                  padding: const EdgeInsets.only(top: 48),
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 24),
                   child: TextButton(
                     onPressed: () => context.read<AuthBloc>().add(LogoutRequested()),
                     child: Text(
@@ -68,6 +70,7 @@ class SettingsScreen extends StatelessWidget {
                 )
               : Container(),
           VersionNumber(),
+          const SizedBox(height: 32),
         ],
       ),
     );

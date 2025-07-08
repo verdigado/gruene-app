@@ -3,6 +3,7 @@ import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/util/setup_mfa.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -21,12 +22,13 @@ class TokenScanScreen extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.mfa.tokenScan.title),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 119, 24, 26),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: ExpandingScrollView(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(height: 72),
             Text(t.mfa.tokenScan.intro, textAlign: TextAlign.center, style: theme.textTheme.titleMedium),
-            const SizedBox(height: 73),
+            const SizedBox(height: 72),
             Center(
               child: Container(
                 width: 200,
@@ -61,7 +63,7 @@ class TokenScanScreen extends StatelessWidget {
                 style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.text, decoration: TextDecoration.underline),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
           ],
         ),
       ),
