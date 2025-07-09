@@ -160,7 +160,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
     if (!localContext.mounted) return;
 
     if (_currentPhoto == null) {
-      showNoPhotoWarning();
+      if (!(await showNoPhotoWarning())) return;
     }
 
     final reducedImage = await MediaHelper.resizeAndReduceImageFile(_currentPhoto);
