@@ -16,6 +16,15 @@ class CampaignConstants {
   static const markerSourceName = 'markers';
   static const markerLayerName = 'markerSymbols';
 
+  static const focusAreadSourceName = 'focusArea';
+  static const focusAreaBorderLayerId = 'focusArea_border';
+  static const focusAreaFillLayerId = 'focusArea_layer';
+
+  static const pollingStationSourceName = 'pollingStation';
+  static const pollingStationSelectedSourceName = 'pollingStation_selectd';
+  static const pollingStationSymbolLayerId = 'pollingStation_layer';
+  static const pollingStationSymbolSelectedLayerId = 'pollingStation_layer_selected';
+
   static Map<int, String> scoreInfos = {
     1: 'Stufe 1: wenige Plakate aufhängen, keine Flyer verteilen, keine Haustüren',
     2: 'Stufe 2: mehr Plakate aufhängen, Flyer verteilen wenn Zeit, keine Haustüren',

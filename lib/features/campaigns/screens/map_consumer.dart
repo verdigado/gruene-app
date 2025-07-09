@@ -23,6 +23,7 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:turf/turf.dart' as turf;
 
 typedef GetAdditionalDataBeforeCallback<T> = Future<T?> Function(BuildContext);
 typedef GetAddScreenCallback<T, U> = T Function(LatLng, AddressModel?, U?);
@@ -40,8 +41,6 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   bool focusAreasVisible = false;
   bool pollingStationVisible = false;
-  final String _focusAreadId = 'focusArea';
-  final String _pollingStationId = 'pollingStation';
   final _minZoomFocusAreaLayer = 11.0;
   final _minZoomPollingStationLayer = 11.0;
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _lastInfoSnackBar;
@@ -124,7 +123,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     final poiDetailWidget = getPoiDetail(poi);
     if (useBottomSheet) {
       await mapController.setFocusToMarkerItem(feature);
-      var result = await showDetailBottomSheet(poiDetailWidget);
+      var result = await showDetailBottomSheet<ModalDetailResult>(poiDetailWidget);
       if (result != null && result == ModalDetailResult.edit) {
         _editPoi(() => getPoiEdit(poi));
       }
@@ -136,15 +135,15 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
   }
 
-  Future<ModalDetailResult?> showDetailBottomSheet(Widget poiDetailWidget) async {
+  Future<U?> showDetailBottomSheet<U>(Widget detailWidget) async {
     final theme = Theme.of(context);
-    return await showModalBottomSheet<ModalDetailResult>(
+    return await showModalBottomSheet<U>(
       isScrollControlled: false,
       isDismissible: true,
       barrierColor: Colors.transparent,
       context: context,
       backgroundColor: theme.colorScheme.surface,
-      builder: (context) => poiDetailWidget,
+      builder: (context) => detailWidget,
     );
   }
 
@@ -179,14 +178,12 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   Future<void> _addFocusAreaLayers(MapLibreMapController mapLibreController) async {
-    final focusAreaBorderLayerId = '${_focusAreadId}_border';
-
     final data = <FocusArea>[].toList().transformToFeatureCollection().toJson();
-    await mapLibreController.addGeoJsonSource(_focusAreadId, data);
+    await mapLibreController.addGeoJsonSource(CampaignConstants.focusAreadSourceName, data);
 
     await mapLibreController.addFillLayer(
-      _focusAreadId,
-      focusAreaFillLayerId,
+      CampaignConstants.focusAreadSourceName,
+      CampaignConstants.focusAreaFillLayerId,
       FillLayerProperties(
         fillColor: [
           Expressions.interpolate,
@@ -203,8 +200,8 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     );
 
     await mapLibreController.addLineLayer(
-      _focusAreadId,
-      focusAreaBorderLayerId,
+      CampaignConstants.focusAreadSourceName,
+      CampaignConstants.focusAreaBorderLayerId,
       LineLayerProperties(lineColor: ThemeColors.background.toHexStringRGB(), lineWidth: 1),
       minzoom: _minZoomFocusAreaLayer,
       enableInteraction: false,
@@ -213,15 +210,19 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   Future<void> _addPollingStationLayer(MapLibreMapController mapLibreController) async {
     final data = <PollingStation>[].toList().transformToFeatureCollection().toJson();
-    addImageFromAsset(mapLibreController, _pollingStationId, CampaignConstants.pollingStationAssetName);
+    addImageFromAsset(
+      mapLibreController,
+      CampaignConstants.pollingStationSourceName,
+      CampaignConstants.pollingStationAssetName,
+    );
 
-    await mapLibreController.addGeoJsonSource(_pollingStationId, data);
+    await mapLibreController.addGeoJsonSource(CampaignConstants.pollingStationSourceName, data);
 
     await mapLibreController.addSymbolLayer(
-      _pollingStationId,
-      pollingStationSymbolLayerId,
+      CampaignConstants.pollingStationSourceName,
+      CampaignConstants.pollingStationSymbolLayerId,
       SymbolLayerProperties(
-        iconImage: _pollingStationId,
+        iconImage: CampaignConstants.pollingStationSourceName,
         iconSize: [
           Expressions.interpolate,
           ['linear'],
@@ -236,6 +237,25 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       enableInteraction: false,
       minzoom: _minZoomPollingStationLayer,
     );
+
+    // add selected map layers
+    await mapLibreController.addGeoJsonSource(
+      CampaignConstants.pollingStationSelectedSourceName,
+      turf.FeatureCollection().toJson(),
+    );
+
+    await mapLibreController.addSymbolLayer(
+      CampaignConstants.pollingStationSelectedSourceName,
+
+      CampaignConstants.pollingStationSymbolSelectedLayerId,
+      const SymbolLayerProperties(
+        iconImage: CampaignConstants.pollingStationSourceName,
+        iconSize: 3,
+        iconAllowOverlap: true,
+      ),
+      enableInteraction: false,
+      minzoom: _minZoomPollingStationLayer,
+    );
   }
 
   void onFocusAreaLayerStateChanged(bool state) async {
@@ -244,7 +264,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       loadFocusAreaLayer();
       showInfoToast(t.campaigns.infoToast.focusAreas_activated, moreInfoCallback: () => showAboutFocusArea(context));
     } else {
-      mapController.removeLayerSource(_focusAreadId);
+      mapController.removeLayerSource(CampaignConstants.focusAreadSourceName);
       hideCurrentSnackBar();
       showInfoToast(t.campaigns.infoToast.focusAreas_deactivated);
     }
@@ -254,16 +274,10 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     pollingStationVisible = state;
     if (pollingStationVisible) {
       loadPollingStationLayer();
-      // showInfoToast(t.campaigns.infoToast.focusAreas_activated, moreInfoCallback: () => showAboutFocusArea(context));
     } else {
-      mapController.removeLayerSource(_focusAreadId);
-      // hideCurrentSnackBar();
-      // showInfoToast(t.campaigns.infoToast.focusAreas_deactivated);
+      mapController.removeLayerSource(CampaignConstants.focusAreadSourceName);
     }
   }
-
-  String get focusAreaFillLayerId => '${_focusAreadId}_layer';
-  String get pollingStationSymbolLayerId => '${_pollingStationId}_layer';
 
   void loadDataLayers(LatLng locationSW, LatLng locationNE) async {
     if (focusAreasVisible) {
@@ -279,7 +293,10 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       final bbox = await mapController.getCurrentBoundingBox();
 
       final focusAreas = await campaignService.loadFocusAreasInRegion(bbox.southwest, bbox.northeast);
-      mapController.setLayerSourceWithFeatureCollection(_focusAreadId, focusAreas.transformToFeatureCollection());
+      mapController.setLayerSourceWithFeatureCollection(
+        CampaignConstants.focusAreadSourceName,
+        focusAreas.transformToFeatureCollection(),
+      );
     } else {
       _lastInfoSnackBar?.close();
     }
@@ -291,7 +308,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
       final pollingStations = await campaignService.loadPollingStationsInRegion(bbox.southwest, bbox.northeast);
       mapController.setLayerSourceWithFeatureCollection(
-        _pollingStationId,
+        CampaignConstants.pollingStationSourceName,
         pollingStations.transformToFeatureCollection(),
       );
     } else {
@@ -301,7 +318,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   void showFocusAreaInfoAtPoint(Point<double> point) async {
     if (!focusAreasVisible) return;
-    var features = await mapController.getFeaturesInScreen(point, [focusAreaFillLayerId]);
+    var features = await mapController.getFeaturesInScreen(point, [CampaignConstants.focusAreaFillLayerId]);
     if (features.isNotEmpty) {
       final feature = features.first;
       if (feature['properties'] == null) return;

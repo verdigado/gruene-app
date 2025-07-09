@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-// import 'package:geotypes/geotypes.dart';
 import 'package:gruene_app/app/geocode/nominatim.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
