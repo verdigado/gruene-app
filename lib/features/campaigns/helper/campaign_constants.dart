@@ -16,7 +16,7 @@ class CampaignConstants {
   static const markerSourceName = 'markers';
   static const markerLayerName = 'markerSymbols';
 
-  static const focusAreadSourceName = 'focusArea';
+  static const focusAreaSourceName = 'focusArea';
   static const focusAreaBorderLayerId = 'focusArea_border';
   static const focusAreaFillLayerId = 'focusArea_layer';
 
@@ -24,6 +24,9 @@ class CampaignConstants {
   static const pollingStationSelectedSourceName = 'pollingStation_selectd';
   static const pollingStationSymbolLayerId = 'pollingStation_layer';
   static const pollingStationSymbolSelectedLayerId = 'pollingStation_layer_selected';
+
+  static const routesSourceName = 'routes';
+  static const routesLineLayerId = 'routes_layer';
 
   static Map<int, String> scoreInfos = {
     1: 'Stufe 1: wenige Plakate aufhängen, keine Flyer verteilen, keine Haustüren',
