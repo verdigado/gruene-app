@@ -67,6 +67,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
       getMarkerImages: _getMarkerImages,
       onFeatureClick: _onFeatureClick,
       onNoFeatureClick: _onNoFeatureClick,
+      showBottomDetailSheet: showDetailBottomSheet,
       addMapLayersForContext: addMapLayersForContext,
       loadDataLayers: loadDataLayers,
       showMapInfoAfterCameraMove: showMapInfoAfterCameraMove,

@@ -59,6 +59,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
       getMarkerImages: _getMarkerImages,
       onFeatureClick: _onFeatureClick,
       onNoFeatureClick: _onNoFeatureClick,
+      showBottomDetailSheet: showDetailBottomSheet,
       addMapLayersForContext: addMapLayersForContext,
       loadDataLayers: loadDataLayers,
       showMapInfoAfterCameraMove: showMapInfoAfterCameraMove,

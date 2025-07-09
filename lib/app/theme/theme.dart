@@ -38,6 +38,8 @@ class ThemeColors {
   static const Color focusAreaBaseColor = Color(0xFF3033A1);
 
   static const Color infoBackground = Color(0xFFFFF7C8);
+
+  static const Color sun = Color(0xFFFFF17A);
 }
 
 class _ThemeTextStyles {

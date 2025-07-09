@@ -75,6 +75,11 @@
       "focusAreas_aboutText": "Fokusgebiete zeigen Dir, wo sich Wahlkampf in welcher Form besonders lohnt. Diese Fokusgebiete sind in Level 1 (wenig) bis 5 (viel) aufgeteilt.\nKlicke auf ein Fokusgebiet, um mehr Infos zu erhalten.",
       "more": "mehr Info"
     },
+    "pollingStation": {
+      "label": "Wahllokal",
+      "reportCorrection": "Korrektur melden",
+      "hint": "Bitte beachte, dass es je nach Region unterschiedliche Vorgaben und Regeln für das Aufhängen von Plakaten in der Nähe von Wahllokalen gibt. Bitte wende Dich für mehr Informationen an Deinen Orts- oder Kreisverband."
+    },
     "poster": {
       "label": "Plakat",
       "addPoster": "Plakat eintragen",
