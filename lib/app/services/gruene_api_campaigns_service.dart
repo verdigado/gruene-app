@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/features/campaigns/models/map_layer_model.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -27,9 +26,9 @@ abstract class GrueneApiCampaignsService {
     map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToMarkerItem()).toList(),
   );
 
-  Future<List<MapLayerModel>> loadFocusAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+  Future<List<FocusArea>> loadFocusAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsFocusAreasGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
-    map: (result) => result.data.map((layerItem) => layerItem.transformToMapLayer()).toList(),
+    map: (result) => result.data,
   );
 
   Future<List<PollingStation>> loadPollingStationsInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(

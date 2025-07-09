@@ -12,13 +12,11 @@ import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
-import 'package:gruene_app/features/campaigns/helper/map_layer_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/marker_item_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/marker_item_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/util.dart';
 import 'package:gruene_app/features/campaigns/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
-import 'package:gruene_app/features/campaigns/models/map_layer_model.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/attribution_dialog.dart';
@@ -81,7 +79,6 @@ class MapContainer extends StatefulWidget {
 class _MapContainerState extends State<MapContainer> implements MapController, MapControllerSimplified {
   MapLibreMapController? _controller;
   final MarkerItemManager _markerItemManager = MarkerItemManager();
-  final MapLayerDataManager _mapLayerManager = MapLayerDataManager();
   final appSettings = GetIt.I<AppSettings>();
   final campaignActionCache = GetIt.I<CampaignActionCache>();
 
@@ -373,28 +370,8 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
   }
 
   @override
-  void setLayerSource(String sourceId, List<MapLayerModel> layerData) async {
-    _mapLayerManager.addLayerData(sourceId, layerData);
-    final sourceIds = await _controller!.getSourceIds();
-    Future<void> Function(Map<String, dynamic> data) setLayerData;
-    if (sourceIds.contains(sourceId)) {
-      setLayerData = (data) async {
-        await _controller!.setGeoJsonSource(sourceId, data);
-      };
-    } else {
-      setLayerData = (data) async {
-        await _controller!.addGeoJsonSource(sourceId, data);
-      };
-    }
-    final data = MarkerItemHelper.transformMapLayerDataToGeoJson(_mapLayerManager.getMapLayerData(sourceId)).toJson();
-    await setLayerData(data);
-  }
-
-  @override
   void setLayerSourceWithFeatureCollection(String sourceId, turf.FeatureCollection layerData) async {
-    // _mapLayerManager.addLayerData(sourceId, layerData);
     final sourceIds = await _controller!.getSourceIds();
-    // Future<void> Function(Map<String, dynamic> data) setLayerData;
     if (sourceIds.contains(sourceId)) {
       await _controller!.setGeoJsonSource(sourceId, layerData.toJson());
     } else {
@@ -409,7 +386,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     * Therefore we set it as empty datasource. Once the issue has been corrected we can use the designated method.
     */
     // await _controller!.removeSource(sourceId);
-    await _controller!.setGeoJsonSource(sourceId, MarkerItemHelper.transformMapLayerDataToGeoJson([]).toJson());
+    await _controller!.setGeoJsonSource(sourceId, turf.FeatureCollection().toJson());
   }
 
   @override

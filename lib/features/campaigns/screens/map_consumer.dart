@@ -12,7 +12,6 @@ import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart'
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
-import 'package:gruene_app/features/campaigns/helper/marker_item_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/util.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
@@ -21,6 +20,7 @@ import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:motion_toast/motion_toast.dart';
 
@@ -181,7 +181,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   Future<void> _addFocusAreaLayers(MapLibreMapController mapLibreController) async {
     final focusAreaBorderLayerId = '${_focusAreadId}_border';
 
-    final data = MarkerItemHelper.transformMapLayerDataToGeoJson([]).toJson();
+    final data = <FocusArea>[].toList().transformToFeatureCollection().toJson();
     await mapLibreController.addGeoJsonSource(_focusAreadId, data);
 
     await mapLibreController.addFillLayer(
@@ -212,7 +212,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   Future<void> _addPollingStationLayer(MapLibreMapController mapLibreController) async {
-    final data = MarkerItemHelper.transformMapLayerDataToGeoJson([]).toJson();
+    final data = <PollingStation>[].toList().transformToFeatureCollection().toJson();
     addImageFromAsset(mapLibreController, _pollingStationId, CampaignConstants.pollingStationAssetName);
 
     await mapLibreController.addGeoJsonSource(_pollingStationId, data);
@@ -279,7 +279,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       final bbox = await mapController.getCurrentBoundingBox();
 
       final focusAreas = await campaignService.loadFocusAreasInRegion(bbox.southwest, bbox.northeast);
-      mapController.setLayerSource(_focusAreadId, focusAreas);
+      mapController.setLayerSourceWithFeatureCollection(_focusAreadId, focusAreas.transformToFeatureCollection());
     } else {
       _lastInfoSnackBar?.close();
     }
