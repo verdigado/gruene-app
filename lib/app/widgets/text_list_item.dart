@@ -35,10 +35,7 @@ class TextListItem extends StatelessWidget {
           width: 24,
           child:
               trailing ??
-              Icon(
-                isExternal ? Icons.open_in_browser_outlined : Icons.chevron_right_outlined,
-                color: theme.disabledColor,
-              ),
+              Icon(isExternal ? Icons.arrow_outward : Icons.chevron_right_outlined, color: theme.disabledColor),
         ),
         tileColor: theme.colorScheme.surface,
         contentPadding: const EdgeInsets.symmetric(horizontal: 24),
