@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/constants/urls.dart';
-import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
@@ -18,7 +17,6 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final authBloc = context.read<AuthBloc>();
     final isLoggedIn = authBloc.state is Authenticated;
     return Scaffold(
@@ -57,15 +55,10 @@ class SettingsScreen extends StatelessWidget {
           isLoggedIn
               ? Padding(
                   padding: const EdgeInsets.only(top: 24),
-                  child: TextButton(
+                  child: OutlinedButton.icon(
                     onPressed: () => context.read<AuthBloc>().add(LogoutRequested()),
-                    child: Text(
-                      t.settings.logout,
-                      style: theme.textTheme.bodyMedium!.apply(
-                        color: ThemeColors.text,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
+                    label: Text(t.settings.logout),
+                    icon: Icon(Icons.logout),
                   ),
                 )
               : Container(),
