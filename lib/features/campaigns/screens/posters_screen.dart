@@ -47,8 +47,16 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   void initState() {
     postersFilter = [
       FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
-      FilterChipModel(text: t.campaigns.filters.focusAreas, isEnabled: true, stateChanged: onFocusAreaStateChanged),
-      FilterChipModel(text: t.campaigns.filters.polling_stations, isEnabled: false),
+      FilterChipModel(
+        text: t.campaigns.filters.focusAreas,
+        isEnabled: true,
+        stateChanged: onFocusAreaLayerStateChanged,
+      ),
+      FilterChipModel(
+        text: t.campaigns.filters.polling_stations,
+        isEnabled: true,
+        stateChanged: onPollinStationLayerStateChanged,
+      ),
       FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
     ];
 

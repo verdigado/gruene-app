@@ -391,6 +391,18 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
   }
 
   @override
+  void setLayerSourceWithFeatureCollection(String sourceId, turf.FeatureCollection layerData) async {
+    // _mapLayerManager.addLayerData(sourceId, layerData);
+    final sourceIds = await _controller!.getSourceIds();
+    // Future<void> Function(Map<String, dynamic> data) setLayerData;
+    if (sourceIds.contains(sourceId)) {
+      await _controller!.setGeoJsonSource(sourceId, layerData.toJson());
+    } else {
+      await _controller!.addGeoJsonSource(sourceId, layerData.toJson());
+    }
+  }
+
+  @override
   void removeLayerSource(String sourceId) async {
     /* 
     * A bug prevents using correct method -> see https://github.com/maplibre/flutter-maplibre-gl/issues/526

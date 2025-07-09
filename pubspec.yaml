@@ -105,6 +105,7 @@ flutter:
     - assets/symbols/posters/svg_inverted/
     - assets/symbols/doors/
     - assets/symbols/flyer/
+    - assets/symbols/polling_stations/
     - assets/maps/
     - .env
   fonts:

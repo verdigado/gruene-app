@@ -47,7 +47,11 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
     doorsFilter = [
       FilterChipModel(text: t.campaigns.filters.visited_areas, isEnabled: false),
       FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
-      FilterChipModel(text: t.campaigns.filters.focusAreas, isEnabled: true, stateChanged: onFocusAreaStateChanged),
+      FilterChipModel(
+        text: t.campaigns.filters.focusAreas,
+        isEnabled: true,
+        stateChanged: onFocusAreaLayerStateChanged,
+      ),
       FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
     ];
     super.initState();

@@ -11,6 +11,8 @@ class CampaignConstants {
   static const posterToBeMovedAssetName = 'assets/symbols/posters/poster_to_be_moved.png';
   static const addMarkerAssetName = 'assets/symbols/add_marker.svg';
 
+  static const pollingStationAssetName = 'assets/symbols/polling_stations/pollingstation.png';
+
   static const markerSourceName = 'markers';
   static const markerLayerName = 'markerSymbols';
 

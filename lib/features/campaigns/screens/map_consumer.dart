@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
@@ -12,6 +13,7 @@ import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/marker_item_helper.dart';
+import 'package:gruene_app/features/campaigns/helper/util.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
@@ -37,8 +39,11 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   final NominatimService _nominatimService = GetIt.I<NominatimService>();
 
   bool focusAreasVisible = false;
+  bool pollingStationVisible = false;
   final String _focusAreadId = 'focusArea';
+  final String _pollingStationId = 'pollingStation';
   final _minZoomFocusAreaLayer = 11.0;
+  final _minZoomPollingStationLayer = 11.0;
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _lastInfoSnackBar;
   String? _lastFocusAreaId;
   final campaignActionCache = GetIt.I<CampaignActionCache>();
@@ -169,6 +174,11 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   void addMapLayersForContext(MapLibreMapController mapLibreController) async {
+    await _addFocusAreaLayers(mapLibreController);
+    await _addPollingStationLayer(mapLibreController);
+  }
+
+  Future<void> _addFocusAreaLayers(MapLibreMapController mapLibreController) async {
     final focusAreaBorderLayerId = '${_focusAreadId}_border';
 
     final data = MarkerItemHelper.transformMapLayerDataToGeoJson([]).toJson();
@@ -201,7 +211,34 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     );
   }
 
-  void onFocusAreaStateChanged(bool state) async {
+  Future<void> _addPollingStationLayer(MapLibreMapController mapLibreController) async {
+    final data = MarkerItemHelper.transformMapLayerDataToGeoJson([]).toJson();
+    addImageFromAsset(mapLibreController, _pollingStationId, CampaignConstants.pollingStationAssetName);
+
+    await mapLibreController.addGeoJsonSource(_pollingStationId, data);
+
+    await mapLibreController.addSymbolLayer(
+      _pollingStationId,
+      pollingStationSymbolLayerId,
+      SymbolLayerProperties(
+        iconImage: _pollingStationId,
+        iconSize: [
+          Expressions.interpolate,
+          ['linear'],
+          [Expressions.zoom],
+          11,
+          1,
+          16,
+          2,
+        ],
+        iconAllowOverlap: true,
+      ),
+      enableInteraction: false,
+      minzoom: _minZoomPollingStationLayer,
+    );
+  }
+
+  void onFocusAreaLayerStateChanged(bool state) async {
     focusAreasVisible = state;
     if (focusAreasVisible) {
       loadFocusAreaLayer();
@@ -213,11 +250,27 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
   }
 
+  void onPollinStationLayerStateChanged(bool state) async {
+    pollingStationVisible = state;
+    if (pollingStationVisible) {
+      loadPollingStationLayer();
+      // showInfoToast(t.campaigns.infoToast.focusAreas_activated, moreInfoCallback: () => showAboutFocusArea(context));
+    } else {
+      mapController.removeLayerSource(_focusAreadId);
+      // hideCurrentSnackBar();
+      // showInfoToast(t.campaigns.infoToast.focusAreas_deactivated);
+    }
+  }
+
   String get focusAreaFillLayerId => '${_focusAreadId}_layer';
+  String get pollingStationSymbolLayerId => '${_pollingStationId}_layer';
 
   void loadDataLayers(LatLng locationSW, LatLng locationNE) async {
     if (focusAreasVisible) {
       loadFocusAreaLayer();
+    }
+    if (pollingStationVisible) {
+      loadPollingStationLayer();
     }
   }
 
@@ -227,6 +280,20 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
       final focusAreas = await campaignService.loadFocusAreasInRegion(bbox.southwest, bbox.northeast);
       mapController.setLayerSource(_focusAreadId, focusAreas);
+    } else {
+      _lastInfoSnackBar?.close();
+    }
+  }
+
+  void loadPollingStationLayer() async {
+    if (mapController.getCurrentZoomLevel() > _minZoomFocusAreaLayer) {
+      final bbox = await mapController.getCurrentBoundingBox();
+
+      final pollingStations = await campaignService.loadPollingStationsInRegion(bbox.southwest, bbox.northeast);
+      mapController.setLayerSourceWithFeatureCollection(
+        _pollingStationId,
+        pollingStations.transformToFeatureCollection(),
+      );
     } else {
       _lastInfoSnackBar?.close();
     }

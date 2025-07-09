@@ -32,6 +32,11 @@ abstract class GrueneApiCampaignsService {
     map: (result) => result.data.map((layerItem) => layerItem.transformToMapLayer()).toList(),
   );
 
+  Future<List<PollingStation>> loadPollingStationsInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsPollingStationsGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
+    map: (result) => result.data,
+  );
+
   Future<T> getPoi<T>(String poiId, T Function(Poi) transform) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisPoiIdGet(poiId: poiId),
     map: transform,
