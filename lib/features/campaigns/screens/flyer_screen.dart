@@ -43,7 +43,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
         isEnabled: true,
         stateChanged: onFocusAreaLayerStateChanged,
       ),
-      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
+      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: true, stateChanged: onRouteLayerStateChanged),
       FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
     ];
     super.initState();

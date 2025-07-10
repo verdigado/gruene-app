@@ -84,6 +84,11 @@
       "reportCorrection": "Korrektur melden",
       "hint": "Bitte beachte, dass es je nach Region unterschiedliche Vorgaben und Regeln für das Aufhängen von Plakaten in der Nähe von Wahllokalen gibt. Bitte wende Dich für mehr Informationen an Deinen Orts- oder Kreisverband."
     },
+    "route": {
+      "label": "Route",
+      "routeType_label": "Typ",
+      "createdAt": "Erstellt"
+    },
     "poster": {
       "label": "Plakat",
       "addPoster": "Plakat eintragen",

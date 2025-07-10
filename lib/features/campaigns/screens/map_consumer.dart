@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_service.dart';
+import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
@@ -53,7 +53,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   MapConsumer(this.poiType);
 
-  GrueneApiCampaignsService get campaignService;
+  GrueneApiCampaignsPoiBaseService get campaignService;
 
   @override
   void dispose() {
@@ -270,9 +270,24 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSourceName,
       CampaignConstants.routesLineLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#2F8FFF', lineWidth: 8, lineOpacity: 0.5),
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 0.6),
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
+    );
+
+    // add selected map layers
+    await mapLibreController.addGeoJsonSource(
+      CampaignConstants.routesSelectedSourceName,
+      turf.FeatureCollection().toJson(),
+    );
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.routesSelectedSourceName,
+
+      CampaignConstants.routesLineSelectedLayerId,
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 1),
+      enableInteraction: false,
+      minzoom: _minZoomPollingStationLayer,
     );
   }
 

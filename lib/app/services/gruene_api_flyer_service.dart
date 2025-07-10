@@ -1,13 +1,13 @@
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_service.dart';
+import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiFlyerService extends GrueneApiCampaignsService {
+class GrueneApiFlyerService extends GrueneApiCampaignsPoiBaseService {
   GrueneApiFlyerService() : super(poiType: PoiServiceType.flyer);
 
   Future<MarkerItemModel> createNewFlyer(FlyerCreateModel newFlyer) async => getFromApi(

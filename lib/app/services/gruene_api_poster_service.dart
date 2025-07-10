@@ -2,7 +2,7 @@ import 'package:chopper/chopper.dart' as chopper;
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_service.dart';
+import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
@@ -14,7 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 
-class GrueneApiPosterService extends GrueneApiCampaignsService {
+class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
   GrueneApiPosterService() : super(poiType: PoiServiceType.poster);
 
   Future<MarkerItemModel> createNewPoster(PosterCreateModel newPoster) async {

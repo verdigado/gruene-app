@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
@@ -248,11 +249,6 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     final jsonFeaturesPoiMarkers = await getFeaturesInScreen(point, [CampaignConstants.markerLayerName]);
     final poiMarkers = jsonFeaturesPoiMarkers.map((e) => e as Map<String, dynamic>).toList();
 
-    final jsonFeaturesPollingStations = await getFeaturesInScreen(point, [
-      CampaignConstants.pollingStationSymbolLayerId,
-    ]);
-    final pollingStations = jsonFeaturesPollingStations.map((e) => e as Map<String, dynamic>).toList();
-
     if (poiMarkers.isNotEmpty && onFeatureClick != null) {
       logger.d('Features: ${poiMarkers.length} Zoom: ${_controller!.cameraPosition!.zoom.toString()}');
       dynamic feature;
@@ -274,11 +270,32 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
       }
       if (feature == null) return;
       onFeatureClick(feature);
-    } else if (pollingStations.isNotEmpty) {
+      return;
+    }
+
+    final jsonFeaturesPollingStations = await getFeaturesInScreen(point, [
+      CampaignConstants.pollingStationSymbolLayerId,
+    ]);
+    final pollingStations = jsonFeaturesPollingStations.map((e) => e as Map<String, dynamic>).toList();
+
+    if (pollingStations.isNotEmpty) {
       final feature = MapHelper.getClosestFeature(pollingStations, targetLatLng);
 
       onPollingStationClick(feature);
-    } else if (onNoFeatureClick != null) {
+      return;
+    }
+
+    final jsonFeaturesRoutes = await getFeaturesInScreen(point, [CampaignConstants.routesLineLayerId]);
+    final routes = jsonFeaturesRoutes.map((e) => e as Map<String, dynamic>).toList();
+
+    if (routes.isNotEmpty) {
+      final feature = MapHelper.getClosestFeature(routes, targetLatLng);
+
+      onRouteClick(feature);
+      return;
+    }
+
+    if (onNoFeatureClick != null) {
       onNoFeatureClick(point);
     }
   }
@@ -478,6 +495,32 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
       SymbolLayerProperties(iconOpacity: 1),
     );
     removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
+  }
+
+  Future<void> setFocusToRoute(Map<String, dynamic> feature) async {
+    // removes the add_marker
+    setState(() {
+      _isInFocusMode = true;
+    });
+    // align map to show feature in center area
+    // TODO determine boundary of line and move map
+    // final coord = MapHelper.extractLatLngFromFeature(feature);
+    // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
+
+    // set opacity of marker layer
+    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, SymbolLayerProperties(iconOpacity: 0.3));
+    // set data for '_selected layer'
+    var featureObject = turf.Feature<turf.LineString>.fromJson(feature);
+    turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
+    await _controller!.setGeoJsonSource(CampaignConstants.routesSelectedSourceName, collection.toJson());
+  }
+
+  Future<void> unsetFocusToRoute() async {
+    setState(() {
+      _isInFocusMode = false;
+    });
+    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, SymbolLayerProperties(iconOpacity: 0.6));
+    removeLayerSource(CampaignConstants.routesLineSelectedLayerId);
   }
 
   @override
@@ -847,6 +890,14 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     unsetFocusToPollingStation();
   }
 
+  Future<void> onRouteClick(dynamic feature) async {
+    var routeFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
+    setFocusToRoute(routeFeature.toJson());
+    var routeDetail = await getRouteDetailWidget(routeFeature);
+    await widget.showBottomDetailSheet<bool>(routeDetail);
+    unsetFocusToRoute();
+  }
+
   SizedBox getPollingStationDetailWidget(turf.Feature pollingStationFeature) {
     onClose() => Navigator.maybePop(context);
     var theme = Theme.of(context);
@@ -926,6 +977,63 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                     top: 0,
                     bottom: 0,
                     child: Text(t.campaigns.pollingStation.hint, softWrap: true, style: theme.textTheme.labelSmall),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<Widget> getRouteDetailWidget(turf.Feature routeFeature) async {
+    var theme = Theme.of(context);
+    var routeService = GetIt.I<GrueneApiRouteService>();
+    var route = await routeService.getRoute(routeFeature.id.toString());
+
+    onClose() => Navigator.maybePop(context);
+
+    return SizedBox(
+      height: 109,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            child: CloseEditWidget(onClose: () => onClose()),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 27),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.label} #${route.id}',
+                        style: theme.textTheme.labelLarge!.copyWith(
+                          color: ThemeColors.textDark,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.routeType_label}: ${route.type.getAsLabel()}',
+                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.createdAt}: ${route.createdAt.getAsLocalDateString()}',
+                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      ),
+                    ],
                   ),
                 ],
               ),
