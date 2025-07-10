@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/utils/logger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:tuple/tuple.dart';
 import 'package:turf/centroid.dart';

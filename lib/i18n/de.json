@@ -87,8 +87,7 @@
     "route": {
       "label": "Route",
       "routeType_label": "Typ",
-      "createdAt": "Erstellt",
-      "updatedAt": "Editiert"
+      "createdAt": "Erstellt"
     },
     "poster": {
       "label": "Plakat",

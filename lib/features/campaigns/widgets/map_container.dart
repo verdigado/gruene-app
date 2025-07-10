@@ -988,11 +988,11 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
   }
 
   Future<Widget> getRouteDetailWidget(turf.Feature routeFeature) async {
+    var theme = Theme.of(context);
     var routeService = GetIt.I<GrueneApiRouteService>();
     var route = await routeService.getRoute(routeFeature.id.toString());
 
     onClose() => Navigator.maybePop(context);
-    var theme = Theme.of(context);
 
     return SizedBox(
       height: 109,
