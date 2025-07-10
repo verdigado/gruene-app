@@ -1,7 +1,7 @@
 part of '../mixins.dart';
 
-mixin FocusAreaInfo {
-  void showAboutFocusArea(BuildContext context) async {
+mixin InfoBox {
+  void showAboutInfoBox(BuildContext context, String title, String content) async {
     final theme = Theme.of(context);
     await showDialog<bool>(
       context: context,
@@ -14,14 +14,11 @@ mixin FocusAreaInfo {
             children: [
               Icon(Icons.info, color: ThemeColors.textCancel),
               SizedBox(width: 6),
-              Text(
-                t.campaigns.infoToast.focusAreas_aboutTitle,
-                style: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark),
-              ),
+              Text(title, style: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark)),
             ],
           ),
           content: Text(
-            t.campaigns.infoToast.focusAreas_aboutText,
+            content,
             textAlign: TextAlign.center,
             style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDark, fontSizeDelta: 1),
           ),

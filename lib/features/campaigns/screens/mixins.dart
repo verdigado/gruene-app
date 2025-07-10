@@ -13,5 +13,5 @@ part 'mixins/address_extension.dart';
 part 'mixins/confirm_delete.dart';
 part 'mixins/door_validator.dart';
 part 'mixins/flyer_validator.dart';
-part 'mixins/focus_area_info.dart';
+part 'mixins/info_box.dart';
 part 'mixins/search_mixin.dart';

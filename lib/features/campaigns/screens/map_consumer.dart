@@ -34,7 +34,7 @@ typedef GetPoiEditWidgetCallback<T> = Widget Function(T);
 typedef OnDeletePoiCallback = Future<void> Function(String poiId);
 
 abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailType, PoiUpdateType> extends State<T>
-    with FocusAreaInfo, SearchMixin<T> {
+    with InfoBox, SearchMixin<T> {
   late MapController mapController;
 
   final NominatimService _nominatimService = GetIt.I<NominatimService>();
@@ -280,7 +280,14 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     focusAreasVisible = state;
     if (focusAreasVisible) {
       loadFocusAreaLayer();
-      showInfoToast(t.campaigns.infoToast.focusAreas_activated, moreInfoCallback: () => showAboutFocusArea(context));
+      showInfoToast(
+        t.campaigns.infoToast.focusAreas_activated,
+        moreInfoCallback: () => showAboutInfoBox(
+          context,
+          t.campaigns.infoToast.focusAreas_aboutTitle,
+          t.campaigns.infoToast.focusAreas_aboutText,
+        ),
+      );
     } else {
       mapController.removeLayerSource(CampaignConstants.focusAreaSourceName);
       hideCurrentSnackBar();
@@ -292,8 +299,14 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     routesVisible = state;
     if (routesVisible) {
       loadRouteLayer();
+      showInfoToast(
+        t.campaigns.infoToast.routes_activated,
+        moreInfoCallback: () =>
+            showAboutInfoBox(context, t.campaigns.infoToast.routes_aboutTitle, t.campaigns.infoToast.routes_aboutText),
+      );
     } else {
       mapController.removeLayerSource(CampaignConstants.routesSourceName);
+      showInfoToast(t.campaigns.infoToast.routes_deactivated);
     }
   }
 
@@ -302,7 +315,8 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     if (pollingStationVisible) {
       loadPollingStationLayer();
     } else {
-      mapController.removeLayerSource(CampaignConstants.focusAreaSourceName);
+      mapController.removeLayerSource(CampaignConstants.pollingStationSourceName);
+      mapController.removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
     }
   }
 
