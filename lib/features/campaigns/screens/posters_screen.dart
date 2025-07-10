@@ -46,7 +46,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   @override
   void initState() {
     postersFilter = [
-      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
+      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: true, stateChanged: onRouteLayerStateChanged),
       FilterChipModel(
         text: t.campaigns.filters.focusAreas,
         isEnabled: true,

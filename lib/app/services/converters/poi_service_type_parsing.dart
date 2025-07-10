@@ -79,4 +79,15 @@ extension PoiServiceTypeParsing on PoiServiceType {
         return CampaignActionType.addFlyer;
     }
   }
+
+  V1CampaignsRoutesGetType transformToRoutesApiGetType() {
+    switch (this) {
+      case PoiServiceType.poster:
+        return V1CampaignsRoutesGetType.poster;
+      case PoiServiceType.door:
+        return V1CampaignsRoutesGetType.house;
+      case PoiServiceType.flyer:
+        return V1CampaignsRoutesGetType.flyerSpot;
+    }
+  }
 }

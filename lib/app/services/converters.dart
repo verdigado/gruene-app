@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+// import 'package:geotypes/geotypes.dart';
 import 'package:gruene_app/app/geocode/nominatim.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
@@ -50,5 +51,6 @@ part 'converters/poster_create_model_parsing.dart';
 part 'converters/poster_detail_model_extension.dart';
 part 'converters/poster_status_parsing.dart';
 part 'converters/poster_update_model_parsing.dart';
+part 'converters/route_parsing.dart';
 part 'converters/slider_range_parsing.dart';
 part 'converters/string_extension.dart';
