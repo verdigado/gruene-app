@@ -17,6 +17,7 @@ import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
 import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
+import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/services/push_notification_listener.dart';
@@ -76,6 +77,7 @@ Future<void> main() async {
   GetIt.I.registerFactory<GrueneApiPosterService>(() => GrueneApiPosterService());
   GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
   GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());
+  GetIt.I.registerFactory<GrueneApiRouteService>(() => GrueneApiRouteService());
   GetIt.I.registerFactory<GrueneApiCampaignsStatisticsService>(() => GrueneApiCampaignsStatisticsService());
 
   WidgetsFlutterBinding.ensureInitialized();

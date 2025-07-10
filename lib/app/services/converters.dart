@@ -46,6 +46,7 @@ part 'converters/poi_parsing.dart';
 part 'converters/poi_poster_status_parsing.dart';
 part 'converters/poi_service_type_parsing.dart';
 part 'converters/poi_type_parsing.dart';
+part 'converters/point_converter.dart';
 part 'converters/polling_station_parsing.dart';
 part 'converters/poster_create_model_parsing.dart';
 part 'converters/poster_detail_model_extension.dart';

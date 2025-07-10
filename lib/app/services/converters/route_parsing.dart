@@ -19,3 +19,15 @@ extension RouteListParsing on List<Route> {
     return FeatureCollection(features: map((p) => p.transformToFeatureItem()).toList());
   }
 }
+
+extension RouteTypeParsing on RouteType {
+  String getAsLabel() {
+    var typeLabel = switch (this) {
+      RouteType.flyerSpot => t.campaigns.flyer.label,
+      RouteType.poster => t.campaigns.poster.label,
+      RouteType.house => t.campaigns.door.label,
+      RouteType.swaggerGeneratedUnknown => throw UnimplementedError(),
+    };
+    return '$typeLabel-${t.campaigns.route.label}';
+  }
+}

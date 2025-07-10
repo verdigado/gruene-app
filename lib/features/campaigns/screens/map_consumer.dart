@@ -274,6 +274,21 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
     );
+
+    // add selected map layers
+    await mapLibreController.addGeoJsonSource(
+      CampaignConstants.routesSelectedSourceName,
+      turf.FeatureCollection().toJson(),
+    );
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.routesSelectedSourceName,
+
+      CampaignConstants.routesLineSelectedLayerId,
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 1),
+      enableInteraction: false,
+      minzoom: _minZoomPollingStationLayer,
+    );
   }
 
   void onFocusAreaLayerStateChanged(bool state) async {
