@@ -315,7 +315,8 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     if (pollingStationVisible) {
       loadPollingStationLayer();
     } else {
-      mapController.removeLayerSource(CampaignConstants.focusAreaSourceName);
+      mapController.removeLayerSource(CampaignConstants.pollingStationSourceName);
+      mapController.removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
     }
   }
 
