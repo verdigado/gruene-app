@@ -3,7 +3,6 @@ paths:
   /v1/users:
     get:
       operationId: findUsers
-      summary: Find users
       parameters:
         - name: search
           required: false
@@ -35,16 +34,16 @@ paths:
                 $ref: '#/components/schemas/FindUsersResponse'
         '401':
           description: ''
-      tags:
-        - users
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Find users
+      tags:
+        - users
   /v1/users/self:
     get:
       operationId: getSelf
-      summary: Get the authenticated user
       parameters: []
       responses:
         '200':
@@ -57,16 +56,16 @@ paths:
           description: No user provided by used authentication method
         '401':
           description: ''
-      tags:
-        - users
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Get the authenticated user
+      tags:
+        - users
   /v1/users/{userId}:
     get:
       operationId: getUser
-      summary: Get user by id
       parameters:
         - name: userId
           required: true
@@ -84,16 +83,16 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - users
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Get user by id
+      tags:
+        - users
   /v1/users/{userId}/rbac-structure:
     get:
       operationId: getUserRbacStructure
-      summary: Get user RBAC structure
       parameters:
         - name: userId
           required: true
@@ -111,16 +110,16 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - users
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Get user RBAC structure
+      tags:
+        - users
   /v1/party/organizations:
     get:
       operationId: findOrganizations
-      summary: Find all organizations
       parameters: []
       responses:
         '200':
@@ -131,57 +130,21 @@ paths:
                 $ref: '#/components/schemas/FindNbOrganizationsResponse'
         '401':
           description: ''
-      tags:
-        - nb-api
       security:
         - basic: []
         - api_key: []
+      summary: Find all organizations
+      tags:
+        - nb-api
   /v1/party/groups:
     get:
       operationId: findGroups
-      summary: Find all groups
       parameters:
-        - required: false
-          description: Filter by external reference type
-          name: filter[external_refs.type]
+        - name: filter
+          required: false
           in: query
           schema:
-            example: SHERPA
-            enum:
-              - SHERPA
-            type: string
-        - required: false
-          description: Filter by external reference ID (sherpa role id)
-          name: filter[external_refs.key]
-          in: query
-          schema:
-            example: '12345678'
-            type: string
-        - required: false
-          description: Filter by role level
-          name: filter[level]
-          in: query
-          schema:
-            enum:
-              - DE:BUNDESVERBAND
-              - DE:LANDESVERBAND
-              - DE:KREISVERBAND
-              - DE:ORTSVERBAND
-            type: string
-        - required: false
-          description: Filter by role type
-          name: filter[type]
-          in: query
-          schema:
-            example: EXECUTIVE_BOARD
-            type: string
-        - required: false
-          description: Filter by role slug
-          name: filter[slug]
-          in: query
-          schema:
-            example: KV_EXECUTIVE_BOARD
-            type: string
+            $ref: '#/components/schemas/NbGroupFilter'
       responses:
         '200':
           description: ''
@@ -191,15 +154,15 @@ paths:
                 $ref: '#/components/schemas/FindNbGroupsResponse'
         '401':
           description: ''
-      tags:
-        - nb-api
       security:
         - basic: []
         - api_key: []
+      summary: Find all groups
+      tags:
+        - nb-api
   /v1/party/regionalchapters:
     get:
       operationId: findRegionalChapters
-      summary: Find all regional chapters
       parameters:
         - name: limit
           required: false
@@ -215,30 +178,11 @@ paths:
           schema:
             minimum: 0
             type: number
-        - required: false
-          description: Filter by query
-          name: filter[query]
+        - name: filter
+          required: false
           in: query
           schema:
-            type: string
-        - required: false
-          description: Filter by ID prefix
-          name: filter[id_prefix]
-          in: query
-          schema:
-            maxLength: 8
-            type: string
-        - required: false
-          description: Filter by type
-          name: filter[type]
-          in: query
-          schema:
-            enum:
-              - BV
-              - LV
-              - KV
-              - OV
-            type: string
+            $ref: '#/components/schemas/NbRegionalChapterFilter'
       responses:
         '200':
           description: ''
@@ -248,15 +192,15 @@ paths:
                 $ref: '#/components/schemas/FindNbRegionalChaptersResponse'
         '401':
           description: ''
-      tags:
-        - nb-api
       security:
         - basic: []
         - api_key: []
+      summary: Find all regional chapters
+      tags:
+        - nb-api
   /v1/party/regionalchapters/{divisionKey}:
     get:
       operationId: getRegionalChapter
-      summary: Get regional chapter by division key
       parameters:
         - name: divisionKey
           required: true
@@ -272,15 +216,15 @@ paths:
                 $ref: '#/components/schemas/NbRegionalChapter'
         '401':
           description: ''
-      tags:
-        - nb-api
       security:
         - basic: []
         - api_key: []
+      summary: Get regional chapter by division key
+      tags:
+        - nb-api
   /v1/profiles:
     get:
       operationId: findProfiles
-      summary: Find user profiles
       parameters:
         - name: limit
           required: false
@@ -326,14 +270,14 @@ paths:
                 $ref: '#/components/schemas/FindProfilesResponse'
         '401':
           description: ''
-      tags:
-        - profiles
       security:
         - api_key: []
         - bearer: []
+      summary: Find user profiles
+      tags:
+        - profiles
     post:
       operationId: createProfile
-      summary: Create user profile
       parameters: []
       requestBody:
         required: true
@@ -350,15 +294,15 @@ paths:
                 $ref: '#/components/schemas/Profile'
         '401':
           description: ''
-      tags:
-        - profiles
       security:
         - api_key: []
         - bearer: []
+      summary: Create user profile
+      tags:
+        - profiles
   /v1/profiles/self:
     get:
       operationId: getOwnProfile
-      summary: Get the authenticated user's profile
       parameters: []
       responses:
         '200':
@@ -371,15 +315,15 @@ paths:
           description: No user provided by used authentication method
         '401':
           description: ''
-      tags:
-        - profiles
       security:
         - api_key: []
         - bearer: []
+      summary: Get the authenticated user's profile
+      tags:
+        - profiles
   /v1/profiles/{profileId}:
     get:
       operationId: getProfile
-      summary: Get a user profile
       parameters:
         - name: profileId
           required: true
@@ -397,19 +341,19 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - profiles
       security:
         - api_key: []
         - bearer: []
+      summary: Get a user profile
+      tags:
+        - profiles
     put:
-      operationId: updateProfile
-      summary: Update user profile
       description: >-
         When updating the collection attributes like `messengers` all items must
         be included. Omitting an item means it will be deleted. If an `id`
         attribute is present it means update the give item. Omitting the `id`
         attribute will add a new item to the collection.
+      operationId: updateProfile
       parameters:
         - name: profileId
           required: true
@@ -433,14 +377,14 @@ paths:
           description: No user provided by used authentication method
         '401':
           description: ''
-      tags:
-        - profiles
       security:
         - api_key: []
         - bearer: []
+      summary: Update user profile
+      tags:
+        - profiles
     delete:
       operationId: deleteProfile
-      summary: Delete user profile
       parameters:
         - name: profileId
           required: true
@@ -458,15 +402,21 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - profiles
       security:
         - api_key: []
         - bearer: []
+      summary: Delete user profile
+      tags:
+        - profiles
   /v1/profiles/{profileId}/image:
     put:
       operationId: updateProfileImage
-      summary: Update profile image
+      parameters:
+        - name: profileId
+          required: true
+          in: path
+          schema:
+            type: string
       requestBody:
         content:
           multipart/form-data:
@@ -478,12 +428,6 @@ paths:
                 profileImage:
                   type: string
                   format: binary
-      parameters:
-        - name: profileId
-          required: true
-          in: path
-          schema:
-            type: string
       responses:
         '200':
           description: ''
@@ -495,14 +439,14 @@ paths:
           description: No user provided by used authentication method
         '401':
           description: ''
-      tags:
-        - profiles
       security:
         - api_key: []
         - bearer: []
+      summary: Update profile image
+      tags:
+        - profiles
     delete:
       operationId: deleteProfileImage
-      summary: Delete user profile image
       parameters:
         - name: profileId
           required: true
@@ -520,15 +464,15 @@ paths:
           description: No user provided by used authentication method
         '401':
           description: ''
-      tags:
-        - profiles
       security:
         - api_key: []
         - bearer: []
+      summary: Delete user profile image
+      tags:
+        - profiles
   /v1/profile-tags:
     get:
       operationId: findProfileTags
-      summary: List profile tags
       parameters:
         - name: limit
           required: false
@@ -555,10 +499,10 @@ paths:
           description: Filter by type
           schema:
             example: interest
+            type: string
             enum:
               - skill
               - interest
-            type: string
       responses:
         '200':
           description: ''
@@ -568,17 +512,15 @@ paths:
                 $ref: '#/components/schemas/FindProfileTagsResponse'
         '401':
           description: ''
-      tags:
-        - profiles
       security:
         - bearer: []
         - api_key: []
+      summary: List profile tags
+      tags:
+        - profiles
   /v1/offboarding/users/self:
     get:
       operationId: findUsersToOffboard
-      summary: >-
-        Find users to offboard for the service associated with the used
-        credentials
       parameters:
         - name: limit
           required: false
@@ -606,14 +548,16 @@ paths:
                 $ref: '#/components/schemas/FindOffboardingUsersResponse'
         '401':
           description: ''
-      tags:
-        - offboarding
       security:
         - basic: []
+      summary: >-
+        Find users to offboard for the service associated with the used
+        credentials
+      tags:
+        - offboarding
   /v1/offboarding/users/self/batch:
     post:
       operationId: batchUpdateOffboardingServiceUsers
-      summary: Batch update offboarding users for the authenticated service.
       parameters: []
       requestBody:
         required: true
@@ -626,14 +570,14 @@ paths:
           description: ''
         '401':
           description: ''
-      tags:
-        - offboarding
       security:
         - basic: []
+      summary: Batch update offboarding users for the authenticated service.
+      tags:
+        - offboarding
   /v1/divisions:
     get:
       operationId: findDivisions
-      summary: Find divisions
       parameters:
         - name: limit
           required: false
@@ -654,23 +598,23 @@ paths:
           description: Filter by hierarchy
           schema:
             example: GR
+            type: string
             enum:
               - GR
               - GJ
               - KPV
-            type: string
         - name: level
           required: false
           in: query
           description: Filter by hierarchy level
           schema:
             example: BV
+            type: string
             enum:
               - BV
               - LV
               - KV
               - OV
-            type: string
         - name: division_key
           required: false
           in: query
@@ -694,16 +638,16 @@ paths:
                 $ref: '#/components/schemas/FindDivisionsResponse'
         '401':
           description: ''
-      tags:
-        - divisions
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Find divisions
+      tags:
+        - divisions
   /v1/divisions/{divisionId}:
     get:
       operationId: getDivision
-      summary: Get division by id
       parameters:
         - name: divisionId
           required: true
@@ -721,16 +665,16 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - divisions
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Get division by id
+      tags:
+        - divisions
   /v1/roles:
     get:
       operationId: findRoles
-      summary: Find roles
       parameters:
         - name: limit
           required: false
@@ -767,6 +711,17 @@ paths:
             type: array
             items:
               type: string
+        - name: assignment_status
+          required: false
+          in: query
+          description: >-
+            Filter by assignment status - is the role currently assigned to any
+            user or to none
+          schema:
+            type: string
+            enum:
+              - assigned
+              - unassigned
       responses:
         '200':
           description: ''
@@ -776,16 +731,16 @@ paths:
                 $ref: '#/components/schemas/FindRolesResponse'
         '401':
           description: ''
-      tags:
-        - roles
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Find roles
+      tags:
+        - roles
   /v1/roles/{roleId}:
     get:
       operationId: getRole
-      summary: Get role by id
       parameters:
         - name: roleId
           required: true
@@ -803,16 +758,16 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - roles
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Get role by id
+      tags:
+        - roles
   /v1/role-tags:
     get:
       operationId: findRoleTags
-      summary: Find role tags
       parameters:
         - name: limit
           required: false
@@ -842,16 +797,16 @@ paths:
                 $ref: '#/components/schemas/FindRoleTagsResponse'
         '401':
           description: ''
-      tags:
-        - roles
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Find role tags
+      tags:
+        - roles
   /v1/role-categories:
     get:
       operationId: findRoleCategories
-      summary: Find role categories
       parameters:
         - name: limit
           required: false
@@ -881,16 +836,16 @@ paths:
                 $ref: '#/components/schemas/FindRoleCategoriesResponse'
         '401':
           description: ''
-      tags:
-        - roles
       security:
         - bearer: []
         - basic: []
         - api_key: []
+      summary: Find role categories
+      tags:
+        - roles
   /v1/campaigns/areas:
     post:
       operationId: createArea
-      summary: Create a new Area
       parameters: []
       requestBody:
         required: true
@@ -907,19 +862,24 @@ paths:
                 $ref: '#/components/schemas/Area'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Create a new Area
+      tags:
+        - campaigns
     get:
       operationId: findAreas
-      summary: Find Areas
       parameters:
         - name: bbox
           required: false
           in: query
           schema:
             example: '-74.006,40.7128,-73.935242,40.789142'
+            type: string
+        - name: campaignId
+          required: false
+          in: query
+          schema:
             type: string
       responses:
         '200':
@@ -930,20 +890,25 @@ paths:
                 $ref: '#/components/schemas/FindAreasResponse'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Find Areas
+      tags:
+        - campaigns
   /v1/campaigns/areas/self:
     get:
       operationId: findOwnAreas
-      summary: Find own Areas
       parameters:
         - name: bbox
           required: false
           in: query
           schema:
             example: '-74.006,40.7128,-73.935242,40.789142'
+            type: string
+        - name: campaignId
+          required: false
+          in: query
+          schema:
             type: string
       responses:
         '200':
@@ -954,14 +919,14 @@ paths:
                 $ref: '#/components/schemas/FindAreasResponse'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Find own Areas
+      tags:
+        - campaigns
   /v1/campaigns/areas/{areaId}:
     get:
       operationId: getArea
-      summary: Get an Area
       parameters:
         - name: areaId
           required: true
@@ -979,13 +944,13 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Get an Area
+      tags:
+        - campaigns
     put:
       operationId: updateArea
-      summary: Update an Area
       parameters:
         - name: areaId
           required: true
@@ -1009,13 +974,13 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Update an Area
+      tags:
+        - campaigns
     delete:
       operationId: deleteArea
-      summary: Delete an Area
       parameters:
         - name: areaId
           required: true
@@ -1033,14 +998,86 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Delete an Area
+      tags:
+        - campaigns
+  /v1/campaigns/campaigns:
+    post:
+      operationId: createCampaign
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCampaign'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Create a new campaign
+      tags:
+        - campaigns
+    get:
+      operationId: findCampaigns
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindCampaignsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find campaigns
+      tags:
+        - campaigns
+  /v1/campaigns/campaigns/{campaignId}:
+    put:
+      operationId: updateCampaign
+      parameters:
+        - name: campaignId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCampaign'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update a campaign
+      tags:
+        - campaigns
   /v1/campaigns/polling-stations:
     post:
       operationId: createPollingStation
-      summary: Create a new PollingStation
       parameters: []
       requestBody:
         required: true
@@ -1057,20 +1094,25 @@ paths:
                 $ref: '#/components/schemas/PollingStation'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Create a new PollingStation
+      tags:
+        - campaigns
     get:
       operationId: findPollingStations
-      summary: Find PollingStations
       parameters:
         - name: bbox
           required: false
           in: query
           schema:
             example: 47.695103,7.659684,53.670793, 14.229507
+            type: string
+        - name: campaignId
+          required: false
+          in: query
+          schema:
             type: string
       responses:
         '200':
@@ -1081,15 +1123,15 @@ paths:
                 $ref: '#/components/schemas/FindPollingStationsResponse'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Find PollingStations
+      tags:
+        - campaigns
   /v1/campaigns/polling-stations/{pollingStationId}:
     get:
       operationId: getPollingStation
-      summary: Get a PollingStation
       parameters:
         - name: pollingStationId
           required: true
@@ -1107,14 +1149,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Get a PollingStation
+      tags:
+        - campaigns
     put:
       operationId: updatePollingStation
-      summary: Update a PollingStation
       parameters:
         - name: pollingStationId
           required: true
@@ -1138,14 +1180,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Update a PollingStation
+      tags:
+        - campaigns
     delete:
       operationId: deletePollingStation
-      summary: Delete a PollingStation
       parameters:
         - name: pollingStationId
           required: true
@@ -1163,15 +1205,15 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Delete a PollingStation
+      tags:
+        - campaigns
   /v1/campaigns/pois:
     post:
       operationId: createPoi
-      summary: Create a new POI
       parameters: []
       requestBody:
         required: true
@@ -1188,13 +1230,13 @@ paths:
                 $ref: '#/components/schemas/Poi'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Create a new POI
+      tags:
+        - campaigns
     get:
       operationId: findPois
-      summary: Find POIs
       parameters:
         - name: type
           required: false
@@ -1202,16 +1244,21 @@ paths:
           description: filter by POI type
           schema:
             example: POSTER
+            type: string
             enum:
               - FLYER_SPOT
               - POSTER
               - HOUSE
-            type: string
         - name: bbox
           required: false
           in: query
           schema:
-            example: '-74.006,40.7128,-73.935242,40.789142'
+            example: 52.521,13.411,52.537,13.449
+            type: string
+        - name: campaignId
+          required: false
+          in: query
+          schema:
             type: string
       responses:
         '200':
@@ -1222,14 +1269,14 @@ paths:
                 $ref: '#/components/schemas/FindPoisResponse'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Find POIs
+      tags:
+        - campaigns
   /v1/campaigns/pois/self:
     get:
       operationId: findOwnPois
-      summary: Find own POIs
       parameters:
         - name: type
           required: false
@@ -1237,16 +1284,21 @@ paths:
           description: filter by POI type
           schema:
             example: POSTER
+            type: string
             enum:
               - FLYER_SPOT
               - POSTER
               - HOUSE
-            type: string
         - name: bbox
           required: false
           in: query
           schema:
-            example: '-74.006,40.7128,-73.935242,40.789142'
+            example: 52.521,13.411,52.537,13.449
+            type: string
+        - name: campaignId
+          required: false
+          in: query
+          schema:
             type: string
       responses:
         '200':
@@ -1257,14 +1309,14 @@ paths:
                 $ref: '#/components/schemas/FindPoisResponse'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Find own POIs
+      tags:
+        - campaigns
   /v1/campaigns/pois/{poiId}:
     get:
       operationId: getPoi
-      summary: Get a POI
       parameters:
         - name: poiId
           required: true
@@ -1282,13 +1334,13 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Get a POI
+      tags:
+        - campaigns
     put:
       operationId: updatePoi
-      summary: Update a POI
       parameters:
         - name: poiId
           required: true
@@ -1312,13 +1364,13 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Update a POI
+      tags:
+        - campaigns
     delete:
       operationId: deletePoi
-      summary: Delete a POI
       parameters:
         - name: poiId
           required: true
@@ -1336,14 +1388,20 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Delete a POI
+      tags:
+        - campaigns
   /v1/campaigns/pois/{poiId}/photos:
     post:
       operationId: addPoiPhoto
-      summary: Add POI photo
+      parameters:
+        - name: poiId
+          required: true
+          in: path
+          schema:
+            type: string
       requestBody:
         content:
           multipart/form-data:
@@ -1355,12 +1413,6 @@ paths:
                 image:
                   type: string
                   format: binary
-      parameters:
-        - name: poiId
-          required: true
-          in: path
-          schema:
-            type: string
       responses:
         '201':
           description: ''
@@ -1372,14 +1424,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Add POI photo
+      tags:
+        - campaigns
   /v1/campaigns/pois/{poiId}/photos/{photoId}:
     delete:
       operationId: deletePoiPhoto
-      summary: Delete a POI Photo
       parameters:
         - name: poiId
           required: true
@@ -1402,14 +1454,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Delete a POI Photo
+      tags:
+        - campaigns
   /v1/campaigns/routes:
     post:
       operationId: createRoute
-      summary: Create a new Route
       parameters: []
       requestBody:
         required: true
@@ -1426,14 +1478,14 @@ paths:
                 $ref: '#/components/schemas/Route'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Create a new Route
+      tags:
+        - campaigns
     get:
       operationId: findRoutes
-      summary: Find Routes
       parameters:
         - name: type
           required: false
@@ -1441,16 +1493,21 @@ paths:
           description: filter by Route type
           schema:
             example: POSTER
+            type: string
             enum:
               - FLYER_SPOT
               - POSTER
               - HOUSE
-            type: string
         - name: bbox
           required: false
           in: query
           schema:
             example: 47.695103,7.659684,53.670793, 14.229507
+            type: string
+        - name: campaignId
+          required: false
+          in: query
+          schema:
             type: string
       responses:
         '200':
@@ -1461,15 +1518,15 @@ paths:
                 $ref: '#/components/schemas/FindRoutesResponse'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Find Routes
+      tags:
+        - campaigns
   /v1/campaigns/routes/{routeId}:
     get:
       operationId: getRoute
-      summary: Get a Route
       parameters:
         - name: routeId
           required: true
@@ -1487,14 +1544,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Get a Route
+      tags:
+        - campaigns
     put:
       operationId: updateRoute
-      summary: Update a Route
       parameters:
         - name: routeId
           required: true
@@ -1518,14 +1575,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Update a Route
+      tags:
+        - campaigns
     delete:
       operationId: deleteRoute
-      summary: Delete a Route
       parameters:
         - name: routeId
           required: true
@@ -1543,15 +1600,15 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Delete a Route
+      tags:
+        - campaigns
   /v1/campaigns/experience-areas:
     post:
       operationId: createExperienceArea
-      summary: Create a new ExperienceArea
       parameters: []
       requestBody:
         required: true
@@ -1568,19 +1625,24 @@ paths:
                 $ref: '#/components/schemas/ExperienceArea'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Create a new ExperienceArea
+      tags:
+        - campaigns
     get:
       operationId: findExperienceAreas
-      summary: Find ExperienceAreas
       parameters:
         - name: bbox
           required: false
           in: query
           schema:
             example: 52.01,12.01,54.01, 14.01
+            type: string
+        - name: campaignId
+          required: false
+          in: query
+          schema:
             type: string
       responses:
         '200':
@@ -1591,14 +1653,14 @@ paths:
                 $ref: '#/components/schemas/FindExperienceAreasResponse'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Find ExperienceAreas
+      tags:
+        - campaigns
   /v1/campaigns/experience-areas/{experienceAreaId}:
     get:
       operationId: getExperienceArea
-      summary: Get a ExperienceArea
       parameters:
         - name: experienceAreaId
           required: true
@@ -1616,13 +1678,13 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Get a ExperienceArea
+      tags:
+        - campaigns
     put:
       operationId: updateExperienceArea
-      summary: Update a ExperienceArea
       parameters:
         - name: experienceAreaId
           required: true
@@ -1646,13 +1708,13 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Update a ExperienceArea
+      tags:
+        - campaigns
     delete:
       operationId: deleteExperienceArea
-      summary: Delete a ExperienceArea
       parameters:
         - name: experienceAreaId
           required: true
@@ -1670,14 +1732,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Delete a ExperienceArea
+      tags:
+        - campaigns
   /v1/campaigns/focus-areas:
     post:
       operationId: createFocusArea
-      summary: Create a new FocusArea
       parameters: []
       requestBody:
         required: true
@@ -1694,19 +1756,24 @@ paths:
                 $ref: '#/components/schemas/FocusArea'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Create a new FocusArea
+      tags:
+        - campaigns
     get:
       operationId: findFocusAreas
-      summary: Find FocusAreas
       parameters:
         - name: bbox
           required: false
           in: query
           schema:
             example: '-74.006,40.7128,-73.935242,40.789142'
+            type: string
+        - name: campaignId
+          required: false
+          in: query
+          schema:
             type: string
       responses:
         '200':
@@ -1717,14 +1784,14 @@ paths:
                 $ref: '#/components/schemas/FindFocusAreasResponse'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Find FocusAreas
+      tags:
+        - campaigns
   /v1/campaigns/focus-areas/{focusAreaId}:
     get:
       operationId: getFocusArea
-      summary: Get a FocusArea
       parameters:
         - name: focusAreaId
           required: true
@@ -1742,13 +1809,13 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Get a FocusArea
+      tags:
+        - campaigns
     put:
       operationId: updateFocusArea
-      summary: Update a FocusArea
       parameters:
         - name: focusAreaId
           required: true
@@ -1772,13 +1839,13 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Update a FocusArea
+      tags:
+        - campaigns
     delete:
       operationId: deleteFocusArea
-      summary: Delete a FocusArea
       parameters:
         - name: focusAreaId
           required: true
@@ -1796,14 +1863,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
+      summary: Delete a FocusArea
+      tags:
+        - campaigns
   /v1/campaigns/statistics:
     get:
       operationId: getCampaignStatistics
-      summary: Get campaign statistics
       parameters: []
       responses:
         '200':
@@ -1814,15 +1881,15 @@ paths:
                 $ref: '#/components/schemas/CampaignStatistics'
         '401':
           description: ''
-      tags:
-        - campaigns
       security:
         - bearer: []
         - oauth2: []
+      summary: Get campaign statistics
+      tags:
+        - campaigns
   /v1/news:
     get:
       operationId: findNews
-      summary: Find news
       parameters:
         - name: limit
           required: false
@@ -1835,10 +1902,10 @@ paths:
           required: false
           in: query
           schema:
+            type: string
             enum:
               - 'true'
               - 'false'
-            type: string
         - name: offset
           required: false
           in: query
@@ -1873,14 +1940,14 @@ paths:
                 $ref: '#/components/schemas/FindNewsResponse'
         '401':
           description: ''
-      tags:
-        - news
       security:
         - bearer: []
+      summary: Find news
+      tags:
+        - news
   /v1/news/{newsId}:
     get:
       operationId: getNews
-      summary: Get a news post
       parameters:
         - name: newsId
           required: true
@@ -1898,13 +1965,14 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - news
       security:
         - bearer: []
+      summary: Get a news post
+      tags:
+        - news
   /v1/client-info:
     get:
-      operationId: ClientInfoController_getClientInfo
+      operationId: ClientInfoController_getClientInfo_v1
       parameters: []
       responses:
         '200':
@@ -1913,10 +1981,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClientInfo'
+      tags:
+        - ClientInfo
   /v1/gnetz-applications:
     get:
       operationId: findGnetzApplications
-      summary: Find GNetz Applications
       parameters: []
       responses:
         '200':
@@ -1925,12 +1994,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FindGnetzApplicationsResponse'
+      summary: Find GNetz Applications
       tags:
         - gnetz-applications
   /v1/bookmarks:
     get:
       operationId: findBookmarks
-      summary: List bookmarks for the authenticated user
       parameters: []
       responses:
         '200':
@@ -1941,13 +2010,13 @@ paths:
                 $ref: '#/components/schemas/FindBookmarksResponse'
         '401':
           description: ''
-      tags:
-        - bookmarks
       security:
         - bearer: []
+      summary: List bookmarks for the authenticated user
+      tags:
+        - bookmarks
     post:
       operationId: createBookmark
-      summary: Create bookmark
       parameters: []
       requestBody:
         required: true
@@ -1964,14 +2033,14 @@ paths:
                 $ref: '#/components/schemas/Bookmark'
         '401':
           description: ''
-      tags:
-        - bookmarks
       security:
         - bearer: []
+      summary: Create bookmark
+      tags:
+        - bookmarks
   /v1/bookmarks/{bookmarkId}:
     delete:
       operationId: deleteBookmark
-      summary: Delete bookmark
       parameters:
         - name: bookmarkId
           required: true
@@ -1983,10 +2052,11 @@ paths:
           description: ''
         '401':
           description: ''
-      tags:
-        - bookmarks
       security:
         - bearer: []
+      summary: Delete bookmark
+      tags:
+        - bookmarks
   /health:
     get:
       tags:
@@ -2027,10 +2097,10 @@ info:
   contact: {}
 tags: []
 servers:
-  - url: http://0.0.0.0:5000
-    description: localhost
   - url: https://api.gruene.de
     description: Production
+  - url: http://192.168.178.35:5000
+    description: Development
 components:
   securitySchemes:
     basic:
@@ -2234,6 +2304,35 @@ components:
       required:
         - items
         - count
+    NbGroupFilter:
+      type: object
+      properties:
+        filter[external_refs.type]:
+          type: string
+          description: Filter by external reference type
+          example: SHERPA
+          enum:
+            - SHERPA
+        filter[external_refs.key]:
+          type: string
+          description: Filter by external reference ID (sherpa role id)
+          example: '12345678'
+        filter[level]:
+          description: Filter by role level
+          enum:
+            - DE:BUNDESVERBAND
+            - DE:LANDESVERBAND
+            - DE:KREISVERBAND
+            - DE:ORTSVERBAND
+          type: string
+        filter[type]:
+          type: string
+          description: Filter by role type
+          example: EXECUTIVE_BOARD
+        filter[slug]:
+          type: string
+          description: Filter by role slug
+          example: KV_EXECUTIVE_BOARD
     NbExternalRef:
       type: object
       properties:
@@ -2289,6 +2388,24 @@ components:
             $ref: '#/components/schemas/NbGroup'
       required:
         - items
+    NbRegionalChapterFilter:
+      type: object
+      properties:
+        filter[query]:
+          type: string
+          description: Filter by query
+        filter[id_prefix]:
+          type: string
+          description: Filter by ID prefix
+          maxLength: 8
+        filter[type]:
+          description: Filter by type
+          enum:
+            - BV
+            - LV
+            - KV
+            - OV
+          type: string
     NbRegionalChapter:
       type: object
       properties:
@@ -2994,6 +3111,7 @@ components:
       type: object
       properties:
         upsert:
+          maxItems: 200
           type: array
           items:
             $ref: '#/components/schemas/UpsertOffboardingServiceUser'
@@ -3223,6 +3341,12 @@ components:
     UpdateArea:
       type: object
       properties:
+        status:
+          enum:
+            - OPEN
+            - ASSIGNED
+            - CLOSED
+          type: string
         comment:
           type: string
           nullable: true
@@ -3237,6 +3361,7 @@ components:
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
+        - status
         - comment
         - polygon
     CreateArea:
@@ -3247,6 +3372,9 @@ components:
             - FLYER_SPOT
             - HOUSE
           type: string
+        campaignId:
+          type: string
+          nullable: true
         comment:
           type: string
           nullable: true
@@ -3275,6 +3403,14 @@ components:
             - FLYER_SPOT
             - HOUSE
           type: string
+        status:
+          enum:
+            - OPEN
+            - ASSIGNED
+            - CLOSED
+          type: string
+        campaignId:
+          type: string
         createdAt:
           format: date-time
           type: string
@@ -3290,6 +3426,8 @@ components:
       required:
         - id
         - type
+        - status
+        - campaignId
         - createdAt
         - comment
         - polygon
@@ -3300,6 +3438,153 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Area'
+      required:
+        - data
+    UpdateCampaign:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        name:
+          type: string
+      required:
+        - start
+        - end
+        - name
+    CreateCampaign:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        name:
+          type: string
+      required:
+        - start
+        - end
+        - name
+    Campaign:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        name:
+          type: string
+        start:
+          format: date-time
+          type: string
+        end:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - start
+        - end
+    FindCampaignsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campaign'
+      required:
+        - data
+    UpdatePollingStation:
+      type: object
+      properties:
+        coords:
+          description: Coordinates represented in GeoJSON [longitude, latitude]
+          example:
+            - 52.5297
+            - 13.4266
+          minItems: 2
+          maxItems: 2
+          type: array
+          items:
+            type: number
+        description:
+          type: string
+          nullable: true
+          maxLength: 250
+      required:
+        - coords
+        - description
+    CreatePollingStation:
+      type: object
+      properties:
+        coords:
+          description: Coordinates represented in GeoJSON [longitude, latitude]
+          example:
+            - 52.5297
+            - 13.4266
+          minItems: 2
+          maxItems: 2
+          type: array
+          items:
+            type: number
+        campaignId:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+          maxLength: 250
+      required:
+        - coords
+        - description
+    PollingStation:
+      type: object
+      properties:
+        coords:
+          description: Coordinates represented in GeoJSON [longitude, latitude]
+          example:
+            - 52.5297
+            - 13.4266
+          minItems: 2
+          maxItems: 2
+          type: array
+          items:
+            type: number
+        id:
+          type: string
+          example: '1'
+        campaignId:
+          type: string
+        userId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        description:
+          type: string
+          nullable: true
+      required:
+        - coords
+        - id
+        - campaignId
+        - userId
+        - createdAt
+        - updatedAt
+        - description
+    FindPollingStationsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PollingStation'
       required:
         - data
     PoiAddress:
@@ -3334,84 +3619,6 @@ components:
         - zip
         - street
         - houseNumber
-    UpdatePollingStation:
-      type: object
-      properties:
-        coords:
-          description: Coordinates represented in GeoJSON [longitude, latitude]
-          example:
-            - 52.5297
-            - 13.4266
-          minItems: 2
-          maxItems: 2
-          type: array
-          items:
-            type: number
-        address:
-          $ref: '#/components/schemas/PoiAddress'
-      required:
-        - coords
-        - address
-    CreatePollingStation:
-      type: object
-      properties:
-        coords:
-          description: Coordinates represented in GeoJSON [longitude, latitude]
-          example:
-            - 52.5297
-            - 13.4266
-          minItems: 2
-          maxItems: 2
-          type: array
-          items:
-            type: number
-        address:
-          $ref: '#/components/schemas/PoiAddress'
-      required:
-        - coords
-        - address
-    PollingStation:
-      type: object
-      properties:
-        coords:
-          description: Coordinates represented in GeoJSON [longitude, latitude]
-          example:
-            - 52.5297
-            - 13.4266
-          minItems: 2
-          maxItems: 2
-          type: array
-          items:
-            type: number
-        id:
-          type: string
-          example: '1'
-        userId:
-          type: string
-        createdAt:
-          format: date-time
-          type: string
-        updatedAt:
-          format: date-time
-          type: string
-        address:
-          $ref: '#/components/schemas/PoiAddress'
-      required:
-        - coords
-        - id
-        - userId
-        - createdAt
-        - updatedAt
-        - address
-    FindPollingStationsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PollingStation'
-      required:
-        - data
     PoiPoster:
       type: object
       properties:
@@ -3481,8 +3688,8 @@ components:
         coords:
           description: Coordinates represented in GeoJSON [longitude, latitude]
           example:
-            - 120.123
-            - -35.456
+            - 52.522
+            - 13.412
           minItems: 2
           maxItems: 2
           type: array
@@ -3494,6 +3701,9 @@ components:
             - POSTER
             - HOUSE
           type: string
+        campaignId:
+          type: string
+          nullable: true
         address:
           $ref: '#/components/schemas/PoiAddress'
         poster:
@@ -3575,6 +3785,8 @@ components:
         id:
           type: string
           example: '1'
+        campaignId:
+          type: string
         userId:
           type: string
         divisionKey:
@@ -3606,6 +3818,7 @@ components:
       required:
         - coords
         - id
+        - campaignId
         - userId
         - divisionKey
         - createdAt
@@ -3646,6 +3859,12 @@ components:
     UpdateRoute:
       type: object
       properties:
+        status:
+          enum:
+            - OPEN
+            - ASSIGNED
+            - CLOSED
+          type: string
         type:
           enum:
             - FLYER_SPOT
@@ -3655,11 +3874,15 @@ components:
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
+        - status
         - type
         - lineString
     CreateRoute:
       type: object
       properties:
+        campaignId:
+          type: string
+          nullable: true
         type:
           enum:
             - FLYER_SPOT
@@ -3683,15 +3906,25 @@ components:
             - POSTER
             - HOUSE
           type: string
+        campaignId:
+          type: string
         createdAt:
           format: date-time
+          type: string
+        status:
+          enum:
+            - OPEN
+            - ASSIGNED
+            - CLOSED
           type: string
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
         - id
         - type
+        - campaignId
         - createdAt
+        - status
         - lineString
     FindRoutesResponse:
       type: object
@@ -3725,6 +3958,9 @@ components:
             - POSTER
             - HOUSE
           type: string
+        campaignId:
+          type: string
+          nullable: true
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
@@ -3737,6 +3973,8 @@ components:
         id:
           type: string
           example: '1'
+        campaignId:
+          type: string
         createdAt:
           format: date-time
           type: string
@@ -3753,6 +3991,7 @@ components:
           $ref: '#/components/schemas/Polygon'
       required:
         - id
+        - campaignId
         - createdAt
         - description
         - type
@@ -3769,6 +4008,8 @@ components:
     UpdateFocusArea:
       type: object
       properties:
+        key:
+          type: string
         description:
           type: string
           nullable: true
@@ -3794,6 +4035,7 @@ components:
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
+        - key
         - description
         - score
         - scoreProgressiveConservative
@@ -3805,6 +4047,9 @@ components:
       properties:
         key:
           type: string
+        campaignId:
+          type: string
+          nullable: true
         description:
           type: string
           nullable: true
@@ -3845,6 +4090,8 @@ components:
           example: '1'
         key:
           type: string
+        campaignId:
+          type: string
         createdAt:
           format: date-time
           type: string
@@ -3867,6 +4114,7 @@ components:
       required:
         - id
         - key
+        - campaignId
         - createdAt
         - description
         - score
