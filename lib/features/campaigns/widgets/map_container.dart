@@ -852,11 +852,11 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     var theme = Theme.of(context);
 
     return SizedBox(
-      height: 300,
+      height: 278,
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
             child: CloseEditWidget(onClose: () => onClose()),
           ),
           Expanded(
@@ -875,29 +875,39 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                       ),
                     ],
                   ),
-                  SizedBox(height: 6),
+                  SizedBox(height: 4),
                   Row(
                     children: [
-                      Text(pollingStationFeature.properties!['description'].toString(), overflow: TextOverflow.fade),
-                    ],
-                  ),
-                  SizedBox(height: 12),
-                  Row(
-                    children: [
-                      TextButton(
-                        onPressed: () => openUrl(grueneAppFeedbackUrl, context),
+                      SizedBox(
+                        height: 95,
                         child: Text(
-                          t.campaigns.pollingStation.reportCorrection,
-                          textAlign: TextAlign.right,
-
-                          style: theme.textTheme.labelLarge?.apply(
-                            color: ThemeColors.textDark,
-                            decoration: TextDecoration.underline,
-                            fontWeightDelta: 2,
-                          ),
+                          pollingStationFeature.properties!['description'].toString(),
+                          overflow: TextOverflow.fade,
                         ),
                       ),
                     ],
+                  ),
+                  SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Expanded(
+                      child: SizedBox(
+                        height: 32,
+                        child: TextButton(
+                          onPressed: () => openUrl(grueneAppFeedbackUrl, context),
+                          child: Text(
+                            t.campaigns.pollingStation.reportCorrection,
+                            textAlign: TextAlign.right,
+
+                            style: theme.textTheme.labelLarge?.apply(
+                              color: ThemeColors.textDark,
+                              decoration: TextDecoration.underline,
+                              fontWeightDelta: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -905,17 +915,20 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
           ),
           Container(
             color: ThemeColors.sun,
-            child: Row(
-              children: [
-                Icon(Icons.info_outline),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
+            child: SizedBox(
+              height: 56,
+              child: Stack(
+                children: [
+                  Align(alignment: Alignment.topLeft, child: Icon(Icons.info_outline, size: 24)),
+                  Positioned.fill(
+                    left: 32,
+                    top: 0,
+                    bottom: 0,
                     child: Text(t.campaigns.pollingStation.hint, softWrap: true, style: theme.textTheme.labelSmall),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
