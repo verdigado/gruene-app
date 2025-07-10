@@ -270,7 +270,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSourceName,
       CampaignConstants.routesLineLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#2F8FFF', lineWidth: 8, lineOpacity: 0.5),
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 0.6),
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
     );
