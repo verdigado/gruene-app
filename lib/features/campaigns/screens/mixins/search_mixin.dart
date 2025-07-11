@@ -40,7 +40,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
             ),
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           ),
-          icon: Icon(Icons.search, color: ThemeColors.textDisabled),
+          icon: Icon(Icons.search_outlined, color: ThemeColors.textDisabled),
           onPressed: () => setState(() {
             var scaffoldMessenger = ScaffoldMessenger.of(context);
             scaffoldMessenger.removeCurrentSnackBar();
@@ -68,7 +68,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
             children: [
               IconButton(
                 onPressed: _searchAddress,
-                icon: Icon(Icons.search, color: foregroundColor),
+                icon: Icon(Icons.search_outlined, color: foregroundColor),
               ),
               Expanded(
                 child: TextFormField(
@@ -101,7 +101,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
                           _searchResult!.clear();
                         });
                       },
-                      icon: Icon(Icons.close, color: foregroundColor),
+                      icon: Icon(Icons.close_outlined, color: foregroundColor),
                     )
                   : SizedBox(width: 24),
             ],
@@ -203,7 +203,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
             ),
             IconButton(
               onPressed: () => _moveMapTo(result.location),
-              icon: Icon(Icons.arrow_forward, color: ThemeColors.background),
+              icon: Icon(Icons.arrow_forward_outlined, color: ThemeColors.background),
             ),
           ],
         ),

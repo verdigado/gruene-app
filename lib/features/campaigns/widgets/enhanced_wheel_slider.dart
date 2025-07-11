@@ -97,7 +97,7 @@ class _EnhancedWheelSliderState extends State<EnhancedWheelSlider> {
                 ),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Icon(Icons.edit, size: 20, color: _sliderColor),
+                  child: Icon(Icons.edit_outlined, size: 20, color: _sliderColor),
                 ),
               ],
             ),
@@ -149,7 +149,7 @@ class _EnhancedWheelSliderState extends State<EnhancedWheelSlider> {
                 padding: EdgeInsets.only(top: 10),
                 child: GestureDetector(
                   onTap: () => _changeValue(widget.sliderInterval * -1),
-                  child: Icon(Icons.remove_circle, size: iconSize, color: _actionColor),
+                  child: Icon(Icons.remove_circle_outlined, size: iconSize, color: _actionColor),
                 ),
               ),
               SizedBox(width: 6),
@@ -166,7 +166,7 @@ class _EnhancedWheelSliderState extends State<EnhancedWheelSlider> {
                 padding: EdgeInsets.only(top: 10),
                 child: GestureDetector(
                   onTap: () => _changeValue(widget.sliderInterval),
-                  child: Icon(Icons.add_circle, size: iconSize, color: _actionColor),
+                  child: Icon(Icons.add_circle_outlined, size: iconSize, color: _actionColor),
                 ),
               ),
             ],

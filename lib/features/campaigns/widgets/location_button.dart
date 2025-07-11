@@ -22,12 +22,12 @@ class LocationIcon extends StatelessWidget {
         locationStatus == LocationStatus.always || locationStatus == LocationStatus.whileInUse;
     if (hasLocationPermission) {
       return Icon(
-        followUserLocation ? Icons.my_location : Icons.location_searching,
+        followUserLocation ? Icons.my_location_outlined : Icons.location_searching_outlined,
         color: theme.colorScheme.secondary,
       );
     }
 
-    return Icon(Icons.location_disabled, color: theme.colorScheme.error);
+    return Icon(Icons.location_disabled_outlined, color: theme.colorScheme.error);
   }
 }
 

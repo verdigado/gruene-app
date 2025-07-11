@@ -12,7 +12,7 @@ class CloseEditWidget extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        GestureDetector(onTap: onClose, child: Icon(Icons.close)),
+        GestureDetector(onTap: onClose, child: Icon(Icons.close_outlined)),
         _getSaveAction(theme),
       ],
     );
