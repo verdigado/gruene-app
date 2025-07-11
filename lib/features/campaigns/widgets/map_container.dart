@@ -508,7 +508,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
 
     // set opacity of marker layer
-    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, SymbolLayerProperties(iconOpacity: 0.3));
+    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, LineLayerProperties(lineOpacity: 0.3));
     // set data for '_selected layer'
     var featureObject = turf.Feature<turf.LineString>.fromJson(feature);
     turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
@@ -519,8 +519,8 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     setState(() {
       _isInFocusMode = false;
     });
-    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, SymbolLayerProperties(iconOpacity: 0.6));
-    removeLayerSource(CampaignConstants.routesLineSelectedLayerId);
+    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, LineLayerProperties(lineOpacity: 0.6));
+    removeLayerSource(CampaignConstants.routesSelectedSourceName);
   }
 
   @override
@@ -887,7 +887,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     setFocusToPollingStation(pollingStationFeature.toJson());
     var pollingStationDetail = getPollingStationDetailWidget(pollingStationFeature);
     await widget.showBottomDetailSheet<bool>(pollingStationDetail);
-    unsetFocusToPollingStation();
+    await unsetFocusToPollingStation();
   }
 
   Future<void> onRouteClick(dynamic feature) async {
@@ -895,7 +895,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     setFocusToRoute(routeFeature.toJson());
     var routeDetail = await getRouteDetailWidget(routeFeature);
     await widget.showBottomDetailSheet<bool>(routeDetail);
-    unsetFocusToRoute();
+    await unsetFocusToRoute();
   }
 
   SizedBox getPollingStationDetailWidget(turf.Feature pollingStationFeature) {

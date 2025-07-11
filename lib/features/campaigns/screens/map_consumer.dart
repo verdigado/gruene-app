@@ -283,11 +283,10 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSelectedSourceName,
-
       CampaignConstants.routesLineSelectedLayerId,
       LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 1),
       enableInteraction: false,
-      minzoom: _minZoomPollingStationLayer,
+      minzoom: _minZoomRouteLayer,
     );
   }
 
@@ -321,6 +320,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       );
     } else {
       mapController.removeLayerSource(CampaignConstants.routesSourceName);
+      mapController.removeLayerSource(CampaignConstants.routesSelectedSourceName);
       showInfoToast(t.campaigns.infoToast.routes_deactivated);
     }
   }
