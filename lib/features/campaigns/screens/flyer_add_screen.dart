@@ -93,7 +93,7 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
           SaveCancelOnCreateWidget(onSave: _onSavePressed),
           Row(
             children: [
-              Icon(Icons.info_outline, color: ThemeColors.background),
+              Icon(Icons.info_outlined, color: ThemeColors.background),
               SizedBox(width: 10),
               SizedBox(
                 width: mediaQuery.size.width - 82,

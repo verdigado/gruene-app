@@ -125,7 +125,7 @@ class MediaHelper {
               top: 20,
               child: GestureDetector(
                 onTap: () => Navigator.maybePop(context),
-                child: Icon(Icons.close, color: theme.colorScheme.surface, size: 30),
+                child: Icon(Icons.close_outlined, color: theme.colorScheme.surface, size: 30),
               ),
             ),
           ],

@@ -463,7 +463,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
 
     toast = MotionToast(
-      icon: Icons.info,
+      icon: Icons.info_outlined,
       secondaryColor: ThemeColors.textCancel,
       primaryColor: ThemeColors.infoBackground,
       width: 300,

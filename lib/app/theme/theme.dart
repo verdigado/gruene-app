@@ -102,7 +102,7 @@ class _ThemeTextStyles {
 
 final WidgetStateProperty<Icon?> thumbIcon = WidgetStateProperty.resolveWith<Icon?>((Set<WidgetState> states) {
   if (states.contains(WidgetState.selected)) {
-    return const Icon(Icons.check);
+    return const Icon(Icons.check_outlined);
   }
   return null;
 });

@@ -167,7 +167,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
             child: IconButton(
               color: mapLibreColor,
               iconSize: 20,
-              icon: const Icon(Icons.info_outline),
+              icon: const Icon(Icons.info_outlined),
               onPressed: () {
                 showDialog<void>(context: context, builder: (context) => const AttributionDialog());
               },
@@ -629,7 +629,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                                 popups.clear();
                               });
                             },
-                            child: Icon(Icons.close, size: 14),
+                            child: Icon(Icons.close_outlined, size: 14),
                           ),
                           GestureDetector(
                             onTap: () => onTapPopup(onEditItemClicked),
@@ -746,7 +746,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.info, color: ThemeColors.textCancel, size: 24),
+                        Icon(Icons.info_outlined, color: ThemeColors.textCancel, size: 24),
                         SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -971,7 +971,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
               height: 56,
               child: Stack(
                 children: [
-                  Align(alignment: Alignment.topLeft, child: Icon(Icons.info_outline, size: 24)),
+                  Align(alignment: Alignment.topLeft, child: Icon(Icons.info_outlined, size: 24)),
                   Positioned.fill(
                     left: 32,
                     top: 0,

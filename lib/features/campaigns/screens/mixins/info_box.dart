@@ -12,7 +12,7 @@ mixin InfoBox {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.info, color: ThemeColors.textCancel),
+              Icon(Icons.info_outlined, color: ThemeColors.textCancel),
               SizedBox(width: 6),
               Text(title, style: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark)),
             ],

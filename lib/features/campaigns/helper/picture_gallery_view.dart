@@ -115,7 +115,7 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
             top: 20,
             child: GestureDetector(
               onTap: _closeWindow,
-              child: Icon(Icons.close, color: theme.colorScheme.surface, size: 30),
+              child: Icon(Icons.close_outlined, color: theme.colorScheme.surface, size: 30),
             ),
           ),
         ],
@@ -127,13 +127,13 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
     return PopupMenuButton<PhotoGalleryAction>(
       color: ThemeColors.background,
       onSelected: _doGalleryAction,
-      child: Icon(Icons.more_vert, color: ThemeColors.background),
+      child: Icon(Icons.more_vert_outlined, color: ThemeColors.background),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<PhotoGalleryAction>>[
         PopupMenuItem<PhotoGalleryAction>(
           value: PhotoGalleryAction.downloadPhoto,
           child: Row(
             children: [
-              Icon(Icons.download),
+              Icon(Icons.file_download_outlined),
               SizedBox(width: 12),
               Text(t.campaigns.poster.photoEditActions.downloadPicture),
             ],
@@ -143,7 +143,7 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
           value: PhotoGalleryAction.deletePhoto,
           child: Row(
             children: [
-              Icon(Icons.delete_outline),
+              Icon(Icons.delete_outlined),
               SizedBox(width: 12),
               Text(t.campaigns.poster.photoEditActions.deletePhoto),
             ],
@@ -248,7 +248,7 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
         title: t.campaigns.poster.photoEditActions.confirmation_dialog.title_delete,
         text: t.campaigns.poster.photoEditActions.confirmation_dialog.text_delete,
         actionText: t.campaigns.poster.photoEditActions.deletePhoto,
-        icon: Icons.delete_outline,
+        icon: Icons.delete_outlined,
       ),
     };
 

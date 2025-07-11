@@ -35,7 +35,7 @@ class _RefreshButtonState extends State<RefreshButton> {
     const maxLabelCount = 99;
     var labelText = _currentCount > maxLabelCount ? '$maxLabelCount+' : _currentCount.toString();
 
-    getIcon() => Icon(Icons.sync_outlined, color: ThemeColors.background);
+    getIcon() => Icon(Icons.restart_alt_outlined, color: ThemeColors.background);
 
     var iconAnimated = LoopAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 2 * pi), // 0° to 360° (2π)
