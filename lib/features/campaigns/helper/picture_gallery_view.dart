@@ -100,8 +100,8 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Text(
-                'Aktuellstes Bild\n12.12.2025, 21:34 Uhr',
-                style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.background.withAlpha(0)),
+                getImageText(allImages),
+                style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.background),
               ),
             ),
           ),
@@ -287,5 +287,11 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
       },
     );
     return result ?? false;
+  }
+
+  String getImageText(List<PosterPhotoModel> allImages) {
+    var title = '';
+    if (_currentImageIndex == 0) title += t.campaigns.poster.pictureView.currentPicture_label;
+    return title;
   }
 }

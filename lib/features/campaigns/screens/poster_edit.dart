@@ -102,6 +102,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
                               controller: _imageSliderController,
                               itemCount: _currentPhotos.length,
                               itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) => Container(
+                                padding: EdgeInsets.symmetric(horizontal: 2),
                                 height: imageRowHeight,
                                 clipBehavior: Clip.hardEdge,
                                 decoration: BoxDecoration(

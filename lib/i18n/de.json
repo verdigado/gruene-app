@@ -143,6 +143,9 @@
           "text_replace": "Bist Du Dir sicher, dass Du das Bild unwiderruflich ersetzen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden."
         }
       },
+      "pictureView": {
+        "currentPicture_label": "Aktuelles Bild"
+      },
       "comment": {
         "label": "Beschreibung",
         "hint": "Bitte gib hierzu weitere Informationen an"
