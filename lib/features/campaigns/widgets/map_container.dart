@@ -5,23 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
-import 'package:gruene_app/features/campaigns/helper/map_layer_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/marker_item_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/marker_item_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/util.dart';
 import 'package:gruene_app/features/campaigns/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
-import 'package:gruene_app/features/campaigns/models/map_layer_model.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/attribution_dialog.dart';
+import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/location_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
@@ -38,6 +40,7 @@ typedef GetMarkerImagesCallback = Map<String, String> Function();
 typedef OnFeatureClickCallback = void Function(dynamic feature);
 typedef GetBasicPoiFromFeatureCallback = Future<BasicPoi> Function(Map<String, dynamic> feature);
 typedef OnNoFeatureClickCallback = void Function(Point<double> point);
+typedef OnShowBottomDetailSheet = Future<U?> Function<U>(Widget detailWidget);
 typedef OnEditItemClickedCallback = void Function();
 typedef ShowMapInfoAfterCameraMoveCallback = void Function();
 typedef AddMapLayersForContextCallback = void Function(MapLibreMapController mapLibreController);
@@ -52,6 +55,7 @@ class MapContainer extends StatefulWidget {
   final GetBasicPoiFromFeatureCallback getBasicPoiFromFeature;
   final OnFeatureClickCallback? onFeatureClick;
   final OnNoFeatureClickCallback? onNoFeatureClick;
+  final OnShowBottomDetailSheet showBottomDetailSheet;
   final AddMapLayersForContextCallback? addMapLayersForContext;
   final ShowMapInfoAfterCameraMoveCallback? showMapInfoAfterCameraMove;
   final LatLng? userLocation;
@@ -66,6 +70,7 @@ class MapContainer extends StatefulWidget {
     required this.getMarkerImages,
     required this.onFeatureClick,
     required this.onNoFeatureClick,
+    required this.showBottomDetailSheet,
     required this.getBasicPoiFromFeature,
     this.loadDataLayers,
     this.addMapLayersForContext,
@@ -81,7 +86,6 @@ class MapContainer extends StatefulWidget {
 class _MapContainerState extends State<MapContainer> implements MapController, MapControllerSimplified {
   MapLibreMapController? _controller;
   final MarkerItemManager _markerItemManager = MarkerItemManager();
-  final MapLayerDataManager _mapLayerManager = MapLayerDataManager();
   final appSettings = GetIt.I<AppSettings>();
   final campaignActionCache = GetIt.I<CampaignActionCache>();
 
@@ -163,7 +167,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
             child: IconButton(
               color: mapLibreColor,
               iconSize: 20,
-              icon: const Icon(Icons.info_outline),
+              icon: const Icon(Icons.info_outlined),
               onPressed: () {
                 showDialog<void>(context: context, builder: (context) => const AttributionDialog());
               },
@@ -242,37 +246,56 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     final onFeatureClick = widget.onFeatureClick;
     final onNoFeatureClick = widget.onNoFeatureClick;
 
-    List<dynamic> jsonFeatures = await getFeaturesInScreen(point, [CampaignConstants.markerLayerName]);
-    final features = jsonFeatures.map((e) => e as Map<String, dynamic>).where((x) {
-      // if (x.containsKey('id')) return true;
-      if (x['properties'] == null) return false;
-      final properties = x['properties'] as Map<String, dynamic>;
-      if (properties['status_type'] == null) return false;
-      return true;
-    }).toList();
+    final jsonFeaturesPoiMarkers = await getFeaturesInScreen(point, [CampaignConstants.markerLayerName]);
+    final poiMarkers = jsonFeaturesPoiMarkers.map((e) => e as Map<String, dynamic>).toList();
 
-    if (features.isNotEmpty && onFeatureClick != null) {
-      logger.d('Features: ${features.length} Zoom: ${_controller!.cameraPosition!.zoom.toString()}');
+    if (poiMarkers.isNotEmpty && onFeatureClick != null) {
+      logger.d('Features: ${poiMarkers.length} Zoom: ${_controller!.cameraPosition!.zoom.toString()}');
       dynamic feature;
-      var allPositions = features.map(MapHelper.extractLatLngFromFeature).toList();
+      var allPositions = poiMarkers.map(MapHelper.extractLatLngFromFeature).toList();
       var hasDuplicates = allPositions.map((item) => allPositions.where((x) => x == item).length).any((x) => x > 1);
 
       // Either the list contains position duplicates or the zoom level is high enough so that a user-select makes sense
-      if (hasDuplicates || (features.length > 1 && _controller!.cameraPosition!.zoom > multiSelectZoomThreshold)) {
-        features.sort((itemA, itemB) {
+      if (hasDuplicates || (poiMarkers.length > 1 && _controller!.cameraPosition!.zoom > multiSelectZoomThreshold)) {
+        poiMarkers.sort((itemA, itemB) {
           // sort list by distance from tapped map location
           var distanceA = targetLatLng.getDistance(MapHelper.extractLatLngFromFeature(itemA));
           var distanceB = targetLatLng.getDistance(MapHelper.extractLatLngFromFeature(itemB));
           return distanceA.compareTo(distanceB);
         });
 
-        feature = await _userMultiSelect(features);
+        feature = await _userMultiSelect(poiMarkers);
       } else {
-        feature = MapHelper.getClosestFeature(features, targetLatLng);
+        feature = MapHelper.getClosestFeature(poiMarkers, targetLatLng);
       }
       if (feature == null) return;
       onFeatureClick(feature);
-    } else if (onNoFeatureClick != null) {
+      return;
+    }
+
+    final jsonFeaturesPollingStations = await getFeaturesInScreen(point, [
+      CampaignConstants.pollingStationSymbolLayerId,
+    ]);
+    final pollingStations = jsonFeaturesPollingStations.map((e) => e as Map<String, dynamic>).toList();
+
+    if (pollingStations.isNotEmpty) {
+      final feature = MapHelper.getClosestFeature(pollingStations, targetLatLng);
+
+      onPollingStationClick(feature);
+      return;
+    }
+
+    final jsonFeaturesRoutes = await getFeaturesInScreen(point, [CampaignConstants.routesLineLayerId]);
+    final routes = jsonFeaturesRoutes.map((e) => e as Map<String, dynamic>).toList();
+
+    if (routes.isNotEmpty) {
+      final feature = MapHelper.getClosestFeature(routes, targetLatLng);
+
+      onRouteClick(feature);
+      return;
+    }
+
+    if (onNoFeatureClick != null) {
       onNoFeatureClick(point);
     }
   }
@@ -373,21 +396,13 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
   }
 
   @override
-  void setLayerSource(String sourceId, List<MapLayerModel> layerData) async {
-    _mapLayerManager.addLayerData(sourceId, layerData);
+  void setLayerSourceWithFeatureCollection(String sourceId, turf.FeatureCollection layerData) async {
     final sourceIds = await _controller!.getSourceIds();
-    Future<void> Function(Map<String, dynamic> data) setLayerData;
     if (sourceIds.contains(sourceId)) {
-      setLayerData = (data) async {
-        await _controller!.setGeoJsonSource(sourceId, data);
-      };
+      await _controller!.setGeoJsonSource(sourceId, layerData.toJson());
     } else {
-      setLayerData = (data) async {
-        await _controller!.addGeoJsonSource(sourceId, data);
-      };
+      await _controller!.addGeoJsonSource(sourceId, layerData.toJson());
     }
-    final data = MarkerItemHelper.transformMapLayerDataToGeoJson(_mapLayerManager.getMapLayerData(sourceId)).toJson();
-    await setLayerData(data);
   }
 
   @override
@@ -397,7 +412,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     * Therefore we set it as empty datasource. Once the issue has been corrected we can use the designated method.
     */
     // await _controller!.removeSource(sourceId);
-    await _controller!.setGeoJsonSource(sourceId, MarkerItemHelper.transformMapLayerDataToGeoJson([]).toJson());
+    await _controller!.setGeoJsonSource(sourceId, turf.FeatureCollection().toJson());
   }
 
   @override
@@ -450,6 +465,62 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     var featureObject = turf.Feature<turf.Point>.fromJson(feature);
     turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
     await _controller!.setGeoJsonSource('${CampaignConstants.markerSourceName}_selected', collection.toJson());
+  }
+
+  Future<void> setFocusToPollingStation(Map<String, dynamic> feature) async {
+    // removes the add_marker
+    setState(() {
+      _isInFocusMode = true;
+    });
+    // align map to show feature in center area
+    final coord = MapHelper.extractLatLngFromFeature(feature);
+    await moveMapIfItemIsOnBorder(coord, Size(150, 150));
+    // set opacity of marker layer
+    await _controller!.setLayerProperties(
+      CampaignConstants.pollingStationSymbolLayerId,
+      SymbolLayerProperties(iconOpacity: 0.2),
+    );
+    // set data for '_selected layer'
+    var featureObject = turf.Feature<turf.Point>.fromJson(feature);
+    turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
+    await _controller!.setGeoJsonSource(CampaignConstants.pollingStationSelectedSourceName, collection.toJson());
+  }
+
+  Future<void> unsetFocusToPollingStation() async {
+    setState(() {
+      _isInFocusMode = false;
+    });
+    await _controller!.setLayerProperties(
+      CampaignConstants.pollingStationSymbolLayerId,
+      SymbolLayerProperties(iconOpacity: 1),
+    );
+    removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
+  }
+
+  Future<void> setFocusToRoute(Map<String, dynamic> feature) async {
+    // removes the add_marker
+    setState(() {
+      _isInFocusMode = true;
+    });
+    // align map to show feature in center area
+    // TODO determine boundary of line and move map
+    // final coord = MapHelper.extractLatLngFromFeature(feature);
+    // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
+
+    // set opacity of marker layer
+    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, SymbolLayerProperties(iconOpacity: 0.3));
+    // set data for '_selected layer'
+    var featureObject = turf.Feature<turf.LineString>.fromJson(feature);
+    turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
+    await _controller!.setGeoJsonSource(CampaignConstants.routesSelectedSourceName, collection.toJson());
+  }
+
+  Future<void> unsetFocusToRoute() async {
+    setState(() {
+      _isInFocusMode = false;
+    });
+    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, SymbolLayerProperties(iconOpacity: 0.6));
+    removeLayerSource(CampaignConstants.routesLineSelectedLayerId);
   }
 
   @override
@@ -558,7 +629,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                                 popups.clear();
                               });
                             },
-                            child: Icon(Icons.close, size: 14),
+                            child: Icon(Icons.close_outlined, size: 14),
                           ),
                           GestureDetector(
                             onTap: () => onTapPopup(onEditItemClicked),
@@ -675,7 +746,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.info, color: ThemeColors.textCancel, size: 24),
+                        Icon(Icons.info_outlined, color: ThemeColors.textCancel, size: 24),
                         SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -808,6 +879,168 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
           ),
         );
       },
+    );
+  }
+
+  Future<void> onPollingStationClick(dynamic feature) async {
+    var pollingStationFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
+    setFocusToPollingStation(pollingStationFeature.toJson());
+    var pollingStationDetail = getPollingStationDetailWidget(pollingStationFeature);
+    await widget.showBottomDetailSheet<bool>(pollingStationDetail);
+    unsetFocusToPollingStation();
+  }
+
+  Future<void> onRouteClick(dynamic feature) async {
+    var routeFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
+    setFocusToRoute(routeFeature.toJson());
+    var routeDetail = await getRouteDetailWidget(routeFeature);
+    await widget.showBottomDetailSheet<bool>(routeDetail);
+    unsetFocusToRoute();
+  }
+
+  SizedBox getPollingStationDetailWidget(turf.Feature pollingStationFeature) {
+    onClose() => Navigator.maybePop(context);
+    var theme = Theme.of(context);
+
+    return SizedBox(
+      height: 278,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            child: CloseEditWidget(onClose: () => onClose()),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 27),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        t.campaigns.pollingStation.label,
+                        style: theme.textTheme.labelLarge!.copyWith(
+                          color: ThemeColors.textDark,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 95,
+                        child: Text(
+                          pollingStationFeature.properties!['description'].toString(),
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Expanded(
+                      child: SizedBox(
+                        height: 32,
+                        child: TextButton(
+                          onPressed: () => openUrl(grueneAppFeedbackUrl, context),
+                          child: Text(
+                            t.campaigns.pollingStation.reportCorrection,
+                            textAlign: TextAlign.right,
+
+                            style: theme.textTheme.labelLarge?.apply(
+                              color: ThemeColors.textDark,
+                              decoration: TextDecoration.underline,
+                              fontWeightDelta: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            color: ThemeColors.sun,
+            padding: EdgeInsets.all(12),
+            child: SizedBox(
+              height: 56,
+              child: Stack(
+                children: [
+                  Align(alignment: Alignment.topLeft, child: Icon(Icons.info_outlined, size: 24)),
+                  Positioned.fill(
+                    left: 32,
+                    top: 0,
+                    bottom: 0,
+                    child: Text(t.campaigns.pollingStation.hint, softWrap: true, style: theme.textTheme.labelSmall),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<Widget> getRouteDetailWidget(turf.Feature routeFeature) async {
+    var theme = Theme.of(context);
+    var routeService = GetIt.I<GrueneApiRouteService>();
+    var route = await routeService.getRoute(routeFeature.id.toString());
+
+    onClose() => Navigator.maybePop(context);
+
+    return SizedBox(
+      height: 109,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            child: CloseEditWidget(onClose: () => onClose()),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 27),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.label} #${route.id}',
+                        style: theme.textTheme.labelLarge!.copyWith(
+                          color: ThemeColors.textDark,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.routeType_label}: ${route.type.getAsLabel()}',
+                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.createdAt}: ${route.createdAt.getAsLocalDateString()}',
+                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

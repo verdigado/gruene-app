@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:tuple/tuple.dart';
+import 'package:turf/centroid.dart';
+import 'package:turf/turf.dart' as turf;
 
 class MapHelper {
   static LatLng extractLatLngFromFeature(dynamic rawFeature) {
@@ -30,7 +32,11 @@ class MapHelper {
       Tuple2<dynamic, double>? currentFeatureWithDistance,
       dynamic nextFeature,
     ) {
-      final nextFeatureLatLng = extractLatLngFromFeature(nextFeature);
+      final turfFeature = turf.Feature.fromJson(nextFeature as Map<String, dynamic>);
+
+      final nextFeatureLatLng = turfFeature.geometry?.type == turf.GeoJSONObjectType.lineString
+          ? turf.nearestPointOnLine(turfFeature.geometry as LineString, target.asPoint()).geometry!.asLatLng()
+          : extractLatLngFromFeature(nextFeature);
       final nextFeatureDistance = calculateDistance(nextFeatureLatLng, target);
       if (currentFeatureWithDistance != null && currentFeatureWithDistance.item2 < nextFeatureDistance) {
         return currentFeatureWithDistance;

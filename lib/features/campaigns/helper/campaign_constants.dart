@@ -11,8 +11,24 @@ class CampaignConstants {
   static const posterToBeMovedAssetName = 'assets/symbols/posters/poster_to_be_moved.png';
   static const addMarkerAssetName = 'assets/symbols/add_marker.svg';
 
+  static const pollingStationAssetName = 'assets/symbols/polling_stations/pollingstation.png';
+
   static const markerSourceName = 'markers';
   static const markerLayerName = 'markerSymbols';
+
+  static const focusAreaSourceName = 'focusArea';
+  static const focusAreaBorderLayerId = 'focusArea_border';
+  static const focusAreaFillLayerId = 'focusArea_layer';
+
+  static const pollingStationSourceName = 'pollingStation';
+  static const pollingStationSelectedSourceName = 'pollingStation_selected';
+  static const pollingStationSymbolLayerId = 'pollingStation_layer';
+  static const pollingStationSymbolSelectedLayerId = 'pollingStation_layer_selected';
+
+  static const routesSourceName = 'routes';
+  static const routesSelectedSourceName = 'routes_selected';
+  static const routesLineLayerId = 'routes_layer';
+  static const routesLineSelectedLayerId = 'routes_layer_selected';
 
   static Map<int, String> scoreInfos = {
     1: 'Stufe 1: wenige Plakate aufhängen, keine Flyer verteilen, keine Haustüren',

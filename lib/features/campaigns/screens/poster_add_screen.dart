@@ -71,7 +71,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(shape: BoxShape.circle),
-                        child: Center(child: Icon(Icons.delete, color: Colors.white, size: 30.0)),
+                        child: Center(child: Icon(Icons.delete_outlined, color: Colors.white, size: 30.0)),
                       ),
                     )
                   : SizedBox(),
@@ -112,7 +112,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
           SaveCancelOnCreateWidget(onSave: _onSavePressed),
           Row(
             children: [
-              Icon(Icons.info_outline, color: ThemeColors.background),
+              Icon(Icons.info_outlined, color: ThemeColors.background),
               SizedBox(width: 10),
               SizedBox(
                 width: mediaQuery.size.width - 82,

@@ -13,7 +13,7 @@ class AttributionDialog extends StatelessWidget {
       title: Text(t.campaigns.map.mapData),
       children: [
         AttributionDialogItem(
-          icon: Icons.copyright,
+          icon: Icons.copyright_outlined,
           color: color,
           text: t.campaigns.map.osmContributors,
           onPressed: () {
@@ -21,7 +21,7 @@ class AttributionDialog extends StatelessWidget {
           },
         ),
         AttributionDialogItem(
-          icon: Icons.copyright,
+          icon: Icons.copyright_outlined,
           color: color,
           text: 'OpenMapTiles',
           onPressed: () {
@@ -29,7 +29,7 @@ class AttributionDialog extends StatelessWidget {
           },
         ),
         AttributionDialogItem(
-          icon: Icons.copyright,
+          icon: Icons.copyright_outlined,
           color: color,
           text: 'Natural Earth',
           onPressed: () {
@@ -37,7 +37,7 @@ class AttributionDialog extends StatelessWidget {
           },
         ),
         AttributionDialogItem(
-          icon: Icons.copyright,
+          icon: Icons.copyright_outlined,
           color: color,
           text: 'BÜNDNIS 90/DIE GRÜNEN',
           onPressed: () {

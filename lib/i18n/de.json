@@ -73,7 +73,21 @@
       "focusAreas_deactivated": "Fokusgebiete deaktiviert",
       "focusAreas_aboutTitle": "Über Fokusgebiete",
       "focusAreas_aboutText": "Fokusgebiete zeigen Dir, wo sich Wahlkampf in welcher Form besonders lohnt. Diese Fokusgebiete sind in Level 1 (wenig) bis 5 (viel) aufgeteilt.\nKlicke auf ein Fokusgebiet, um mehr Infos zu erhalten.",
+      "routes_activated": "Routen aktiviert",
+      "routes_deactivated": "Routen deaktiviert",
+      "routes_aboutTitle": "Über Routen",
+      "routes_aboutText": "Routen zeigen Dir, welche Wege Du am besten ablaufen kannst, um Haustüren zu besuchen, Plakate aufzuhängen oder Flyer zu verteilen. Die Routen werden von Wahlkampfkoordinator*innen im Grünen Atlas erstellt. Für mehr Informationen wende Dich bitte an Deinen Orts- oder Kreisverband.",
       "more": "mehr Info"
+    },
+    "pollingStation": {
+      "label": "Wahllokal",
+      "reportCorrection": "Korrektur melden",
+      "hint": "Bitte beachte, dass es je nach Region unterschiedliche Vorgaben und Regeln für das Aufhängen von Plakaten in der Nähe von Wahllokalen gibt. Bitte wende Dich für mehr Informationen an Deinen Orts- oder Kreisverband."
+    },
+    "route": {
+      "label": "Route",
+      "routeType_label": "Typ",
+      "createdAt": "Erstellt"
     },
     "poster": {
       "label": "Plakat",
@@ -128,6 +142,9 @@
           "title_replace": "Wirklich ersetzen?",
           "text_replace": "Bist Du Dir sicher, dass Du das Bild unwiderruflich ersetzen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden."
         }
+      },
+      "pictureView": {
+        "currentPicture_label": "Aktuelles Bild"
       },
       "comment": {
         "label": "Beschreibung",

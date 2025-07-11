@@ -1,23 +1,17 @@
 import 'dart:async';
 
-import 'package:chopper/chopper.dart';
-import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/features/campaigns/models/map_layer_model.dart';
+import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-abstract class GrueneApiCampaignsService {
-  late GrueneApi grueneApi;
-
+abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
   final PoiServiceType poiType;
 
-  GrueneApiCampaignsService({required this.poiType}) {
-    grueneApi = GetIt.I<GrueneApi>();
-  }
+  GrueneApiCampaignsPoiBaseService({required this.poiType}) : super();
 
   Future<List<MarkerItemModel>> loadPoisInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisGet(
@@ -27,9 +21,22 @@ abstract class GrueneApiCampaignsService {
     map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToMarkerItem()).toList(),
   );
 
-  Future<List<MapLayerModel>> loadFocusAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+  Future<List<FocusArea>> loadFocusAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsFocusAreasGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
-    map: (result) => result.data.map((layerItem) => layerItem.transformToMapLayer()).toList(),
+    map: (result) => result.data,
+  );
+
+  Future<List<PollingStation>> loadPollingStationsInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsPollingStationsGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
+    map: (result) => result.data,
+  );
+
+  Future<List<Route>> loadRoutesInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsRoutesGet(
+      type: poiType.transformToRoutesApiGetType(),
+      bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
+    ),
+    map: (result) => result.data,
   );
 
   Future<T> getPoi<T>(String poiId, T Function(Poi) transform) async => getFromApi(
@@ -42,25 +49,6 @@ abstract class GrueneApiCampaignsService {
     map: (p) {},
   );
 
-  Future<T> getFromApi<S, T>({
-    required Future<Response<S>> Function(GrueneApi api) apiRequest,
-    required T Function(S data) map,
-  }) async {
-    final response = await apiRequest(grueneApi);
-
-    handleApiError(response);
-
-    final body = response.body as S;
-    return map(body);
-  }
-
-  Response<T> handleApiError<T>(Response<T> response) {
-    if (!response.isSuccessful || response.body == null) {
-      throw ApiException(statusCode: response.statusCode);
-    }
-    return response;
-  }
-
   bool filterByCutOffDate(Poi poi) {
     if (Config.poiFilterCutOffDate == null) return true;
 
@@ -72,9 +60,4 @@ abstract class GrueneApiCampaignsService {
 
     return false;
   }
-}
-
-class ApiException implements Exception {
-  int statusCode;
-  ApiException({required this.statusCode});
 }

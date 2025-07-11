@@ -3,15 +3,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_service.dart';
+import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
-import 'package:gruene_app/features/campaigns/helper/marker_item_helper.dart';
+import 'package:gruene_app/features/campaigns/helper/util.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
@@ -19,8 +20,10 @@ import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:turf/turf.dart' as turf;
 
 typedef GetAdditionalDataBeforeCallback<T> = Future<T?> Function(BuildContext);
 typedef GetAddScreenCallback<T, U> = T Function(LatLng, AddressModel?, U?);
@@ -31,14 +34,18 @@ typedef GetPoiEditWidgetCallback<T> = Widget Function(T);
 typedef OnDeletePoiCallback = Future<void> Function(String poiId);
 
 abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailType, PoiUpdateType> extends State<T>
-    with FocusAreaInfo, SearchMixin<T> {
+    with InfoBox, SearchMixin<T> {
   late MapController mapController;
 
   final NominatimService _nominatimService = GetIt.I<NominatimService>();
 
   bool focusAreasVisible = false;
-  final String _focusAreadId = 'focusArea';
+  bool pollingStationVisible = false;
+  bool routesVisible = false;
+
   final _minZoomFocusAreaLayer = 11.0;
+  final _minZoomPollingStationLayer = 11.0;
+  final _minZoomRouteLayer = 11.0;
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _lastInfoSnackBar;
   String? _lastFocusAreaId;
   final campaignActionCache = GetIt.I<CampaignActionCache>();
@@ -46,7 +53,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   MapConsumer(this.poiType);
 
-  GrueneApiCampaignsService get campaignService;
+  GrueneApiCampaignsPoiBaseService get campaignService;
 
   @override
   void dispose() {
@@ -119,7 +126,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     final poiDetailWidget = getPoiDetail(poi);
     if (useBottomSheet) {
       await mapController.setFocusToMarkerItem(feature);
-      var result = await showDetailBottomSheet(poiDetailWidget);
+      var result = await showDetailBottomSheet<ModalDetailResult>(poiDetailWidget);
       if (result != null && result == ModalDetailResult.edit) {
         _editPoi(() => getPoiEdit(poi));
       }
@@ -131,15 +138,15 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
   }
 
-  Future<ModalDetailResult?> showDetailBottomSheet(Widget poiDetailWidget) async {
+  Future<U?> showDetailBottomSheet<U>(Widget detailWidget) async {
     final theme = Theme.of(context);
-    return await showModalBottomSheet<ModalDetailResult>(
+    return await showModalBottomSheet<U>(
       isScrollControlled: false,
       isDismissible: true,
       barrierColor: Colors.transparent,
       context: context,
       backgroundColor: theme.colorScheme.surface,
-      builder: (context) => poiDetailWidget,
+      builder: (context) => detailWidget,
     );
   }
 
@@ -169,14 +176,18 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   void addMapLayersForContext(MapLibreMapController mapLibreController) async {
-    final focusAreaBorderLayerId = '${_focusAreadId}_border';
+    await _addFocusAreaLayers(mapLibreController);
+    await _addPollingStationLayer(mapLibreController);
+    await _addRouteLayer(mapLibreController);
+  }
 
-    final data = MarkerItemHelper.transformMapLayerDataToGeoJson([]).toJson();
-    await mapLibreController.addGeoJsonSource(_focusAreadId, data);
+  Future<void> _addFocusAreaLayers(MapLibreMapController mapLibreController) async {
+    final data = <FocusArea>[].toList().transformToFeatureCollection().toJson();
+    await mapLibreController.addGeoJsonSource(CampaignConstants.focusAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
-      _focusAreadId,
-      focusAreaFillLayerId,
+      CampaignConstants.focusAreaSourceName,
+      CampaignConstants.focusAreaFillLayerId,
       FillLayerProperties(
         fillColor: [
           Expressions.interpolate,
@@ -193,31 +204,146 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     );
 
     await mapLibreController.addLineLayer(
-      _focusAreadId,
-      focusAreaBorderLayerId,
+      CampaignConstants.focusAreaSourceName,
+      CampaignConstants.focusAreaBorderLayerId,
       LineLayerProperties(lineColor: ThemeColors.background.toHexStringRGB(), lineWidth: 1),
       minzoom: _minZoomFocusAreaLayer,
       enableInteraction: false,
     );
   }
 
-  void onFocusAreaStateChanged(bool state) async {
+  Future<void> _addPollingStationLayer(MapLibreMapController mapLibreController) async {
+    final data = <PollingStation>[].toList().transformToFeatureCollection().toJson();
+    addImageFromAsset(
+      mapLibreController,
+      CampaignConstants.pollingStationSourceName,
+      CampaignConstants.pollingStationAssetName,
+    );
+
+    await mapLibreController.addGeoJsonSource(CampaignConstants.pollingStationSourceName, data);
+
+    await mapLibreController.addSymbolLayer(
+      CampaignConstants.pollingStationSourceName,
+      CampaignConstants.pollingStationSymbolLayerId,
+      SymbolLayerProperties(
+        iconImage: CampaignConstants.pollingStationSourceName,
+        iconSize: [
+          Expressions.interpolate,
+          ['linear'],
+          [Expressions.zoom],
+          11,
+          1,
+          16,
+          2,
+        ],
+        iconAllowOverlap: true,
+      ),
+      enableInteraction: false,
+      minzoom: _minZoomPollingStationLayer,
+    );
+
+    // add selected map layers
+    await mapLibreController.addGeoJsonSource(
+      CampaignConstants.pollingStationSelectedSourceName,
+      turf.FeatureCollection().toJson(),
+    );
+
+    await mapLibreController.addSymbolLayer(
+      CampaignConstants.pollingStationSelectedSourceName,
+
+      CampaignConstants.pollingStationSymbolSelectedLayerId,
+      const SymbolLayerProperties(
+        iconImage: CampaignConstants.pollingStationSourceName,
+        iconSize: 3,
+        iconAllowOverlap: true,
+      ),
+      enableInteraction: false,
+      minzoom: _minZoomPollingStationLayer,
+    );
+  }
+
+  Future<void> _addRouteLayer(MapLibreMapController mapLibreController) async {
+    final data = turf.FeatureCollection().toJson();
+
+    await mapLibreController.addGeoJsonSource(CampaignConstants.routesSourceName, data);
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.routesSourceName,
+      CampaignConstants.routesLineLayerId,
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 0.6),
+      enableInteraction: false,
+      minzoom: _minZoomRouteLayer,
+    );
+
+    // add selected map layers
+    await mapLibreController.addGeoJsonSource(
+      CampaignConstants.routesSelectedSourceName,
+      turf.FeatureCollection().toJson(),
+    );
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.routesSelectedSourceName,
+
+      CampaignConstants.routesLineSelectedLayerId,
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 1),
+      enableInteraction: false,
+      minzoom: _minZoomPollingStationLayer,
+    );
+  }
+
+  void onFocusAreaLayerStateChanged(bool state) async {
     focusAreasVisible = state;
     if (focusAreasVisible) {
       loadFocusAreaLayer();
-      showInfoToast(t.campaigns.infoToast.focusAreas_activated, moreInfoCallback: () => showAboutFocusArea(context));
+      showInfoToast(
+        t.campaigns.infoToast.focusAreas_activated,
+        moreInfoCallback: () => showAboutInfoBox(
+          context,
+          t.campaigns.infoToast.focusAreas_aboutTitle,
+          t.campaigns.infoToast.focusAreas_aboutText,
+        ),
+      );
     } else {
-      mapController.removeLayerSource(_focusAreadId);
+      mapController.removeLayerSource(CampaignConstants.focusAreaSourceName);
       hideCurrentSnackBar();
       showInfoToast(t.campaigns.infoToast.focusAreas_deactivated);
     }
   }
 
-  String get focusAreaFillLayerId => '${_focusAreadId}_layer';
+  void onRouteLayerStateChanged(bool state) async {
+    routesVisible = state;
+    if (routesVisible) {
+      loadRouteLayer();
+      showInfoToast(
+        t.campaigns.infoToast.routes_activated,
+        moreInfoCallback: () =>
+            showAboutInfoBox(context, t.campaigns.infoToast.routes_aboutTitle, t.campaigns.infoToast.routes_aboutText),
+      );
+    } else {
+      mapController.removeLayerSource(CampaignConstants.routesSourceName);
+      showInfoToast(t.campaigns.infoToast.routes_deactivated);
+    }
+  }
+
+  void onPollinStationLayerStateChanged(bool state) async {
+    pollingStationVisible = state;
+    if (pollingStationVisible) {
+      loadPollingStationLayer();
+    } else {
+      mapController.removeLayerSource(CampaignConstants.pollingStationSourceName);
+      mapController.removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
+    }
+  }
 
   void loadDataLayers(LatLng locationSW, LatLng locationNE) async {
     if (focusAreasVisible) {
       loadFocusAreaLayer();
+    }
+    if (pollingStationVisible) {
+      loadPollingStationLayer();
+    }
+    if (routesVisible) {
+      loadRouteLayer();
     }
   }
 
@@ -226,7 +352,38 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       final bbox = await mapController.getCurrentBoundingBox();
 
       final focusAreas = await campaignService.loadFocusAreasInRegion(bbox.southwest, bbox.northeast);
-      mapController.setLayerSource(_focusAreadId, focusAreas);
+      mapController.setLayerSourceWithFeatureCollection(
+        CampaignConstants.focusAreaSourceName,
+        focusAreas.transformToFeatureCollection(),
+      );
+    } else {
+      _lastInfoSnackBar?.close();
+    }
+  }
+
+  void loadPollingStationLayer() async {
+    if (mapController.getCurrentZoomLevel() > _minZoomPollingStationLayer) {
+      final bbox = await mapController.getCurrentBoundingBox();
+
+      final pollingStations = await campaignService.loadPollingStationsInRegion(bbox.southwest, bbox.northeast);
+      mapController.setLayerSourceWithFeatureCollection(
+        CampaignConstants.pollingStationSourceName,
+        pollingStations.transformToFeatureCollection(),
+      );
+    } else {
+      _lastInfoSnackBar?.close();
+    }
+  }
+
+  void loadRouteLayer() async {
+    if (mapController.getCurrentZoomLevel() > _minZoomRouteLayer) {
+      final bbox = await mapController.getCurrentBoundingBox();
+
+      final routes = await campaignService.loadRoutesInRegion(bbox.southwest, bbox.northeast);
+      mapController.setLayerSourceWithFeatureCollection(
+        CampaignConstants.routesSourceName,
+        routes.transformToFeatureCollection(),
+      );
     } else {
       _lastInfoSnackBar?.close();
     }
@@ -234,7 +391,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   void showFocusAreaInfoAtPoint(Point<double> point) async {
     if (!focusAreasVisible) return;
-    var features = await mapController.getFeaturesInScreen(point, [focusAreaFillLayerId]);
+    var features = await mapController.getFeaturesInScreen(point, [CampaignConstants.focusAreaFillLayerId]);
     if (features.isNotEmpty) {
       final feature = features.first;
       if (feature['properties'] == null) return;
@@ -306,7 +463,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
 
     toast = MotionToast(
-      icon: Icons.info,
+      icon: Icons.info_outlined,
       secondaryColor: ThemeColors.textCancel,
       primaryColor: ThemeColors.infoBackground,
       width: 300,

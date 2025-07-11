@@ -46,8 +46,12 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
   void initState() {
     doorsFilter = [
       FilterChipModel(text: t.campaigns.filters.visited_areas, isEnabled: false),
-      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
-      FilterChipModel(text: t.campaigns.filters.focusAreas, isEnabled: true, stateChanged: onFocusAreaStateChanged),
+      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: true, stateChanged: onRouteLayerStateChanged),
+      FilterChipModel(
+        text: t.campaigns.filters.focusAreas,
+        isEnabled: true,
+        stateChanged: onFocusAreaLayerStateChanged,
+      ),
       FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
     ];
     super.initState();
@@ -63,6 +67,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
       getMarkerImages: _getMarkerImages,
       onFeatureClick: _onFeatureClick,
       onNoFeatureClick: _onNoFeatureClick,
+      showBottomDetailSheet: showDetailBottomSheet,
       addMapLayersForContext: addMapLayersForContext,
       loadDataLayers: loadDataLayers,
       showMapInfoAfterCameraMove: showMapInfoAfterCameraMove,

@@ -38,8 +38,12 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
   void initState() {
     flyerFilter = [
       FilterChipModel(text: t.campaigns.filters.visited_areas, isEnabled: false),
-      FilterChipModel(text: t.campaigns.filters.focusAreas, isEnabled: true, stateChanged: onFocusAreaStateChanged),
-      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: false),
+      FilterChipModel(
+        text: t.campaigns.filters.focusAreas,
+        isEnabled: true,
+        stateChanged: onFocusAreaLayerStateChanged,
+      ),
+      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: true, stateChanged: onRouteLayerStateChanged),
       FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
     ];
     super.initState();
@@ -55,6 +59,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
       getMarkerImages: _getMarkerImages,
       onFeatureClick: _onFeatureClick,
       onNoFeatureClick: _onNoFeatureClick,
+      showBottomDetailSheet: showDetailBottomSheet,
       addMapLayersForContext: addMapLayersForContext,
       loadDataLayers: loadDataLayers,
       showMapInfoAfterCameraMove: showMapInfoAfterCameraMove,

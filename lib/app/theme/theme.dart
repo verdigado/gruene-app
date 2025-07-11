@@ -38,6 +38,8 @@ class ThemeColors {
   static const Color focusAreaBaseColor = Color(0xFF3033A1);
 
   static const Color infoBackground = Color(0xFFFFF7C8);
+
+  static const Color sun = Color(0xFFFFF17A);
 }
 
 class _ThemeTextStyles {
@@ -100,7 +102,7 @@ class _ThemeTextStyles {
 
 final WidgetStateProperty<Icon?> thumbIcon = WidgetStateProperty.resolveWith<Icon?>((Set<WidgetState> states) {
   if (states.contains(WidgetState.selected)) {
-    return const Icon(Icons.check);
+    return const Icon(Icons.check_outlined);
   }
   return null;
 });
