@@ -59,7 +59,7 @@ class NewsSearchFilterBar extends StatelessWidget {
           ),
           SizedBox(width: 8),
           RoundedIconButton(
-            icon: Icons.tune,
+            icon: Icons.filter_list,
             iconColor: customFilterSelected ? theme.colorScheme.secondary : ThemeColors.textDisabled,
             backgroundColor: theme.colorScheme.surface,
             width: 40,
