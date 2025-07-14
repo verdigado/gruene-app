@@ -941,20 +941,18 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                   SizedBox(height: 8),
                   Align(
                     alignment: Alignment.bottomLeft,
-                    child: Expanded(
-                      child: SizedBox(
-                        height: 32,
-                        child: TextButton(
-                          onPressed: () => openUrl(grueneAppFeedbackUrl, context),
-                          child: Text(
-                            t.campaigns.pollingStation.reportCorrection,
-                            textAlign: TextAlign.right,
+                    child: SizedBox(
+                      height: 32,
+                      child: TextButton(
+                        onPressed: () => openUrl(grueneAppFeedbackUrl, context),
+                        child: Text(
+                          t.campaigns.pollingStation.reportCorrection,
+                          textAlign: TextAlign.right,
 
-                            style: theme.textTheme.labelLarge?.apply(
-                              color: ThemeColors.textDark,
-                              decoration: TextDecoration.underline,
-                              fontWeightDelta: 2,
-                            ),
+                          style: theme.textTheme.labelLarge?.apply(
+                            color: ThemeColors.textDark,
+                            decoration: TextDecoration.underline,
+                            fontWeightDelta: 2,
                           ),
                         ),
                       ),
