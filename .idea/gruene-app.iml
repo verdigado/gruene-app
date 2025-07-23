@@ -11,6 +11,8 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/keycloak_authenticator/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/packages/keycloak_authenticator/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/packages/keycloak_authenticator/build" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/DerivedData" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/Pods" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
