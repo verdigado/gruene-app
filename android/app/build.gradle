@@ -63,6 +63,11 @@ android {
             applicationIdSuffix = ".development"
             resValue "string", "app_name", "B90 DEV"
         }
+        staging {
+            initWith debug
+            applicationIdSuffix = ".staging"
+            resValue "string", "app_name", "B90 STAGING"
+        }
         release {
             resValue "string", "app_name", "B90/DIE GRÜNEN"
             if (project.hasProperty("KEYSTORE_PATH")) {
