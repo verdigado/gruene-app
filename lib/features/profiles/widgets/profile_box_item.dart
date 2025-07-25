@@ -13,7 +13,7 @@ class ProfileBoxItem extends StatelessWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
       title: Text(title, style: theme.textTheme.bodyLarge),
       onTap: onPress,
-      trailing: onPress != null ? Icon(Icons.open_in_browser_outlined, color: theme.primaryColor) : null,
+      trailing: onPress != null ? Icon(Icons.arrow_outward, color: theme.primaryColor) : null,
     );
   }
 }
