@@ -26,14 +26,22 @@ platform :android do
   # The following parameters have to be passed:
   # version_name: The version name the build should use
   # version_code: The version code the build should use
-  desc "Create an android release build"
+  # build_type: The build_type to use, either release or staging
+  desc "Create an android build"
   lane :build do |options|
     version_code = options[:version_code]
     version_name = options[:version_name]
+    build_type = options[:build_type]
 
-    if [version_name, version_code].include?(nil)
+    if [version_name, version_code, build_type].include?(nil)
       raise "'nil' passed as parameter! Aborting..."
     end
+
+    unless ["release", "staging"].include?(build_type)
+      raise "Invalid build_type: '#{build_type}'. Must be 'release' or 'staging'."
+    end
+
+    puts("Building the app with build_type '#{build_type}'")
 
     ensure_env_vars(
       env_vars: ["KEYSTORE_ALIAS", "KEYSTORE_PASSWORD"]
@@ -50,14 +58,12 @@ platform :android do
       gradle_system_properties["org.gradle.workers.max"] = ENV["TOTAL_CPUS"]
     end
 
-    env_prod = sh("echo -n environment=production | base64")
-
     tasks = ["bundle", "assemble"]
     tasks.each do |task|
       gradle(
         task: task,
-        flags: " -Ptarget=lib/main.dart -Pdart-defines=#{env_prod}",
-        build_type: "Release",
+        flags: " -Ptarget=lib/main.dart",
+        build_type: build_type,
         properties: {
           :VERSION_CODE => version_code,
           :VERSION_NAME => version_name,
@@ -67,7 +73,6 @@ platform :android do
           :KEYSTORE_KEY_PASSWORD => KEYSTORE_PASSWORD,
         }.compact,
         system_properties: gradle_system_properties,
-        print_command: false
       )
     end
   end

@@ -1,10 +1,20 @@
+parameters:
+  build_type:
+    type: enum
+    default: release
+    enum: [release, staging]
 steps:
   - run:
       name: Generate Translations
       command: fvm dart run slang
   - run:
-      name: Apply Production Environment
-      command: cp .env.production .env
+      name: Apply << parameters.build_type >> Environment
+      command: |
+        if [ << parameters.build_type >> == "release" ]; then
+          cp .env.production .env
+        else
+          cp .env.staging .env
+        fi
   - run:
       name: Generate Swagger API
       command: fvm dart run build_runner build
