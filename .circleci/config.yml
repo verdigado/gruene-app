@@ -166,7 +166,7 @@ commands:
                 command: fvm dart run slang
                 name: Generate Translations
             - run:
-                command: cp .env.prod .env
+                command: cp .env.production .env
                 name: Apply Production Environment
             - run:
                 command: fvm dart run build_runner build

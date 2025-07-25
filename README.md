@@ -50,7 +50,7 @@ cp .env.staging .env
 
 ##### Local Grüne API Setup
 
-0. Make sure the Grüne API is setup and running. For documentation on the necessary steps, refer to
+0. Make sure the Grüne Staging API is setup and running. For documentation on the necessary steps, refer to
    the [Grüne API README](https://github.com/verdigado/gruene-api).
 1. Configure local environment
 
