@@ -250,9 +250,9 @@
     },
     "homepage": "Homepage",
     "digitalMembershipCard": {
-      "title": "Mein Mitgliedsausweis",
+      "title": "Meine Mitgliedskarte",
       "card": {
-        "title": "Mitgliedsausweis",
+        "title": "Mitgliedskarte",
         "party": "BÜNDNIS 90/DIE GRÜNEN",
         "membershipNumber": "Mitgliedernummer:"
       }
