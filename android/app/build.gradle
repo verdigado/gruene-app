@@ -59,12 +59,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix = ".development"
-            resValue "string", "app_name", "B90 DEV"
-        }
         release {
-            resValue "string", "app_name", "B90/DIE GRÜNEN"
             if (project.hasProperty("KEYSTORE_PATH")) {
                 signingConfig signingConfigs.release
             } else {
@@ -79,10 +74,17 @@ android {
         production {
             isDefault true
             dimension "app"
+            resValue "string", "app_name", "B90/DIE GRÜNEN"
         }
         staging {
             dimension "app"
             applicationIdSuffix ".staging"
+            resValue "string", "app_name", "B90 STAGING"
+        }
+        development {
+            dimension "app"
+            applicationIdSuffix ".development"
+            resValue "string", "app_name", "B90 DEV"
         }
     }
 }
