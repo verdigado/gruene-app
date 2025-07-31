@@ -26,14 +26,22 @@ platform :android do
   # The following parameters have to be passed:
   # version_name: The version name the build should use
   # version_code: The version code the build should use
+  # flavor: The app flavor to use, either production or staging
   desc "Create an android release build"
   lane :build do |options|
     version_code = options[:version_code]
     version_name = options[:version_name]
+    flavor = options[:flavor]
 
-    if [version_name, version_code].include?(nil)
+    if [version_name, version_code, flavor].include?(nil)
       raise "'nil' passed as parameter! Aborting..."
     end
+
+    unless ["production", "staging"].include?(flavor)
+      raise "Invalid flavor: '#{flavor}'. Must be 'production' or 'staging'."
+    end
+
+    puts("Building the app with flavor '#{flavor}'")
 
     ensure_env_vars(
       env_vars: ["KEYSTORE_ALIAS", "KEYSTORE_PASSWORD"]
@@ -50,13 +58,12 @@ platform :android do
       gradle_system_properties["org.gradle.workers.max"] = ENV["TOTAL_CPUS"]
     end
 
-    env_prod = sh("echo -n environment=production | base64")
-
     tasks = ["bundle", "assemble"]
     tasks.each do |task|
       gradle(
         task: task,
-        flags: " -Ptarget=lib/main.dart -Pdart-defines=#{env_prod}",
+        flavor: flavor,
+        flags: " -Ptarget=lib/main.dart",
         build_type: "Release",
         properties: {
           :VERSION_CODE => version_code,
@@ -67,7 +74,6 @@ platform :android do
           :KEYSTORE_KEY_PASSWORD => KEYSTORE_PASSWORD,
         }.compact,
         system_properties: gradle_system_properties,
-        print_command: false
       )
     end
   end

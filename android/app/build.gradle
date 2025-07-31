@@ -7,8 +7,8 @@ plugins {
 }
 
 dependencies {
-  implementation platform('com.google.firebase:firebase-bom:33.10.0')
-  coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    implementation platform('com.google.firebase:firebase-bom:33.10.0')
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
 
 android {
@@ -59,17 +59,32 @@ android {
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix = ".development"
-            resValue "string", "app_name", "B90 DEV"
-        }
         release {
-            resValue "string", "app_name", "B90/DIE GRÜNEN"
             if (project.hasProperty("KEYSTORE_PATH")) {
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
             }
+        }
+    }
+
+    flavorDimensions "app"
+
+    productFlavors {
+        production {
+            isDefault true
+            dimension "app"
+            resValue "string", "app_name", "B90/DIE GRÜNEN"
+        }
+        staging {
+            dimension "app"
+            applicationIdSuffix ".staging"
+            resValue "string", "app_name", "B90 STAGING"
+        }
+        development {
+            dimension "app"
+            applicationIdSuffix ".development"
+            resValue "string", "app_name", "B90 DEV"
         }
     }
 }
