@@ -1,3 +1,8 @@
+parameters:
+  environment:
+    type: enum
+    default: production
+    enum: [production, staging]
 docker:
   - image: cimg/android:2024.01.1-node
 resource_class: large
@@ -11,7 +16,8 @@ steps:
   - restore_environment_variables
   - install_flutter:
       precache: android
-  - prepare_project
+  - prepare_project:
+      environment: << parameters.environment >>
   - install_fastlane:
       directory: android
   - install_gradle_dependencies
@@ -26,21 +32,21 @@ steps:
       working_directory: android
   - run:
       name: '[FL] Build'
-      command: bundle exec fastlane android build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
+      command: bundle exec fastlane android build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE} flavor:<< parameters.environment >>
       working_directory: android
   - run:
       name: Move aab
-      command: mv ~/project/build/app/outputs/bundle/release/app-release.aab app-release.aab
+      command: mv ~/project/build/app/outputs/bundle/<< parameters.environment >>Release/app-<< parameters.environment >>-release.aab app-<< parameters.environment >>-release.aab
   - store_artifacts:
-      path: app-release.aab
+      path: app-<< parameters.environment >>-release.aab
   - run:
       name: Move apk
-      command: mv ~/project/build/app/outputs/apk/release/app-release.apk app-release.apk
+      command: mv ~/project/build/app/outputs/apk/<< parameters.environment >>/release/app-<< parameters.environment >>-release.apk app-<< parameters.environment >>-release.apk
   - store_artifacts:
-      path: app-release.apk
+      path: app-<< parameters.environment >>-release.apk
   - persist_to_workspace:
       root: .
       paths:
-        - app-release.aab
-        - app-release.apk
+        - app-<< parameters.environment >>-release.aab
+        - app-<< parameters.environment >>-release.apk
   - persist_environment_variables

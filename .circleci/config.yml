@@ -161,13 +161,20 @@ commands:
                     - environment_variables
                 root: ./
     prepare_project:
+        parameters:
+            environment:
+                default: production
+                enum:
+                    - production
+                    - staging
+                type: enum
         steps:
             - run:
                 command: fvm dart run slang
                 name: Generate Translations
             - run:
-                command: cp .env.production .env
-                name: Apply Production Environment
+                command: cp .env.<< parameters.environment >> .env
+                name: Apply << parameters.environment >> Environment
             - run:
                 command: fvm dart run build_runner build
                 name: Generate Swagger API
@@ -206,6 +213,13 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
             GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx2048m" -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2
+        parameters:
+            environment:
+                default: production
+                enum:
+                    - production
+                    - staging
+                type: enum
         resource_class: large
         shell: /bin/bash -eo pipefail
         steps:
@@ -214,7 +228,8 @@ jobs:
             - restore_environment_variables
             - install_flutter:
                 precache: android
-            - prepare_project
+            - prepare_project:
+                environment: << parameters.environment >>
             - install_fastlane:
                 directory: android
             - install_gradle_dependencies
@@ -226,23 +241,23 @@ jobs:
                 name: '[FL] Prepare Android Keystore'
                 working_directory: android
             - run:
-                command: bundle exec fastlane android build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
+                command: bundle exec fastlane android build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE} flavor:<< parameters.environment >>
                 name: '[FL] Build'
                 working_directory: android
             - run:
-                command: mv ~/project/build/app/outputs/bundle/release/app-release.aab app-release.aab
+                command: mv ~/project/build/app/outputs/bundle/<< parameters.environment >>Release/app-<< parameters.environment >>-release.aab app-<< parameters.environment >>-release.aab
                 name: Move aab
             - store_artifacts:
-                path: app-release.aab
+                path: app-<< parameters.environment >>-release.aab
             - run:
-                command: mv ~/project/build/app/outputs/apk/release/app-release.apk app-release.apk
+                command: mv ~/project/build/app/outputs/apk/<< parameters.environment >>/release/app-<< parameters.environment >>-release.apk app-<< parameters.environment >>-release.apk
                 name: Move apk
             - store_artifacts:
-                path: app-release.apk
+                path: app-<< parameters.environment >>-release.apk
             - persist_to_workspace:
                 paths:
-                    - app-release.aab
-                    - app-release.apk
+                    - app-<< parameters.environment >>-release.aab
+                    - app-<< parameters.environment >>-release.apk
                 root: .
             - persist_environment_variables
     build_ios:
@@ -337,7 +352,7 @@ jobs:
             - install_fastlane:
                 directory: android
             - run:
-                command: bundle exec fastlane android upload aab_path:attached_workspace/app-release.aab production_delivery:"<< parameters.production_delivery >>" version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
+                command: bundle exec fastlane android upload aab_path:attached_workspace/app-production-release.aab production_delivery:"<< parameters.production_delivery >>" version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
                 name: '[FL] Google PlayStore Upload'
                 working_directory: android
     deliver_ios:
@@ -502,6 +517,7 @@ workflows:
             - build_android:
                 context:
                     - app_signing_android
+                environment: staging
                 requires:
                     - check
                     - bump_version
@@ -517,6 +533,7 @@ workflows:
             - build_android:
                 context:
                     - app_signing_android
+                environment: staging
                 requires:
                     - bump_version
         when:

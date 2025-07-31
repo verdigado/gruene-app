@@ -1,10 +1,15 @@
+parameters:
+  environment:
+    type: enum
+    default: production
+    enum: [production, staging]
 steps:
   - run:
       name: Generate Translations
       command: fvm dart run slang
   - run:
-      name: Apply Production Environment
-      command: cp .env.production .env
+      name: Apply << parameters.environment >> Environment
+      command: cp .env.<< parameters.environment >> .env
   - run:
       name: Generate Swagger API
       command: fvm dart run build_runner build
