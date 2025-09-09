@@ -89,6 +89,11 @@
       "routeType_label": "Typ",
       "createdAt": "Erstellt"
     },
+    "experience_areas": {
+      "label": "Erfahrungsgebiet",
+      "supplied_by": "Bereitgestellt von:",
+      "general_supplier": "nutzer*innengeneriert"
+    },
     "poster": {
       "label": "Plakat",
       "addPoster": "Plakat eintragen",

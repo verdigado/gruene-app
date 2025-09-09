@@ -55,3 +55,4 @@ part 'converters/poster_update_model_parsing.dart';
 part 'converters/route_parsing.dart';
 part 'converters/slider_range_parsing.dart';
 part 'converters/string_extension.dart';
+part 'converters/experience_area_parsing.dart';

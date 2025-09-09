@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:tuple/tuple.dart';
-import 'package:turf/centroid.dart';
-import 'package:turf/turf.dart' as turf;
+import 'package:turf/turf.dart';
 
 class MapHelper {
   static LatLng extractLatLngFromFeature(dynamic rawFeature) {
@@ -12,6 +12,31 @@ class MapHelper {
     final coordinates = geometry['coordinates'] as List<dynamic>;
 
     return coordinates.cast<double>().transformToLatLng();
+  }
+
+  static num _calculateDistance(Feature<GeometryObject> turfFeature, Point targetPoint) {
+    try {
+      switch (turfFeature.geometry?.type) {
+        case GeoJSONObjectType.point:
+          return distance(turfFeature.geometry as Point, targetPoint);
+        case GeoJSONObjectType.lineString:
+          return _calculateDistance(
+            nearestPointOnLine(turfFeature.geometry as LineString, targetPoint) as Feature<GeometryObject>,
+            targetPoint,
+          );
+        case GeoJSONObjectType.polygon:
+          return _calculateDistance(
+            polygonToLine(turfFeature.geometry as Polygon) as Feature<GeometryObject>,
+            targetPoint,
+          );
+
+        default:
+          throw UnimplementedError();
+      }
+    } catch (e) {
+      logger.e(e);
+      rethrow;
+    }
   }
 
   static dynamic getClosestFeature(List<dynamic> features, LatLng target) {
@@ -29,15 +54,12 @@ class MapHelper {
     }
 
     final minimalDistanceFeature = features.fold(null, (
-      Tuple2<dynamic, double>? currentFeatureWithDistance,
+      Tuple2<dynamic, num>? currentFeatureWithDistance,
       dynamic nextFeature,
     ) {
-      final turfFeature = turf.Feature.fromJson(nextFeature as Map<String, dynamic>);
+      final turfFeature = Feature.fromJson(nextFeature as Map<String, dynamic>);
+      final nextFeatureDistance = _calculateDistance(turfFeature, target.asPoint());
 
-      final nextFeatureLatLng = turfFeature.geometry?.type == turf.GeoJSONObjectType.lineString
-          ? turf.nearestPointOnLine(turfFeature.geometry as LineString, target.asPoint()).geometry!.asLatLng()
-          : extractLatLngFromFeature(nextFeature);
-      final nextFeatureDistance = calculateDistance(nextFeatureLatLng, target);
       if (currentFeatureWithDistance != null && currentFeatureWithDistance.item2 < nextFeatureDistance) {
         return currentFeatureWithDistance;
       }

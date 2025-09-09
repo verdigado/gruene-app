@@ -39,6 +39,11 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
     map: (result) => result.data,
   );
 
+  Future<List<ExperienceArea>> loadExperienceAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsExperienceAreasGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
+    map: (result) => result.data,
+  );
+
   Future<T> getPoi<T>(String poiId, T Function(Poi) transform) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisPoiIdGet(poiId: poiId),
     map: transform,

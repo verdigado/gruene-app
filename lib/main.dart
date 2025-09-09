@@ -15,6 +15,7 @@ import 'package:gruene_app/app/router.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
+import 'package:gruene_app/app/services/gruene_api_experience_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/gruene_api_route_service.dart';
@@ -78,6 +79,7 @@ Future<void> main() async {
   GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
   GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());
   GetIt.I.registerFactory<GrueneApiRouteService>(() => GrueneApiRouteService());
+  GetIt.I.registerFactory<GrueneApiExperienceAreaService>(() => GrueneApiExperienceAreaService());
   GetIt.I.registerFactory<GrueneApiCampaignsStatisticsService>(() => GrueneApiCampaignsStatisticsService());
 
   WidgetsFlutterBinding.ensureInitialized();
