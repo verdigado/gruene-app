@@ -52,7 +52,11 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
         isEnabled: true,
         stateChanged: onFocusAreaLayerStateChanged,
       ),
-      FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
+      FilterChipModel(
+        text: t.campaigns.filters.experience_areas,
+        isEnabled: true,
+        stateChanged: onExperienceAreaLayerStateChanged,
+      ),
     ];
     super.initState();
   }

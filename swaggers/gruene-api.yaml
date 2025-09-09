@@ -18,6 +18,14 @@ paths:
             type: array
             items:
               type: string
+        - name: groups
+          required: false
+          in: query
+          description: Only return users in given groups.
+          schema:
+            type: array
+            items:
+              type: string
         - name: limit
           required: false
           in: query
@@ -722,6 +730,37 @@ paths:
             enum:
               - assigned
               - unassigned
+        - name: assignment_status_in
+          required: false
+          in: query
+          description: Filter assigned roles in divisions
+          schema:
+            type: array
+            items:
+              type: string
+        - name: hierarchy
+          required: false
+          in: query
+          description: Filter by hierarchy type
+          schema:
+            type: string
+            enum:
+              - GR
+              - GJ
+              - KPV
+        - name: level
+          required: false
+          in: query
+          description: Filter by hierarchy level
+          schema:
+            type: string
+            enum:
+              - ALL
+              - BV
+              - LV
+              - KV
+              - OV
+              - BEZV
       responses:
         '200':
           description: ''
@@ -876,6 +915,16 @@ paths:
           schema:
             example: '-74.006,40.7128,-73.935242,40.789142'
             type: string
+        - name: type
+          required: false
+          in: query
+          description: filter by Area type
+          schema:
+            example: FLYER_SPOT
+            type: string
+            enum:
+              - FLYER_SPOT
+              - HOUSE
         - name: campaignId
           required: false
           in: query
@@ -905,6 +954,16 @@ paths:
           schema:
             example: '-74.006,40.7128,-73.935242,40.789142'
             type: string
+        - name: type
+          required: false
+          in: query
+          description: filter by Area type
+          schema:
+            example: FLYER_SPOT
+            type: string
+            enum:
+              - FLYER_SPOT
+              - HOUSE
         - name: campaignId
           required: false
           in: query
@@ -2057,6 +2116,319 @@ paths:
       summary: Delete bookmark
       tags:
         - bookmarks
+  /v1/green-directory/records:
+    post:
+      operationId: createGreenDirectoryRecord
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGreenDirectoryRecord'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreenDirectoryRecord'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Create Green Directory Record
+      tags:
+        - green-directory
+    get:
+      operationId: findGreenDirectoryRecords
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            default: 100
+            type: number
+        - name: type
+          required: false
+          in: query
+          description: filter by record type
+          schema:
+            example: REGIONAL_CHAPTER
+            type: string
+            enum:
+              - PARTY
+              - REGIONAL_CHAPTER
+              - COMMITTEE
+              - YOUTH_ORGANIZATION
+              - SUB_ORGANIZATION
+              - PERSON
+              - PARLIAMENTARY_GROUP
+        - name: level
+          required: false
+          in: query
+          description: filter by location level
+          schema:
+            example: DE:KREISVERBAND
+            type: string
+            enum:
+              - DE:BUNDESVERBAND
+              - DE:LANDESVERBAND
+              - DE:BEZIRKSVERBAND
+              - DE:KREISVERBAND
+              - DE:REGIONALVERBAND
+              - DE:ORTSVERBAND
+        - name: divisionKey
+          required: false
+          in: query
+          description: filter by divisionKey prefix
+          schema:
+            type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: search
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindGreenDirectoryRecordsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find Green Directory Records
+      tags:
+        - green-directory
+  /v1/green-directory/records/{recordId}:
+    get:
+      operationId: getGreenDirectoryRecord
+      parameters:
+        - name: recordId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreenDirectoryRecord'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get Green Directory Record
+      tags:
+        - green-directory
+    patch:
+      operationId: updateGreenDirectoryRecord
+      parameters:
+        - name: recordId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGreenDirectoryRecord'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreenDirectoryRecord'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update Green Directory Record
+      tags:
+        - green-directory
+    delete:
+      operationId: deleteGreenDirectoryRecord
+      parameters:
+        - name: recordId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreenDirectoryRecord'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete Green Directory Record
+      tags:
+        - green-directory
+  /v1/green-directory/locations:
+    post:
+      operationId: createGreenDirectoryLocation
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGreenDirectoryLocation'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreenDirectoryLocation'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Create Green Directory Location
+      tags:
+        - green-directory
+    get:
+      operationId: findGreenDirectoryLocations
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            default: 100
+            type: number
+        - name: level
+          required: false
+          in: query
+          description: filter by location level
+          schema:
+            example: DE:KREISVERBAND
+            type: string
+            enum:
+              - DE:BUNDESVERBAND
+              - DE:LANDESVERBAND
+              - DE:BEZIRKSVERBAND
+              - DE:KREISVERBAND
+              - DE:REGIONALVERBAND
+              - DE:ORTSVERBAND
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: search
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindGreenDirectoryLocationsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find Green Directory Locations
+      tags:
+        - green-directory
+  /v1/green-directory/locations/{locationId}:
+    get:
+      operationId: getGreenDirectoryLocation
+      parameters:
+        - name: locationId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreenDirectoryLocation'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get Green Directory Location
+      tags:
+        - green-directory
+    put:
+      operationId: updateGreenDirectoryLocation
+      parameters:
+        - name: locationId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGreenDirectoryLocation'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreenDirectoryLocation'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update Green Directory Location
+      tags:
+        - green-directory
+    delete:
+      operationId: deleteGreenDirectoryLocation
+      parameters:
+        - name: locationId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreenDirectoryLocation'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete Green Directory Location
+      tags:
+        - green-directory
   /health:
     get:
       tags:
@@ -2115,6 +2487,9 @@ components:
       in: header
       name: x-api-key
       description: Api Key Authentication
+    oauth2:
+      type: oauth2
+      flows: {}
   schemas:
     User:
       type: object
@@ -3350,6 +3725,9 @@ components:
         comment:
           type: string
           nullable: true
+        name:
+          type: string
+          nullable: true
         flyerSpot:
           nullable: true
           allOf:
@@ -3363,6 +3741,7 @@ components:
       required:
         - status
         - comment
+        - name
         - polygon
     CreateArea:
       type: object
@@ -3378,6 +3757,9 @@ components:
         comment:
           type: string
           nullable: true
+        name:
+          type: string
+          nullable: true
         flyerSpot:
           nullable: true
           allOf:
@@ -3391,6 +3773,7 @@ components:
       required:
         - type
         - comment
+        - name
         - polygon
     Area:
       type: object
@@ -3417,6 +3800,9 @@ components:
         comment:
           type: string
           nullable: true
+        name:
+          type: string
+          nullable: true
         flyerSpot:
           $ref: '#/components/schemas/AreaFlyerSpot'
         house:
@@ -3430,6 +3816,7 @@ components:
         - campaignId
         - createdAt
         - comment
+        - name
         - polygon
     FindAreasResponse:
       type: object
@@ -3451,10 +3838,17 @@ components:
           format: date
         name:
           type: string
+        scope:
+          enum:
+            - FEDERAL
+            - STATE
+            - DISTRICT
+          type: string
       required:
         - start
         - end
         - name
+        - scope
     CreateCampaign:
       type: object
       properties:
@@ -3466,10 +3860,17 @@ components:
           format: date
         name:
           type: string
+        scope:
+          enum:
+            - FEDERAL
+            - STATE
+            - DISTRICT
+          type: string
       required:
         - start
         - end
         - name
+        - scope
     Campaign:
       type: object
       properties:
@@ -3477,6 +3878,12 @@ components:
           type: string
           example: '1'
         name:
+          type: string
+        scope:
+          enum:
+            - FEDERAL
+            - STATE
+            - DISTRICT
           type: string
         start:
           format: date-time
@@ -3487,6 +3894,7 @@ components:
       required:
         - id
         - name
+        - scope
         - start
         - end
     FindCampaignsResponse:
@@ -3727,6 +4135,11 @@ components:
       properties:
         id:
           type: string
+        createdAt:
+          format: date-time
+          type: string
+          description: Timestamp the image was created/added
+          example: '2025-07-30T13:12:56.905Z'
         type:
           type: string
           description: Image url
@@ -3838,24 +4251,28 @@ components:
     LineString:
       type: object
       properties:
+        coordinates:
+          type: array
+          description: Array of [longitude, latitude] coordinate pairs (GeoJSON)
+          items:
+            type: array
+            items:
+              type: number
+            minItems: 2
+            maxItems: 2
+          example:
+            - - 13.405
+              - 52.52
+            - - 13.406
+              - 52.521
         type:
           type: string
           description: Type of the LineString
           example: LineString
           default: LineString
-        coordinates:
-          type: array
-          items:
-            required: true
-            description: |-
-              Coordinates of the LineString
-              Must follow the GeoJSON standard
-            type: array
-            items:
-              type: number
       required:
-        - type
         - coordinates
+        - type
     UpdateRoute:
       type: object
       properties:
@@ -3871,11 +4288,15 @@ components:
             - POSTER
             - HOUSE
           type: string
+        name:
+          type: string
+          nullable: true
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
         - status
         - type
+        - name
         - lineString
     CreateRoute:
       type: object
@@ -3889,10 +4310,14 @@ components:
             - POSTER
             - HOUSE
           type: string
+        name:
+          type: string
+          nullable: true
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
         - type
+        - name
         - lineString
     Route:
       type: object
@@ -3917,6 +4342,9 @@ components:
             - ASSIGNED
             - CLOSED
           type: string
+        name:
+          type: string
+          nullable: true
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
@@ -3925,6 +4353,7 @@ components:
         - campaignId
         - createdAt
         - status
+        - name
         - lineString
     FindRoutesResponse:
       type: object
@@ -3952,12 +4381,6 @@ components:
         description:
           type: string
           nullable: true
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
           nullable: true
@@ -3965,7 +4388,6 @@ components:
           $ref: '#/components/schemas/Polygon'
       required:
         - description
-        - type
         - polygon
     ExperienceArea:
       type: object
@@ -3981,12 +4403,6 @@ components:
         description:
           type: string
           nullable: true
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
@@ -3994,7 +4410,6 @@ components:
         - campaignId
         - createdAt
         - description
-        - type
         - polygon
     FindExperienceAreasResponse:
       type: object
@@ -4136,14 +4551,29 @@ components:
       properties:
         own:
           type: number
+          description: Total number of POIs created or owned by the current user.
+        subDivision:
+          type: number
+          nullable: true
+          description: >-
+            Total number of POIs within the user's local subdivision (division
+            with level OV), or null if not applicable.
         division:
           type: number
+          description: >-
+            Total number of POIs within the user's district (division with level
+            KV).
         state:
           type: number
+          description: >-
+            Total number of POIs within the user's state (division with level
+            LV).
         germany:
           type: number
+          description: Total number of POIs within the entire country.
       required:
         - own
+        - subDivision
         - division
         - state
         - germany
@@ -4389,6 +4819,322 @@ components:
       required:
         - type
         - itemId
+    GreenDirectoryUrl:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - WEBSITE
+            - FACEBOOK
+            - TWITTER
+            - INSTAGRAM
+            - BLUESKY
+            - MASTODON
+            - LOOPS
+            - YOUTUBE
+            - MAILINGLIST
+        url:
+          type: string
+          format: uri
+      required:
+        - type
+        - url
+    GreenDirectoryEmail:
+      type: object
+      properties:
+        purpose:
+          type: string
+          nullable: true
+          minLength: 1
+        address:
+          type: string
+          format: email
+      required:
+        - purpose
+        - address
+    GreenDirectoryExternalRef:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - WIKIDATA
+            - WIKIPEDIA
+        value:
+          type: string
+          minLength: 1
+      required:
+        - type
+        - value
+    GreenDirectoryRecordPerson:
+      type: object
+      properties:
+        givenName:
+          type: string
+          minLength: 1
+        familyName:
+          type: string
+          minLength: 1
+      required:
+        - givenName
+        - familyName
+    CreateGreenDirectoryRecord:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - PARTY
+            - REGIONAL_CHAPTER
+            - COMMITTEE
+            - YOUTH_ORGANIZATION
+            - SUB_ORGANIZATION
+            - PERSON
+            - PARLIAMENTARY_GROUP
+        divisionKey:
+          type: string
+          nullable: true
+          minLength: 8
+          maxLength: 8
+        locationId:
+          type: string
+        urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryUrl'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryEmail'
+        externalRefs:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryExternalRef'
+        name:
+          type: string
+          nullable: true
+          minLength: 1
+        person:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryRecordPerson'
+      required:
+        - type
+        - locationId
+        - urls
+        - emails
+        - externalRefs
+        - name
+    GreenDirectoryLocation:
+      type: object
+      properties:
+        id:
+          type: string
+        level:
+          enum:
+            - DE:BUNDESVERBAND
+            - DE:LANDESVERBAND
+            - DE:BEZIRKSVERBAND
+            - DE:KREISVERBAND
+            - DE:REGIONALVERBAND
+            - DE:ORTSVERBAND
+          type: string
+        country:
+          type: string
+        state:
+          type: string
+          nullable: true
+        region:
+          type: string
+          nullable: true
+        district:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+      required:
+        - id
+        - level
+        - country
+        - state
+        - region
+        - district
+        - city
+    GreenDirectoryRecord:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          enum:
+            - PARTY
+            - REGIONAL_CHAPTER
+            - COMMITTEE
+            - YOUTH_ORGANIZATION
+            - SUB_ORGANIZATION
+            - PERSON
+            - PARLIAMENTARY_GROUP
+          type: string
+        divisionKey:
+          type: string
+          nullable: true
+        location:
+          $ref: '#/components/schemas/GreenDirectoryLocation'
+        urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryUrl'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryEmail'
+        externalRefs:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryExternalRef'
+        name:
+          type: string
+          nullable: true
+        person:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryRecordPerson'
+      required:
+        - id
+        - type
+        - divisionKey
+        - location
+        - urls
+        - emails
+        - externalRefs
+        - name
+        - person
+    FindGreenDirectoryRecordsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryRecord'
+        meta:
+          $ref: '#/components/schemas/OffsetPaginationMeta'
+      required:
+        - data
+        - meta
+    UpdateGreenDirectoryRecord:
+      type: object
+      properties:
+        divisionKey:
+          type: string
+          nullable: true
+          minLength: 8
+          maxLength: 8
+        locationId:
+          type: string
+        urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryUrl'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryEmail'
+        externalRefs:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryExternalRef'
+        name:
+          type: string
+          nullable: true
+          minLength: 1
+        person:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryRecordPerson'
+    CreateGreenDirectoryLocation:
+      type: object
+      properties:
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+        state:
+          type: string
+          nullable: true
+          minLength: 1
+        level:
+          type: string
+          enum:
+            - DE:BUNDESVERBAND
+            - DE:LANDESVERBAND
+            - DE:BEZIRKSVERBAND
+            - DE:KREISVERBAND
+            - DE:REGIONALVERBAND
+            - DE:ORTSVERBAND
+        region:
+          type: string
+          nullable: true
+          minLength: 1
+        district:
+          type: string
+          nullable: true
+          minLength: 1
+        city:
+          type: string
+          nullable: true
+          minLength: 1
+      required:
+        - country
+        - level
+    FindGreenDirectoryLocationsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GreenDirectoryLocation'
+        meta:
+          $ref: '#/components/schemas/OffsetPaginationMeta'
+      required:
+        - data
+        - meta
+    UpdateGreenDirectoryLocation:
+      type: object
+      properties:
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+        state:
+          type: string
+          nullable: true
+          minLength: 1
+        level:
+          enum:
+            - DE:BUNDESVERBAND
+            - DE:LANDESVERBAND
+            - DE:BEZIRKSVERBAND
+            - DE:KREISVERBAND
+            - DE:REGIONALVERBAND
+            - DE:ORTSVERBAND
+          type: string
+        region:
+          type: string
+          nullable: true
+          minLength: 1
+        district:
+          type: string
+          nullable: true
+          minLength: 1
+        city:
+          type: string
+          nullable: true
+          minLength: 1
+      required:
+        - country
+        - level
     HealthCheckResponse:
       type: object
       properties:

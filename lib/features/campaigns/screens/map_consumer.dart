@@ -42,6 +42,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   bool focusAreasVisible = false;
   bool pollingStationVisible = false;
   bool routesVisible = false;
+  bool experienceAreasVisible = false;
 
   final _minZoomFocusAreaLayer = 11.0;
   final _minZoomPollingStationLayer = 11.0;
@@ -179,6 +180,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await _addFocusAreaLayers(mapLibreController);
     await _addPollingStationLayer(mapLibreController);
     await _addRouteLayer(mapLibreController);
+    await _addExperienceAreaLayer(mapLibreController);
   }
 
   Future<void> _addFocusAreaLayers(MapLibreMapController mapLibreController) async {
@@ -290,6 +292,34 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     );
   }
 
+  Future<void> _addExperienceAreaLayer(MapLibreMapController mapLibreController) async {
+    final data = turf.FeatureCollection().toJson();
+
+    await mapLibreController.addGeoJsonSource(CampaignConstants.experienceAreaSourceName, data);
+
+    await mapLibreController.addFillLayer(
+      CampaignConstants.experienceAreaSourceName,
+      CampaignConstants.experienceAreaLayerId,
+      FillLayerProperties(fillColor: 'yellow', fillOpacity: 0.5),
+      enableInteraction: false,
+      minzoom: _minZoomRouteLayer,
+    );
+
+    // add selected map layers
+    await mapLibreController.addGeoJsonSource(
+      CampaignConstants.experienceAreaSelectedSourceName,
+      turf.FeatureCollection().toJson(),
+    );
+
+    await mapLibreController.addFillLayer(
+      CampaignConstants.experienceAreaSelectedSourceName,
+      CampaignConstants.experienceAreaSelectedLayerId,
+      FillLayerProperties(fillColor: 'yellow', fillOpacity: 0.8),
+      enableInteraction: false,
+      minzoom: _minZoomRouteLayer,
+    );
+  }
+
   void onFocusAreaLayerStateChanged(bool state) async {
     focusAreasVisible = state;
     if (focusAreasVisible) {
@@ -325,6 +355,16 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
   }
 
+  void onExperienceAreaLayerStateChanged(bool state) {
+    experienceAreasVisible = state;
+    if (experienceAreasVisible) {
+      loadExperienceAreaLayer();
+    } else {
+      mapController.removeLayerSource(CampaignConstants.experienceAreaSourceName);
+      mapController.removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
+    }
+  }
+
   void onPollinStationLayerStateChanged(bool state) async {
     pollingStationVisible = state;
     if (pollingStationVisible) {
@@ -344,6 +384,9 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
     if (routesVisible) {
       loadRouteLayer();
+    }
+    if (experienceAreasVisible) {
+      loadExperienceAreaLayer();
     }
   }
 
@@ -383,6 +426,20 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       mapController.setLayerSourceWithFeatureCollection(
         CampaignConstants.routesSourceName,
         routes.transformToFeatureCollection(),
+      );
+    } else {
+      _lastInfoSnackBar?.close();
+    }
+  }
+
+  void loadExperienceAreaLayer() async {
+    if (mapController.getCurrentZoomLevel() > _minZoomRouteLayer) {
+      final bbox = await mapController.getCurrentBoundingBox();
+
+      final experienceAreas = await campaignService.loadExperienceAreasInRegion(bbox.southwest, bbox.northeast);
+      mapController.setLayerSourceWithFeatureCollection(
+        CampaignConstants.experienceAreaSourceName,
+        experienceAreas.transformToFeatureCollection(),
       );
     } else {
       _lastInfoSnackBar?.close();

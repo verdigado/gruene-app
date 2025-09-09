@@ -57,7 +57,11 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
         isEnabled: true,
         stateChanged: onPollinStationLayerStateChanged,
       ),
-      FilterChipModel(text: t.campaigns.filters.experience_areas, isEnabled: false),
+      FilterChipModel(
+        text: t.campaigns.filters.experience_areas,
+        isEnabled: true,
+        stateChanged: onExperienceAreaLayerStateChanged,
+      ),
     ];
 
     super.initState();

@@ -30,6 +30,11 @@ class CampaignConstants {
   static const routesLineLayerId = 'routes_layer';
   static const routesLineSelectedLayerId = 'routes_layer_selected';
 
+  static const experienceAreaSourceName = 'experience_areas';
+  static const experienceAreaSelectedSourceName = 'experience_areas_selected';
+  static const experienceAreaLayerId = 'experience_areas_layer';
+  static const experienceAreaSelectedLayerId = 'experience_areas_layer_selected';
+
   static Map<int, String> scoreInfos = {
     1: 'Stufe 1: wenige Plakate aufhängen, keine Flyer verteilen, keine Haustüren',
     2: 'Stufe 2: mehr Plakate aufhängen, Flyer verteilen wenn Zeit, keine Haustüren',

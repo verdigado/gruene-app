@@ -1,9 +1,8 @@
-import 'dart:math' as math;
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:tuple/tuple.dart';
-import 'package:turf/centroid.dart';
-import 'package:turf/turf.dart' as turf;
+import 'package:turf/turf.dart';
 
 class MapHelper {
   static LatLng extractLatLngFromFeature(dynamic rawFeature) {
@@ -14,30 +13,52 @@ class MapHelper {
     return coordinates.cast<double>().transformToLatLng();
   }
 
-  static dynamic getClosestFeature(List<dynamic> features, LatLng target) {
-    double calculateDistance(LatLng point1, LatLng point2) {
-      // We use the equirectangular distance approximation for a very fast comparison.
-      // LatLng encodes degrees, so we need to convert to radians.
-      const double degreeToRadians = 180.0 / math.pi;
-      const double earthRadius = 6371; // radius of the earth in km
-      final double x =
-          (point2.longitude - point1.longitude) *
-          degreeToRadians *
-          math.cos(0.5 * (point2.latitude + point1.latitude) * degreeToRadians);
-      final double y = (point2.latitude - point1.latitude) * degreeToRadians;
-      return earthRadius * math.sqrt(x * x + y * y);
+  static num _calculateDistance(Feature<GeometryObject> turfFeature, Point targetPoint) {
+    try {
+      switch (turfFeature.geometry?.type) {
+        case GeoJSONObjectType.point:
+          return distance(turfFeature.geometry as Point, targetPoint);
+        case GeoJSONObjectType.lineString:
+          return _calculateDistance(
+            nearestPointOnLine(turfFeature.geometry as LineString, targetPoint) as Feature<GeometryObject>,
+            targetPoint,
+          );
+        case GeoJSONObjectType.polygon:
+          return _calculateDistance(
+            polygonToLine(turfFeature.geometry as Polygon) as Feature<GeometryObject>,
+            targetPoint,
+          );
+
+        default:
+          throw UnimplementedError();
+      }
+    } catch (e) {
+      logger.e(e);
+      rethrow;
     }
+  }
+
+  static dynamic getClosestFeature(List<dynamic> features, LatLng target) {
+    // double calculateDistance(LatLng point1, LatLng point2) {
+    //   // We use the equirectangular distance approximation for a very fast comparison.
+    //   // LatLng encodes degrees, so we need to convert to radians.
+    //   const double degreeToRadians = 180.0 / math.pi;
+    //   const double earthRadius = 6371; // radius of the earth in km
+    //   final double x =
+    //       (point2.longitude - point1.longitude) *
+    //       degreeToRadians *
+    //       math.cos(0.5 * (point2.latitude + point1.latitude) * degreeToRadians);
+    //   final double y = (point2.latitude - point1.latitude) * degreeToRadians;
+    //   return earthRadius * math.sqrt(x * x + y * y);
+    // }
 
     final minimalDistanceFeature = features.fold(null, (
-      Tuple2<dynamic, double>? currentFeatureWithDistance,
+      Tuple2<dynamic, num>? currentFeatureWithDistance,
       dynamic nextFeature,
     ) {
-      final turfFeature = turf.Feature.fromJson(nextFeature as Map<String, dynamic>);
+      final turfFeature = Feature.fromJson(nextFeature as Map<String, dynamic>);
+      final nextFeatureDistance = _calculateDistance(turfFeature, target.asPoint());
 
-      final nextFeatureLatLng = turfFeature.geometry?.type == turf.GeoJSONObjectType.lineString
-          ? turf.nearestPointOnLine(turfFeature.geometry as LineString, target.asPoint()).geometry!.asLatLng()
-          : extractLatLngFromFeature(nextFeature);
-      final nextFeatureDistance = calculateDistance(nextFeatureLatLng, target);
       if (currentFeatureWithDistance != null && currentFeatureWithDistance.item2 < nextFeatureDistance) {
         return currentFeatureWithDistance;
       }

@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_experience_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/logger.dart';
@@ -292,6 +293,16 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
       final feature = MapHelper.getClosestFeature(routes, targetLatLng);
 
       onRouteClick(feature);
+      return;
+    }
+
+    final jsonFeaturesExperienceAreas = await getFeaturesInScreen(point, [CampaignConstants.experienceAreaLayerId]);
+    final experienceAreas = jsonFeaturesExperienceAreas.map((e) => e as Map<String, dynamic>).toList();
+
+    if (experienceAreas.isNotEmpty) {
+      final feature = MapHelper.getClosestFeature(experienceAreas, targetLatLng);
+
+      onExperienceAreaClick(feature);
       return;
     }
 
@@ -898,6 +909,12 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     await unsetFocusToRoute();
   }
 
+  Future<void> onExperienceAreaClick(dynamic feature) async {
+    var experienceAreaFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
+    var experienceAreaDetail = await getExperienceAreaDetailWidget(experienceAreaFeature);
+    await widget.showBottomDetailSheet<bool>(experienceAreaDetail);
+  }
+
   SizedBox getPollingStationDetailWidget(turf.Feature pollingStationFeature) {
     onClose() => Navigator.maybePop(context);
     var theme = Theme.of(context);
@@ -1030,6 +1047,74 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
                       Text(
                         '${t.campaigns.route.createdAt}: ${route.createdAt.getAsLocalDateString()}',
                         style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<Widget> getExperienceAreaDetailWidget(turf.Feature experienceAreaFeature) async {
+    var theme = Theme.of(context);
+    var experienceAreaService = GetIt.I<GrueneApiExperienceAreaService>();
+    var experienceArea = await experienceAreaService.getExperienceArea(experienceAreaFeature.id.toString());
+
+    onClose() => Navigator.maybePop(context);
+
+    return SizedBox(
+      height: 150,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            child: CloseEditWidget(onClose: () => onClose()),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 27),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.radar_outlined),
+                      SizedBox(width: 7),
+                      Text(
+                        t.campaigns.experience_areas.label,
+                        style: theme.textTheme.labelLarge!.copyWith(
+                          color: ThemeColors.textDark,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        experienceArea.description ?? '',
+                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.experience_areas.supplied_by}: ${t.campaigns.experience_areas.general_supplier}',
+                        style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.createdAt}: ${experienceArea.createdAt.getAsLocalDateString()}',
+                        style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],
                   ),
