@@ -18,15 +18,3 @@ extension ExperienceAreaListParsing on List<ExperienceArea> {
     return FeatureCollection(features: map((p) => p.transformToFeatureItem()).toList());
   }
 }
-
-extension ExperienceAreaTypeParsing on ExperienceAreaType {
-  String getAsLabel() {
-    var typeLabel = switch (this) {
-      ExperienceAreaType.flyerSpot => t.campaigns.flyer.label,
-      ExperienceAreaType.poster => t.campaigns.poster.label,
-      ExperienceAreaType.house => t.campaigns.door.label,
-      ExperienceAreaType.swaggerGeneratedUnknown => throw UnimplementedError(),
-    };
-    return '$typeLabel-${t.campaigns.experience_areas.label}';
-  }
-}

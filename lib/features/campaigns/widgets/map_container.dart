@@ -911,11 +911,8 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
 
   Future<void> onExperienceAreaClick(dynamic feature) async {
     var experienceAreaFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    logger.d(experienceAreaFeature);
-    // setFocusToExperienceArea(experienceAreaFeature.toJson());
     var experienceAreaDetail = await getExperienceAreaDetailWidget(experienceAreaFeature);
     await widget.showBottomDetailSheet<bool>(experienceAreaDetail);
-    // await unsetFocusToExperienceArea();
   }
 
   SizedBox getPollingStationDetailWidget(turf.Feature pollingStationFeature) {
