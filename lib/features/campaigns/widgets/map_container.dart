@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/logger.dart';
@@ -15,7 +16,6 @@ import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/util.dart';
-import 'package:gruene_app/features/campaigns/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/attribution_dialog.dart';
@@ -94,7 +94,7 @@ class _MapContainerState extends State<MapContainer>
 
   bool _isMapInitialized = false;
   bool _permissionGiven = false;
-  final defaultStartLocation = CampaignConstants.centerGermany;
+  final defaultStartLocation = Config.centerGermany;
 
   static const minZoomMarkerItems = 11.5;
   static const double zoomLevelUserLocation = 16;

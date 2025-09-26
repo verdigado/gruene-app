@@ -64,5 +64,4 @@ class CampaignConstants {
     southwest: LatLng(46.8, 5.6),
     northeast: LatLng(55.1, 15.5),
   ); //typically boundaries of Germany;
-  static LatLng centerGermany = LatLng(51.163361, 10.447683);
 }

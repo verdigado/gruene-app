@@ -26,6 +26,7 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
         },
         branches: [
           StatefulShellBranch(routes: [Routes.news]),
+          StatefulShellBranch(routes: [Routes.events]),
           StatefulShellBranch(routes: [Routes.campaigns]),
           StatefulShellBranch(routes: [Routes.profiles]),
           StatefulShellBranch(routes: [Routes.mfa]),
