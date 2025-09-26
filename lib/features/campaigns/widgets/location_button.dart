@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/widgets/small_button_spinner.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 

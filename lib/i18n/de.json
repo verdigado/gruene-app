@@ -359,5 +359,14 @@
     "termsOfUse": "Nutzungsbedingungen",
     "discover": "App erkunden",
     "discoverDescription": "Erfahre hier, was Dich erwartet."
+  },
+  "events": {
+    "events": "Events",
+    "label": "Events",
+    "list": "Liste",
+    "map": "Karte",
+    "online": "online",
+    "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
+    "details": "Details"
   }
 }

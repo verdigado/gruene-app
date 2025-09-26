@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/utils/build_page_without_animation.dart';
 import 'package:gruene_app/features/campaigns/screens/campaigns_screen.dart';
+import 'package:gruene_app/features/events/screens/event_detail_screen.dart';
+import 'package:gruene_app/features/events/screens/events_screen.dart';
 import 'package:gruene_app/features/login/screens/login_screen.dart';
 import 'package:gruene_app/features/mfa/screens/mfa_screen.dart';
 import 'package:gruene_app/features/mfa/screens/token_input_screen.dart';
@@ -30,6 +32,15 @@ class Routes {
     ),
   );
   static GoRoute news = buildRoute('/news', NewsScreenContainer(), routes: [newsDetail]);
+  static GoRoute eventDetail = GoRoute(
+    path: ':eventId',
+    pageBuilder: (context, state) => buildPageWithoutAnimation(
+      context: context,
+      state: state,
+      child: EventDetailScreen(eventId: state.pathParameters['eventId']!),
+    ),
+  );
+  static GoRoute events = buildRoute('/events', EventsScreen(), routes: [eventDetail]);
   static GoRoute campaigns = buildRoute('/campaigns', CampaignsScreen());
   static GoRoute digitalMembershipCard = buildRoute('digital-membership-card', DigitalMembershipCardScreen());
   static GoRoute profiles = buildRoute('/profiles', OwnProfileScreen(), routes: [digitalMembershipCard]);

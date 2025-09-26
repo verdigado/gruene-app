@@ -14,6 +14,7 @@ class BottomNavigationItem {
 
 final List<BottomNavigationItem> bottomNavigationItems = [
   BottomNavigationItem(label: t.news.label, route: Routes.news.path, icon: Icons.feed_outlined),
+  BottomNavigationItem(label: t.events.label, route: Routes.events.path, icon: Icons.event),
   BottomNavigationItem(label: t.campaigns.label, route: Routes.campaigns.path, icon: Icons.campaign_outlined),
   BottomNavigationItem(label: t.profiles.label, route: Routes.profiles.path, icon: Icons.group_outlined),
   BottomNavigationItem(label: t.mfa.label, route: Routes.mfa.path, assetIcon: 'assets/icons/mfa.svg'),
