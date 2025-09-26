@@ -16,5 +16,5 @@ steps:
       directory: android
   - run:
       name: '[FL] Google PlayStore Upload'
-      command: bundle exec fastlane android upload aab_path:attached_workspace/app-release.aab production_delivery:"<< parameters.production_delivery >>" version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
+      command: bundle exec fastlane android upload aab_path:attached_workspace/app-production-release.aab production_delivery:"<< parameters.production_delivery >>" version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
       working_directory: android
