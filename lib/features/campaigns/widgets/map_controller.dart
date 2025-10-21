@@ -22,7 +22,7 @@ abstract class MapController {
 
   void setLayerSourceWithFeatureCollection(String sourceId, FeatureCollection layerData);
 
-  void removeLayerSource(String focusAreadId);
+  void removeLayerSource(String layerSourceId);
 
   Future<BoundingBox> getCurrentBoundingBox();
   double getCurrentZoomLevel();
