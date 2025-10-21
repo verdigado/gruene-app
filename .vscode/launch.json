@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "gruene_app (Flutter SM G996B)",
+            "program": "lib/main.dart",
+            "deviceId": "RFCR906J44Y",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "development" //development or staging or production
+            ]
+        }
+    ]
+}

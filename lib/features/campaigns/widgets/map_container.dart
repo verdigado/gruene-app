@@ -28,6 +28,7 @@ import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/location_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
+import 'package:gruene_app/features/campaigns/widgets/mixins.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/turf.dart' as turf;
@@ -84,7 +85,9 @@ class MapContainer extends StatefulWidget {
   State<StatefulWidget> createState() => _MapContainerState();
 }
 
-class _MapContainerState extends State<MapContainer> implements MapController, MapControllerSimplified {
+class _MapContainerState extends State<MapContainer>
+    with MapConsumerExperienceAreaMixin
+    implements MapController, MapControllerSimplified {
   MapLibreMapController? _controller;
   final MarkerItemManager _markerItemManager = MarkerItemManager();
   final appSettings = GetIt.I<AppSettings>();
@@ -912,7 +915,78 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
   Future<void> onExperienceAreaClick(dynamic feature) async {
     var experienceAreaFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
     var experienceAreaDetail = await getExperienceAreaDetailWidget(experienceAreaFeature);
+    // set data for '_selected layer'
+    // var collection = turf.FeatureCollection(features: [experienceAreaFeature]);
+    // await _controller!.setGeoJsonSource(CampaignConstants.experienceAreaSelectedSourceName, collection.toJson());
+    await setFocusToExperienceArea(feature);
+
     await widget.showBottomDetailSheet<bool>(experienceAreaDetail);
+    await unsetFocusToExperienceArea(feature);
+  }
+
+  Future<void> setFocusToExperienceArea(Map<String, dynamic> feature) async {
+    // removes the add_marker
+    setState(() {
+      _isInFocusMode = true;
+    });
+    // align map to show feature in center area
+    // TODO determine boundary of line and move map
+    // final coord = MapHelper.extractLatLngFromFeature(feature);
+    // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
+
+    // set opacity of marker layer
+    await _controller!.setLayerProperties(
+      CampaignConstants.experienceAreaLayerId,
+      FillLayerProperties(visibility: 'none'),
+    );
+    await _controller!.setLayerProperties(
+      CampaignConstants.experienceAreaOutlineLayerId,
+      LineLayerProperties(visibility: 'none'),
+    );
+
+    // set data for '_selected layer'
+    var featureObject = turf.Feature.fromJson(feature);
+    // if (featureObject.properties == null) {
+    //   featureObject.properties = <String, dynamic>{};
+    // }
+    // featureObject.properties?.putIfAbsent('selected', () => 'true');
+    // await _controller?.setGeoJsonFeature(CampaignConstants.experienceAreaSourceName, featureObject.toJson());
+
+    // var result = await _controller?.querySourceFeatures(
+    //   CampaignConstants.experienceAreaSourceName,
+    //   CampaignConstants.experienceAreaLayerId,
+    //   null,
+    // );
+
+    // logger.d(result);
+
+    var collection = turf.FeatureCollection(features: [featureObject]);
+    await _controller!.setGeoJsonSource(CampaignConstants.experienceAreaSelectedSourceName, collection.toJson());
+  }
+
+  Future<void> unsetFocusToExperienceArea(Map<String, dynamic> feature) async {
+    setState(() {
+      _isInFocusMode = false;
+    });
+    // var featureObject = turf.Feature.fromJson(feature);
+    // if (featureObject.properties == null) {
+    //   logger.d('NULL ADDED');
+
+    //   featureObject.properties = <String, dynamic>{};
+    // }
+    // featureObject.properties?.putIfAbsent('selected', () => 'false');
+
+    // await _controller?.setGeoJsonFeature(CampaignConstants.experienceAreaSourceName, featureObject.toJson());
+
+    await _controller!.setLayerProperties(
+      CampaignConstants.experienceAreaLayerId,
+      FillLayerProperties(visibility: 'visible'),
+    );
+    await _controller!.setLayerProperties(
+      CampaignConstants.experienceAreaOutlineLayerId,
+      LineLayerProperties(visibility: 'visible'),
+    );
+    removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
   }
 
   SizedBox getPollingStationDetailWidget(turf.Feature pollingStationFeature) {

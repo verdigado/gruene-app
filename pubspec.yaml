@@ -107,6 +107,7 @@ flutter:
     - assets/symbols/flyer/
     - assets/symbols/polling_stations/
     - assets/maps/
+    - assets/maps/layer_styles/
     - .env
   fonts:
     - family: GrueneType

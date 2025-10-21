@@ -220,6 +220,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       mapLibreController,
       CampaignConstants.pollingStationSourceName,
       CampaignConstants.pollingStationAssetName,
+      // 'assets/maps/layer_styles/experience_area_8x8.png',
     );
 
     await mapLibreController.addGeoJsonSource(CampaignConstants.pollingStationSourceName, data);
@@ -295,12 +296,52 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   Future<void> _addExperienceAreaLayer(MapLibreMapController mapLibreController) async {
     final data = turf.FeatureCollection().toJson();
 
+    addImageFromAsset(
+      mapLibreController,
+      CampaignConstants.experienceAreaSourceName,
+      CampaignConstants.experienceAreaFillPatternAssetName,
+    );
+
     await mapLibreController.addGeoJsonSource(CampaignConstants.experienceAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.experienceAreaSourceName,
       CampaignConstants.experienceAreaLayerId,
-      FillLayerProperties(fillColor: 'yellow', fillOpacity: 0.5),
+      FillLayerProperties(
+        fillPattern: [Expressions.image, CampaignConstants.experienceAreaSourceName],
+        fillOpacity: 0.8,
+      ),
+      enableInteraction: false,
+      minzoom: _minZoomRouteLayer,
+    );
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.experienceAreaSourceName,
+      CampaignConstants.experienceAreaOutlineLayerId,
+      // LineLayerProperties(lineColor: 'white', lineWidth: 0.5, lineOpacity: 0.8),
+      LineLayerProperties(
+        lineColor: 'white',
+        // lineColor: [
+        //   'match',
+        //   ['get', 'selected'],
+        //   'true',
+        //   'red',
+        //   'false',
+        //   'green',
+        //   'yellow',
+        // ],
+        lineWidth: 0.5,
+        // lineWidth: [
+        //   'match',
+        //   ['get', 'selected'],
+        //   'true',
+        //   5,
+        //   'false',
+        //   0.5,
+        //   0.5,
+        // ],
+        lineOpacity: 0.8,
+      ),
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
     );
@@ -314,7 +355,16 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await mapLibreController.addFillLayer(
       CampaignConstants.experienceAreaSelectedSourceName,
       CampaignConstants.experienceAreaSelectedLayerId,
-      FillLayerProperties(fillColor: 'yellow', fillOpacity: 0.8),
+      FillLayerProperties(fillPattern: [Expressions.image, CampaignConstants.experienceAreaSourceName]),
+      // FillLayerProperties(fillColor: 'green'),
+      enableInteraction: false,
+      minzoom: _minZoomRouteLayer,
+    );
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.experienceAreaSelectedSourceName,
+      CampaignConstants.experienceAreaSelectedOutlineLayerId,
+      LineLayerProperties(lineColor: 'white', lineWidth: 1),
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
     );
@@ -361,7 +411,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       loadExperienceAreaLayer();
     } else {
       mapController.removeLayerSource(CampaignConstants.experienceAreaSourceName);
-      mapController.removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
+      // mapController.removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
     }
   }
 

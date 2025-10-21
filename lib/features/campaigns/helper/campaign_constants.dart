@@ -13,6 +13,8 @@ class CampaignConstants {
 
   static const pollingStationAssetName = 'assets/symbols/polling_stations/pollingstation.png';
 
+  static const experienceAreaFillPatternAssetName = 'assets/maps/layer_styles/experience_area_16x16.png';
+
   static const markerSourceName = 'markers';
   static const markerLayerName = 'markerSymbols';
 
@@ -33,7 +35,9 @@ class CampaignConstants {
   static const experienceAreaSourceName = 'experience_areas';
   static const experienceAreaSelectedSourceName = 'experience_areas_selected';
   static const experienceAreaLayerId = 'experience_areas_layer';
+  static const experienceAreaOutlineLayerId = '${experienceAreaLayerId}_line';
   static const experienceAreaSelectedLayerId = 'experience_areas_layer_selected';
+  static const experienceAreaSelectedOutlineLayerId = '${experienceAreaSelectedLayerId}_line';
 
   static Map<int, String> scoreInfos = {
     1: 'Stufe 1: wenige Plakate aufhängen, keine Flyer verteilen, keine Haustüren',
