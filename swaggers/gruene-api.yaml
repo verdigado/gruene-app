@@ -2429,6 +2429,136 @@ paths:
       summary: Delete Green Directory Location
       tags:
         - green-directory
+  /v1/calendars/events:
+    get:
+      operationId: findCalendarEvents
+      parameters:
+        - name: start
+          required: false
+          in: query
+          description: start date
+          schema:
+            example: '2025-01-01'
+            type: string
+        - name: end
+          required: false
+          in: query
+          description: end date
+          schema:
+            example: '2025-02-01'
+            type: string
+        - name: selection
+          required: false
+          in: query
+          description: use given rule to select calendars (enum or any string)
+          schema:
+            type: string
+            enum:
+              - CENTRAL
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindCalendarEventsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find calendar events
+      tags:
+        - calendars
+  /v1/calendars/{calendarId}:
+    post:
+      operationId: createCalendarEvent
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCalendarEvent'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Create a new event in a calendar
+      tags:
+        - calendars
+  /v1/calendars/{calendarId}/{eventId}:
+    patch:
+      operationId: updateCalendarEvent
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarEvent'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update event of given calendar
+      tags:
+        - calendars
+    delete:
+      operationId: deleteCalendarEvent
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete calendar event
+      tags:
+        - calendars
   /health:
     get:
       tags:
@@ -2471,8 +2601,6 @@ tags: []
 servers:
   - url: https://api.gruene.de
     description: Production
-  - url: http://192.168.178.35:5000
-    description: Development
 components:
   securitySchemes:
     basic:
@@ -5135,6 +5263,257 @@ components:
       required:
         - country
         - level
+    CalendarEvent:
+      type: object
+      properties:
+        coords:
+          description: Coordinates represented in GeoJSON [longitude, latitude]
+          example:
+            - 120.123
+            - -35.456
+          minItems: 2
+          maxItems: 2
+          type: array
+          items:
+            type: number
+        id:
+          type: string
+          description: Unique identifier for the event
+          example: '23456789'
+        calendarId:
+          type: string
+          description: Unique identifier of the calendar this event belongs to
+          example: '987654321'
+        title:
+          type: string
+          description: Title of the event
+          example: Mitgliederversammlung
+        description:
+          type: string
+          description: Description of the event
+          example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
+        start:
+          format: date-time
+          type: string
+          description: Start date and time of the event
+          example: '2025-10-15T19:00:00.000Z'
+        end:
+          format: date-time
+          type: string
+          description: End date and time of the event
+          example: '2025-10-15T21:00:00.000Z'
+        location:
+          type: string
+          description: Location where the event takes place
+          example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
+        locationType:
+          type: string
+          description: Type of location (online, physical, hybrid)
+          example: physical
+        image:
+          type: string
+          description: URL to event image
+          example: https://example.com/images/event.jpg
+        availableSlots:
+          type: number
+          description: Number of available slots for registration
+          example: 50
+        registrationRequired:
+          type: boolean
+          description: Whether registration is required for the event
+          example: true
+        registrationDeadline:
+          format: date-time
+          type: string
+          description: Deadline for registration
+          example: '2025-10-14T23:59:59.000Z'
+        categories:
+          description: Event categories/tags
+          example:
+            - Politik
+            - Umwelt
+            - Verkehr
+          type: array
+          items:
+            type: string
+        organizer:
+          type: string
+          description: Event organizer name or organization
+          example: Kreisverband Salzgitter
+        recurring:
+          type: string
+          description: Recurring pattern for the event
+          example: weekly
+      required:
+        - id
+        - calendarId
+        - title
+        - start
+    Calendar:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the calendar
+          example: a1b2c3d4e5f6
+        displayName:
+          type: string
+          description: Title of the calendar
+          example: Kreisverband Salzgitter
+        calendarColor:
+          type: string
+          description: Hex color code for calendar display
+          example: '#00AA44'
+        divisionKey:
+          type: string
+          description: Associated division
+          example: 10903700
+        url:
+          type: string
+          description: URL to access the calendar
+          example: >-
+            https://wolke.netzbegruenung.de/remote.php/dav/calendars/doejohn/10903700_central-public/
+      required:
+        - id
+        - displayName
+    FindCalendarEventsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/CalendarEvent'
+            calendars:
+              type: array
+              items:
+                $ref: '#/components/schemas/Calendar'
+          required:
+            - events
+            - calendars
+      required:
+        - data
+    CreateCalendarEvent:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the event
+          example: Mitgliederversammlung
+        description:
+          type: string
+          description: Description of the event
+          example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
+        start:
+          type: string
+          description: Start date and time of the event
+          example: '2025-10-15T19:00:00.000Z'
+        end:
+          type: string
+          description: End date and time of the event
+          example: '2025-10-15T21:00:00.000Z'
+        location:
+          type: string
+          description: Location where the event takes place
+          example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
+        locationType:
+          type: string
+          description: Type of location (online, physical, hybrid)
+          example: physical
+        availableSlots:
+          type: number
+          description: Number of available slots for registration
+          example: 50
+          minimum: 1
+        registrationRequired:
+          type: boolean
+          description: Whether registration is required for the event
+          example: true
+        registrationDeadline:
+          format: date-time
+          type: string
+          description: Deadline for registration
+          example: '2025-10-14T23:59:59.000Z'
+        categories:
+          description: Event categories/tags
+          example:
+            - Politik
+            - Umwelt
+            - Verkehr
+          type: array
+          items:
+            type: string
+        organizer:
+          type: string
+          description: Event organizer name or organization
+          example: Kreisverband Salzgitter
+        recurring:
+          type: string
+          description: Recurring pattern for the event
+          example: weekly
+      required:
+        - title
+        - start
+    UpdateCalendarEvent:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the event
+          example: Mitgliederversammlung
+        description:
+          type: string
+          description: Description of the event
+          example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
+        start:
+          type: string
+          description: Start date and time of the event
+          example: '2025-10-15T19:00:00.000Z'
+        end:
+          type: string
+          description: End date and time of the event
+          example: '2025-10-15T21:00:00.000Z'
+        location:
+          type: string
+          description: Location where the event takes place
+          example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
+        locationType:
+          type: string
+          description: Type of location (online, physical, hybrid)
+          example: physical
+        availableSlots:
+          type: number
+          description: Number of available slots for registration
+          example: 50
+          minimum: 1
+        registrationRequired:
+          type: boolean
+          description: Whether registration is required for the event
+          example: true
+        registrationDeadline:
+          format: date-time
+          type: string
+          description: Deadline for registration
+          example: '2025-10-14T23:59:59.000Z'
+        categories:
+          description: Event categories/tags
+          example:
+            - Politik
+            - Umwelt
+            - Verkehr
+          type: array
+          items:
+            type: string
+        organizer:
+          type: string
+          description: Event organizer name or organization
+          example: Kreisverband Salzgitter
+        recurring:
+          type: string
+          description: Recurring pattern for the event
+          example: weekly
     HealthCheckResponse:
       type: object
       properties:
