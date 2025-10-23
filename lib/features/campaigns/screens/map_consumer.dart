@@ -220,7 +220,6 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       mapLibreController,
       CampaignConstants.pollingStationSourceName,
       CampaignConstants.pollingStationAssetName,
-      // 'assets/maps/layer_styles/experience_area_8x8.png',
     );
 
     await mapLibreController.addGeoJsonSource(CampaignConstants.pollingStationSourceName, data);
@@ -253,7 +252,6 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
     await mapLibreController.addSymbolLayer(
       CampaignConstants.pollingStationSelectedSourceName,
-
       CampaignConstants.pollingStationSymbolSelectedLayerId,
       const SymbolLayerProperties(
         iconImage: CampaignConstants.pollingStationSourceName,
@@ -318,30 +316,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await mapLibreController.addLineLayer(
       CampaignConstants.experienceAreaSourceName,
       CampaignConstants.experienceAreaOutlineLayerId,
-      // LineLayerProperties(lineColor: 'white', lineWidth: 0.5, lineOpacity: 0.8),
-      LineLayerProperties(
-        lineColor: 'white',
-        // lineColor: [
-        //   'match',
-        //   ['get', 'selected'],
-        //   'true',
-        //   'red',
-        //   'false',
-        //   'green',
-        //   'yellow',
-        // ],
-        lineWidth: 0.5,
-        // lineWidth: [
-        //   'match',
-        //   ['get', 'selected'],
-        //   'true',
-        //   5,
-        //   'false',
-        //   0.5,
-        //   0.5,
-        // ],
-        lineOpacity: 0.8,
-      ),
+      LineLayerProperties(lineColor: 'white', lineWidth: 0.5, lineOpacity: 0.8),
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
     );
@@ -356,7 +331,6 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       CampaignConstants.experienceAreaSelectedSourceName,
       CampaignConstants.experienceAreaSelectedLayerId,
       FillLayerProperties(fillPattern: [Expressions.image, CampaignConstants.experienceAreaSourceName]),
-      // FillLayerProperties(fillColor: 'green'),
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
     );
