@@ -44,7 +44,7 @@ class ThemeColors {
 
 class _ThemeTextStyles {
   static TextStyle displayMedium = TextStyle(
-    fontFamily: 'GrueneType',
+    fontFamily: 'GrueneTypeNeue',
     fontSize: 18,
     fontWeight: FontWeight.w900,
     height: 1.6,
