@@ -494,6 +494,7 @@ class _MapContainerState extends State<MapContainer>
     );
   }
 
+  @override
   Future<void> moveMapIfItemIsOnBorder(LatLng itemCoordinate, Size desiredSize) async {
     final mediaQuery = MediaQuery.of(context);
     final currentSize = mediaQuery.size;
