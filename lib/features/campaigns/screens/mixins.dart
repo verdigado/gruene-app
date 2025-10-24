@@ -24,3 +24,4 @@ part 'mixins/map_consumer_focus_area_mixin.dart';
 part 'mixins/map_consumer_polling_station_mixin.dart';
 part 'mixins/map_consumer_route_mixin.dart';
 part 'mixins/search_mixin.dart';
+part 'mixins/map_consumer_action_area_mixin.dart';

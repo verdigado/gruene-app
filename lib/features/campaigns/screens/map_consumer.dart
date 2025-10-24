@@ -36,6 +36,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     with
         InfoBox,
         SearchMixin<T>,
+        MapConsumerActionAreaMixin,
         MapConsumerExperienceAreaMixin,
         MapConsumerRouteMixin,
         MapConsumerFocusAreaMixin,
