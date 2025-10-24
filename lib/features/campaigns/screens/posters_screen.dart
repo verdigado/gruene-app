@@ -68,7 +68,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
         stateChanged: (state) => onExperienceAreaLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),
     ];
-
+    actionAreasVisible = false;
     super.initState();
   }
 

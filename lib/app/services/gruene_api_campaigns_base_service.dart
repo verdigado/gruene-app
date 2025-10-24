@@ -15,7 +15,7 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
 
   Future<List<MarkerItemModel>> loadPoisInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisGet(
-      type: poiType.transformToApiGetType(),
+      type: poiType.transformToApiPoisGetType(),
       bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
     ),
     map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToMarkerItem()).toList(),
@@ -45,7 +45,10 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
   );
 
   Future<List<Area>> loadActionAreasInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsAreasGet(bbox: locationSW.transformToGeoJsonBBoxString(locationNE)),
+    apiRequest: (api) => api.v1CampaignsAreasGet(
+      bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
+      type: poiType.transformToApiAreasGetType(),
+    ),
     map: (result) => result.data,
   );
 

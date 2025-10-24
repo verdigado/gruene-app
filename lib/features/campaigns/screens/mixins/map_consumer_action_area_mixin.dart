@@ -37,8 +37,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     if (actionAreasVisible) {
       loadActionAreaLayer(mapInfo);
     } else {
-      mapInfo.mapController.removeLayerSource(CampaignConstants.routesSourceName);
-      mapInfo.mapController.removeLayerSource(CampaignConstants.routesSelectedSourceName);
+      mapInfo.mapController.removeLayerSource(CampaignConstants.actionAreaSourceName);
     }
   }
 
@@ -46,10 +45,10 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     if (mapInfo.mapController.getCurrentZoomLevel() > mapInfo.minZoom) {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
-      final routes = await campaignService.loadActionAreasInRegion(bbox.southwest, bbox.northeast);
+      final areas = await campaignService.loadActionAreasInRegion(bbox.southwest, bbox.northeast);
       mapInfo.mapController.setLayerSourceWithFeatureCollection(
-        CampaignConstants.routesSourceName,
-        routes.transformToFeatureCollection(),
+        CampaignConstants.actionAreaSourceName,
+        areas.transformToFeatureCollection(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

@@ -1,1 +1,1 @@
-enum MapInfoType { experienceArea, focusArea, pollingStation, route }
+enum MapInfoType { experienceArea, focusArea, pollingStation, route, actionArea }

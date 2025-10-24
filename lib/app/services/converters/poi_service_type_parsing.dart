@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension PoiServiceTypeParsing on PoiServiceType {
-  V1CampaignsPoisGetType transformToApiGetType() {
+  V1CampaignsPoisGetType transformToApiPoisGetType() {
     switch (this) {
       case PoiServiceType.poster:
         return V1CampaignsPoisGetType.poster;
@@ -12,7 +12,7 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  V1CampaignsPoisSelfGetType transformToApiSelfGetType() {
+  V1CampaignsPoisSelfGetType transformToApiPoisSelfGetType() {
     switch (this) {
       case PoiServiceType.poster:
         return V1CampaignsPoisSelfGetType.poster;
@@ -23,7 +23,7 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  CreatePoiType transformToApiCreateType() {
+  CreatePoiType transformToApiCreatePoiType() {
     switch (this) {
       case PoiServiceType.poster:
         return CreatePoiType.poster;
@@ -31,6 +31,17 @@ extension PoiServiceTypeParsing on PoiServiceType {
         return CreatePoiType.house;
       case PoiServiceType.flyer:
         return CreatePoiType.flyerSpot;
+    }
+  }
+
+  V1CampaignsAreasGetType transformToApiAreasGetType() {
+    switch (this) {
+      case PoiServiceType.door:
+        return V1CampaignsAreasGetType.house;
+      case PoiServiceType.flyer:
+        return V1CampaignsAreasGetType.flyerSpot;
+      case PoiServiceType.poster:
+        throw UnimplementedError();
     }
   }
 

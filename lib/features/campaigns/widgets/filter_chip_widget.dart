@@ -6,10 +6,11 @@ typedef FilterChipStateChangedCallback = void Function(bool state);
 class FilterChipModel {
   final String text;
   final bool isEnabled;
+  final bool isActive;
 
   final FilterChipStateChangedCallback? stateChanged;
 
-  const FilterChipModel({required this.text, required this.isEnabled, this.stateChanged});
+  const FilterChipModel({required this.text, required this.isEnabled, this.stateChanged, this.isActive = false});
 }
 
 class FilterChipCampaign extends StatefulWidget {
@@ -24,6 +25,13 @@ class FilterChipCampaign extends StatefulWidget {
 
 class _FilterChipCampaignState extends State<FilterChipCampaign> {
   Set<FilterChipModel> currentActiveFilters = <FilterChipModel>{};
+
+  @override
+  void initState() {
+    super.initState();
+
+    currentActiveFilters.addAll(widget.filterOptions.where((x) => x.isActive));
+  }
 
   void unselect(String itemLabel) {
     currentActiveFilters.removeWhere((z) => z.text == itemLabel);

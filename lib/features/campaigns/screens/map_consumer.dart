@@ -45,12 +45,12 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   final NominatimService _nominatimService = GetIt.I<NominatimService>();
 
-  bool pollingStationVisible = false;
-
   final _minZoomFocusAreaLayer = 11.0;
   final _minZoomPollingStationLayer = 11.0;
   final _minZoomRouteLayer = 11.0;
   final _minZoomExperienceAreaLayer = 11.0;
+  final _minZoomActionAreaLayer = 11.0;
+
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _lastInfoSnackBar;
   String? _lastFocusAreaId;
   final campaignActionCache = GetIt.I<CampaignActionCache>();
@@ -186,6 +186,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await addPollingStationLayer(mapLibreController, getMapInfo(MapInfoType.pollingStation));
     await addRouteLayer(mapLibreController, getMapInfo(MapInfoType.route));
     await addExperienceAreaLayer(mapLibreController, getMapInfo(MapInfoType.experienceArea));
+    await addActionAreaLayer(mapLibreController, getMapInfo(MapInfoType.actionArea));
   }
 
   void loadDataLayers(LatLng locationSW, LatLng locationNE) async {
@@ -200,6 +201,9 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
     if (experienceAreasVisible) {
       loadExperienceAreaLayer(getMapInfo(MapInfoType.experienceArea));
+    }
+    if (actionAreasVisible) {
+      loadActionAreaLayer(getMapInfo(MapInfoType.actionArea));
     }
   }
 
@@ -327,6 +331,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       MapInfoType.focusArea => _minZoomFocusAreaLayer,
       MapInfoType.pollingStation => _minZoomPollingStationLayer,
       MapInfoType.route => _minZoomRouteLayer,
+      MapInfoType.actionArea => _minZoomActionAreaLayer,
     };
 
     return MapInfo(
