@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/helper/map_info.dart';
+import 'package:gruene_app/features/campaigns/helper/util.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:maplibre_gl_platform_interface/maplibre_gl_platform_interface.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:turf/turf.dart' as turf;
 
 part 'mixins/address_extension.dart';
 part 'mixins/confirm_delete.dart';
 part 'mixins/door_validator.dart';
 part 'mixins/flyer_validator.dart';
 part 'mixins/info_box.dart';
+part 'mixins/map_consumer_experience_area_mixin.dart';
+part 'mixins/map_consumer_focus_area_mixin.dart';
+part 'mixins/map_consumer_polling_station_mixin.dart';
+part 'mixins/map_consumer_route_mixin.dart';
 part 'mixins/search_mixin.dart';
+part 'mixins/map_consumer_action_area_mixin.dart';

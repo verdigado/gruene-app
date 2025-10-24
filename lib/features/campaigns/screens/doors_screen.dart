@@ -6,6 +6,7 @@ import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dart';
@@ -46,16 +47,26 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
   void initState() {
     doorsFilter = [
       FilterChipModel(text: t.campaigns.filters.visited_areas, isEnabled: false),
-      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: true, stateChanged: onRouteLayerStateChanged),
+      FilterChipModel(
+        text: t.campaigns.filters.routes,
+        isEnabled: true,
+        stateChanged: (state) => onRouteLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
+      ),
       FilterChipModel(
         text: t.campaigns.filters.focusAreas,
         isEnabled: true,
-        stateChanged: onFocusAreaLayerStateChanged,
+        stateChanged: (state) => onFocusAreaLayerStateChanged(state, getMapInfo(MapInfoType.focusArea)),
       ),
       FilterChipModel(
         text: t.campaigns.filters.experience_areas,
         isEnabled: true,
-        stateChanged: onExperienceAreaLayerStateChanged,
+        stateChanged: (state) => onExperienceAreaLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
+      ),
+      FilterChipModel(
+        text: t.campaigns.filters.action_areas,
+        isEnabled: true,
+        isActive: true,
+        stateChanged: (state) => onActionAreaLayerStateChanged(state, getMapInfo(MapInfoType.actionArea)),
       ),
     ];
     super.initState();
