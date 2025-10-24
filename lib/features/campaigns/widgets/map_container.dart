@@ -5,13 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
-import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_experience_area_service.dart';
-import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/logger.dart';
-import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
@@ -24,10 +20,10 @@ import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/attribution_dialog.dart';
-import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/location_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
+import 'package:gruene_app/features/campaigns/widgets/mixins.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/turf.dart' as turf;
@@ -84,7 +80,9 @@ class MapContainer extends StatefulWidget {
   State<StatefulWidget> createState() => _MapContainerState();
 }
 
-class _MapContainerState extends State<MapContainer> implements MapController, MapControllerSimplified {
+class _MapContainerState extends State<MapContainer>
+    with MapContainerExperienceAreaMixin, MapConsumerRouteMixin, MapConsumerPollingStationMixin
+    implements MapController, MapControllerSimplified {
   MapLibreMapController? _controller;
   final MarkerItemManager _markerItemManager = MarkerItemManager();
   final appSettings = GetIt.I<AppSettings>();
@@ -282,7 +280,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     if (pollingStations.isNotEmpty) {
       final feature = MapHelper.getClosestFeature(pollingStations, targetLatLng);
 
-      onPollingStationClick(feature);
+      onPollingStationClick(feature, () => context, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
       return;
     }
 
@@ -292,7 +290,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     if (routes.isNotEmpty) {
       final feature = MapHelper.getClosestFeature(routes, targetLatLng);
 
-      onRouteClick(feature);
+      onRouteClick(feature, () => context, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
       return;
     }
 
@@ -301,14 +299,20 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
 
     if (experienceAreas.isNotEmpty) {
       final feature = MapHelper.getClosestFeature(experienceAreas, targetLatLng);
-
-      onExperienceAreaClick(feature);
+      onExperienceAreaClick(feature, () => context, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
       return;
     }
 
     if (onNoFeatureClick != null) {
       onNoFeatureClick(point);
     }
+  }
+
+  void _setFocusMode(bool state) {
+    // removes the add_marker
+    setState(() {
+      _isInFocusMode = state;
+    });
   }
 
   @override
@@ -417,13 +421,13 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
   }
 
   @override
-  void removeLayerSource(String sourceId) async {
+  void removeLayerSource(String layerSourceId) async {
     /* 
     * A bug prevents using correct method -> see https://github.com/maplibre/flutter-maplibre-gl/issues/526
     * Therefore we set it as empty datasource. Once the issue has been corrected we can use the designated method.
     */
     // await _controller!.removeSource(sourceId);
-    await _controller!.setGeoJsonSource(sourceId, turf.FeatureCollection().toJson());
+    await _controller!.setGeoJsonSource(layerSourceId, turf.FeatureCollection().toJson());
   }
 
   @override
@@ -478,62 +482,6 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     await _controller!.setGeoJsonSource('${CampaignConstants.markerSourceName}_selected', collection.toJson());
   }
 
-  Future<void> setFocusToPollingStation(Map<String, dynamic> feature) async {
-    // removes the add_marker
-    setState(() {
-      _isInFocusMode = true;
-    });
-    // align map to show feature in center area
-    final coord = MapHelper.extractLatLngFromFeature(feature);
-    await moveMapIfItemIsOnBorder(coord, Size(150, 150));
-    // set opacity of marker layer
-    await _controller!.setLayerProperties(
-      CampaignConstants.pollingStationSymbolLayerId,
-      SymbolLayerProperties(iconOpacity: 0.2),
-    );
-    // set data for '_selected layer'
-    var featureObject = turf.Feature<turf.Point>.fromJson(feature);
-    turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
-    await _controller!.setGeoJsonSource(CampaignConstants.pollingStationSelectedSourceName, collection.toJson());
-  }
-
-  Future<void> unsetFocusToPollingStation() async {
-    setState(() {
-      _isInFocusMode = false;
-    });
-    await _controller!.setLayerProperties(
-      CampaignConstants.pollingStationSymbolLayerId,
-      SymbolLayerProperties(iconOpacity: 1),
-    );
-    removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
-  }
-
-  Future<void> setFocusToRoute(Map<String, dynamic> feature) async {
-    // removes the add_marker
-    setState(() {
-      _isInFocusMode = true;
-    });
-    // align map to show feature in center area
-    // TODO determine boundary of line and move map
-    // final coord = MapHelper.extractLatLngFromFeature(feature);
-    // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
-
-    // set opacity of marker layer
-    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, LineLayerProperties(lineOpacity: 0.3));
-    // set data for '_selected layer'
-    var featureObject = turf.Feature<turf.LineString>.fromJson(feature);
-    turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
-    await _controller!.setGeoJsonSource(CampaignConstants.routesSelectedSourceName, collection.toJson());
-  }
-
-  Future<void> unsetFocusToRoute() async {
-    setState(() {
-      _isInFocusMode = false;
-    });
-    await _controller!.setLayerProperties(CampaignConstants.routesLineLayerId, LineLayerProperties(lineOpacity: 0.6));
-    removeLayerSource(CampaignConstants.routesSelectedSourceName);
-  }
-
   @override
   Future<void> unsetFocusToMarkerItem() async {
     setState(() {
@@ -546,6 +494,7 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
     );
   }
 
+  @override
   Future<void> moveMapIfItemIsOnBorder(LatLng itemCoordinate, Size desiredSize) async {
     final mediaQuery = MediaQuery.of(context);
     final currentSize = mediaQuery.size;
@@ -890,240 +839,6 @@ class _MapContainerState extends State<MapContainer> implements MapController, M
           ),
         );
       },
-    );
-  }
-
-  Future<void> onPollingStationClick(dynamic feature) async {
-    var pollingStationFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    setFocusToPollingStation(pollingStationFeature.toJson());
-    var pollingStationDetail = getPollingStationDetailWidget(pollingStationFeature);
-    await widget.showBottomDetailSheet<bool>(pollingStationDetail);
-    await unsetFocusToPollingStation();
-  }
-
-  Future<void> onRouteClick(dynamic feature) async {
-    var routeFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    setFocusToRoute(routeFeature.toJson());
-    var routeDetail = await getRouteDetailWidget(routeFeature);
-    await widget.showBottomDetailSheet<bool>(routeDetail);
-    await unsetFocusToRoute();
-  }
-
-  Future<void> onExperienceAreaClick(dynamic feature) async {
-    var experienceAreaFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    var experienceAreaDetail = await getExperienceAreaDetailWidget(experienceAreaFeature);
-    await widget.showBottomDetailSheet<bool>(experienceAreaDetail);
-  }
-
-  SizedBox getPollingStationDetailWidget(turf.Feature pollingStationFeature) {
-    onClose() => Navigator.maybePop(context);
-    var theme = Theme.of(context);
-
-    return SizedBox(
-      height: 278,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-            child: CloseEditWidget(onClose: () => onClose()),
-          ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 27),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        t.campaigns.pollingStation.label,
-                        style: theme.textTheme.labelLarge!.copyWith(
-                          color: ThemeColors.textDark,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: 95,
-                        child: Text(
-                          pollingStationFeature.properties!['description'].toString(),
-                          overflow: TextOverflow.fade,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: SizedBox(
-                      height: 32,
-                      child: TextButton(
-                        onPressed: () => openUrl(grueneAppFeedbackUrl, context),
-                        child: Text(
-                          t.campaigns.pollingStation.reportCorrection,
-                          textAlign: TextAlign.right,
-
-                          style: theme.textTheme.labelLarge?.apply(
-                            color: ThemeColors.textDark,
-                            decoration: TextDecoration.underline,
-                            fontWeightDelta: 2,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            color: ThemeColors.sun,
-            padding: EdgeInsets.all(12),
-            child: SizedBox(
-              height: 56,
-              child: Stack(
-                children: [
-                  Align(alignment: Alignment.topLeft, child: Icon(Icons.info_outlined, size: 24)),
-                  Positioned.fill(
-                    left: 32,
-                    top: 0,
-                    bottom: 0,
-                    child: Text(t.campaigns.pollingStation.hint, softWrap: true, style: theme.textTheme.labelSmall),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<Widget> getRouteDetailWidget(turf.Feature routeFeature) async {
-    var theme = Theme.of(context);
-    var routeService = GetIt.I<GrueneApiRouteService>();
-    var route = await routeService.getRoute(routeFeature.id.toString());
-
-    onClose() => Navigator.maybePop(context);
-
-    return SizedBox(
-      height: 109,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-            child: CloseEditWidget(onClose: () => onClose()),
-          ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 27),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        '${t.campaigns.route.label} #${route.id}',
-                        style: theme.textTheme.labelLarge!.copyWith(
-                          color: ThemeColors.textDark,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        '${t.campaigns.route.routeType_label}: ${route.type.getAsLabel()}',
-                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${t.campaigns.route.createdAt}: ${route.createdAt.getAsLocalDateString()}',
-                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<Widget> getExperienceAreaDetailWidget(turf.Feature experienceAreaFeature) async {
-    var theme = Theme.of(context);
-    var experienceAreaService = GetIt.I<GrueneApiExperienceAreaService>();
-    var experienceArea = await experienceAreaService.getExperienceArea(experienceAreaFeature.id.toString());
-
-    onClose() => Navigator.maybePop(context);
-
-    return SizedBox(
-      height: 150,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-            child: CloseEditWidget(onClose: () => onClose()),
-          ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 27),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.radar_outlined),
-                      SizedBox(width: 7),
-                      Text(
-                        t.campaigns.experience_areas.label,
-                        style: theme.textTheme.labelLarge!.copyWith(
-                          color: ThemeColors.textDark,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        experienceArea.description ?? '',
-                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Text(
-                        '${t.campaigns.experience_areas.supplied_by}: ${t.campaigns.experience_areas.general_supplier}',
-                        style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${t.campaigns.route.createdAt}: ${experienceArea.createdAt.getAsLocalDateString()}',
-                        style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

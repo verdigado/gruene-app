@@ -252,7 +252,6 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
     await mapLibreController.addSymbolLayer(
       CampaignConstants.pollingStationSelectedSourceName,
-
       CampaignConstants.pollingStationSymbolSelectedLayerId,
       const SymbolLayerProperties(
         iconImage: CampaignConstants.pollingStationSourceName,
@@ -295,12 +294,29 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   Future<void> _addExperienceAreaLayer(MapLibreMapController mapLibreController) async {
     final data = turf.FeatureCollection().toJson();
 
+    addImageFromAsset(
+      mapLibreController,
+      CampaignConstants.experienceAreaSourceName,
+      CampaignConstants.experienceAreaFillPatternAssetName,
+    );
+
     await mapLibreController.addGeoJsonSource(CampaignConstants.experienceAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.experienceAreaSourceName,
       CampaignConstants.experienceAreaLayerId,
-      FillLayerProperties(fillColor: 'yellow', fillOpacity: 0.5),
+      FillLayerProperties(
+        fillPattern: [Expressions.image, CampaignConstants.experienceAreaSourceName],
+        fillOpacity: 0.8,
+      ),
+      enableInteraction: false,
+      minzoom: _minZoomRouteLayer,
+    );
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.experienceAreaSourceName,
+      CampaignConstants.experienceAreaOutlineLayerId,
+      LineLayerProperties(lineColor: 'white', lineWidth: 0.5, lineOpacity: 0.8),
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
     );
@@ -314,7 +330,15 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await mapLibreController.addFillLayer(
       CampaignConstants.experienceAreaSelectedSourceName,
       CampaignConstants.experienceAreaSelectedLayerId,
-      FillLayerProperties(fillColor: 'yellow', fillOpacity: 0.8),
+      FillLayerProperties(fillPattern: [Expressions.image, CampaignConstants.experienceAreaSourceName]),
+      enableInteraction: false,
+      minzoom: _minZoomRouteLayer,
+    );
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.experienceAreaSelectedSourceName,
+      CampaignConstants.experienceAreaSelectedOutlineLayerId,
+      LineLayerProperties(lineColor: 'white', lineWidth: 1),
       enableInteraction: false,
       minzoom: _minZoomRouteLayer,
     );
@@ -361,7 +385,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       loadExperienceAreaLayer();
     } else {
       mapController.removeLayerSource(CampaignConstants.experienceAreaSourceName);
-      mapController.removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
+      // mapController.removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
     }
   }
 
