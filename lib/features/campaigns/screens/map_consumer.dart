@@ -44,8 +44,6 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   final NominatimService _nominatimService = GetIt.I<NominatimService>();
 
-  bool pollingStationVisible = false;
-
   final _minZoomFocusAreaLayer = 11.0;
   final _minZoomPollingStationLayer = 11.0;
   final _minZoomRouteLayer = 11.0;
@@ -237,6 +235,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     mapController.toggleInfoForMissingMapFeatures(toggleEnableInfo);
   }
 
+  @override
   void hideCurrentSnackBar() {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
   }
@@ -255,6 +254,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     });
   }
 
+  @override
   void showInfoToast(String toastText, {void Function()? moreInfoCallback}) {
     final theme = Theme.of(context);
 
