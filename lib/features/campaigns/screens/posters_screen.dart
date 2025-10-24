@@ -8,6 +8,7 @@ import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
@@ -46,21 +47,25 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   @override
   void initState() {
     postersFilter = [
-      FilterChipModel(text: t.campaigns.filters.routes, isEnabled: true, stateChanged: onRouteLayerStateChanged),
+      FilterChipModel(
+        text: t.campaigns.filters.routes,
+        isEnabled: true,
+        stateChanged: (state) => onRouteLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
+      ),
       FilterChipModel(
         text: t.campaigns.filters.focusAreas,
         isEnabled: true,
-        stateChanged: onFocusAreaLayerStateChanged,
+        stateChanged: (state) => onFocusAreaLayerStateChanged(state, getMapInfo(MapInfoType.focusArea)),
       ),
       FilterChipModel(
         text: t.campaigns.filters.polling_stations,
         isEnabled: true,
-        stateChanged: onPollinStationLayerStateChanged,
+        stateChanged: (state) => onPollinStationLayerStateChanged(state, getMapInfo(MapInfoType.pollingStation)),
       ),
       FilterChipModel(
         text: t.campaigns.filters.experience_areas,
         isEnabled: true,
-        stateChanged: onExperienceAreaLayerStateChanged,
+        stateChanged: (state) => onExperienceAreaLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),
     ];
 
