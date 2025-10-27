@@ -110,9 +110,9 @@ flutter:
     - assets/maps/layer_styles/
     - .env
   fonts:
-    - family: GrueneType
+    - family: GrueneTypeNeue
       fonts:
-        - asset: assets/fonts/GrueneType.otf
+        - asset: assets/fonts/GrueneTypeNeue.otf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
