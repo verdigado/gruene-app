@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/widgets/events_list_view.dart';
@@ -52,6 +54,24 @@ class _EventsScreenState extends State<EventsScreen> {
                       side: WidgetStateProperty.all(BorderSide(color: ThemeColors.primary, width: 1.5)),
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                     ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 50,
+                right: 16,
+                child: IconButton.filled(
+                  onPressed: () => context.pushNested(Routes.createEvent.path),
+                  icon: const Icon(Icons.edit_calendar),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.white),
+                    foregroundColor: WidgetStateProperty.all(ThemeColors.primary),
+                    minimumSize: WidgetStateProperty.all(const Size(42, 42)),
+                    maximumSize: WidgetStateProperty.all(const Size(42, 42)),
+                    padding: WidgetStateProperty.all(EdgeInsets.zero),
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                    elevation: WidgetStateProperty.all(6),
+                    shadowColor: WidgetStateProperty.all(Color.fromRGBO(0, 0, 0, 0.15)),
                   ),
                 ),
               ),

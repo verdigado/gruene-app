@@ -2559,6 +2559,74 @@ paths:
       summary: Delete calendar event
       tags:
         - calendars
+  /v1/calendars/{calendarId}/{eventId}/image:
+    put:
+      operationId: updateCalendarEventImage
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update calendar event image
+      tags:
+        - calendars
+    delete:
+      operationId: deleteCalendarEventImage
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '400':
+          description: No user provided by used authentication method
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete calendar event image
+      tags:
+        - calendars
   /health:
     get:
       tags:
