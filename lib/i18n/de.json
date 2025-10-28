@@ -66,7 +66,8 @@
       "routes": "Routen",
       "visited_areas": "Besuchte Gebiete",
       "polling_stations": "Wahllokale",
-      "experience_areas": "Erfahrungsgebiete"
+      "experience_areas": "Erfahrungsgebiete",
+      "action_areas": "Einsatzgebiete"
     },
     "infoToast": {
       "focusAreas_activated": "Fokusgebiete aktiviert",
@@ -94,6 +95,7 @@
       "supplied_by": "Bereitgestellt von:",
       "general_supplier": "nutzer*innengeneriert"
     },
+    
     "poster": {
       "label": "Plakat",
       "addPoster": "Plakat eintragen",
