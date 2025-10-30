@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Route;
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/services/converters.dart';
@@ -11,6 +11,7 @@ import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/turf.dart' as turf;
 

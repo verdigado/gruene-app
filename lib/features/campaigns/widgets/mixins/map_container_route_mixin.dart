@@ -62,7 +62,7 @@ mixin MapConsumerRouteMixin {
     onClose() => Navigator.maybePop(context);
 
     return SizedBox(
-      height: 109,
+      height: 157,
       child: Column(
         children: [
           Container(
@@ -106,8 +106,20 @@ mixin MapConsumerRouteMixin {
               ),
             ),
           ),
+          Row(
+            children: [
+              Switch(value: route.status == RouteStatus.closed, onChanged: (state) => _changeRouteStatus(route, state)),
+            ],
+          ),
         ],
       ),
     );
+  }
+
+  void _changeRouteStatus(Route route, bool state) {
+    if (state) {
+      // route.status = RouteStatus.closed;
+    } else {}
+    // api
   }
 }
