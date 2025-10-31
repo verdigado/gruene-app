@@ -365,6 +365,66 @@
     "map": "Karte",
     "online": "online",
     "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
-    "details": "Details"
+    "details": "Details",
+    "create": {
+      "title": "Neues Event erstellen",
+      "intro": "Events können nur für deine eigene Gliederung (KV ${division}) angelegt werden. Für übergreifende Events wende dich bitte an deinen Vorstand.",
+      "inputs": {
+        "locationType": {
+          "options": {
+            "physical": "Physische Veranstaltung",
+            "hybrid": "Hybrid (vor Ort + digital)",
+            "online": "Digital"
+          }
+        },
+        "title": {
+          "label": "Name des Events"
+        },
+        "description": {
+          "label": "Beschreibung"
+        },
+        "start_date": {
+          "label": "Datum"
+        },
+        "start_time": {
+          "label": "Uhrzeit"
+        },
+        "show_end_time": {
+          "label": "End-Uhrzeit angeben"
+        },
+        "end_time": {
+          "label": "End-Uhrzeit"
+        },
+        "street": {
+          "label": "Straße"
+        },
+        "streetNumber": {
+          "label": "Hausnr."
+        },
+        "zipCode": {
+          "label": "PLZ"
+        },
+        "city": {
+          "label": "Stadt / Ort"
+        },
+        "limitedSlots": {
+          "label": "Teilnehmerplätze begrenzen"
+        },
+        "availableSlots": {
+          "label": "Anzahl verfügbarer Plätze"
+        },
+        "useExternalUrl": {
+          "label": "Externe Event-Seite nutzen"
+        },
+        "externalUrl": {
+          "label": "URL Event-Seite"
+        }
+      },
+      "dateAndTime": "Datum & Uhrzeit",
+      "location": "Location",
+      "eventLocation": "Veranstaltungsort",
+      "link": "Link zur Online-Veranstaltung",
+      "other": "Sonstiges"
+    }
   }
 }

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/membership.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/widgets/events_list_view.dart';
 import 'package:gruene_app/features/events/widgets/events_map_view.dart';
+import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -24,17 +27,20 @@ class _EventsScreenState extends State<EventsScreen> {
     return Scaffold(
       appBar: MainAppBar(title: t.events.events),
       body: FutureLoadingScreen(
-        load: getEvents,
+        load: () async => (await getEvents(), await fetchOwnProfile()),
         buildChild: (data, _) {
+          final (events, ownProfile) = data;
+          DivisionMembership? kvMembership = extractKvMembership(ownProfile.memberships);
+
           return Stack(
             children: [
               Positioned.fill(
-                child: isMapView ? EventsMapView(events: data) : EventsListView(events: data),
+                child: isMapView ? EventsMapView(events: events) : EventsListView(events: events),
               ),
               Positioned(
                 bottom: 50,
-                left: 24,
-                right: 24,
+                left: 76,
+                right: 76,
                 child: Center(
                   child: SegmentedButton(
                     segments: [
@@ -57,24 +63,26 @@ class _EventsScreenState extends State<EventsScreen> {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 50,
-                right: 16,
-                child: IconButton.filled(
-                  onPressed: () => context.pushNested(Routes.createEvent.path),
-                  icon: const Icon(Icons.edit_calendar),
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.white),
-                    foregroundColor: WidgetStateProperty.all(ThemeColors.primary),
-                    minimumSize: WidgetStateProperty.all(const Size(42, 42)),
-                    maximumSize: WidgetStateProperty.all(const Size(42, 42)),
-                    padding: WidgetStateProperty.all(EdgeInsets.zero),
-                    shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                    elevation: WidgetStateProperty.all(6),
-                    shadowColor: WidgetStateProperty.all(Color.fromRGBO(0, 0, 0, 0.15)),
+              if (kvMembership != null) ...[
+                Positioned(
+                  bottom: 50,
+                  right: 16,
+                  child: IconButton.filled(
+                    onPressed: () => context.pushNested(Routes.createEvent.path),
+                    icon: const Icon(Icons.edit_calendar),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.white),
+                      foregroundColor: WidgetStateProperty.all(ThemeColors.primary),
+                      minimumSize: WidgetStateProperty.all(const Size(42, 42)),
+                      maximumSize: WidgetStateProperty.all(const Size(42, 42)),
+                      padding: WidgetStateProperty.all(EdgeInsets.zero),
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                      elevation: WidgetStateProperty.all(6),
+                      shadowColor: WidgetStateProperty.all(Color.fromRGBO(0, 0, 0, 0.15)),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           );
         },
