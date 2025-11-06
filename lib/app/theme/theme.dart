@@ -162,6 +162,18 @@ final ThemeData appTheme = ThemeData.light().copyWith(
     unselectedLabelStyle: _ThemeTextStyles.titleMedium,
     labelColor: ThemeColors.primary,
   ),
+  segmentedButtonTheme: SegmentedButtonThemeData(
+    style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? ThemeColors.primary : ThemeColors.background,
+        ),
+        foregroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected) ? ThemeColors.background : ThemeColors.primary,
+        ),
+        side: WidgetStateProperty.all(BorderSide(color: ThemeColors.primary, width: 1.5)),
+        shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+    )
+  ),
   switchTheme: SwitchThemeData(
     thumbIcon: thumbIcon,
     trackColor: trackColor,
