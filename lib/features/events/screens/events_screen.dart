@@ -29,9 +29,9 @@ class _EventsScreenState extends State<EventsScreen> {
                 child: isMapView ? EventsMap(events: data) : EventsList(events: data),
               ),
               Positioned(
-                bottom: 48,
-                left: 24,
-                right: 24,
+                bottom: 8,
+                left: 0,
+                right: 0,
                 child: Center(
                   child: SegmentedButton(
                     segments: [
