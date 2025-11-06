@@ -29,13 +29,7 @@ class DoorsScreen extends StatefulWidget {
 
 class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDetailModel, DoorUpdateModel> {
   static const _poiType = PoiServiceType.door;
-  final Map<String, List<String>> doorsExclusions = <String, List<String>>{
-    t.campaigns.filters.focusAreas: [t.campaigns.filters.visited_areas],
-    t.campaigns.filters.visited_areas: [t.campaigns.filters.focusAreas],
-  };
-
   late List<FilterChipModel> doorsFilter;
-
   final _grueneApiService = GetIt.I<GrueneApiDoorService>();
 
   _DoorsScreenState() : super(_poiType);
@@ -46,7 +40,6 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
   @override
   void initState() {
     doorsFilter = [
-      FilterChipModel(text: t.campaigns.filters.visited_areas, isEnabled: false),
       FilterChipModel(
         text: t.campaigns.filters.routes,
         isEnabled: true,
@@ -91,7 +84,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
 
     return Column(
       children: [
-        FilterChipCampaign(doorsFilter, doorsExclusions),
+        FilterChipCampaign(doorsFilter),
         Expanded(child: Stack(children: [mapContainer, ...getSearchWidgets(context)])),
       ],
     );

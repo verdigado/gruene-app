@@ -64,7 +64,6 @@
     "filters": {
       "focusAreas": "Fokusgebiete",
       "routes": "Routen",
-      "visited_areas": "Besuchte Gebiete",
       "polling_stations": "Wahllokale",
       "experience_areas": "Erfahrungsgebiete",
       "action_areas": "Einsatzgebiete"

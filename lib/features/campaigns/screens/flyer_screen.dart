@@ -38,7 +38,6 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
   @override
   void initState() {
     flyerFilter = [
-      FilterChipModel(text: t.campaigns.filters.visited_areas, isEnabled: false),
       FilterChipModel(
         text: t.campaigns.filters.focusAreas,
         isEnabled: true,
@@ -83,7 +82,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
 
     return Column(
       children: [
-        FilterChipCampaign(flyerFilter, <String, List<String>>{}),
+        FilterChipCampaign(flyerFilter),
         Expanded(child: Stack(children: [mapContainer, ...getSearchWidgets(context)])),
       ],
     );
