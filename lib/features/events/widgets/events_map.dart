@@ -9,16 +9,16 @@ import 'package:gruene_app/features/events/widgets/event_detail_sheet.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-class EventsMapView extends StatefulWidget {
+class EventsMap extends StatefulWidget {
   final List<CalendarEvent> events;
 
-  const EventsMapView({super.key, required this.events});
+  const EventsMap({super.key, required this.events});
 
   @override
-  State<EventsMapView> createState() => _EventsMapViewState();
+  State<EventsMap> createState() => _EventsMapState();
 }
 
-class _EventsMapViewState extends State<EventsMapView> {
+class _EventsMapState extends State<EventsMap> {
   MapLibreMapController? mapController;
 
   void _onMapCreated(MapLibreMapController controller) {
