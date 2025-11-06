@@ -3,8 +3,8 @@ import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
-import 'package:gruene_app/features/events/widgets/events_list_view.dart';
-import 'package:gruene_app/features/events/widgets/events_map_view.dart';
+import 'package:gruene_app/features/events/widgets/events_list.dart';
+import 'package:gruene_app/features/events/widgets/events_map.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class EventsScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _EventsScreenState extends State<EventsScreen> {
           return Stack(
             children: [
               Positioned.fill(
-                child: isMapView ? EventsMapView(events: data) : EventsListView(events: data),
+                child: isMapView ? EventsMap(events: data) : EventsList(events: data),
               ),
               Positioned(
                 bottom: 50,

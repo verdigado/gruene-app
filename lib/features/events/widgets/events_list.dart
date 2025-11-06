@@ -4,10 +4,10 @@ import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
 
-class EventsListView extends StatelessWidget {
+class EventsList extends StatelessWidget {
   final List<CalendarEvent> events;
 
-  const EventsListView({super.key, required this.events});
+  const EventsList({super.key, required this.events});
 
   @override
   Widget build(BuildContext context) {
