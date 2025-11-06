@@ -12,7 +12,13 @@ class EventsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final groupedEvents = groupEventsByMonth(events);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    // Hide past events (only show events that start or end today or in the future)
+    final relevantEvents = events
+        .where((event) => event.end == null ? event.start.isAfter(today) : event.end!.isAfter(today))
+        .toList();
+    final groupedEvents = groupEventsByMonth(relevantEvents);
 
     return ListView.builder(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 64),
