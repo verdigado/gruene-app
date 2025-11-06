@@ -17,6 +17,7 @@ class EventDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final event = GoRouterState.of(context).extra as CalendarEvent?;
+
     return Scaffold(
       appBar: MainAppBar(title: t.events.events),
       body: FutureLoadingScreen(
@@ -25,7 +26,10 @@ class EventDetailScreen extends StatelessWidget {
           if (event == null) {
             return ErrorScreen(errorMessage: t.events.eventNotFound, retry: () => getEventById(eventId));
           }
+
           final image = event.image;
+          final description = event.description;
+
           return ListView(
             children: [
               if (image != null) Image.network(image, width: double.infinity, fit: BoxFit.fitWidth),
@@ -37,6 +41,7 @@ class EventDetailScreen extends StatelessWidget {
                   children: [
                     Text(event.title, style: theme.textTheme.titleLarge),
                     EventLocation(event: event),
+                    if (description != null) Text(description),
                   ],
                 ),
               ),
