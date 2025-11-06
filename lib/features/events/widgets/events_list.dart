@@ -15,7 +15,7 @@ class EventsList extends StatelessWidget {
     final groupedEvents = groupEventsByMonth(events);
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 64),
       itemCount: groupedEvents.length,
       itemBuilder: (context, index) {
         final group = groupedEvents[index];
