@@ -365,7 +365,7 @@
     "label": "Events",
     "list": "Liste",
     "map": "Karte",
-    "online": "online",
+    "url": "Link:",
     "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
     "details": "Details"
   }

@@ -4,7 +4,7 @@ import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
-import 'package:gruene_app/features/events/utils/utils.dart';
+import 'package:gruene_app/features/events/widgets/event_location.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 
@@ -33,11 +33,10 @@ class EventDetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 16,
                   children: [
-                    SizedBox(height: 24),
                     Text(event.title, style: theme.textTheme.titleLarge),
-                    SizedBox(height: 16),
-                    Text(getEventLocationLabel(event)),
+                    EventLocation(event: event),
                   ],
                 ),
               ),
