@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/widgets/events_list.dart';
@@ -30,7 +29,7 @@ class _EventsScreenState extends State<EventsScreen> {
                 child: isMapView ? EventsMap(events: data) : EventsList(events: data),
               ),
               Positioned(
-                bottom: 50,
+                bottom: 48,
                 left: 24,
                 right: 24,
                 child: Center(
@@ -42,16 +41,6 @@ class _EventsScreenState extends State<EventsScreen> {
                     selected: {isMapView},
                     onSelectionChanged: (newSelection) => setState(() => isMapView = newSelection.first),
                     showSelectedIcon: false,
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.resolveWith(
-                        (states) => states.contains(WidgetState.selected) ? ThemeColors.primary : Colors.white,
-                      ),
-                      foregroundColor: WidgetStateProperty.resolveWith(
-                        (states) => states.contains(WidgetState.selected) ? Colors.white : ThemeColors.primary,
-                      ),
-                      side: WidgetStateProperty.all(BorderSide(color: ThemeColors.primary, width: 1.5)),
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                    ),
                   ),
                 ),
               ),
