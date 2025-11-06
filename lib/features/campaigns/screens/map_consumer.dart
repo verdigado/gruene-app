@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
@@ -177,7 +178,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   Future<void> deletePoi(String poiId) async {
-    var markerItem = await campaignActionCache.deletePoi(poiType, poiId);
+    var markerItem = await campaignActionCache.deletePoi(poiType.asPoiCacheType(), poiId);
     mapController.setMarkerSource([markerItem]);
   }
 
@@ -308,17 +309,17 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   void loadCachedItems() async {
-    var markerItems = await campaignActionCache.getMarkerItems(poiType);
+    var markerItems = await campaignActionCache.getMarkerItems(poiType.asPoiCacheType());
     mapController.setMarkerSource(markerItems);
   }
 
   Future<void> savePoi(PoiUpdateType poiUpdate) async {
-    final updatedMarker = await campaignActionCache.updatePoi(poiType, poiUpdate);
+    final updatedMarker = await campaignActionCache.updatePoi(poiType.asPoiCacheType(), poiUpdate);
     mapController.setMarkerSource([updatedMarker]);
   }
 
   Future<MarkerItemModel> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
-      await campaignActionCache.storeNewPoi(poiType, newPoi);
+      await campaignActionCache.storeNewPoi(poiType.asPoiCacheType(), newPoi);
 
   Future<U> getPoiFromFeature<U extends BasicPoi>(Map<String, dynamic> feature) {
     final isCached = MapHelper.extractIsCachedFromFeature(feature);

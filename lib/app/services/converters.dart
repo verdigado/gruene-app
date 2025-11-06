@@ -19,6 +19,8 @@ import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model
 import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_update_model.dart';
+import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
+import 'package:gruene_app/features/campaigns/models/route/route_update_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/enhanced_wheel_slider.dart';
 import 'package:gruene_app/features/campaigns/widgets/text_input_field.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -57,3 +59,6 @@ part 'converters/slider_range_parsing.dart';
 part 'converters/string_extension.dart';
 part 'converters/experience_area_parsing.dart';
 part 'converters/action_area_parsing.dart';
+part 'converters/route_type_parsing.dart';
+part 'converters/route_status_parsing.dart';
+part 'converters/route_detail_model_parsing.dart';

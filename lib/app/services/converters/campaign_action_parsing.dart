@@ -75,4 +75,11 @@ extension CampaignActionParsing on CampaignAction {
       isCached: true,
     );
   }
+
+  RouteUpdateModel getAsRouteUpdate() {
+    var data = jsonDecode(serialized!) as Map<String, dynamic>;
+    var model = RouteUpdateModel.fromJson(data.updateIdField(poiId!));
+
+    return model;
+  }
 }

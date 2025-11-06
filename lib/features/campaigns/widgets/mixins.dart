@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Route;
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/services/converters.dart';
@@ -8,6 +8,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
+import 'package:gruene_app/features/campaigns/screens/route_detail.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
 import 'package:gruene_app/i18n/translations.g.dart';

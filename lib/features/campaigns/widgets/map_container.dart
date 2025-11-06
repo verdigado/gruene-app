@@ -290,7 +290,7 @@ class _MapContainerState extends State<MapContainer>
     if (routes.isNotEmpty) {
       final feature = MapHelper.getClosestFeature(routes, targetLatLng);
 
-      onRouteClick(feature, () => context, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
+      onRouteClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
       return;
     }
 
