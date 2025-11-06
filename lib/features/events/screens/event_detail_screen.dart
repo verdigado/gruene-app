@@ -25,18 +25,19 @@ class EventDetailScreen extends StatelessWidget {
           if (event == null) {
             return ErrorScreen(errorMessage: t.events.eventNotFound, retry: () => getEventById(eventId));
           }
+          final image = event.image;
           return ListView(
             children: [
-              if (event.image != null) ...[Image.network(event.image!, width: double.infinity, fit: BoxFit.fitWidth)],
+              if (image != null) Image.network(image, width: double.infinity, fit: BoxFit.fitWidth),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 28),
+                    SizedBox(height: 24),
                     Text(event.title, style: theme.textTheme.titleLarge),
                     SizedBox(height: 16),
-                    Text(getEventLocationLabel(event), style: theme.textTheme.labelSmall),
+                    Text(getEventLocationLabel(event)),
                   ],
                 ),
               ),

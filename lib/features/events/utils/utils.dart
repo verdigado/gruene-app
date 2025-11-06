@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:gruene_app/app/utils/format_date.dart';
 import 'package:gruene_app/features/events/models/month_group_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
-import 'package:intl/intl.dart';
 
 List<MonthGroup> groupEventsByMonth(List<CalendarEvent> events) {
   final Map<DateTime, List<CalendarEvent>> groupedMap = {};
@@ -28,15 +29,12 @@ String formatEventDateRange(CalendarEvent event) {
   final start = event.start;
   final end = event.end;
 
-  final dateFormat = DateFormat('dd.MM.yy, HH:mm', 'de_DE');
-  final timeFormat = DateFormat('HH:mm', 'de_DE');
-
-  if (end == null) {
-    return '${dateFormat.format(start)} Uhr';
-  } else if (start.year == end.year && start.month == end.month && start.day == end.day) {
-    return '${dateFormat.format(start)} Uhr - ${timeFormat.format(end)} Uhr';
+  if (end == null || start == end) {
+    return formatDateTime(start);
+  } else if (DateUtils.isSameDay(start, end)) {
+    return formatInterval(formatDateTime(start), formatTime(end));
   } else {
-    return '${dateFormat.format(start)} Uhr - ${dateFormat.format(end)} Uhr';
+    return formatInterval(formatDateTime(start), formatDateTime(end));
   }
 }
 

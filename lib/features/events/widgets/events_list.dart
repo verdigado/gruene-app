@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/utils/format_date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
-import 'package:intl/intl.dart';
 
 class EventsList extends StatelessWidget {
   final List<CalendarEvent> events;
@@ -30,7 +30,7 @@ class EventsList extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Text(DateFormat.yMMMM('de_DE').format(group.month), style: theme.textTheme.titleMedium),
+              child: Text(formatMonth(group.month), style: theme.textTheme.titleMedium),
             ),
             ...group.events.map((event) => _EventCard(event: event)),
           ],
