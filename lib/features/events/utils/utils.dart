@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/format_date.dart';
 import 'package:gruene_app/features/events/models/month_group_model.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 List<MonthGroup> groupEventsByMonth(List<CalendarEvent> events) {
@@ -35,15 +34,5 @@ String formatEventDateRange(CalendarEvent event) {
     return formatInterval(formatDateTime(start), formatTime(end));
   } else {
     return formatInterval(formatDateTime(start), formatDateTime(end));
-  }
-}
-
-String getEventLocationLabel(CalendarEvent event) {
-  if (event.location != null && event.location!.trim().isNotEmpty) {
-    return event.location!;
-  } else if (event.locationType?.toLowerCase() == 'online') {
-    return t.events.online;
-  } else {
-    return '';
   }
 }

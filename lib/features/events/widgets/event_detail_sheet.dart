@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
+import 'package:gruene_app/features/events/widgets/event_location.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 
@@ -53,8 +54,7 @@ class EventDetailsSheet extends StatelessWidget {
                       Text(formatEventDateRange(event), style: theme.textTheme.labelSmall),
                       const SizedBox(height: 4),
                       Text(event.title, style: theme.textTheme.titleSmall),
-                      const SizedBox(height: 12),
-                      Text(getEventLocationLabel(event), style: theme.textTheme.labelSmall),
+                      EventLocation(event: event),
                     ],
                   ),
                 ),
