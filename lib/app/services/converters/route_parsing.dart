@@ -12,22 +12,21 @@ extension RouteParsing on Route {
       geometry: turf.LineString(coordinates: position),
     );
   }
+
+  RouteDetailModel asRouteDetail() {
+    return RouteDetailModel(
+      id: id,
+      type: type,
+      name: name,
+      status: status,
+      lineString: lineString,
+      createdAt: createdAt.getAsLocalDateString(),
+    );
+  }
 }
 
 extension RouteListParsing on List<Route> {
   FeatureCollection transformToFeatureCollection() {
     return FeatureCollection(features: map((p) => p.transformToFeatureItem()).toList());
-  }
-}
-
-extension RouteTypeParsing on RouteType {
-  String getAsLabel() {
-    var typeLabel = switch (this) {
-      RouteType.flyerSpot => t.campaigns.flyer.label,
-      RouteType.poster => t.campaigns.poster.label,
-      RouteType.house => t.campaigns.door.label,
-      RouteType.swaggerGeneratedUnknown => throw UnimplementedError(),
-    };
-    return '$typeLabel-${t.campaigns.route.label}';
   }
 }

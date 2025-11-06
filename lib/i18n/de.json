@@ -88,7 +88,8 @@
     "route": {
       "label": "Route",
       "routeType_label": "Typ",
-      "createdAt": "Erstellt"
+      "createdAt": "Erstellt",
+      "quick_action_label": "Route abgearbeitet"
     },
     "experience_areas": {
       "label": "Erfahrungsgebiet",

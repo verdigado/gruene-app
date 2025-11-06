@@ -14,7 +14,7 @@ mixin MapConsumerRouteMixin on InfoBox {
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSourceName,
       CampaignConstants.routesLineLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 0.6),
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#008939', lineWidth: 7, lineOpacity: 0.7),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );
@@ -28,7 +28,7 @@ mixin MapConsumerRouteMixin on InfoBox {
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSelectedSourceName,
       CampaignConstants.routesLineSelectedLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FF0000', lineWidth: 7, lineOpacity: 1),
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#008939', lineWidth: 7, lineOpacity: 1),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );

@@ -11,6 +11,9 @@ class ThemeColors {
   // Tertiary Light Green (#46962B)
   static const Color tertiary = Color(0xFF46962B);
 
+  // Very Light Green (#F3FAF6)
+  static const Color grey100 = Color(0xFFF3FAF6);
+
   // White (#FFFFFF)
   static const Color background = Color(0xFFFFFFFF);
 

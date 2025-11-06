@@ -1,5 +1,46 @@
 part of '../converters.dart';
 
+extension PoiCacheTypeParsing on PoiCacheType {
+  CampaignActionType getCacheAddAction() {
+    switch (this) {
+      case PoiCacheType.poster:
+        return CampaignActionType.addPoster;
+      case PoiCacheType.door:
+        return CampaignActionType.addDoor;
+      case PoiCacheType.flyer:
+        return CampaignActionType.addFlyer;
+      case PoiCacheType.route:
+        throw UnimplementedError();
+    }
+  }
+
+  CampaignActionType getCacheDeleteAction() {
+    switch (this) {
+      case PoiCacheType.poster:
+        return CampaignActionType.deletePoster;
+      case PoiCacheType.door:
+        return CampaignActionType.deleteDoor;
+      case PoiCacheType.flyer:
+        return CampaignActionType.deleteFlyer;
+      case PoiCacheType.route:
+        throw UnimplementedError();
+    }
+  }
+
+  CampaignActionType getCacheEditAction() {
+    switch (this) {
+      case PoiCacheType.poster:
+        return CampaignActionType.editPoster;
+      case PoiCacheType.door:
+        return CampaignActionType.editDoor;
+      case PoiCacheType.flyer:
+        return CampaignActionType.editFlyer;
+      case PoiCacheType.route:
+        return CampaignActionType.editRoute;
+    }
+  }
+}
+
 extension PoiServiceTypeParsing on PoiServiceType {
   V1CampaignsPoisGetType transformToApiPoisGetType() {
     switch (this) {
@@ -58,39 +99,6 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  CampaignActionType getCacheDeleteAction() {
-    switch (this) {
-      case PoiServiceType.poster:
-        return CampaignActionType.deletePoster;
-      case PoiServiceType.door:
-        return CampaignActionType.deleteDoor;
-      case PoiServiceType.flyer:
-        return CampaignActionType.deleteFlyer;
-    }
-  }
-
-  CampaignActionType getCacheEditAction() {
-    switch (this) {
-      case PoiServiceType.poster:
-        return CampaignActionType.editPoster;
-      case PoiServiceType.door:
-        return CampaignActionType.editDoor;
-      case PoiServiceType.flyer:
-        return CampaignActionType.editFlyer;
-    }
-  }
-
-  CampaignActionType getCacheAddAction() {
-    switch (this) {
-      case PoiServiceType.poster:
-        return CampaignActionType.addPoster;
-      case PoiServiceType.door:
-        return CampaignActionType.addDoor;
-      case PoiServiceType.flyer:
-        return CampaignActionType.addFlyer;
-    }
-  }
-
   V1CampaignsRoutesGetType transformToRoutesApiGetType() {
     switch (this) {
       case PoiServiceType.poster:
@@ -99,6 +107,17 @@ extension PoiServiceTypeParsing on PoiServiceType {
         return V1CampaignsRoutesGetType.house;
       case PoiServiceType.flyer:
         return V1CampaignsRoutesGetType.flyerSpot;
+    }
+  }
+
+  PoiCacheType asPoiCacheType() {
+    switch (this) {
+      case PoiServiceType.poster:
+        return PoiCacheType.poster;
+      case PoiServiceType.door:
+        return PoiCacheType.door;
+      case PoiServiceType.flyer:
+        return PoiCacheType.flyer;
     }
   }
 }
