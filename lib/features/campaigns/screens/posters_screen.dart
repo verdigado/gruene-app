@@ -93,7 +93,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
 
     return Column(
       children: [
-        FilterChipCampaign(postersFilter, <String, List<String>>{}),
+        FilterChipCampaign(postersFilter),
         Expanded(
           child: Stack(
             children: [

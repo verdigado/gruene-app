@@ -15,9 +15,9 @@ class FilterChipModel {
 
 class FilterChipCampaign extends StatefulWidget {
   final List<FilterChipModel> filterOptions;
-  final Map<String, List<String>> filterExclusions;
+  final Map<String, List<String>>? filterExclusions;
 
-  const FilterChipCampaign(this.filterOptions, this.filterExclusions, {super.key});
+  const FilterChipCampaign(this.filterOptions, {this.filterExclusions, super.key});
 
   @override
   State<FilterChipCampaign> createState() => _FilterChipCampaignState();
@@ -38,8 +38,12 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
   }
 
   void unselectExclusions(FilterChipModel item) {
-    var filterExclusions = widget.filterExclusions;
-    filterExclusions.entries.where((x) => x.key == item.text).map((x) => x.value).forEach((x) => x.forEach(unselect));
+    if (widget.filterExclusions != null) {
+      widget.filterExclusions?.entries
+          .where((x) => x.key == item.text)
+          .map((x) => x.value)
+          .forEach((v) => v.forEach(unselect));
+    }
   }
 
   @override
