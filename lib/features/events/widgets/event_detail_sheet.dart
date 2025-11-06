@@ -13,6 +13,9 @@ class EventDetailsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final description = event.description;
+    final image = event.image;
+
     return SafeArea(
       top: false,
       bottom: false,
@@ -41,8 +44,8 @@ class EventDetailsSheet extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (event.image != null) ...[
-                  Image.network(event.image!, width: 110, height: 150, fit: BoxFit.cover),
+                if (image != null) ...[
+                  Image.network(image, width: 110, height: 150, fit: BoxFit.cover),
                   const SizedBox(width: 16),
                 ],
 
@@ -55,6 +58,7 @@ class EventDetailsSheet extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(event.title, style: theme.textTheme.titleSmall),
                       EventLocation(event: event),
+                      if (description != null) Text(description),
                     ],
                   ),
                 ),
