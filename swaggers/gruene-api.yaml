@@ -2559,6 +2559,74 @@ paths:
       summary: Delete calendar event
       tags:
         - calendars
+  /v1/calendars/{calendarId}/{eventId}/image:
+    put:
+      operationId: updateCalendarEventImage
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update calendar event image
+      tags:
+        - calendars
+    delete:
+      operationId: deleteCalendarEventImage
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '400':
+          description: No user provided by used authentication method
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete calendar event image
+      tags:
+        - calendars
   /health:
     get:
       tags:
@@ -4674,6 +4742,48 @@ components:
             $ref: '#/components/schemas/FocusArea'
       required:
         - data
+    PoiStatisticsByStatus:
+      type: object
+      properties:
+        status:
+          enum:
+            - OK
+            - DAMAGED
+            - REMOVED
+            - MISSING
+            - TO_BE_MOVED
+            - OPENED_DOORS
+            - CLOSED_DOORS
+          type: string
+        own:
+          type: number
+          description: Total number of POIs created or owned by the current user.
+        subDivision:
+          type: number
+          nullable: true
+          description: >-
+            Total number of POIs within the user's local subdivision (division
+            with level OV), or null if not applicable.
+        division:
+          type: number
+          description: >-
+            Total number of POIs within the user's district (division with level
+            KV).
+        state:
+          type: number
+          description: >-
+            Total number of POIs within the user's state (division with level
+            LV).
+        germany:
+          type: number
+          description: Total number of POIs within the entire country.
+      required:
+        - status
+        - own
+        - subDivision
+        - division
+        - state
+        - germany
     PoiStatistics:
       type: object
       properties:
@@ -4699,12 +4809,17 @@ components:
         germany:
           type: number
           description: Total number of POIs within the entire country.
+        byStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoiStatisticsByStatus'
       required:
         - own
         - subDivision
         - division
         - state
         - germany
+        - byStatus
     CampaignStatistics:
       type: object
       properties:
@@ -5302,14 +5417,21 @@ components:
           type: string
           description: End date and time of the event
           example: '2025-10-15T21:00:00.000Z'
-        location:
+        locationAddress:
           type: string
-          description: Location where the event takes place
+          description: The location address where the event takes place
           example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
         locationType:
+          description: Type of location
+          example: PHYSICAL
+          enum:
+            - PHYSICAL
+            - ONLINE
           type: string
-          description: Type of location (online, physical, hybrid)
-          example: physical
+        locationUrl:
+          type: string
+          description: The URL for the location or online meeting
+          example: https://example.com
         image:
           type: string
           description: URL to event image
@@ -5414,14 +5536,20 @@ components:
           type: string
           description: End date and time of the event
           example: '2025-10-15T21:00:00.000Z'
-        location:
+        locationAddress:
           type: string
-          description: Location where the event takes place
+          description: The location address where the event takes place
           example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
         locationType:
           type: string
-          description: Type of location (online, physical, hybrid)
-          example: physical
+          description: Type of location
+          enum:
+            - PHYSICAL
+            - ONLINE
+        locationUrl:
+          type: string
+          description: The URL for the location or online meeting
+          example: https://example.com
         availableSlots:
           type: number
           description: Number of available slots for registration
@@ -5475,14 +5603,20 @@ components:
           type: string
           description: End date and time of the event
           example: '2025-10-15T21:00:00.000Z'
-        location:
+        locationAddress:
           type: string
-          description: Location where the event takes place
+          description: The location address where the event takes place
           example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
         locationType:
           type: string
-          description: Type of location (online, physical, hybrid)
-          example: physical
+          description: Type of location
+          enum:
+            - PHYSICAL
+            - ONLINE
+        locationUrl:
+          type: string
+          description: The URL for the location or online meeting
+          example: https://example.com
         availableSlots:
           type: number
           description: Number of available slots for registration
@@ -5581,3 +5715,4 @@ components:
             keycloak:
               status: down
               example: client not authenticated
+

@@ -369,6 +369,7 @@
     "map": "Karte",
     "url": "Link:",
     "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
-    "details": "Details"
+    "details": "Details",
+    "digital": "digital"
   }
 }
