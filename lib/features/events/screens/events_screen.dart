@@ -23,10 +23,16 @@ class _EventsScreenState extends State<EventsScreen> {
       body: FutureLoadingScreen(
         load: getEvents,
         buildChild: (data, _) {
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+          // Hide past events (only show events that start or end today or in the future)
+          final relevantEvents = data
+              .where((event) => event.end == null ? event.start.isAfter(today) : event.end!.isAfter(today))
+              .toList();
           return Stack(
             children: [
               Positioned.fill(
-                child: isMapView ? EventsMap(events: data) : EventsList(events: data),
+                child: isMapView ? EventsMap(events: relevantEvents) : EventsList(events: relevantEvents),
               ),
               Positioned(
                 bottom: 8,
