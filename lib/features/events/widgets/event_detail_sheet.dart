@@ -6,7 +6,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide 
 
 class EventDetailsSheet extends StatelessWidget {
   final CalendarEvent event;
-  final VoidCallback onClose;
+  final void Function() onClose;
 
   const EventDetailsSheet({super.key, required this.event, required this.onClose});
 
@@ -16,46 +16,37 @@ class EventDetailsSheet extends StatelessWidget {
     final description = event.description;
     final image = event.image;
 
-    return SafeArea(
-      top: false,
-      bottom: false,
+    return SingleChildScrollView(
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(24, 12, 24, 60),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 60),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 8,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(t.events.details, style: theme.textTheme.bodyLarge),
-                Transform.translate(
-                  offset: const Offset(14, 0),
-                  child: IconButton(icon: const Icon(Icons.close, size: 28), onPressed: onClose),
-                ),
+                IconButton(icon: const Icon(Icons.close), onPressed: onClose),
               ],
             ),
-            const SizedBox(height: 16),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 16,
               children: [
-                if (image != null) ...[
-                  Image.network(image, width: 110, height: 150, fit: BoxFit.cover),
-                  const SizedBox(width: 16),
-                ],
-
+                if (image != null) Image.network(image, width: 110, height: 150, fit: BoxFit.cover),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
                     children: [
-                      const SizedBox(height: 4),
                       Text(formatEventDateRange(event), style: theme.textTheme.labelSmall),
-                      const SizedBox(height: 4),
                       Text(event.title, style: theme.textTheme.titleSmall),
                       EventLocation(event: event),
                       if (description != null) Text(description),

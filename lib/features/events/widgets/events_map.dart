@@ -1,8 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gruene_app/app/bottom_sheet/bloc/bottom_sheet_cubit.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
@@ -41,13 +39,10 @@ class _EventsMapState extends State<EventsMap> {
       final event = widget.events.firstWhereOrNull((event) => event.id == eventId);
 
       if (event != null) {
-        context.read<BottomSheetCubit>().show(
-          EventDetailsSheet(
-            event: event,
-            onClose: () {
-              if (mounted) context.read<BottomSheetCubit>().hide();
-            },
-          ),
+        showModalBottomSheet<void>(
+          context: context,
+          useRootNavigator: true,
+          builder: (context) => EventDetailsSheet(event: event, onClose: () => Navigator.pop(context)),
         );
       }
     });
@@ -94,7 +89,7 @@ class _EventsMapState extends State<EventsMap> {
               initialCameraPosition: cameraPosition,
               onMapCreated: _onMapCreated,
               onStyleLoadedCallback: _onStyleLoaded,
-              // Replace with custom attribution
+              // Replace with custom map attribution
               attributionButtonMargins: const Point(-100, -100),
             ),
             MapAttribution(),
