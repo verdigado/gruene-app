@@ -61,7 +61,7 @@ class AttributionDialogItem extends StatelessWidget {
 
   final IconData icon;
   final String text;
-  final VoidCallback onPressed;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
