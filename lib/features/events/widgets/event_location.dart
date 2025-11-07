@@ -12,25 +12,35 @@ class EventLocation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final location = event.location;
+    final locationAddress = event.locationAddress;
+    final locationUrl = event.locationUrl;
 
-    if (location == null) {
+    if (locationAddress == null && locationUrl == null) {
       return SizedBox.shrink();
     }
 
-    if (event.locationType == 'online') {
-      return Row(
-        spacing: 4,
-        children: [
-          Text(t.events.url, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-          InkWell(
-              child: Text(location, style: theme.textTheme.bodyMedium?.copyWith(color: ThemeColors.primary, decoration: TextDecoration.underline)),
-              onTap: () => openUrl(location, context),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (locationAddress != null) Text(locationAddress),
+        if (locationUrl != null)
+          Row(
+            spacing: 4,
+            children: [
+              Text(t.events.url),
+              InkWell(
+                child: Text(
+                  locationUrl,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: ThemeColors.primary,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+                onTap: () => openUrl(locationUrl, context),
+              ),
+            ],
           ),
-        ],
-      );
-    }
-
-    return Text(location);
+      ],
+    );
   }
 }
