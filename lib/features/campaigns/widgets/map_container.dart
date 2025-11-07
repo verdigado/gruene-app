@@ -10,13 +10,13 @@ import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
-import 'package:gruene_app/features/campaigns/helper/util.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/location_button.dart';
@@ -732,9 +732,9 @@ class _MapContainerState extends State<MapContainer>
     if (!mounted) return;
     _mapFeatureManager.resetAllLayers();
     _loadDataOnMap(init: true);
-    /* 
+    /*
     * WORKAROUND: With some actions the map items won't appear on the map, even they've been loaded.
-    * Though not a big issue the map needs to be touched to be drawn again and instead of wiggling around, 
+    * Though not a big issue the map needs to be touched to be drawn again and instead of wiggling around,
     * we set a small timer an reload the data. This will result in some blinking on the map, but else should
     * not be detectable by the user
     */
