@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/config.dart';
@@ -7,14 +7,22 @@ import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
-import 'package:gruene_app/features/events/widgets/event_detail_sheet.dart';
+import 'package:gruene_app/features/events/constants/index.dart';
+import 'package:gruene_app/features/events/widgets/event_card.dart';
+import 'package:gruene_app/features/events/widgets/map_bottom_sheet.dart';
+import 'package:gruene_app/features/events/widgets/map_event_detail.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:turf/along.dart';
+
+const double userZoom = 10;
 
 class EventsMap extends StatefulWidget {
   final List<CalendarEvent> events;
+  final String? initialEventId;
 
-  const EventsMap({super.key, required this.events});
+  const EventsMap({super.key, required this.events, this.initialEventId});
 
   @override
   State<EventsMap> createState() => _EventsMapState();
@@ -28,42 +36,74 @@ class _EventsMapState extends State<EventsMap> {
   }
 
   Future<void> _onStyleLoaded() async {
-    if (!mounted || mapController == null) return;
-
-    await addImageFromAsset(mapController!, 'eventIcon', 'assets/symbols/events/event.png');
-    await _addMarkers();
-
-    mapController?.onSymbolTapped.add((symbol) {
-      if (!mounted) return;
-      final eventId = symbol.data?['eventId'];
-      final event = widget.events.firstWhereOrNull((event) => event.id == eventId);
-
-      if (event != null) {
-        showModalBottomSheet<void>(
-          context: context,
-          useRootNavigator: true,
-          builder: (context) => EventDetailsSheet(event: event, onClose: () => Navigator.pop(context)),
-        );
-      }
-    });
+    if (mapController != null) {
+      mapController!.onFeatureTapped.add(_onFeatureTapped);
+      await addImageFromAsset(mapController!, 'eventIcon', 'assets/symbols/events/event.png');
+      await _addEventsLayer();
+    }
   }
 
-  Future<void> _addMarkers() async {
-    for (final event in widget.events) {
-      final coords = event.coords;
-      if (coords == null || coords.length != 2) continue;
-      if (!mounted) return;
+  Future<void> _showBottomSheet(List<CalendarEvent> events) async {
+    showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) {
+        CalendarEvent? selectedEvent;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            final event = events.length == 1 ? events[0] : selectedEvent;
+            return MapBottomSheet(
+              title: event != null ? t.events.details : null,
+              onClose: () => Navigator.pop(context),
+              child: event != null
+                  ? EventDetailsSheet(event: event)
+                  : Column(
+                      children: events
+                          .map((event) => EventCard(event: event, onTap: () => setState(() => selectedEvent = event)))
+                          .toList(),
+                    ),
+            );
+          },
+        );
+      },
+    );
+  }
 
-      await mapController?.addSymbol(
-        SymbolOptions(geometry: LatLng(coords[0], coords[1]), iconImage: 'eventIcon', iconSize: 0.15),
-        {'eventId': event.id},
-      );
+  Future<void> _onFeatureTapped(_, math.Point<double> point, LatLng coordinates, String layer) async {
+    final features = await mapController!.queryRenderedFeatures(point, ['events-layer'], null);
+    final events = features
+        .map((feature) => widget.events.firstWhereOrNull((event) => event.id == feature['properties']['eventId']))
+        .nonNulls
+        .toList();
+
+    if (mounted) {
+      _showBottomSheet(events);
     }
+  }
+
+  Future<void> _addEventsLayer() async {
+    final features = widget.events
+        .where((event) => event.coords != null)
+        .map(
+          (event) => Feature(
+            id: event.id,
+            geometry: Point(coordinates: Position(event.coords![1], event.coords![0])),
+            properties: {'eventId': event.id},
+          ),
+        )
+        .toList();
+
+    await mapController?.addGeoJsonSource(eventsSourceName, FeatureCollection(features: features).toJson());
+    await mapController?.addLayer(
+      eventsSourceName,
+      eventsLayerName,
+      const SymbolLayerProperties(iconImage: 'eventIcon', iconSize: 0.2, iconAllowOverlap: true),
+    );
   }
 
   @override
   void dispose() {
-    mapController?.onSymbolTapped.clear();
+    mapController?.onFeatureTapped.clear();
     mapController = null;
     super.dispose();
   }
@@ -79,7 +119,7 @@ class _EventsMapState extends State<EventsMap> {
       buildChild: (RequestedPosition? requestedPosition, _) {
         final position = requestedPosition?.toLatLng();
         final cameraPosition = position != null
-            ? CameraPosition(target: position, zoom: 12)
+            ? CameraPosition(target: position, zoom: userZoom)
             : CameraPosition(target: Config.centerGermany, zoom: Config.germanyZoom);
 
         return Stack(
@@ -90,7 +130,7 @@ class _EventsMapState extends State<EventsMap> {
               onMapCreated: _onMapCreated,
               onStyleLoadedCallback: _onStyleLoaded,
               // Replace with custom map attribution
-              attributionButtonMargins: const Point(-100, -100),
+              attributionButtonMargins: const math.Point(-100, -100),
             ),
             MapAttribution(),
           ],
