@@ -1,6 +1,7 @@
 {
   "common": {
     "appName": "B90/DIE GRÜNEN",
+    "party": "Bündnis 90/DIE GRÜNEN",
     "error": "Fehler",
     "notImplementedYet": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
     "dateFrom": "von",
@@ -18,6 +19,10 @@
       "openSettings": "Einstellungen öffnen",
       "close": "Schließen",
       "reset": "Filter zurücksetzen"
+    },
+    "map": {
+      "mapData": "Kartendaten",
+      "osmContributors": "OpenStreetMap Mitwirkende"
     }
   },
   "error": {
@@ -49,8 +54,6 @@
       "storing_cache_success": "Die lokalen Änderungen wurden nun gespeichert. Bitte sende diese per E-Mail an beteiligung@gruene.de. Damit unterstützt Du uns bei der Problemlösung!"
     },
     "map": {
-      "mapData": "Kartendaten",
-      "osmContributors": "OpenStreetMap Mitwirkende",
       "noMapDataInfo": "Bitte zoome in die Karte, um mehr Informationen zu sehen.",
       "identicalPositions": "Identische Position"
     },
@@ -260,7 +263,6 @@
       "title": "Meine Mitgliedskarte",
       "card": {
         "title": "Mitgliedskarte",
-        "party": "BÜNDNIS 90/DIE GRÜNEN",
         "membershipNumber": "Mitgliedernummer:"
       }
     }
