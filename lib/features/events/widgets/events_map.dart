@@ -1,11 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/bottom_sheet/bloc/bottom_sheet_cubit.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
+import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/features/events/widgets/event_detail_sheet.dart';
@@ -31,41 +32,34 @@ class _EventsMapState extends State<EventsMap> {
   Future<void> _onStyleLoaded() async {
     if (!mounted || mapController == null) return;
 
-    try {
-      final bytes = (await rootBundle.load('assets/symbols/events/event.png')).buffer.asUint8List();
-      await mapController!.addImage('eventIcon', bytes);
-      await _addMarkers();
+    await addImageFromAsset(mapController!, 'eventIcon', 'assets/symbols/events/event.png');
+    await _addMarkers();
 
-      mapController!.onSymbolTapped.add((symbol) {
-        if (!mounted) return;
-        final eventId = symbol.data?['eventId'];
-        final event = widget.events.firstWhereOrNull((e) => e.id == eventId);
+    mapController?.onSymbolTapped.add((symbol) {
+      if (!mounted) return;
+      final eventId = symbol.data?['eventId'];
+      final event = widget.events.firstWhereOrNull((event) => event.id == eventId);
 
-        if (event != null) {
-          context.read<BottomSheetCubit>().show(
-            EventDetailsSheet(
-              event: event,
-              onClose: () {
-                if (mounted) context.read<BottomSheetCubit>().hide();
-              },
-            ),
-          );
-        }
-      });
-    } catch (e, st) {
-      debugPrint('Error during map setup: $e\n$st');
-    }
+      if (event != null) {
+        context.read<BottomSheetCubit>().show(
+          EventDetailsSheet(
+            event: event,
+            onClose: () {
+              if (mounted) context.read<BottomSheetCubit>().hide();
+            },
+          ),
+        );
+      }
+    });
   }
 
   Future<void> _addMarkers() async {
-    if (mapController == null) return;
-
     for (final event in widget.events) {
       final coords = event.coords;
       if (coords == null || coords.length != 2) continue;
       if (!mounted) return;
 
-      await mapController!.addSymbol(
+      await mapController?.addSymbol(
         SymbolOptions(geometry: LatLng(coords[0], coords[1]), iconImage: 'eventIcon', iconSize: 0.15),
         {'eventId': event.id},
       );
@@ -74,37 +68,33 @@ class _EventsMapState extends State<EventsMap> {
 
   @override
   void dispose() {
-    try {
-      mapController?.onSymbolTapped.clear();
-    } catch (_) {}
+    mapController?.onSymbolTapped.clear();
     mapController = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: determinePosition(
+    return FutureLoadingScreen(
+      load: () => determinePosition(
         context,
         requestIfNotGranted: true,
         preferLastKnownPosition: true,
-      ).timeout(const Duration(milliseconds: 400), onTimeout: () => RequestedPosition.unknown()),
-      builder: (context, AsyncSnapshot<RequestedPosition> snapshot) {
-        if (!snapshot.hasData || snapshot.hasError) {
-          return const Center();
-        }
-
-        final position = snapshot.data!;
+      ).timeout(const Duration(milliseconds: 400), onTimeout: RequestedPosition.unknown),
+      buildChild: (RequestedPosition? requestedPosition, _) {
+        final position = requestedPosition?.toLatLng();
+        final cameraPosition = position != null
+            ? CameraPosition(target: position, zoom: 12)
+            : CameraPosition(target: Config.centerGermany, zoom: Config.germanyZoom);
 
         return Stack(
           children: [
             MapLibreMap(
               styleString: Config.maplibreUrl,
-              initialCameraPosition: position.isAvailable()
-                  ? CameraPosition(target: LatLng(position.position!.latitude, position.position!.longitude), zoom: 12)
-                  : CameraPosition(target: Config.centerGermany, zoom: Config.germanyZoom),
+              initialCameraPosition: cameraPosition,
               onMapCreated: _onMapCreated,
               onStyleLoadedCallback: _onStyleLoaded,
+              // Replace with custom attribution
               attributionButtonMargins: const Point(-100, -100),
             ),
             MapAttribution(),
