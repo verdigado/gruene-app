@@ -6,13 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_portal/flutter_portal.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
-import 'package:gruene_app/app/bottom_sheet/bloc/bottom_sheet_cubit.dart';
-import 'package:gruene_app/app/bottom_sheet/widgets/bottom_sheet_overlay.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
 import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
@@ -103,57 +100,50 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final authRepository = AuthRepository();
 
-    return Portal(
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => AuthBloc(authRepository)..add(CheckTokenRequested())),
-          BlocProvider(create: (context) => MfaBloc()..add(InitMfa())),
-          BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadSettings())),
-          BlocProvider<BookmarkBloc>(create: (context) => BookmarkBloc()..add(LoadBookmarks())),
-          BlocProvider(create: (context) => BottomSheetCubit()),
-        ],
-        child: Builder(
-          builder: (context) {
-            return BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, authState) {
-                final router = createAppRouter(context, navigatorKey);
-                final isLoginLoading = authState is AuthLoading;
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AuthBloc(authRepository)..add(CheckTokenRequested())),
+        BlocProvider(create: (context) => MfaBloc()..add(InitMfa())),
+        BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadSettings())),
+        BlocProvider<BookmarkBloc>(create: (context) => BookmarkBloc()..add(LoadBookmarks())),
+      ],
+      child: Builder(
+        builder: (context) {
+          return BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, authState) {
+              final router = createAppRouter(context, navigatorKey);
+              final isLoginLoading = authState is AuthLoading;
 
-                // Prevent flickering if current login state is not yet known
-                if (isLoginLoading) {
-                  return MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    theme: appTheme,
-                    home: CleanLayout(showAppBar: false),
-                  );
-                }
-
-                SchedulerBinding.instance.addPostFrameCallback((_) {
-                  final newsId = GetIt.I<PushNotificationListener>().initialNewsId;
-                  final context = navigatorKey.currentContext;
-                  if (newsId != null && context != null) {
-                    GoRouter.of(context).go('/news/$newsId');
-                  }
-                });
-
-                return MaterialApp.router(
+              // Prevent flickering if current login state is not yet known
+              if (isLoginLoading) {
+                return MaterialApp(
                   debugShowCheckedModeBanner: false,
-                  locale: TranslationProvider.of(context).flutterLocale,
-                  supportedLocales: AppLocaleUtils.supportedLocales,
-                  localizationsDelegates: GlobalMaterialLocalizations.delegates,
-                  routeInformationParser: router.routeInformationParser,
-                  routerDelegate: router.routerDelegate,
-                  routeInformationProvider: router.routeInformationProvider,
                   theme: appTheme,
-
-                  builder: (context, child) {
-                    return BottomSheetOverlay(child: child!);
-                  },
+                  home: CleanLayout(showAppBar: false),
                 );
-              },
-            );
-          },
-        ),
+              }
+
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                final newsId = GetIt.I<PushNotificationListener>().initialNewsId;
+                final context = navigatorKey.currentContext;
+                if (newsId != null && context != null) {
+                  GoRouter.of(context).go('/news/$newsId');
+                }
+              });
+
+              return MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                locale: TranslationProvider.of(context).flutterLocale,
+                supportedLocales: AppLocaleUtils.supportedLocales,
+                localizationsDelegates: GlobalMaterialLocalizations.delegates,
+                routeInformationParser: router.routeInformationParser,
+                routerDelegate: router.routerDelegate,
+                routeInformationProvider: router.routeInformationProvider,
+                theme: appTheme,
+              );
+            },
+          );
+        },
       ),
     );
   }
