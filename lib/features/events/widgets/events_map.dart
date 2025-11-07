@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:gruene_app/app/bottom_sheet/bloc/bottom_sheet_cubit.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/features/events/widgets/event_detail_sheet.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -93,13 +96,19 @@ class _EventsMapState extends State<EventsMap> {
 
         final position = snapshot.data!;
 
-        return MapLibreMap(
-          styleString: Config.maplibreUrl,
-          initialCameraPosition: position.isAvailable()
-              ? CameraPosition(target: LatLng(position.position!.latitude, position.position!.longitude), zoom: 12)
-              : CameraPosition(target: Config.centerGermany, zoom: Config.germanyZoom),
-          onMapCreated: _onMapCreated,
-          onStyleLoadedCallback: _onStyleLoaded,
+        return Stack(
+          children: [
+            MapLibreMap(
+              styleString: Config.maplibreUrl,
+              initialCameraPosition: position.isAvailable()
+                  ? CameraPosition(target: LatLng(position.position!.latitude, position.position!.longitude), zoom: 12)
+                  : CameraPosition(target: Config.centerGermany, zoom: Config.germanyZoom),
+              onMapCreated: _onMapCreated,
+              onStyleLoadedCallback: _onStyleLoaded,
+              attributionButtonMargins: const Point(-100, -100),
+            ),
+            MapAttribution(),
+          ],
         );
       },
     );
