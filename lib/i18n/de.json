@@ -18,7 +18,8 @@
       "settings": "Einstellungen",
       "openSettings": "Einstellungen öffnen",
       "close": "Schließen",
-      "reset": "Filter zurücksetzen",
+      "applyFilter": "Filter anwenden",
+      "resetFilter": "Filter zurücksetzen",
       "change": "Ändern",
       "loading": "Laden ..."
     },
@@ -47,8 +48,7 @@
     "moreDivisions": "Weitere Verbände",
     "categories": "Schlagworte",
     "moreCategories": "Weitere Schlagworte",
-    "publicationDate": "Veröffentlichungsdatum",
-    "applyFilter": "Filter anwenden"
+    "publicationDate": "Veröffentlichungsdatum"
   },
   "campaigns": {
     "debug": {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
-import 'package:gruene_app/app/widgets/date_range_picker.dart';
-import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
-import 'package:gruene_app/app/widgets/section_title.dart';
+import 'package:gruene_app/app/widgets/date_range_filter.dart';
+import 'package:gruene_app/app/widgets/filter_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/repository/news_repository.dart';
@@ -80,72 +79,46 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
     final prominentCategories = categories.where((it) => prominentCategoryIds.contains(it.id)).toList();
     final moreCategories = categories.where((it) => !prominentCategoryIds.contains(it.id)).toList();
 
-    final customFilterSelected = isCustomFilterSelected(
+    final customFiltersSelected = isCustomFilterSelected(
       _localSelectedDivisions,
       _localSelectedCategories,
       _localDateRange,
     );
 
-    final theme = Theme.of(context);
-    return FullScreenDialog(
-      appBarActions: customFilterSelected
-          ? [
-              TextButton(
-                onPressed: resetFilters,
-                child: Text(t.common.actions.reset, style: theme.textTheme.bodyLarge),
-              ),
-            ]
-          : [],
-      child: ListView(
-        children: [
-          SelectionView(
-            setSelectedOptions: setDivisions,
-            title: t.news.divisions,
-            options: [divisionBundesverband, ...divisionsLandesverband],
-            moreOptionsTitle: t.news.moreDivisions,
-            moreOptions: divisionsKreisverband,
-            selectedOptions: _localSelectedDivisions,
-            getLabel: (division) =>
-                division.level.value == 'BV' ? division.name2 : '${division.name1} ${division.name2}',
-          ),
-          SelectionView(
-            setSelectedOptions: (categories) {
-              setState(() => _localSelectedCategories = categories);
-              widget.setSelectedCategories(categories);
-            },
-            title: t.news.categories,
-            options: prominentCategories,
-            moreOptionsTitle: t.news.moreCategories,
-            moreOptions: moreCategories,
-            selectedOptions: _localSelectedCategories,
-            getLabel: (category) => category.label,
-          ),
-          SectionTitle(title: t.news.publicationDate),
-          Container(
-            color: theme.colorScheme.surface,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            width: double.infinity,
-            child: DateRangePicker(
-              setDateRange: (dateRange) {
-                setState(() => _localDateRange = dateRange);
-                widget.setDateRange(dateRange);
-              },
-              dateRange: _localDateRange,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            child: FilledButton(
-              onPressed: Navigator.of(context).pop,
-              style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
-              child: Text(
-                t.news.applyFilter,
-                style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return FilterDialog(
+      resetFilters: resetFilters,
+      customFiltersSelected: customFiltersSelected,
+      children: [
+        SelectionView(
+          setSelectedOptions: setDivisions,
+          title: t.news.divisions,
+          options: [divisionBundesverband, ...divisionsLandesverband],
+          moreOptionsTitle: t.news.moreDivisions,
+          moreOptions: divisionsKreisverband,
+          selectedOptions: _localSelectedDivisions,
+          getLabel: (division) => division.level.value == 'BV' ? division.name2 : '${division.name1} ${division.name2}',
+        ),
+        SelectionView(
+          setSelectedOptions: (categories) {
+            setState(() => _localSelectedCategories = categories);
+            widget.setSelectedCategories(categories);
+          },
+          title: t.news.categories,
+          options: prominentCategories,
+          moreOptionsTitle: t.news.moreCategories,
+          moreOptions: moreCategories,
+          selectedOptions: _localSelectedCategories,
+          getLabel: (category) => category.label,
+        ),
+        DateRangeFilter(
+          title: t.news.publicationDate,
+          dateRange: _localDateRange,
+          setDateRange: (dateRange) {
+            setState(() => _localDateRange = dateRange);
+            widget.setDateRange(dateRange);
+          },
+        ),
+      ],
     );
   }
 }
