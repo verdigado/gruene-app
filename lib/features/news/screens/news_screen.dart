@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/repository/news_repository.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
+import 'package:gruene_app/features/news/widgets/news_filter_dialog.dart';
 import 'package:gruene_app/features/news/widgets/news_list.dart';
-import 'package:gruene_app/features/news/widgets/news_search_filter_bar.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -57,26 +59,50 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final divisions = widget.news.divisions();
+    final categories = widget.news.categories();
+
+    final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
+    final bookmarkFilter = FilterModel(
+      update: (showBookmarked) => setState(() => _showBookmarked = showBookmarked),
+      initial: false,
+      selected: _showBookmarked,
+    );
+    final divisionFilter = FilterModel(
+      update: (divisions) => setState(() => _selectedDivisions = divisions),
+      initial: [divisions.bundesverband()],
+      selected: _selectedDivisions,
+      values: divisions,
+    );
+    final categoryFilter = FilterModel<List<NewsCategory>>(
+      update: (categories) => setState(() => _selectedCategories = categories),
+      initial: [],
+      selected: _selectedCategories,
+      values: categories,
+    );
+    final dateRangeFilter = FilterModel(
+      update: (dateRange) => setState(() => _dateRange = dateRange),
+      initial: null,
+      selected: _dateRange,
+    );
+
     return Container(
       padding: EdgeInsets.only(top: 16, left: 16, right: 16),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
         children: [
-          NewsSearchFilterBar(
-            allNews: widget.news,
-            setQuery: (query) => setState(() => _query = query),
-            query: _query,
-            setShowBookmarked: (showBookmarked) => setState(() => _showBookmarked = showBookmarked),
-            showBookmarked: _showBookmarked,
-            setSelectedDivisions: (divisions) => setState(() => _selectedDivisions = divisions),
-            selectedDivisions: _selectedDivisions,
-            setSelectedCategories: (categories) => setState(() => _selectedCategories = categories),
-            selectedCategories: _selectedCategories,
-            setDateRange: (DateTimeRange? dateRange) => setState(() => _dateRange = dateRange),
-            dateRange: _dateRange,
+          FilterBar(
+            searchFilter: searchFilter,
+            bookmarkFilter: bookmarkFilter,
+            modified: [divisionFilter, categoryFilter, dateRangeFilter].modified(),
+            filterDialog: NewsFilterDialog(
+              divisionFilter: divisionFilter,
+              categoryFilter: categoryFilter,
+              dateRangeFilter: dateRangeFilter,
+            ),
           ),
-          SizedBox(height: 8),
           Expanded(
             child: NewsList(
               allNews: widget.news,
