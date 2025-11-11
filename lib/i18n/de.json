@@ -365,6 +365,8 @@
   "events": {
     "events": "Events",
     "label": "Events",
+    "calendars": "Kalender",
+    "dateRange": "Zeitraum",
     "list": "Liste",
     "map": "Karte",
     "url": "Link:",
