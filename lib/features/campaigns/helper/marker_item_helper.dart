@@ -1,3 +1,4 @@
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:turf/transform.dart';
 
@@ -9,7 +10,10 @@ class MarkerItemHelper {
   static Feature<Point> transformMarkerItemToGeoJson(MarkerItemModel markerItem) {
     return Feature<Point>(
       id: markerItem.id,
-      properties: <String, dynamic>{'status_type': markerItem.status, 'is_virtual': markerItem.isVirtual},
+      properties: <String, dynamic>{
+        CampaignConstants.featurePropertyStatusType: markerItem.status,
+        CampaignConstants.featurePropertyIsVirtual: markerItem.isVirtual,
+      },
       geometry: Point(coordinates: Position(markerItem.location.longitude, markerItem.location.latitude)),
     );
   }

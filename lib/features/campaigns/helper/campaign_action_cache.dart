@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/campaign_action_database.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
+import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
 import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
@@ -14,6 +15,8 @@ import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
+import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
+import 'package:gruene_app/features/campaigns/models/action_area/action_area_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dart';
@@ -42,8 +45,8 @@ class CampaignActionCache extends ChangeNotifier {
 
   bool get isFlushing => _isflushing;
 
-  Future<bool> isCached(String poiId) async {
-    return campaignActionDatabase.actionsWithPoiIdExists(poiId);
+  Future<bool> isCached(String poiId, PoiCacheType poiType) async {
+    return campaignActionDatabase.actionsWithPoiIdExists(poiId, _getActionsForCacheType(poiType));
   }
 
   Future<void> _appendActionToCache(CampaignAction action) async {
@@ -83,6 +86,8 @@ class CampaignActionCache extends ChangeNotifier {
           getMarker: (poi, tempId) => poi.transformToVirtualMarkerItem(tempId),
         );
       case PoiCacheType.route:
+        throw UnimplementedError();
+      case PoiCacheType.actionArea:
         throw UnimplementedError();
     }
   }
@@ -154,6 +159,15 @@ class CampaignActionCache extends ChangeNotifier {
           mergeUpdates: (action, poiUpdate) => poiUpdate,
           getMarker: (poi) => emptyMarkerItemModel,
         );
+      case PoiCacheType.actionArea:
+        return await _addUpdateAction<ActionAreaUpdateModel>(
+          poiType: poiType,
+          poi: poi as ActionAreaUpdateModel,
+          getId: (poi) => poi.id,
+          getJson: (poi) => poi.toJson(),
+          mergeUpdates: (action, poiUpdate) => poiUpdate,
+          getMarker: (poi) => emptyMarkerItemModel,
+        );
     }
   }
 
@@ -190,14 +204,10 @@ class CampaignActionCache extends ChangeNotifier {
 
   Future<List<MarkerItemModel>> getMarkerItems(PoiCacheType poiType) async {
     List<MarkerItemModel> markerItems = [];
-    var posterActions = [
-      poiType.getCacheAddAction().index,
-      poiType.getCacheEditAction().index,
-      poiType.getCacheDeleteAction().index,
-    ];
-    final posterCacheList = await campaignActionDatabase.readAllByActionType(posterActions);
-    posterCacheList.sort((a, b) => b.poiTempId.compareTo(a.poiTempId)); //reverse sort list by tempId (timestamped ID)
-    for (var action in posterCacheList) {
+    var poiActions = _getActionsForCacheType(poiType);
+    final poiCacheList = await campaignActionDatabase.readAllByActionType(poiActions);
+    poiCacheList.sort((a, b) => b.poiTempId.compareTo(a.poiTempId)); //reverse sort list by tempId (timestamped ID)
+    for (var action in poiCacheList) {
       if (markerItems.any((m) => m.id == action.coalescedPoiId())) continue;
       switch (action.actionType) {
         case CampaignActionType.addPoster:
@@ -231,12 +241,29 @@ class CampaignActionCache extends ChangeNotifier {
           markerItems.add(model);
 
         case CampaignActionType.editRoute:
+        case CampaignActionType.editActionArea:
         case CampaignActionType.unknown:
         case null:
           throw UnimplementedError();
       }
     }
     return markerItems;
+  }
+
+  List<int> _getActionsForCacheType(PoiCacheType poiType) {
+    getValueSafe(CampaignActionType Function() getActionType) {
+      try {
+        return getActionType().index;
+      } on UnimplementedError {
+        return null;
+      }
+    }
+
+    return [
+      getValueSafe(() => poiType.getCacheAddAction()),
+      getValueSafe(() => poiType.getCacheEditAction()),
+      getValueSafe(() => poiType.getCacheDeleteAction()),
+    ].where((x) => x != null).cast<int>().toList();
   }
 
   Future<PosterDetailModel> getPoiAsPosterDetail(String poiId) async {
@@ -283,6 +310,17 @@ class CampaignActionCache extends ChangeNotifier {
     return detailModel;
   }
 
+  Future<ActionAreaDetailModel> getPoiAsActionAreaDetail(String poiId) async {
+    var detailModel = await _getPoiDetail<ActionAreaDetailModel>(
+      poiId: poiId,
+      addActionFilter: CampaignActionType.editActionArea,
+      editActionFilter: CampaignActionType.editActionArea,
+      transformEditAction: (action) => action.getAsActionAreaUpdate().transformToActionAreaDetailModel(),
+      transformAddAction: (action) => action.getAsActionAreaUpdate().transformToActionAreaDetailModel(),
+    );
+    return detailModel;
+  }
+
   Future<T> _getPoiDetail<T>({
     required String poiId,
     required CampaignActionType addActionFilter,
@@ -317,6 +355,7 @@ class CampaignActionCache extends ChangeNotifier {
       var doorApiService = GetIt.I<GrueneApiDoorService>();
       var flyerApiService = GetIt.I<GrueneApiFlyerService>();
       var routeApiService = GetIt.I<GrueneApiRouteService>();
+      var areaApiService = GetIt.I<GrueneApiActionAreaService>();
       final allActions = await campaignActionDatabase.readAll();
       var failingPoiIds = <int>[];
 
@@ -375,6 +414,11 @@ class CampaignActionCache extends ChangeNotifier {
             case CampaignActionType.editRoute:
               var model = action.getAsRouteUpdate();
               await routeApiService.updateRoute(model);
+              campaignActionDatabase.delete(action.id!);
+
+            case CampaignActionType.editActionArea:
+              var model = action.getAsActionAreaUpdate();
+              await areaApiService.updateActionArea(model);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.unknown:

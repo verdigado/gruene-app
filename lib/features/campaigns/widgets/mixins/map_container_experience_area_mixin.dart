@@ -29,7 +29,7 @@ mixin MapContainerExperienceAreaMixin {
     setFocusMode(true);
 
     // align map to show feature in center area
-    // TODO determine boundary of line and move map
+    // TODO determine boundary of area and move map
     // final coord = MapHelper.extractLatLngFromFeature(feature);
     // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
 
@@ -121,7 +121,7 @@ mixin MapContainerExperienceAreaMixin {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.route.createdAt}: ${experienceArea.createdAt.getAsLocalDateString()}',
+                        '${t.campaigns.general.createdAt}: ${experienceArea.createdAt.getAsLocalDateString()}',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],

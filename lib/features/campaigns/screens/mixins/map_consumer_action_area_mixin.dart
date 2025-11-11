@@ -18,7 +18,18 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     await mapLibreController.addFillLayer(
       CampaignConstants.actionAreaSourceName,
       CampaignConstants.actionAreaLayerId,
-      FillLayerProperties(fillPattern: [Expressions.image, CampaignConstants.actionAreaSourceName], fillOpacity: 0.8),
+      FillLayerProperties(
+        fillPattern: [Expressions.image, CampaignConstants.actionAreaSourceName],
+        fillOpacity: [
+          Expressions.match,
+          [Expressions.get, 'status'],
+          'open',
+          1,
+          'closed',
+          0.3,
+          1,
+        ],
+      ),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );
@@ -27,6 +38,17 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       CampaignConstants.actionAreaSourceName,
       CampaignConstants.actionAreaOutlineLayerId,
       LineLayerProperties(lineColor: 'white', lineWidth: 0.5, lineOpacity: 0.8),
+      enableInteraction: false,
+      minzoom: mapInfo.minZoom,
+    );
+
+    // set layer properties for selected layer
+    await mapLibreController.addGeoJsonSource(CampaignConstants.actionAreaSelectedSourceName, data);
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.actionAreaSelectedSourceName,
+      CampaignConstants.actionAreaSelectedOutlineLayerId,
+      LineLayerProperties(lineColor: 'white', lineWidth: 2),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );

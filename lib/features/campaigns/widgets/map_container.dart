@@ -81,7 +81,11 @@ class MapContainer extends StatefulWidget {
 }
 
 class _MapContainerState extends State<MapContainer>
-    with MapContainerExperienceAreaMixin, MapConsumerRouteMixin, MapConsumerPollingStationMixin
+    with
+        MapContainerExperienceAreaMixin,
+        MapContainerRouteMixin,
+        MapContainerPollingStationMixin,
+        MapContainerActionAreaMixin
     implements MapController, MapControllerSimplified {
   MapLibreMapController? _controller;
   final MarkerItemManager _markerItemManager = MarkerItemManager();
@@ -303,6 +307,15 @@ class _MapContainerState extends State<MapContainer>
       return;
     }
 
+    final jsonFeaturesActionAreas = await getFeaturesInScreen(point, [CampaignConstants.actionAreaLayerId]);
+    final actionAreas = jsonFeaturesActionAreas.map((e) => e as Map<String, dynamic>).toList();
+
+    if (actionAreas.isNotEmpty) {
+      final feature = MapHelper.getClosestFeature(actionAreas, targetLatLng);
+      onActionAreaClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
+      return;
+    }
+
     if (onNoFeatureClick != null) {
       onNoFeatureClick(point);
     }
@@ -363,7 +376,7 @@ class _MapContainerState extends State<MapContainer>
       CampaignConstants.markerSourceName,
       CampaignConstants.markerLayerName,
       const SymbolLayerProperties(
-        iconImage: ['get', 'status_type'],
+        iconImage: ['get', CampaignConstants.featurePropertyStatusType],
         iconSize: [
           Expressions.interpolate,
           ['linear'],
@@ -385,14 +398,18 @@ class _MapContainerState extends State<MapContainer>
 
     // add selected map layers
     await _controller!.addGeoJsonSource(
-      '${CampaignConstants.markerSourceName}_selected',
+      CampaignConstants.markerSelectedSourceName,
       MarkerItemHelper.transformListToGeoJson(<MarkerItemModel>[]).toJson(),
     );
 
     await _controller!.addSymbolLayer(
-      '${CampaignConstants.markerSourceName}_selected',
-      '${CampaignConstants.markerLayerName}_selected',
-      const SymbolLayerProperties(iconImage: ['get', 'status_type'], iconSize: 3, iconAllowOverlap: true),
+      CampaignConstants.markerSelectedSourceName,
+      CampaignConstants.markerSelectedLayerName,
+      const SymbolLayerProperties(
+        iconImage: ['get', CampaignConstants.featurePropertyStatusType],
+        iconSize: 3,
+        iconAllowOverlap: true,
+      ),
       enableInteraction: false,
       minzoom: minZoomMarkerItems,
     );
@@ -479,7 +496,7 @@ class _MapContainerState extends State<MapContainer>
     // set data for '_selected layer'
     var featureObject = turf.Feature<turf.Point>.fromJson(feature);
     turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
-    await _controller!.setGeoJsonSource('${CampaignConstants.markerSourceName}_selected', collection.toJson());
+    await _controller!.setGeoJsonSource(CampaignConstants.markerSelectedSourceName, collection.toJson());
   }
 
   @override
@@ -489,7 +506,7 @@ class _MapContainerState extends State<MapContainer>
     });
     await _controller!.setLayerProperties(CampaignConstants.markerLayerName, SymbolLayerProperties(iconOpacity: 1));
     await _controller!.setGeoJsonSource(
-      '${CampaignConstants.markerSourceName}_selected',
+      CampaignConstants.markerSelectedSourceName,
       turf.FeatureCollection<turf.Point>(features: []).toJson(),
     );
   }

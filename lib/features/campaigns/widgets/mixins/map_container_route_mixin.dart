@@ -1,6 +1,6 @@
 part of '../mixins.dart';
 
-mixin MapConsumerRouteMixin {
+mixin MapContainerRouteMixin {
   void removeLayerSource(String layerSourceId);
 
   Future<void> onRouteClick(
