@@ -5439,10 +5439,11 @@ components:
           type: string
           description: Hex color code for calendar display
           example: '#00AA44'
-        divisionKey:
-          type: string
+        division:
+          nullable: true
           description: Associated division
-          example: 10903700
+          allOf:
+            - $ref: '#/components/schemas/Division'
         url:
           type: string
           description: URL to access the calendar
@@ -5451,6 +5452,7 @@ components:
       required:
         - id
         - displayName
+        - division
     FindCalendarEventsResponse:
       type: object
       properties:
