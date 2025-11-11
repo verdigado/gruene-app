@@ -11,13 +11,12 @@ import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
-import 'package:gruene_app/features/campaigns/helper/marker_item_helper.dart';
-import 'package:gruene_app/features/campaigns/helper/marker_item_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/util.dart';
 import 'package:gruene_app/features/campaigns/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/attribution_dialog.dart';
 import 'package:gruene_app/features/campaigns/widgets/location_button.dart';
@@ -88,7 +87,8 @@ class _MapContainerState extends State<MapContainer>
         MapContainerActionAreaMixin
     implements MapController, MapControllerSimplified {
   MapLibreMapController? _controller;
-  final MarkerItemManager _markerItemManager = MarkerItemManager();
+  late MapFeatureManager _mapFeatureManager;
+
   final appSettings = GetIt.I<AppSettings>();
   final campaignActionCache = GetIt.I<CampaignActionCache>();
 
@@ -197,7 +197,7 @@ class _MapContainerState extends State<MapContainer>
     }
 
     campaignActionCache.setCurrentMapController(this);
-
+    _mapFeatureManager = MapFeatureManager(() => _controller);
     _loadDataOnMap(init: true);
   }
 
@@ -249,7 +249,7 @@ class _MapContainerState extends State<MapContainer>
     final onFeatureClick = widget.onFeatureClick;
     final onNoFeatureClick = widget.onNoFeatureClick;
 
-    final jsonFeaturesPoiMarkers = await getFeaturesInScreen(point, [CampaignConstants.markerLayerName]);
+    final jsonFeaturesPoiMarkers = await getFeaturesInScreen(point, [CampaignConstants.markerLayerId]);
     final poiMarkers = jsonFeaturesPoiMarkers.map((e) => e as Map<String, dynamic>).toList();
 
     if (poiMarkers.isNotEmpty && onFeatureClick != null) {
@@ -368,13 +368,13 @@ class _MapContainerState extends State<MapContainer>
     }
 
     await _controller!.addGeoJsonSource(
-      CampaignConstants.markerSourceName,
-      MarkerItemHelper.transformListToGeoJson(<MarkerItemModel>[]).toJson(),
+      CampaignConstants.poiMarkerSourceId,
+      (<PoiDetailModel>[]).transformToFeatureList().asFeatureCollection().toJson(),
     );
 
     await _controller!.addSymbolLayer(
-      CampaignConstants.markerSourceName,
-      CampaignConstants.markerLayerName,
+      CampaignConstants.poiMarkerSourceId,
+      CampaignConstants.markerLayerId,
       const SymbolLayerProperties(
         iconImage: ['get', CampaignConstants.featurePropertyStatusType],
         iconSize: [
@@ -398,13 +398,13 @@ class _MapContainerState extends State<MapContainer>
 
     // add selected map layers
     await _controller!.addGeoJsonSource(
-      CampaignConstants.markerSelectedSourceName,
-      MarkerItemHelper.transformListToGeoJson(<MarkerItemModel>[]).toJson(),
+      CampaignConstants.markerSelectedSourceId,
+      (<PoiDetailModel>[]).transformToFeatureList().asFeatureCollection().toJson(),
     );
 
     await _controller!.addSymbolLayer(
-      CampaignConstants.markerSelectedSourceName,
-      CampaignConstants.markerSelectedLayerName,
+      CampaignConstants.markerSelectedSourceId,
+      CampaignConstants.markerSelectedLayerId,
       const SymbolLayerProperties(
         iconImage: ['get', CampaignConstants.featurePropertyStatusType],
         iconSize: 3,
@@ -419,21 +419,19 @@ class _MapContainerState extends State<MapContainer>
   }
 
   @override
-  void setMarkerSource(List<MarkerItemModel> poiList) {
-    _markerItemManager.addMarkers(poiList);
-    _controller!.setGeoJsonSource(
-      CampaignConstants.markerSourceName,
-      MarkerItemHelper.transformListToGeoJson(_markerItemManager.getMarkers()).toJson(),
-    );
+  void setPoiMarkerSource(List<PoiDetailModel> poiList) {
+    setLayerSourceWithFeatureList(CampaignConstants.poiMarkerSourceId, poiList.transformToFeatureList());
   }
 
   @override
-  void setLayerSourceWithFeatureCollection(String sourceId, turf.FeatureCollection layerData) async {
+  void setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData) async {
     final sourceIds = await _controller!.getSourceIds();
+    _mapFeatureManager.addMarkers(sourceId, layerData);
+    var newLayerData = _mapFeatureManager.getMarkers(sourceId).asFeatureCollection().toJson();
     if (sourceIds.contains(sourceId)) {
-      await _controller!.setGeoJsonSource(sourceId, layerData.toJson());
+      await _controller!.setGeoJsonSource(sourceId, newLayerData);
     } else {
-      await _controller!.addGeoJsonSource(sourceId, layerData.toJson());
+      await _controller!.addGeoJsonSource(sourceId, newLayerData);
     }
   }
 
@@ -448,17 +446,8 @@ class _MapContainerState extends State<MapContainer>
   }
 
   @override
-  void addMarkerItem(MarkerItemModel markerItem) {
-    setMarkerSource([markerItem]);
-  }
-
-  @override
-  void removeMarkerItem(int markerItemId) {
-    _markerItemManager.removeMarker(markerItemId);
-    _controller!.setGeoJsonSource(
-      CampaignConstants.markerSourceName,
-      MarkerItemHelper.transformListToGeoJson(_markerItemManager.getMarkers()).toJson(),
-    );
+  void addPoiMarkerItem(PoiDetailModel markerItem) {
+    setPoiMarkerSource([markerItem]);
   }
 
   @override
@@ -492,11 +481,11 @@ class _MapContainerState extends State<MapContainer>
     final coord = MapHelper.extractLatLngFromFeature(feature);
     await moveMapIfItemIsOnBorder(coord, Size(150, 150));
     // set opacity of marker layer
-    await _controller!.setLayerProperties(CampaignConstants.markerLayerName, SymbolLayerProperties(iconOpacity: 0.2));
+    await _controller!.setLayerProperties(CampaignConstants.markerLayerId, SymbolLayerProperties(iconOpacity: 0.2));
     // set data for '_selected layer'
     var featureObject = turf.Feature<turf.Point>.fromJson(feature);
     turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
-    await _controller!.setGeoJsonSource(CampaignConstants.markerSelectedSourceName, collection.toJson());
+    await _controller!.setGeoJsonSource(CampaignConstants.markerSelectedSourceId, collection.toJson());
   }
 
   @override
@@ -504,11 +493,8 @@ class _MapContainerState extends State<MapContainer>
     setState(() {
       _isInFocusMode = false;
     });
-    await _controller!.setLayerProperties(CampaignConstants.markerLayerName, SymbolLayerProperties(iconOpacity: 1));
-    await _controller!.setGeoJsonSource(
-      CampaignConstants.markerSelectedSourceName,
-      turf.FeatureCollection<turf.Point>(features: []).toJson(),
-    );
+    await _controller!.setLayerProperties(CampaignConstants.markerLayerId, SymbolLayerProperties(iconOpacity: 1));
+    await _controller!.setGeoJsonSource(CampaignConstants.markerSelectedSourceId, turf.FeatureCollection().toJson());
   }
 
   @override
@@ -764,7 +750,7 @@ class _MapContainerState extends State<MapContainer>
   @override
   void resetMarkerItems() {
     if (!mounted) return;
-    _markerItemManager.resetAllMarkers();
+    _mapFeatureManager.resetAllMarkers();
     _loadDataOnMap(init: true);
   }
 

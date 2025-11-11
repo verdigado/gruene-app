@@ -15,7 +15,7 @@ import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
@@ -27,7 +27,7 @@ import 'package:motion_toast/motion_toast.dart';
 
 typedef GetAdditionalDataBeforeCallback<T> = Future<T?> Function(BuildContext);
 typedef GetAddScreenCallback<T, U> = T Function(LatLng, AddressModel?, U?);
-typedef SaveNewAndGetMarkerCallback<T> = Future<MarkerItemModel> Function(T);
+typedef SaveNewAndGetMarkerCallback<T> = Future<PoiDetailModel> Function(T);
 typedef GetPoiCallback<T> = Future<T> Function();
 typedef GetPoiDetailWidgetCallback<T> = Widget Function(T);
 typedef GetPoiEditWidgetCallback<T> = Widget Function(T);
@@ -107,7 +107,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
     if (result != null) {
       final markerItem = await saveAndGetMarker(result);
-      mapController.addMarkerItem(markerItem);
+      mapController.addPoiMarkerItem(markerItem);
     }
   }
 
@@ -117,7 +117,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   Future<void> loadVisibleItems(LatLng locationSW, LatLng locationNE) async {
     if (mapController.getCurrentZoomLevel() > mapController.minimumMarkerZoomLevel) {
       final markerItems = await campaignService.loadPoisInRegion(locationSW, locationNE);
-      mapController.setMarkerSource(markerItems);
+      mapController.setPoiMarkerSource(markerItems);
     }
   }
 
@@ -179,7 +179,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   Future<void> deletePoi(String poiId) async {
     var markerItem = await campaignActionCache.deletePoi(poiType.asPoiCacheType(), poiId);
-    mapController.setMarkerSource([markerItem]);
+    mapController.setPoiMarkerSource([markerItem]);
   }
 
   void addMapLayersForContext(MapLibreMapController mapLibreController) async {
@@ -310,15 +310,15 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   void loadCachedItems() async {
     var markerItems = await campaignActionCache.getMarkerItems(poiType.asPoiCacheType());
-    mapController.setMarkerSource(markerItems);
+    mapController.setPoiMarkerSource(markerItems);
   }
 
   Future<void> savePoi(PoiUpdateType poiUpdate) async {
     final updatedMarker = await campaignActionCache.updatePoi(poiType.asPoiCacheType(), poiUpdate);
-    mapController.setMarkerSource([updatedMarker]);
+    mapController.setPoiMarkerSource([updatedMarker]);
   }
 
-  Future<MarkerItemModel> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
+  Future<PoiDetailModel> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
       await campaignActionCache.storeNewPoi(poiType.asPoiCacheType(), newPoi);
 
   Future<U> getPoiFromFeature<U extends BasicPoi>(Map<String, dynamic> feature) {

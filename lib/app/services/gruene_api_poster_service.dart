@@ -4,7 +4,7 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_model.dart';
@@ -17,7 +17,7 @@ import 'package:intl/intl.dart';
 class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
   GrueneApiPosterService() : super(poiType: PoiServiceType.poster);
 
-  Future<MarkerItemModel> createNewPoster(PosterCreateModel newPoster) async {
+  Future<PoiDetailModel> createNewPoster(PosterCreateModel newPoster) async {
     final requestParam = CreatePoi(
       coords: newPoster.location.transformToGeoJsonCoords(),
       type: poiType.transformToApiCreatePoiType(),
@@ -35,7 +35,7 @@ class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
     return newPoiResponse.body!.transformToMarkerItem();
   }
 
-  Future<MarkerItemModel> updatePoster(PosterUpdateModel posterUpdate) async {
+  Future<PoiDetailModel> updatePoster(PosterUpdateModel posterUpdate) async {
     var dtoUpdate = UpdatePoi(
       address: posterUpdate.address.transformToPoiAddress(),
       poster: PoiPoster(

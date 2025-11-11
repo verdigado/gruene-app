@@ -1,8 +1,8 @@
 part of '../converters.dart';
 
 extension PosterCreateModelParsing on PosterCreateModel {
-  MarkerItemModel transformToVirtualMarkerItem(int temporaryId) {
-    return MarkerItemModel.virtual(
+  PoiDetailModel transformToVirtualMarkerItem(int temporaryId) {
+    return PoiDetailModel.virtual(
       id: temporaryId,
       status: PoiServiceType.poster.getAsMarkerItemStatus(PosterStatus.ok),
       location: location,

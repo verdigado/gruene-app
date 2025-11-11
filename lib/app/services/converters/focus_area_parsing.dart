@@ -19,7 +19,7 @@ extension FocusAreaParsing on FocusArea {
 }
 
 extension FocusAreaListParsing on List<FocusArea> {
-  turf.FeatureCollection transformToFeatureCollection() {
-    return turf.FeatureCollection(features: map((p) => p.transformToFeatureItem()).toList());
+  List<turf.Feature<turf.Polygon>> transformToFeatureList() {
+    return map((p) => p.transformToFeatureItem()).toList();
   }
 }

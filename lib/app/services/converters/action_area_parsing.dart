@@ -15,7 +15,7 @@ extension ActionAreaParsing on Area {
 }
 
 extension ActionAreaListParsing on List<Area> {
-  turf.FeatureCollection transformToFeatureCollection() {
-    return turf.FeatureCollection(features: map((p) => p.asActionAreaDetail().transformToFeatureItem()).toList());
+  List<turf.Feature<turf.Polygon>> transformToFeatureList() {
+    return map((p) => p.asActionAreaDetail().transformToFeatureItem()).toList();
   }
 }

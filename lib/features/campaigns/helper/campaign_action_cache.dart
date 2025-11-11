@@ -23,7 +23,7 @@ import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dar
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_update_model.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_model.dart';
@@ -62,7 +62,7 @@ class CampaignActionCache extends ChangeNotifier {
     return campaignActionDatabase.getCount();
   }
 
-  Future<MarkerItemModel> storeNewPoi(PoiCacheType poiType, dynamic poiCreate) async {
+  Future<PoiDetailModel> storeNewPoi(PoiCacheType poiType, dynamic poiCreate) async {
     switch (poiType) {
       case PoiCacheType.poster:
         return await _addCreateAction<PosterCreateModel>(
@@ -92,18 +92,18 @@ class CampaignActionCache extends ChangeNotifier {
     }
   }
 
-  Future<MarkerItemModel> _addCreateAction<T>({
+  Future<PoiDetailModel> _addCreateAction<T>({
     required PoiCacheType poiType,
     required T poi,
     required Map<String, dynamic> Function(T) getJson,
-    required MarkerItemModel Function(T, int) getMarker,
+    required PoiDetailModel Function(T, int) getMarker,
   }) async {
     final action = CampaignAction(actionType: poiType.getCacheAddAction(), serialized: jsonEncode(getJson(poi)));
     await _appendActionToCache(action);
     return getMarker(poi, action.poiTempId);
   }
 
-  Future<MarkerItemModel> deletePoi(PoiCacheType poiType, String poiId) async {
+  Future<PoiDetailModel> deletePoi(PoiCacheType poiType, String poiId) async {
     final action = CampaignAction(poiId: int.parse(poiId), actionType: poiType.getCacheDeleteAction());
 
     var poiCacheList = await _findActionsByPoiId(poiId);
@@ -120,8 +120,8 @@ class CampaignActionCache extends ChangeNotifier {
     return _getDeleteMarkerModel(poiType, action.poiId!);
   }
 
-  Future<MarkerItemModel> updatePoi(PoiCacheType poiType, dynamic poi) async {
-    var emptyMarkerItemModel = MarkerItemModel(id: null, status: null, location: LatLng(0, 0));
+  Future<PoiDetailModel> updatePoi(PoiCacheType poiType, dynamic poi) async {
+    var emptyMarkerItemModel = PoiDetailModel(id: null, status: null, location: LatLng(0, 0));
     switch (poiType) {
       case PoiCacheType.poster:
         return await _addUpdateAction<PosterUpdateModel>(
@@ -171,13 +171,13 @@ class CampaignActionCache extends ChangeNotifier {
     }
   }
 
-  Future<MarkerItemModel> _addUpdateAction<T>({
+  Future<PoiDetailModel> _addUpdateAction<T>({
     required PoiCacheType poiType,
     required T poi,
     required String Function(T) getId,
     required Map<String, dynamic> Function(T) getJson,
     required T Function(CampaignAction, T) mergeUpdates,
-    required MarkerItemModel Function(T) getMarker,
+    required PoiDetailModel Function(T) getMarker,
   }) async {
     var actions = (await _findActionsByPoiId(getId(poi))).where((x) => x.actionType == poiType.getCacheEditAction());
     var action = actions.singleOrNull;
@@ -198,12 +198,12 @@ class CampaignActionCache extends ChangeNotifier {
     return getMarker(poi);
   }
 
-  MarkerItemModel _getDeleteMarkerModel(PoiCacheType poiType, int id) {
-    return MarkerItemModel.virtual(id: id, status: '${poiType.name}_deleted', location: LatLng(0, 0));
+  PoiDetailModel _getDeleteMarkerModel(PoiCacheType poiType, int id) {
+    return PoiDetailModel.virtual(id: id, status: '${poiType.name}_deleted', location: LatLng(0, 0));
   }
 
-  Future<List<MarkerItemModel>> getMarkerItems(PoiCacheType poiType) async {
-    List<MarkerItemModel> markerItems = [];
+  Future<List<PoiDetailModel>> getMarkerItems(PoiCacheType poiType) async {
+    List<PoiDetailModel> markerItems = [];
     var poiActions = _getActionsForCacheType(poiType);
     final poiCacheList = await campaignActionDatabase.readAllByActionType(poiActions);
     poiCacheList.sort((a, b) => b.poiTempId.compareTo(a.poiTempId)); //reverse sort list by tempId (timestamped ID)

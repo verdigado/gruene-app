@@ -68,9 +68,9 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final areas = await campaignService.loadActionAreasInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureCollection(
+      mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.actionAreaSourceName,
-        areas.transformToFeatureCollection(),
+        areas.transformToFeatureList(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

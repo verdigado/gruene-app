@@ -15,7 +15,7 @@ import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dar
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_update_model.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_model.dart';
@@ -69,3 +69,5 @@ part 'converters/area_status_parsing.dart';
 part 'converters/action_area_detail_model_parsing.dart';
 part 'converters/action_area_update_model_parsing.dart';
 part 'converters/geometry_converters.dart';
+part 'converters/feature_extension.dart';
+part 'converters/poi_detail_model_parsing.dart';

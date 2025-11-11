@@ -7,7 +7,7 @@ extension PollingStationParsing on PollingStation {
 }
 
 extension PollingStationListParsing on List<PollingStation> {
-  turf.FeatureCollection transformToFeatureCollection() {
-    return turf.FeatureCollection(features: map((p) => p.transformToFeatureItem()).toList());
+  List<turf.Feature<turf.Point>> transformToFeatureList() {
+    return map((p) => p.transformToFeatureItem()).toList();
   }
 }

@@ -16,10 +16,10 @@ class CampaignConstants {
   static const experienceAreaFillPatternAssetName = 'assets/maps/layer_styles/experience_area_16x16.png';
   static const actionAreaFillPatternAssetName = 'assets/maps/layer_styles/action_area_16x16.png';
 
-  static const markerSourceName = 'markers';
-  static const markerSelectedSourceName = '${markerSourceName}_selected';
-  static const markerLayerName = 'markerSymbols';
-  static const markerSelectedLayerName = '${markerLayerName}_selected';
+  static const poiMarkerSourceId = 'poi_markers';
+  static const markerSelectedSourceId = '${poiMarkerSourceId}_selected';
+  static const markerLayerId = 'marker_symbols';
+  static const markerSelectedLayerId = '${markerLayerId}_selected';
 
   static const focusAreaSourceName = 'focusArea';
   static const focusAreaBorderLayerId = 'focusArea_border';

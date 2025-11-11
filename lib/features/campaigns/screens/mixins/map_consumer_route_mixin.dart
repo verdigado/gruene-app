@@ -58,9 +58,9 @@ mixin MapConsumerRouteMixin on InfoBox {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final routes = await campaignService.loadRoutesInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureCollection(
+      mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.routesSourceName,
-        routes.transformToFeatureCollection(),
+        routes.transformToFeatureList(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

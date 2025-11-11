@@ -72,9 +72,9 @@ mixin MapConsumerExperienceAreaMixin {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final experienceAreas = await campaignService.loadExperienceAreasInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureCollection(
+      mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.experienceAreaSourceName,
-        experienceAreas.transformToFeatureCollection(),
+        experienceAreas.transformToFeatureList(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

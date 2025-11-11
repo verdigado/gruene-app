@@ -22,7 +22,7 @@ extension RouteParsing on Route {
 }
 
 extension RouteListParsing on List<Route> {
-  turf.FeatureCollection transformToFeatureCollection() {
-    return turf.FeatureCollection(features: map((p) => p.transformToFeatureItem()).toList());
+  List<turf.Feature<turf.LineString>> transformToFeatureList() {
+    return map((p) => p.transformToFeatureItem()).toList();
   }
 }

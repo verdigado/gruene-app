@@ -7,7 +7,7 @@ extension ExperienceAreaParsing on ExperienceArea {
 }
 
 extension ExperienceAreaListParsing on List<ExperienceArea> {
-  turf.FeatureCollection transformToFeatureCollection() {
-    return turf.FeatureCollection(features: map((p) => p.transformToFeatureItem()).toList());
+  List<turf.Feature<turf.Polygon>> transformToFeatureList() {
+    return map((p) => p.transformToFeatureItem()).toList();
   }
 }
