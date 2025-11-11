@@ -18,7 +18,8 @@
       "settings": "Einstellungen",
       "openSettings": "Einstellungen öffnen",
       "close": "Schließen",
-      "reset": "Filter zurücksetzen"
+      "applyFilter": "Filter anwenden",
+      "resetFilter": "Filter zurücksetzen"
     },
     "map": {
       "mapData": "Kartendaten",
@@ -45,8 +46,7 @@
     "moreDivisions": "Weitere Verbände",
     "categories": "Schlagworte",
     "moreCategories": "Weitere Schlagworte",
-    "publicationDate": "Veröffentlichungsdatum",
-    "applyFilter": "Filter anwenden"
+    "publicationDate": "Veröffentlichungsdatum"
   },
   "campaigns": {
     "debug": {
