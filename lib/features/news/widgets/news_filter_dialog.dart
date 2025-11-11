@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/date_range_filter.dart';
 import 'package:gruene_app/app/widgets/filter_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
-import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/repository/news_repository.dart';
-import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -14,23 +13,15 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 const prominentCategoryIds = ['2680259', '88764', '653'];
 
 class NewsFilterDialog extends StatefulWidget {
-  final List<NewsModel> allNews;
-  final void Function(List<Division> divisions) setSelectedDivisions;
-  final List<Division> selectedDivisions;
-  final void Function(List<NewsCategory> categories) setSelectedCategories;
-  final List<NewsCategory> selectedCategories;
-  final void Function(DateTimeRange? dateRange) setDateRange;
-  final DateTimeRange? dateRange;
+  final FilterModel<List<Division>> divisionFilter;
+  final FilterModel<List<NewsCategory>> categoryFilter;
+  final FilterModel<DateTimeRange?> dateRangeFilter;
 
   const NewsFilterDialog({
     super.key,
-    required this.allNews,
-    required this.setSelectedDivisions,
-    required this.selectedDivisions,
-    required this.setSelectedCategories,
-    required this.selectedCategories,
-    required this.setDateRange,
-    required this.dateRange,
+    required this.divisionFilter,
+    required this.categoryFilter,
+    required this.dateRangeFilter,
   });
 
   @override
@@ -47,47 +38,46 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   @override
   void initState() {
     super.initState();
-    _localSelectedDivisions = widget.selectedDivisions;
-    _localSelectedCategories = widget.selectedCategories;
-    _localDateRange = widget.dateRange;
+    _localSelectedDivisions = widget.divisionFilter.selected;
+    _localSelectedCategories = widget.categoryFilter.selected;
+    _localDateRange = widget.dateRangeFilter.selected;
   }
 
   void setDivisions(List<Division> divisions) {
-    widget.setSelectedDivisions(divisions);
+    widget.divisionFilter.update(divisions);
     setState(() => _localSelectedDivisions = divisions);
     writeDivisionFilterKeys(divisions);
   }
 
   void resetFilters() {
-    setDivisions([widget.allNews.divisions().bundesverband()]);
-    widget.setSelectedCategories([]);
-    widget.setDateRange(null);
+    setDivisions(widget.divisionFilter.initial);
+    widget.categoryFilter.reset();
+    widget.dateRangeFilter.reset();
     setState(() {
-      _localSelectedCategories = [];
-      _localDateRange = null;
+      _localSelectedCategories = widget.categoryFilter.initial;
+      _localDateRange = widget.dateRangeFilter.initial;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final divisions = widget.allNews.divisions();
+    final divisions = widget.divisionFilter.values;
     final divisionBundesverband = divisions.bundesverband();
     final divisionsLandesverband = divisions.filterByLevel(DivisionLevel.lv);
     final divisionsKreisverband = divisions.filterByLevel(DivisionLevel.kv);
 
-    final categories = widget.allNews.categories();
+    final categories = widget.categoryFilter.values;
     final prominentCategories = categories.where((it) => prominentCategoryIds.contains(it.id)).toList();
     final moreCategories = categories.where((it) => !prominentCategoryIds.contains(it.id)).toList();
 
-    final customFiltersSelected = isCustomFilterSelected(
-      _localSelectedDivisions,
-      _localSelectedCategories,
-      _localDateRange,
-    );
+    final filtersModified =
+        widget.divisionFilter.modified(_localSelectedDivisions) ||
+        widget.categoryFilter.modified(_localSelectedCategories) ||
+        widget.dateRangeFilter.modified(_localDateRange);
 
     return FilterDialog(
       resetFilters: resetFilters,
-      customFiltersSelected: customFiltersSelected,
+      modified: filtersModified,
       children: [
         SelectionView(
           setSelectedOptions: setDivisions,
@@ -101,7 +91,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
         SelectionView(
           setSelectedOptions: (categories) {
             setState(() => _localSelectedCategories = categories);
-            widget.setSelectedCategories(categories);
+            widget.categoryFilter.update(categories);
           },
           title: t.news.categories,
           options: prominentCategories,
@@ -113,9 +103,10 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
         DateRangeFilter(
           title: t.news.publicationDate,
           dateRange: _localDateRange,
+          lastDate: DateTime.now(),
           setDateRange: (dateRange) {
             setState(() => _localDateRange = dateRange);
-            widget.setDateRange(dateRange);
+            widget.dateRangeFilter.update(dateRange);
           },
         ),
       ],

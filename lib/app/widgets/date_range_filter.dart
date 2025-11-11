@@ -3,10 +3,12 @@ import 'package:gruene_app/app/widgets/date_range_picker.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
 
 class DateRangeFilter extends StatelessWidget {
+  final void Function(DateTimeRange? dateRange) setDateRange;
   final String title;
   final DateTimeRange? dateRange;
-  final void Function(DateTimeRange? dateRange) setDateRange;
-  const DateRangeFilter({super.key, required this.title, required this.dateRange, required this.setDateRange});
+  final DateTime? lastDate;
+
+  const DateRangeFilter({super.key, required this.title, required this.dateRange, required this.setDateRange, this.lastDate});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class DateRangeFilter extends StatelessWidget {
           child: DateRangePicker(
             setDateRange: setDateRange,
             dateRange: dateRange,
+            lastDate: lastDate,
           ),
         ),
       ],

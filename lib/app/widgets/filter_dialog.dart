@@ -4,13 +4,13 @@ import 'package:gruene_app/i18n/translations.g.dart';
 
 class FilterDialog extends StatelessWidget {
   final void Function() resetFilters;
-  final bool customFiltersSelected;
+  final bool modified;
   final List<Widget> children;
 
   const FilterDialog({
     super.key,
     required this.resetFilters,
-    required this.customFiltersSelected,
+    required this.modified,
     required this.children,
   });
 
@@ -18,7 +18,7 @@ class FilterDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return FullScreenDialog(
-      appBarActions: customFiltersSelected
+      appBarActions: modified
           ? [
               TextButton(
                 onPressed: resetFilters,
