@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/utils/format_date.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/features/mfa/dtos/login_attempt_dto.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
