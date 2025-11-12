@@ -1409,7 +1409,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "288cd3a93d417f8853327515b1db93a72825a2f2"
+      resolved-ref: "45787dd4e37437a05e214e9d91bbecc70f6ace27"
       url: "https://github.com/steffenkleinle/rrule.git"
     source: git
     version: "0.2.17"

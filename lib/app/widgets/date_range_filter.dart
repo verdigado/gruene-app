@@ -8,7 +8,13 @@ class DateRangeFilter extends StatelessWidget {
   final DateTimeRange? dateRange;
   final DateTime? lastDate;
 
-  const DateRangeFilter({super.key, required this.title, required this.dateRange, required this.setDateRange, this.lastDate});
+  const DateRangeFilter({
+    super.key,
+    required this.title,
+    required this.dateRange,
+    required this.setDateRange,
+    this.lastDate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +27,7 @@ class DateRangeFilter extends StatelessWidget {
           color: theme.colorScheme.surface,
           padding: const EdgeInsets.symmetric(vertical: 8),
           width: double.infinity,
-          child: DateRangePicker(
-            setDateRange: setDateRange,
-            dateRange: dateRange,
-            lastDate: lastDate,
-          ),
+          child: DateRangePicker(setDateRange: setDateRange, dateRange: dateRange, lastDate: lastDate),
         ),
       ],
     );

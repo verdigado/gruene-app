@@ -12,7 +12,9 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final location = event.locationAddress != null && event.locationUrl != null ? '${event.locationAddress} | ${t.events.digital}' : (event.locationAddress ?? event.locationUrl);
+    final location = event.locationAddress != null && event.locationUrl != null
+        ? '${event.locationAddress} | ${t.events.digital}'
+        : (event.locationAddress ?? event.locationUrl);
     final hasImage = event.image != null && event.image!.isNotEmpty;
 
     return Container(
@@ -55,7 +57,9 @@ class EventCard extends StatelessWidget {
                         Text(event.formattedDate, style: theme.textTheme.labelSmall),
                         const SizedBox(height: 4),
                         Text(event.title, style: theme.textTheme.titleSmall?.copyWith(height: 1.375)),
-                        ...(location != null ? [SizedBox(height: 12), Text(location, style: theme.textTheme.labelSmall)] : []),
+                        ...(location != null
+                            ? [SizedBox(height: 12), Text(location, style: theme.textTheme.labelSmall)]
+                            : []),
                       ],
                     ),
                   ),
