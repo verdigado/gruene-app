@@ -11,11 +11,7 @@ class EventsFilterDialog extends StatefulWidget {
   final FilterModel<List<Calendar>> calendarFilter;
   final FilterModel<DateTimeRange?> dateRangeFilter;
 
-  const EventsFilterDialog({
-    super.key,
-    required this.calendarFilter,
-    required this.dateRangeFilter,
-  });
+  const EventsFilterDialog({super.key, required this.calendarFilter, required this.dateRangeFilter});
 
   @override
   State<EventsFilterDialog> createState() => _EventsFilterDialogState();
@@ -50,7 +46,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   Widget build(BuildContext context) {
     final calendars = widget.calendarFilter.values;
 
-    final filtersModified = widget.calendarFilter.modified(_localSelectedCalendars) || widget.dateRangeFilter.modified(_localDateRange);
+    final filtersModified =
+        widget.calendarFilter.modified(_localSelectedCalendars) || widget.dateRangeFilter.modified(_localDateRange);
 
     return FilterDialog(
       resetFilters: resetFilters,
