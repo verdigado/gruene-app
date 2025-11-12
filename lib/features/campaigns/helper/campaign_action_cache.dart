@@ -166,7 +166,7 @@ class CampaignActionCache extends ChangeNotifier {
           getId: (poi) => poi.id,
           getJson: (poi) => poi.toJson(),
           mergeUpdates: (action, poiUpdate) => poiUpdate,
-          getMarker: (poi) => poi.transformToVirtualRouteDetailModel().transformToFeatureItem(),
+          getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
         );
     }
   }
@@ -202,7 +202,7 @@ class CampaignActionCache extends ChangeNotifier {
     return PoiDetailModel.virtual(id: id, status: '${poiType.name}_deleted', location: LatLng(0, 0));
   }
 
-  Future<List<turf.Feature>> getMarkerItems(PoiCacheType poiType) async {
+  Future<List<turf.Feature>> getLayerItems(PoiCacheType poiType) async {
     List<turf.Feature> markerItems = [];
     var poiActions = _getActionsForCacheType(poiType);
     final poiCacheList = await campaignActionDatabase.readAllByActionType(poiActions);
@@ -241,7 +241,13 @@ class CampaignActionCache extends ChangeNotifier {
           markerItems.add(model.transformToFeatureItem());
 
         case CampaignActionType.editRoute:
+          var model = action.getAsRouteUpdate();
+          markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
+
         case CampaignActionType.editActionArea:
+          var model = action.getAsActionAreaUpdate();
+          markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
+
         case CampaignActionType.unknown:
         case null:
           throw UnimplementedError();
@@ -315,8 +321,8 @@ class CampaignActionCache extends ChangeNotifier {
       poiId: poiId,
       addActionFilter: CampaignActionType.editActionArea,
       editActionFilter: CampaignActionType.editActionArea,
-      transformEditAction: (action) => action.getAsActionAreaUpdate().transformToVirtualRouteDetailModel(),
-      transformAddAction: (action) => action.getAsActionAreaUpdate().transformToVirtualRouteDetailModel(),
+      transformEditAction: (action) => action.getAsActionAreaUpdate().transformToVirtualActionAreaDetailModel(),
+      transformAddAction: (action) => action.getAsActionAreaUpdate().transformToVirtualActionAreaDetailModel(),
     );
     return detailModel;
   }

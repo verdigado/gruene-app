@@ -4,8 +4,10 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
+import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
@@ -13,9 +15,10 @@ import 'package:turf/helpers.dart';
 import 'package:turf/turf.dart' as turf;
 
 class RouteDetail extends StatefulWidget {
-  const RouteDetail({super.key, required this.routeDetail});
+  const RouteDetail({super.key, required this.routeDetail, required this.mapController});
 
   final RouteDetailModel routeDetail;
+  final MapController mapController;
 
   @override
   State<RouteDetail> createState() => _RouteDetailState();
@@ -135,7 +138,8 @@ class _RouteDetailState extends State<RouteDetail> {
     var newStatus = state ? RouteStatus.closed : RouteStatus.open;
     var routeUpdate = route.asRouteUpdate().copyWith(status: newStatus);
 
-    await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);
+    var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);
+    widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
     setState(() {});
   }
 }

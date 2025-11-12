@@ -68,8 +68,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
     final mapContainer = MapWithLocation(
       onMapCreated: onMapCreated,
       addPOIClicked: _addPOIClicked,
-      loadVisibleItems: loadVisibleItems,
-      loadCachedItems: loadCachedItems,
+      loadVisiblePois: loadVisiblePois,
       getMarkerImages: _getMarkerImages,
       onFeatureClick: _onFeatureClick,
       onNoFeatureClick: _onNoFeatureClick,

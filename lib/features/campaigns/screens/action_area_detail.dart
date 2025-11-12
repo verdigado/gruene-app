@@ -4,17 +4,20 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
+import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
 import 'package:turf/turf.dart' as turf;
 
 class ActionAreaDetail extends StatefulWidget {
-  const ActionAreaDetail({super.key, required this.actionAreaDetail});
+  const ActionAreaDetail({super.key, required this.actionAreaDetail, required this.mapController});
 
   final ActionAreaDetailModel actionAreaDetail;
+  final MapController mapController;
 
   @override
   State<ActionAreaDetail> createState() => _ActionAreaDetailState();
@@ -126,7 +129,8 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     var newStatus = state ? AreaStatus.closed : AreaStatus.open;
     var actionAreaUpdate = actionArea.asActionAreaUpdate().copyWith(status: newStatus);
 
-    await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaUpdate);
+    var feature = await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaUpdate);
+    widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
     setState(() {});
   }
 }

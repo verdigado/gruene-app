@@ -7,8 +7,8 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
   void showInfoToast(String toastText, {void Function()? moreInfoCallback});
 
   Future<void> addFocusAreaLayers(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
-    final data = <FocusArea>[].toList().transformToFeatureList().asFeatureCollection().toJson();
-    await mapLibreController.addGeoJsonSource(CampaignConstants.focusAreaSourceName, data);
+    final data = <turf.Feature>{}.toList();
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.focusAreaSourceName,

@@ -7,9 +7,9 @@ mixin MapConsumerRouteMixin on InfoBox {
   void showInfoToast(String toastText, {void Function()? moreInfoCallback});
 
   Future<void> addRouteLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
-    final data = turf.FeatureCollection().toJson();
+    final data = <turf.Feature>{}.toList();
 
-    await mapLibreController.addGeoJsonSource(CampaignConstants.routesSourceName, data);
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, data);
 
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSourceName,
@@ -20,10 +20,7 @@ mixin MapConsumerRouteMixin on InfoBox {
     );
 
     // add selected map layers
-    await mapLibreController.addGeoJsonSource(
-      CampaignConstants.routesSelectedSourceName,
-      turf.FeatureCollection().toJson(),
-    );
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSelectedSourceName, data);
 
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSelectedSourceName,
@@ -37,7 +34,7 @@ mixin MapConsumerRouteMixin on InfoBox {
   void onRouteLayerStateChanged(bool state, MapInfo mapInfo) async {
     routesVisible = state;
     if (routesVisible) {
-      loadRouteLayer(mapInfo);
+      loadRouteLayer(mapInfo, true);
       showInfoToast(
         t.campaigns.infoToast.routes_activated,
         moreInfoCallback: () => showAboutInfoBox(
@@ -53,8 +50,10 @@ mixin MapConsumerRouteMixin on InfoBox {
     }
   }
 
-  void loadRouteLayer(MapInfo mapInfo) async {
+  void loadRouteLayer(MapInfo mapInfo, bool loadCached) async {
     if (mapInfo.mapController.getCurrentZoomLevel() > mapInfo.minZoom) {
+      if (loadCached) _loadCachedRoutes(mapInfo.loadCachedLayer);
+
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final routes = await campaignService.loadRoutesInRegion(bbox.southwest, bbox.northeast);
@@ -65,5 +64,9 @@ mixin MapConsumerRouteMixin on InfoBox {
     } else {
       mapInfo.lastInfoSnackbar?.close();
     }
+  }
+
+  void _loadCachedRoutes(LoadCachedLayerCallback loadCachedLayer) {
+    loadCachedLayer(PoiCacheType.route, CampaignConstants.routesSourceName);
   }
 }

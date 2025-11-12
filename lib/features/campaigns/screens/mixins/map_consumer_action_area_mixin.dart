@@ -5,7 +5,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
   GrueneApiCampaignsPoiBaseService get campaignService;
 
   Future<void> addActionAreaLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
-    final data = turf.FeatureCollection().toJson();
+    final data = <turf.Feature>{}.toList();
 
     addImageFromAsset(
       mapLibreController,
@@ -13,7 +13,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       CampaignConstants.actionAreaFillPatternAssetName,
     );
 
-    await mapLibreController.addGeoJsonSource(CampaignConstants.actionAreaSourceName, data);
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.actionAreaSourceName,
@@ -43,7 +43,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     );
 
     // set layer properties for selected layer
-    await mapLibreController.addGeoJsonSource(CampaignConstants.actionAreaSelectedSourceName, data);
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSelectedSourceName, data);
 
     await mapLibreController.addLineLayer(
       CampaignConstants.actionAreaSelectedSourceName,
@@ -57,14 +57,15 @@ mixin MapConsumerActionAreaMixin on InfoBox {
   void onActionAreaLayerStateChanged(bool state, MapInfo mapInfo) async {
     actionAreasVisible = state;
     if (actionAreasVisible) {
-      loadActionAreaLayer(mapInfo);
+      loadActionAreaLayer(mapInfo, true);
     } else {
       mapInfo.mapController.removeLayerSource(CampaignConstants.actionAreaSourceName);
     }
   }
 
-  void loadActionAreaLayer(MapInfo mapInfo) async {
+  void loadActionAreaLayer(MapInfo mapInfo, bool loadCached) async {
     if (mapInfo.mapController.getCurrentZoomLevel() > mapInfo.minZoom) {
+      if (loadCached) _loadCachedActionAreas(mapInfo.loadCachedLayer);
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final areas = await campaignService.loadActionAreasInRegion(bbox.southwest, bbox.northeast);
@@ -75,5 +76,9 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     } else {
       mapInfo.lastInfoSnackbar?.close();
     }
+  }
+
+  void _loadCachedActionAreas(LoadCachedLayerCallback loadCachedLayer) {
+    loadCachedLayer(PoiCacheType.actionArea, CampaignConstants.actionAreaSourceName);
   }
 }

@@ -32,6 +32,7 @@ typedef GetPoiCallback<T> = Future<T> Function();
 typedef GetPoiDetailWidgetCallback<T> = Widget Function(T);
 typedef GetPoiEditWidgetCallback<T> = Widget Function(T);
 typedef OnDeletePoiCallback = Future<void> Function(String poiId);
+typedef LoadCachedLayerCallback = void Function(PoiCacheType cacheType, String layerSourceName);
 
 abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailType, PoiUpdateType> extends State<T>
     with
@@ -114,7 +115,18 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   NavigatorState getNavState() => Navigator.of(context, rootNavigator: true);
   GoRouterState getCurrentRoute() => GoRouterState.of(context);
 
-  Future<void> loadVisibleItems(LatLng locationSW, LatLng locationNE) async {
+  void _loadCachedPois() async {
+    var markerItems = await campaignActionCache.getLayerItems(poiType.asPoiCacheType());
+    mapController.setPoiMarkerSource(markerItems);
+  }
+
+  void _loadCachedLayer(PoiCacheType cacheType, String layerSourceName) async {
+    var layerItems = await campaignActionCache.getLayerItems(cacheType);
+    mapController.setLayerSourceWithFeatureList(layerSourceName, layerItems);
+  }
+
+  Future<void> loadVisiblePois(LatLng locationSW, LatLng locationNE, bool loadCached) async {
+    if (loadCached) _loadCachedPois();
     if (mapController.getCurrentZoomLevel() > mapController.minimumMarkerZoomLevel) {
       final markerItems = await campaignService.loadPoisInRegion(locationSW, locationNE);
       mapController.setPoiMarkerSource(markerItems.transformToFeatureList());
@@ -190,7 +202,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await addActionAreaLayer(mapLibreController, getMapInfo(MapInfoType.actionArea));
   }
 
-  void loadDataLayers(LatLng locationSW, LatLng locationNE) async {
+  void loadDataLayers(LatLng locationSW, LatLng locationNE, bool loadCached) async {
     if (focusAreasVisible) {
       loadFocusAreaLayer(getMapInfo(MapInfoType.focusArea));
     }
@@ -198,13 +210,13 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       loadPollingStationLayer(getMapInfo(MapInfoType.pollingStation));
     }
     if (routesVisible) {
-      loadRouteLayer(getMapInfo(MapInfoType.route));
+      loadRouteLayer(getMapInfo(MapInfoType.route), loadCached);
     }
     if (experienceAreasVisible) {
       loadExperienceAreaLayer(getMapInfo(MapInfoType.experienceArea));
     }
     if (actionAreasVisible) {
-      loadActionAreaLayer(getMapInfo(MapInfoType.actionArea));
+      loadActionAreaLayer(getMapInfo(MapInfoType.actionArea), loadCached);
     }
   }
 
@@ -308,11 +320,6 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     mapController.navigateMapTo(location);
   }
 
-  void loadCachedItems() async {
-    var markerItems = await campaignActionCache.getMarkerItems(poiType.asPoiCacheType());
-    mapController.setPoiMarkerSource(markerItems);
-  }
-
   Future<void> savePoi(PoiUpdateType poiUpdate) async {
     final updatedMarker = await campaignActionCache.updatePoi(poiType.asPoiCacheType(), poiUpdate);
     mapController.setPoiMarkerSource([updatedMarker]);
@@ -342,6 +349,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       minZoom: minZoom,
       lastInfoSnackbar: _lastInfoSnackBar,
       context: context,
+      loadCachedLayer: _loadCachedLayer,
     );
   }
 

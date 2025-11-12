@@ -13,6 +13,7 @@ import 'package:gruene_app/features/campaigns/screens/action_area_detail.dart';
 import 'package:gruene_app/features/campaigns/screens/route_detail.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
+import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/turf.dart' as turf;

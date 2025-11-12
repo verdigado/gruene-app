@@ -7,13 +7,14 @@ mixin MapContainerRouteMixin {
     dynamic feature,
     OnShowBottomDetailSheet showBottomDetailSheet,
     void Function(bool) setFocusMode,
-    MapLibreMapController? Function() getMapController,
+    MapLibreMapController? Function() getMapLibreMapController,
+    MapController Function() getMapController,
   ) async {
     var routeFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    await setFocusToRoute(routeFeature.toJson(), setFocusMode, getMapController);
-    var routeDetail = await getRouteDetailWidget(routeFeature);
+    await setFocusToRoute(routeFeature.toJson(), setFocusMode, getMapLibreMapController);
+    var routeDetail = await getRouteDetailWidget(routeFeature, getMapController());
     await showBottomDetailSheet<bool>(routeDetail);
-    await unsetFocusToRoute(setFocusMode, getMapController);
+    await unsetFocusToRoute(setFocusMode, getMapLibreMapController);
   }
 
   Future<void> setFocusToRoute(
@@ -53,10 +54,10 @@ mixin MapContainerRouteMixin {
     removeLayerSource(CampaignConstants.routesSelectedSourceName);
   }
 
-  Future<Widget> getRouteDetailWidget(turf.Feature routeFeature) async {
+  Future<Widget> getRouteDetailWidget(turf.Feature routeFeature, MapController mapController) async {
     var routeService = GetIt.I<GrueneApiRouteService>();
     var route = await routeService.getRoute(routeFeature.id.toString());
 
-    return RouteDetail(routeDetail: route.asRouteDetail());
+    return RouteDetail(routeDetail: route.asRouteDetail(), mapController: mapController);
   }
 }

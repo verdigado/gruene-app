@@ -15,6 +15,7 @@ class MapFeatureManager {
 
     var loadedMarkers = currentLayer.loadedMarkers;
     var virtualMarkers = currentLayer.virtualMarkers;
+
     // get virtual marker items and add them to cache list
     var newVirtualMarkers = poiList.where((p) => p.isVirtual()).toList();
     virtualMarkers.retainWhere((oldMarker) => !newVirtualMarkers.any((newMarker) => newMarker.id == oldMarker.id));
@@ -51,7 +52,7 @@ class MapFeatureManager {
     currentLayer.loadedMarkers.retainWhere((item) => item.id == null || item.id != markerItemId);
   }
 
-  void resetAllMarkers() {
+  void resetAllLayers() {
     _allFeatureLayers.clear();
   }
 }
