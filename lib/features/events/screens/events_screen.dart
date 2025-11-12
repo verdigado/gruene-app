@@ -50,13 +50,12 @@ class _EventsScreenState extends State<EventsScreen> {
   String _query = '';
   late List<Calendar> _selectedCalendars;
   DateTimeRange? _dateRange;
-  final DateTimeRange defaultDateRange = DateTimeRange(start: startOfDay(), end: dateInfinity());
 
   @override
   void initState() {
     super.initState();
     _selectedCalendars = widget.initialCalendarFilters;
-    _dateRange = defaultDateRange;
+    _dateRange = todayOrFuture();
   }
 
   @override
@@ -72,7 +71,7 @@ class _EventsScreenState extends State<EventsScreen> {
     );
     final dateRangeFilter = FilterModel(
       update: (dateRange) => setState(() => _dateRange = dateRange),
-      initial: defaultDateRange,
+      initial: todayOrFuture(),
       selected: _dateRange,
     );
 
