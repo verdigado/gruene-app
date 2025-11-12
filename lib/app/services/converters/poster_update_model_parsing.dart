@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension PosterUpdateModelParsing on PosterUpdateModel {
-  PoiDetailModel transformToVirtualMarkerItem() {
+  PoiDetailModel transformToVirtualPoiDetailModel() {
     return PoiDetailModel.virtual(
       id: int.parse(id),
       status: PoiServiceType.poster.getAsMarkerItemStatus(status),

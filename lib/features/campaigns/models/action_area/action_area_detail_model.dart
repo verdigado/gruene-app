@@ -14,9 +14,9 @@ class ActionAreaDetailModel {
   final AreaStatus status;
   final Polygon polygon;
   final String createdAt;
-  final bool isCached;
+  final bool isVirtual;
 
-  ActionAreaDetailModel({
+  const ActionAreaDetailModel({
     required this.id,
     required this.type,
     required this.name,
@@ -24,8 +24,17 @@ class ActionAreaDetailModel {
     required this.status,
     required this.polygon,
     required this.createdAt,
-    this.isCached = false,
-  });
+  }) : isVirtual = false;
+
+  ActionAreaDetailModel.virtual({
+    required this.id,
+    required this.type,
+    required this.name,
+    required this.comment,
+    required this.status,
+    required this.polygon,
+    required this.createdAt,
+  }) : isVirtual = true;
 
   factory ActionAreaDetailModel.fromJson(Map<String, dynamic> json) => _$ActionAreaDetailModelFromJson(json);
 
@@ -39,17 +48,28 @@ class ActionAreaDetailModel {
     AreaStatus? status,
     Polygon? polygon,
     String? createdAt,
-    bool? isCached,
+    bool? isVirtual,
   }) {
-    return ActionAreaDetailModel(
-      id: id ?? this.id,
-      type: type ?? this.type,
-      name: name ?? this.name,
-      comment: comment ?? this.comment,
-      status: status ?? this.status,
-      polygon: polygon ?? this.polygon,
-      createdAt: createdAt ?? this.createdAt,
-      isCached: isCached ?? this.isCached,
-    );
+    if (isVirtual ?? this.isVirtual) {
+      return ActionAreaDetailModel.virtual(
+        id: id ?? this.id,
+        type: type ?? this.type,
+        name: name ?? this.name,
+        comment: comment ?? this.comment,
+        status: status ?? this.status,
+        polygon: polygon ?? this.polygon,
+        createdAt: createdAt ?? this.createdAt,
+      );
+    } else {
+      return ActionAreaDetailModel.virtual(
+        id: id ?? this.id,
+        type: type ?? this.type,
+        name: name ?? this.name,
+        comment: comment ?? this.comment,
+        status: status ?? this.status,
+        polygon: polygon ?? this.polygon,
+        createdAt: createdAt ?? this.createdAt,
+      );
+    }
   }
 }

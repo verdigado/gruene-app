@@ -419,8 +419,8 @@ class _MapContainerState extends State<MapContainer>
   }
 
   @override
-  void setPoiMarkerSource(List<PoiDetailModel> poiList) {
-    setLayerSourceWithFeatureList(CampaignConstants.poiMarkerSourceId, poiList.transformToFeatureList());
+  void setPoiMarkerSource(List<turf.Feature> poiList) {
+    setLayerSourceWithFeatureList(CampaignConstants.poiMarkerSourceId, poiList);
   }
 
   @override
@@ -446,7 +446,7 @@ class _MapContainerState extends State<MapContainer>
   }
 
   @override
-  void addPoiMarkerItem(PoiDetailModel markerItem) {
+  void addPoiMarkerItem(turf.Feature markerItem) {
     setPoiMarkerSource([markerItem]);
   }
 

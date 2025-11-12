@@ -6,7 +6,7 @@ extension FlyerUpdateModelParsing on FlyerUpdateModel {
     return newFlyerDetail;
   }
 
-  PoiDetailModel transformToVirtualMarkerItem() {
+  PoiDetailModel transformToVirtualPoiDetailModel() {
     return PoiDetailModel.virtual(id: int.parse(id), status: PoiServiceType.flyer.name, location: location);
   }
 }

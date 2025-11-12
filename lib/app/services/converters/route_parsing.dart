@@ -1,14 +1,6 @@
 part of '../converters.dart';
 
 extension RouteParsing on Route {
-  turf.Feature<turf.LineString> transformToFeatureItem() {
-    return turf.Feature<turf.LineString>(
-      id: id,
-      properties: {'status': status.toString()},
-      geometry: lineString.asTurfLine(),
-    );
-  }
-
   RouteDetailModel asRouteDetail() {
     return RouteDetailModel(
       id: id,
@@ -23,6 +15,6 @@ extension RouteParsing on Route {
 
 extension RouteListParsing on List<Route> {
   List<turf.Feature<turf.LineString>> transformToFeatureList() {
-    return map((p) => p.transformToFeatureItem()).toList();
+    return map((p) => p.asRouteDetail().transformToFeatureItem()).toList();
   }
 }

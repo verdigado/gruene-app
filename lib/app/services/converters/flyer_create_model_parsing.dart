@@ -12,7 +12,7 @@ extension FlyerCreateModelParsing on FlyerCreateModel {
     );
   }
 
-  PoiDetailModel transformToVirtualMarkerItem(int temporaryId) {
+  PoiDetailModel transformToVirtualPoiDetailModel(int temporaryId) {
     return PoiDetailModel.virtual(id: temporaryId, status: PoiServiceType.flyer.name, location: location);
   }
 }

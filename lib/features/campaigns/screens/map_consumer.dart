@@ -15,7 +15,6 @@ import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
-import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
@@ -24,10 +23,11 @@ import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:turf/turf.dart' as turf;
 
 typedef GetAdditionalDataBeforeCallback<T> = Future<T?> Function(BuildContext);
 typedef GetAddScreenCallback<T, U> = T Function(LatLng, AddressModel?, U?);
-typedef SaveNewAndGetMarkerCallback<T> = Future<PoiDetailModel> Function(T);
+typedef SaveNewAndGetMarkerCallback<T> = Future<turf.Feature> Function(T);
 typedef GetPoiCallback<T> = Future<T> Function();
 typedef GetPoiDetailWidgetCallback<T> = Widget Function(T);
 typedef GetPoiEditWidgetCallback<T> = Widget Function(T);
@@ -117,7 +117,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   Future<void> loadVisibleItems(LatLng locationSW, LatLng locationNE) async {
     if (mapController.getCurrentZoomLevel() > mapController.minimumMarkerZoomLevel) {
       final markerItems = await campaignService.loadPoisInRegion(locationSW, locationNE);
-      mapController.setPoiMarkerSource(markerItems);
+      mapController.setPoiMarkerSource(markerItems.transformToFeatureList());
     }
   }
 
@@ -318,7 +318,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     mapController.setPoiMarkerSource([updatedMarker]);
   }
 
-  Future<PoiDetailModel> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
+  Future<turf.Feature> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
       await campaignActionCache.storeNewPoi(poiType.asPoiCacheType(), newPoi);
 
   Future<U> getPoiFromFeature<U extends BasicPoi>(Map<String, dynamic> feature) {
