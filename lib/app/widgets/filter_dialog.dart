@@ -7,12 +7,7 @@ class FilterDialog extends StatelessWidget {
   final bool modified;
   final List<Widget> children;
 
-  const FilterDialog({
-    super.key,
-    required this.resetFilters,
-    required this.modified,
-    required this.children,
-  });
+  const FilterDialog({super.key, required this.resetFilters, required this.modified, required this.children});
 
   @override
   Widget build(BuildContext context) {

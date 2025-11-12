@@ -9,9 +9,8 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/widgets/event_card.dart';
+import 'package:gruene_app/features/events/widgets/event_detail.dart';
 import 'package:gruene_app/features/events/widgets/map_bottom_sheet.dart';
-import 'package:gruene_app/features/events/widgets/map_event_detail.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/along.dart';
@@ -53,10 +52,10 @@ class _EventsMapState extends State<EventsMap> {
           builder: (context, setState) {
             final event = events.length == 1 ? events[0] : selectedEvent;
             return MapBottomSheet(
-              title: event != null ? t.events.details : null,
+              image: event?.image,
               onClose: () => Navigator.pop(context),
               child: event != null
-                  ? EventDetailsSheet(event: event)
+                  ? EventDetail(event: event)
                   : Column(
                       children: events
                           .map((event) => EventCard(event: event, onTap: () => setState(() => selectedEvent = event)))
