@@ -1,18 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/utils/format_date.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/features/events/models/month_group_model.dart';
+import 'package:gruene_app/main.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:intl/intl.dart';
+import 'package:rrule/rrule.dart';
 
 extension CalendarEventExtension on CalendarEvent {
+  RecurrenceRule? get rrule => recurring != null ? RecurrenceRule.fromString(recurring!) : null;
+
   bool inRange(DateTimeRange? dateRange) {
     if (dateRange == null) return true;
+    final rrule = this.rrule;
 
-    if (recurring == null) {
+    if (rrule == null) {
       return !(start.isAfter(dateRange.end) || (end?.isBefore(dateRange.start) ?? true));
     }
 
-    // TODO
-    return false;
+    return formattedFirstRecurrence(dateRange) != null;
+  }
+
+  String? formattedFirstRecurrence([DateTimeRange? dateRange]) {
+    final rrule = this.rrule;
+    final end = this.end;
+
+    if (rrule == null) return null;
+
+    final between = dateRange ?? todayOrFuture();
+    final recurrence = rrule
+        .getInstances(start: between.start.copyWith(isUtc: true), before: between.end.copyWith(isUtc: true))
+        .firstOrNull;
+
+    if (recurrence == null) return null;
+
+    final recurrenceStart = recurrence.copyWith(isUtc: false);
+    final recurrenceEnd = end != null ? recurrenceStart.add(end.difference(start)) : null;
+
+    return formatStartEnd(recurrenceStart, recurrenceEnd);
+  }
+
+  String get formattedDate {
+    final rrule = this.rrule;
+
+    if (rrule != null) {
+      return rrule.toText(l10n: rruleL10n, untilDateFormat: DateFormat(dateFormat));
+    }
+
+    return formatStartEnd(start, end);
   }
 }
 
@@ -43,17 +77,4 @@ List<MonthGroup> groupEventsByMonth(List<CalendarEvent> events) {
   groupedList.sort((a, b) => a.month.compareTo(b.month));
 
   return groupedList;
-}
-
-String formatEventDateRange(CalendarEvent event) {
-  final start = event.start;
-  final end = event.end;
-
-  if (end == null || start == end) {
-    return formatDateTime(start);
-  } else if (DateUtils.isSameDay(start, end)) {
-    return formatInterval(formatDateTime(start), formatTime(end));
-  } else {
-    return formatInterval(formatDateTime(start), formatDateTime(end));
-  }
 }

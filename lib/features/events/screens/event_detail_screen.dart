@@ -3,8 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/app/widgets/page_info.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
-import 'package:gruene_app/features/events/widgets/event_location.dart';
+import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 
@@ -29,6 +30,7 @@ class EventDetailScreen extends StatelessWidget {
 
           final image = event.image;
           final description = event.description;
+          final firstRecurrence = event.formattedFirstRecurrence();
 
           return ListView(
             children: [
@@ -40,6 +42,13 @@ class EventDetailScreen extends StatelessWidget {
                   spacing: 16,
                   children: [
                     Text(event.title, style: theme.textTheme.titleLarge),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        PageInfo(icon: Icons.today, text: event.formattedDate),
+                        if (firstRecurrence != null) Text(t.events.nextDate(date: firstRecurrence)),
+                      ],
+                    ),
                     EventLocation(event: event),
                     if (description != null) Text(description),
                   ],
@@ -52,3 +61,29 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 }
+
+class EventLocation extends StatelessWidget {
+  final CalendarEvent event;
+
+  const EventLocation({super.key, required this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    final locationAddress = event.locationAddress;
+    final locationUrl = event.locationUrl;
+
+    if (locationAddress == null && locationUrl == null) {
+      return SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (locationAddress != null) PageInfo(icon: Icons.location_on_outlined, text: locationAddress),
+        if (locationUrl != null)
+          PageInfo(icon: Icons.videocam_outlined, url: locationUrl),
+      ],
+    );
+  }
+}
+

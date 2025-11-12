@@ -1404,6 +1404,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  rrule:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "288cd3a93d417f8853327515b1db93a72825a2f2"
+      url: "https://github.com/steffenkleinle/rrule.git"
+    source: git
+    version: "0.2.17"
   rxdart:
     dependency: transitive
     description:
@@ -1601,6 +1610,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.4"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      sha256: "370572cf5d1e58adcb3e354c47515da3f7469dac3a95b447117e728e7be6f461"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.5"
   timeago:
     dependency: "direct main"
     description:
