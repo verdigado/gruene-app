@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
-import 'package:gruene_app/app/utils/format_date.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/html.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
@@ -33,7 +33,6 @@ class NewsDetailScreen extends StatelessWidget {
           final division = news.division;
           return SizedBox(
             width: double.infinity,
-            height: double.infinity,
             child: Stack(
               children: [
                 Positioned.fill(

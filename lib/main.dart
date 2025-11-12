@@ -42,7 +42,10 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:keycloak_authenticator/api.dart';
+import 'package:rrule/rrule.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+late RruleL10n rruleL10n;
 
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
@@ -52,6 +55,7 @@ Future<void> main() async {
   Intl.defaultLocale = locale.underscoreTag;
   await initializeDateFormatting();
   timeago.setLocaleMessages(Config.defaultLanguageCode, timeago.DeMessages());
+  rruleL10n = await RruleL10nDe.create();
 
   registerSecureStorage();
 
