@@ -1,20 +1,21 @@
 part of '../converters.dart';
 
 extension ActionAreaParsing on Area {
-  turf.Feature<turf.Polygon> transformToFeatureItem() {
-    toPosition(List<double?>? point) => Position(point![0]!, point[1]!);
-    toPositionList(List<List<double?>?> points) => points.map(toPosition).toList();
-
-    var coordList = polygon.coordinates.map(toPositionList).toList();
-    return turf.Feature<turf.Polygon>(
+  ActionAreaDetailModel asActionAreaDetail() {
+    return ActionAreaDetailModel(
       id: id,
-      geometry: turf.Polygon(coordinates: coordList),
+      type: type,
+      comment: comment,
+      name: name,
+      status: status,
+      polygon: polygon,
+      createdAt: createdAt.getAsLocalDateString(),
     );
   }
 }
 
 extension ActionAreaListParsing on List<Area> {
-  FeatureCollection transformToFeatureCollection() {
-    return FeatureCollection(features: map((p) => p.transformToFeatureItem()).toList());
+  List<turf.Feature<turf.Polygon>> transformToFeatureList() {
+    return map((p) => p.asActionAreaDetail().transformToFeatureItem()).toList();
   }
 }

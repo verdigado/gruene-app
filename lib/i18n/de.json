@@ -56,6 +56,9 @@
     },
     "campaigns": "Wahlkampf",
     "label": "Wahlkampf",
+    "general": {
+      "createdAt": "Erstellt"
+    },
     "search": {
       "hintText": "Ort oder Straße finden",
       "no_entries_found": "Leider nichts gefunden",
@@ -86,16 +89,20 @@
     },
     "route": {
       "label": "Route",
+      "length_label": "Länge",
       "routeType_label": "Typ",
-      "createdAt": "Erstellt",
       "quick_action_label": "Route abgearbeitet"
+    },
+    "action_area": {
+      "label": "Einsatzgebiet",
+      "area_label": "Fläche",
+      "quick_action_label": "Gebiet abgearbeitet"
     },
     "experience_areas": {
       "label": "Erfahrungsgebiet",
       "supplied_by": "Bereitgestellt von:",
       "general_supplier": "nutzer*innengeneriert"
     },
-    
     "poster": {
       "label": "Plakat",
       "addPoster": "Plakat eintragen",

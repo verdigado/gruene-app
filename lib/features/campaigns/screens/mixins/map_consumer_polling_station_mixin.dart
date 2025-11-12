@@ -7,14 +7,14 @@ mixin MapConsumerPollingStationMixin {
   void showInfoToast(String toastText, {void Function()? moreInfoCallback});
 
   Future<void> addPollingStationLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
-    final data = <PollingStation>[].toList().transformToFeatureCollection().toJson();
+    final initData = <turf.Feature>{}.toList();
     addImageFromAsset(
       mapLibreController,
       CampaignConstants.pollingStationSourceName,
       CampaignConstants.pollingStationAssetName,
     );
 
-    await mapLibreController.addGeoJsonSource(CampaignConstants.pollingStationSourceName, data);
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.pollingStationSourceName, initData);
 
     await mapLibreController.addSymbolLayer(
       CampaignConstants.pollingStationSourceName,
@@ -37,10 +37,7 @@ mixin MapConsumerPollingStationMixin {
     );
 
     // add selected map layers
-    await mapLibreController.addGeoJsonSource(
-      CampaignConstants.pollingStationSelectedSourceName,
-      turf.FeatureCollection().toJson(),
-    );
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.pollingStationSelectedSourceName, initData);
 
     await mapLibreController.addSymbolLayer(
       CampaignConstants.pollingStationSelectedSourceName,
@@ -70,9 +67,9 @@ mixin MapConsumerPollingStationMixin {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final pollingStations = await campaignService.loadPollingStationsInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureCollection(
+      mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.pollingStationSourceName,
-        pollingStations.transformToFeatureCollection(),
+        pollingStations.transformToFeatureList(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

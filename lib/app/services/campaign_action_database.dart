@@ -44,14 +44,14 @@ class CampaignActionDatabase {
     return result.map((json) => CampaignAction.fromMap(json)).toList();
   }
 
-  Future<List<CampaignAction>> readAllByActionType(List<int> posterActions) async {
+  Future<List<CampaignAction>> readAllByActionType(List<int> actionTypes) async {
     final db = await instance.database;
     const orderBy = '${CampaignActionFields.poiTempId} ASC, ${CampaignActionFields.id} ASC';
     final result = await db.query(
       CampaignActionFields.tableName,
       orderBy: orderBy,
-      where: '${CampaignActionFields.actionType} IN (${List.filled(posterActions.length, '?').join(',')})',
-      whereArgs: posterActions,
+      where: '${CampaignActionFields.actionType} IN (${List.filled(actionTypes.length, '?').join(',')})',
+      whereArgs: actionTypes,
     );
     return result.map((json) => CampaignAction.fromMap(json)).toList();
   }
@@ -104,13 +104,14 @@ class CampaignActionDatabase {
     return count;
   }
 
-  Future<bool> actionsWithPoiIdExists(String poiId) async {
+  Future<bool> actionsWithPoiIdExists(String poiId, List<int> actionTypes) async {
     final db = await instance.database;
     final result = await db.query(
       CampaignActionFields.tableName,
       columns: ['COUNT(*)'],
-      where: '${CampaignActionFields.poiId} = ? OR ${CampaignActionFields.poiTempId} = ?',
-      whereArgs: [poiId, poiId],
+      where:
+          '(${CampaignActionFields.poiId} = ? OR ${CampaignActionFields.poiTempId} = ?) AND ${CampaignActionFields.actionType} IN (${List.filled(actionTypes.length, '?').join(',')})',
+      whereArgs: [poiId, poiId, ...actionTypes],
     );
     return (Sqflite.firstIntValue(result) ?? 0) > 0;
   }

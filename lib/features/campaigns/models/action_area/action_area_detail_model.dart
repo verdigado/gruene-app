@@ -3,65 +3,71 @@
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'route_detail_model.g.dart';
+part 'action_area_detail_model.g.dart';
 
 @JsonSerializable()
-class RouteDetailModel {
+class ActionAreaDetailModel {
   final String id;
-  final RouteType type;
+  final AreaType type;
   final String? name;
-  final RouteStatus status;
-  final LineString lineString;
+  final String? comment;
+  final AreaStatus status;
+  final Polygon polygon;
   final String createdAt;
   final bool isVirtual;
 
-  const RouteDetailModel({
+  const ActionAreaDetailModel({
     required this.id,
     required this.type,
     required this.name,
+    required this.comment,
     required this.status,
-    required this.lineString,
+    required this.polygon,
     required this.createdAt,
   }) : isVirtual = false;
 
-  RouteDetailModel.virtual({
+  ActionAreaDetailModel.virtual({
     required this.id,
     required this.type,
     required this.name,
+    required this.comment,
     required this.status,
-    required this.lineString,
+    required this.polygon,
     required this.createdAt,
   }) : isVirtual = true;
 
-  factory RouteDetailModel.fromJson(Map<String, dynamic> json) => _$RouteDetailModelFromJson(json);
+  factory ActionAreaDetailModel.fromJson(Map<String, dynamic> json) => _$ActionAreaDetailModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$RouteDetailModelToJson(this);
+  Map<String, dynamic> toJson() => _$ActionAreaDetailModelToJson(this);
 
-  RouteDetailModel copyWith({
+  ActionAreaDetailModel copyWith({
     String? id,
-    RouteType? type,
+    AreaType? type,
     String? name,
-    RouteStatus? status,
-    LineString? lineString,
+    String? comment,
+    AreaStatus? status,
+    Polygon? polygon,
     String? createdAt,
     bool? isVirtual,
   }) {
     if (isVirtual ?? this.isVirtual) {
-      return RouteDetailModel.virtual(
+      return ActionAreaDetailModel.virtual(
         id: id ?? this.id,
         type: type ?? this.type,
         name: name ?? this.name,
+        comment: comment ?? this.comment,
         status: status ?? this.status,
-        lineString: lineString ?? this.lineString,
+        polygon: polygon ?? this.polygon,
         createdAt: createdAt ?? this.createdAt,
       );
     } else {
-      return RouteDetailModel(
+      return ActionAreaDetailModel.virtual(
         id: id ?? this.id,
         type: type ?? this.type,
         name: name ?? this.name,
+        comment: comment ?? this.comment,
         status: status ?? this.status,
-        lineString: lineString ?? this.lineString,
+        polygon: polygon ?? this.polygon,
         createdAt: createdAt ?? this.createdAt,
       );
     }

@@ -4,7 +4,7 @@ import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -13,7 +13,7 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
 
   GrueneApiCampaignsPoiBaseService({required this.poiType}) : super();
 
-  Future<List<MarkerItemModel>> loadPoisInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
+  Future<List<PoiDetailModel>> loadPoisInRegion(LatLng locationSW, LatLng locationNE) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisGet(
       type: poiType.transformToApiPoisGetType(),
       bbox: locationSW.transformToGeoJsonBBoxString(locationNE),

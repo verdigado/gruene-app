@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
@@ -77,8 +78,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
     var mapContainer = MapWithLocation(
       onMapCreated: onMapCreated,
       addPOIClicked: _addPOIClicked,
-      loadVisibleItems: loadVisibleItems,
-      loadCachedItems: loadCachedItems,
+      loadVisiblePois: loadVisiblePois,
       getMarkerImages: _getMarkerImages,
       onFeatureClick: _onFeatureClick,
       onNoFeatureClick: _onNoFeatureClick,
@@ -170,7 +170,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   }
 
   Future<PosterDetailModel> _getPoiFromCacheOrApi(String poiId) async {
-    if (await campaignActionCache.isCached(poiId)) {
+    if (await campaignActionCache.isCached(poiId, poiType.asPoiCacheType())) {
       return getCachedPoi(poiId);
     } else {
       return getPoi(poiId);
@@ -236,7 +236,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   }
 
   Future<PosterListItemModel> _getPosterListItem(String id) async {
-    return await campaignActionCache.isCached(id)
+    return await campaignActionCache.isCached(id, PoiCacheType.poster)
         ? campaignActionCache.getPoiAsPosterListItem(id)
         : campaignService.getPoiAsPosterListItem(id);
   }

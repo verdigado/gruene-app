@@ -5,8 +5,7 @@ import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
 class MapWithLocation extends StatelessWidget {
   final OnMapCreatedCallback? onMapCreated;
   final AddPOIClickedCallback? addPOIClicked;
-  final LoadVisibleItemsCallBack? loadVisibleItems;
-  final LoadCachedItemsCallback? loadCachedItems;
+  final LoadVisiblePoisCallBack? loadVisiblePois;
   final LoadDataLayersCallBack? loadDataLayers;
   final GetMarkerImagesCallback? getMarkerImages;
   final GetBasicPoiFromFeatureCallback getBasicPoiFromFeature;
@@ -20,8 +19,7 @@ class MapWithLocation extends StatelessWidget {
     super.key,
     required this.onMapCreated,
     required this.addPOIClicked,
-    required this.loadVisibleItems,
-    required this.loadCachedItems,
+    required this.loadVisiblePois,
     required this.getMarkerImages,
     required this.getBasicPoiFromFeature,
     required this.onFeatureClick,
@@ -50,8 +48,7 @@ class MapWithLocation extends StatelessWidget {
         return MapContainer(
           onMapCreated: onMapCreated,
           addPOIClicked: addPOIClicked,
-          loadVisibleItems: loadVisibleItems,
-          loadCachedItems: loadCachedItems,
+          loadVisiblePois: loadVisiblePois,
           getMarkerImages: getMarkerImages,
           onFeatureClick: onFeatureClick,
           onNoFeatureClick: onNoFeatureClick,

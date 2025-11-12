@@ -1,6 +1,6 @@
 part of '../mixins.dart';
 
-mixin MapConsumerPollingStationMixin {
+mixin MapContainerPollingStationMixin {
   void removeLayerSource(String layerSourceId);
   Future<void> moveMapIfItemIsOnBorder(LatLng itemCoordinate, Size desiredSize);
 

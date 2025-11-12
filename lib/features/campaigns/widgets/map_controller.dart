@@ -2,15 +2,13 @@ import 'dart:math' as m;
 
 import 'package:flutter/material.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:turf/transform.dart';
+import 'package:turf/turf.dart' as turf;
 
 abstract class MapController {
-  void setMarkerSource(List<MarkerItemModel> poiList);
-  void addMarkerItem(MarkerItemModel markerItem);
-  void removeMarkerItem(int markerItemId);
+  void setPoiMarkerSource(List<turf.Feature> poiList);
+  void addPoiMarkerItem(turf.Feature markerItem);
 
   Future<m.Point<num>?> getScreenPointFromLatLng(LatLng coord);
 
@@ -20,7 +18,7 @@ abstract class MapController {
 
   void showMapPopover(LatLng coord, Widget widget, OnEditItemClickedCallback? onEditItemClicked, Size desiredSize);
 
-  void setLayerSourceWithFeatureCollection(String sourceId, FeatureCollection layerData);
+  void setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData);
 
   void removeLayerSource(String layerSourceId);
 

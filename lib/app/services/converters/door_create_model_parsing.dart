@@ -13,7 +13,7 @@ extension DoorCreateModelParsing on DoorCreateModel {
     );
   }
 
-  MarkerItemModel transformToVirtualMarkerItem(int temporaryId) {
-    return MarkerItemModel.virtual(id: temporaryId, status: PoiServiceType.door.name, location: location);
+  PoiDetailModel transformToVirtualPoiDetailModel(int temporaryId) {
+    return PoiDetailModel.virtual(id: temporaryId, status: PoiServiceType.door.name, location: location);
   }
 }

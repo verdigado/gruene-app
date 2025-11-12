@@ -4,13 +4,13 @@ import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dart';
-import 'package:gruene_app/features/campaigns/models/marker_item_model.dart';
+import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GrueneApiDoorService extends GrueneApiCampaignsPoiBaseService {
   GrueneApiDoorService() : super(poiType: PoiServiceType.door);
 
-  Future<MarkerItemModel> createNewDoor(DoorCreateModel newDoor) async => getFromApi(
+  Future<PoiDetailModel> createNewDoor(DoorCreateModel newDoor) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisPost(
       body: CreatePoi(
         coords: newDoor.location.transformToGeoJsonCoords(),
@@ -25,7 +25,7 @@ class GrueneApiDoorService extends GrueneApiCampaignsPoiBaseService {
     map: (result) => result.transformToMarkerItem(),
   );
 
-  Future<MarkerItemModel> updateDoor(DoorUpdateModel doorUpdate) async => getFromApi(
+  Future<PoiDetailModel> updateDoor(DoorUpdateModel doorUpdate) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisPoiIdPut(
       poiId: doorUpdate.id,
       body: UpdatePoi(

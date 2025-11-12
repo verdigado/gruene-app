@@ -82,4 +82,11 @@ extension CampaignActionParsing on CampaignAction {
 
     return model;
   }
+
+  ActionAreaUpdateModel getAsActionAreaUpdate() {
+    var data = jsonDecode(serialized!) as Map<String, dynamic>;
+    var model = ActionAreaUpdateModel.fromJson(data.updateIdField(poiId!));
+
+    return model;
+  }
 }

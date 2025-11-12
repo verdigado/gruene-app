@@ -90,4 +90,5 @@ enum CampaignActionType {
   editFlyer,
   deleteFlyer,
   editRoute,
+  editActionArea,
 }
