@@ -73,6 +73,8 @@ dependencies:
   image_cropper: ^9.0.0
   internet_connection_checker_plus: ^2.7.1
   synchronized: ^3.4.0
+  rrule:
+    git: https://github.com/steffenkleinle/rrule.git
 
 dev_dependencies:
 

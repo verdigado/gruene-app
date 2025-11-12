@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/features/events/screens/event_detail_screen.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
-import 'package:gruene_app/features/events/widgets/event_location.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 
 class EventDetailsSheet extends StatelessWidget {
@@ -24,7 +24,7 @@ class EventDetailsSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
-              Text(formatEventDateRange(event), style: theme.textTheme.labelSmall),
+              Text(event.formattedDate, style: theme.textTheme.labelSmall),
               Text(event.title, style: theme.textTheme.titleSmall),
               EventLocation(event: event),
               if (description != null) Text(description),

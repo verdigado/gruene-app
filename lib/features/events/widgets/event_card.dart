@@ -52,7 +52,7 @@ class EventCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(formatEventDateRange(event), style: theme.textTheme.labelSmall),
+                        Text(event.formattedDate, style: theme.textTheme.labelSmall),
                         const SizedBox(height: 4),
                         Text(event.title, style: theme.textTheme.titleSmall?.copyWith(height: 1.375)),
                         ...(location != null ? [SizedBox(height: 12), Text(location, style: theme.textTheme.labelSmall)] : []),
