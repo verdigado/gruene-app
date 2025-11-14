@@ -376,7 +376,6 @@
     "label": "Events",
     "calendars": "Kalender",
     "dateRange": "Zeitraum",
-    "nextDate": "Nächster Termin: ${date}",
     "list": "Liste",
     "map": "Karte",
     "eventNotFound": "Dieses Event wurde leider nicht gefunden.",

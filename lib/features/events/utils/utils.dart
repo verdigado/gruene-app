@@ -6,46 +6,38 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
 import 'package:rrule/rrule.dart';
 
+const maxRecurrences = 30;
+
 extension CalendarEventExtension on CalendarEvent {
   RecurrenceRule? get rrule => recurring != null ? RecurrenceRule.fromString(recurring!) : null;
 
+  String? get formattedRrule => rrule?.toText(l10n: rruleL10n, untilDateFormat: DateFormat(dateFormat));
+
+  Iterable<DateTime>? recurrences([DateTimeRange? dateRange]) {
+    final rrule = this.rrule;
+
+    if (rrule == null) return null;
+
+    final between = dateRange ?? todayOrFuture();
+    return rrule
+        .getInstances(start: between.start.copyWith(isUtc: true), before: between.end.copyWith(isUtc: true))
+        .take(maxRecurrences)
+        .map((recurrence) => recurrence.copyWith(isUtc: false));
+  }
+
   bool inRange(DateTimeRange? dateRange) {
     if (dateRange == null) return true;
-    final rrule = this.rrule;
 
     if (rrule == null) {
       return !(start.isAfter(dateRange.end) || (end?.isBefore(dateRange.start) ?? true));
     }
 
-    return formattedFirstRecurrence(dateRange) != null;
+    return recurrences(dateRange)?.firstOrNull != null;
   }
 
-  String? formattedFirstRecurrence([DateTimeRange? dateRange]) {
-    final rrule = this.rrule;
-    final end = this.end;
-
-    if (rrule == null) return null;
-
-    final between = dateRange ?? todayOrFuture();
-    final recurrence = rrule
-        .getInstances(start: between.start.copyWith(isUtc: true), before: between.end.copyWith(isUtc: true))
-        .firstOrNull;
-
-    if (recurrence == null) return null;
-
-    final recurrenceStart = recurrence.copyWith(isUtc: false);
-    final recurrenceEnd = end != null ? recurrenceStart.add(end.difference(start)) : null;
-
-    return formatStartEnd(recurrenceStart, recurrenceEnd);
-  }
-
-  String get formattedDate {
-    final rrule = this.rrule;
-
-    if (rrule != null) {
-      return rrule.toText(l10n: rruleL10n, untilDateFormat: DateFormat(dateFormat));
-    }
-
+  String formattedDate(DateTime? recurrence) {
+    final start = recurrence ?? recurrences()?.firstOrNull ?? this.start;
+    final end = this.end != null ? start.add(this.end!.difference(this.start)) : null;
     return formatStartEnd(start, end);
   }
 }
@@ -56,25 +48,34 @@ extension CalendarEventListExtension on List<CalendarEvent> {
       (it) => calendars.map((calendar) => calendar.id).contains(it.calendarId) && it.inRange(dateRange),
     ).toList();
   }
-}
 
-List<MonthGroup> groupEventsByMonth(List<CalendarEvent> events) {
-  final Map<DateTime, List<CalendarEvent>> groupedMap = {};
-  final now = DateTime.now();
+  List<MonthGroup> groupEventsByMonth(DateTimeRange? dateRange) {
+    final Map<DateTime, List<({CalendarEvent event, DateTime recurrence})>> groupedMap = {};
+    final now = DateTime.now();
 
-  for (final event in events) {
-    final startMonth = DateTime(event.start.year, event.start.month);
-    final currentMonth = DateTime(now.year, now.month);
-    final month = startMonth.isBefore(currentMonth) ? currentMonth : startMonth;
-    groupedMap.putIfAbsent(month, () => []).add(event);
+    final eventsWithRecurrences = map(
+      (event) =>
+          event.recurrences(dateRange)?.map((recurrence) => (event, recurrence)).toList() ?? [(event, event.start)],
+    ).expand((it) => it).toList();
+
+    for (final (event, recurrence) in eventsWithRecurrences) {
+      final startMonth = DateTime(recurrence.year, recurrence.month);
+      final currentMonth = DateTime(now.year, now.month);
+      final month = startMonth.isBefore(currentMonth) ? currentMonth : startMonth;
+      groupedMap.putIfAbsent(month, () => []).add((event: event, recurrence: recurrence));
+    }
+
+    final groupedList = groupedMap.entries.map((entry) {
+      entry.value.sort(
+        ((a, b) => (a.recurrence == b.recurrence)
+            ? a.event.title.compareTo(b.event.title)
+            : a.recurrence.compareTo(b.recurrence)),
+      );
+      return MonthGroup(month: entry.key, events: entry.value);
+    }).toList();
+
+    groupedList.sort((a, b) => a.month.compareTo(b.month));
+
+    return groupedList;
   }
-
-  final groupedList = groupedMap.entries.map((entry) {
-    entry.value.sort((a, b) => (a.start == b.start) ? a.title.compareTo(b.title) : a.start.compareTo(b.start));
-    return MonthGroup(month: entry.key, events: entry.value);
-  }).toList();
-
-  groupedList.sort((a, b) => a.month.compareTo(b.month));
-
-  return groupedList;
 }

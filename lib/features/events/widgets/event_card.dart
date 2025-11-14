@@ -5,9 +5,10 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventCard extends StatelessWidget {
   final CalendarEvent event;
+  final DateTime? recurrence;
   final void Function() onTap;
 
-  const EventCard({super.key, required this.event, required this.onTap});
+  const EventCard({super.key, required this.event, required this.recurrence, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class EventCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(event.formattedDate, style: theme.textTheme.labelSmall),
+                        Text(event.formattedDate(recurrence), style: theme.textTheme.labelSmall),
                         const SizedBox(height: 4),
                         Text(event.title, style: theme.textTheme.titleSmall?.copyWith(height: 1.375)),
                         ...(location != null
