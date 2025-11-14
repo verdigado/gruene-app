@@ -18,20 +18,23 @@ class PageInfo extends StatelessWidget {
 
     return Row(
       spacing: 4,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon),
-        url != null
-            ? InkWell(
-                onTap: () => openUrl(url, context),
-                child: Text(
-                  text ?? hostname ?? url,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: ThemeColors.primary,
-                    decoration: TextDecoration.underline,
+        Flexible(
+          child: url != null
+              ? InkWell(
+                  onTap: () => openUrl(url, context),
+                  child: Text(
+                    text ?? hostname ?? url,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: ThemeColors.primary,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
-                ),
-              )
-            : Text(text!),
+                )
+              : Text(text!),
+        ),
       ],
     );
   }

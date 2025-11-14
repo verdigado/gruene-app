@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventDetail extends StatelessWidget {
   final CalendarEvent event;
+  final DateTime? recurrence;
 
-  const EventDetail({super.key, required this.event});
+  const EventDetail({super.key, required this.event, required this.recurrence});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final description = event.description;
-    final firstRecurrence = event.formattedFirstRecurrence();
+    final formattedRrule = event.formattedRrule;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,8 +23,8 @@ class EventDetail extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PageInfo(icon: Icons.today, text: event.formattedDate),
-            if (firstRecurrence != null) Text(t.events.nextDate(date: firstRecurrence)),
+            PageInfo(icon: Icons.today, text: event.formattedDate(recurrence)),
+            if (formattedRrule != null) PageInfo(icon: Icons.repeat, text: formattedRrule),
           ],
         ),
         EventLocation(event: event),

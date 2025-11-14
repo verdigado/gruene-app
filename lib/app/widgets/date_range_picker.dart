@@ -21,7 +21,7 @@ class DateRangePicker extends StatelessWidget {
     setDateRange(newDateRange);
   }
 
-  String formatDate(DateTime? date) => date == null || date == dateInfinity() ? '–' : formatDate(date);
+  String format(DateTime? date) => date == null || date == dateInfinity() ? '–' : formatDate(date);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class DateRangePicker extends StatelessWidget {
             side: BorderSide(color: theme.colorScheme.surfaceDim),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           ),
-          child: SizedBox(width: 84, child: Center(child: Text(formatDate(dateRange?.start)))),
+          child: SizedBox(width: 84, child: Center(child: Text(format(dateRange?.start)))),
         ),
         SizedBox(width: 16),
         Text(t.common.dateUntil),
@@ -50,7 +50,7 @@ class DateRangePicker extends StatelessWidget {
             side: BorderSide(color: theme.colorScheme.surfaceDim),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           ),
-          child: SizedBox(width: 84, child: Center(child: Text(formatDate(dateRange?.end)))),
+          child: SizedBox(width: 84, child: Center(child: Text(format(dateRange?.end)))),
         ),
         SizedBox(width: 24),
       ],

@@ -77,28 +77,29 @@ class _EventsScreenState extends State<EventsScreen> {
 
     return Stack(
       children: [
-        Positioned.fill(
-          child: isMapView
-              ? EventsMap(events: events)
-              : Container(
-                  padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 64),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      FilterBar(
-                        searchFilter: searchFilter,
-                        modified: [calendarFilter, dateRangeFilter].modified(),
-                        filterDialog: EventsFilterDialog(
-                          calendarFilter: calendarFilter,
-                          dateRangeFilter: dateRangeFilter,
-                        ),
+        isMapView
+            ? EventsMap(events: events)
+            : Container(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: 8,
+                  children: [
+                    FilterBar(
+                      searchFilter: searchFilter,
+                      modified: [calendarFilter, dateRangeFilter].modified(),
+                      filterDialog: EventsFilterDialog(
+                        calendarFilter: calendarFilter,
+                        dateRangeFilter: dateRangeFilter,
                       ),
-                      Expanded(child: EventsList(events: events)),
-                    ],
-                  ),
+                    ),
+                    Expanded(
+                      child: EventsList(events: events, dateRange: _dateRange),
+                    ),
+                  ],
                 ),
-        ),
+              ),
         Positioned(
           bottom: 8,
           left: 0,
