@@ -55,10 +55,16 @@ class _EventsMapState extends State<EventsMap> {
               image: event?.image,
               onClose: () => Navigator.pop(context),
               child: event != null
-                  ? EventDetail(event: event)
+                  ? EventDetail(event: event, recurrence: null)
                   : Column(
                       children: events
-                          .map((event) => EventCard(event: event, onTap: () => setState(() => selectedEvent = event)))
+                          .map(
+                            (event) => EventCard(
+                              event: event,
+                              recurrence: null,
+                              onTap: () => setState(() => selectedEvent = event),
+                            ),
+                          )
                           .toList(),
                     ),
             );
@@ -75,7 +81,7 @@ class _EventsMapState extends State<EventsMap> {
         .nonNulls
         .toList();
 
-    if (mounted) {
+    if (mounted && events.isNotEmpty) {
       _showBottomSheet(events);
     }
   }
