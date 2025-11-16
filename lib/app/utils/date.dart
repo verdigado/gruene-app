@@ -5,28 +5,32 @@ const dateFormat = 'dd.MM.yyyy';
 const timeFormat = 'HH:mm';
 const dateTimeFormat = '$dateFormat, $timeFormat';
 
-String formatDate(DateTime date) => DateFormat(dateFormat).format(date);
+extension DateTimeExtension on DateTime {
+  String get formattedDate => DateFormat(dateFormat).format(this);
 
-String formatTime(DateTime time) => DateFormat(timeFormat).format(time);
+  String get formattedTime => DateFormat(timeFormat).format(this);
 
-String formatDateTime(DateTime dateTime) => DateFormat(dateTimeFormat).format(dateTime);
+  String get formattedDateTime => DateFormat(dateTimeFormat).format(this);
+
+  String get formattedMonth => DateFormat.yMMMM().format(this);
+
+  DateTime get startOfDay => DateTime(year, month, day);
+
+  DateTime get startOfHour => DateTime(year, month, day, hour);
+}
+
+DateTime dateInfinity() => DateTime(2100);
 
 String formatInterval(String start, String end) => '$start - $end';
 
 String formatStartEnd(DateTime start, DateTime? end) {
   if (end == null || start == end) {
-    return formatDateTime(start);
+    return start.formattedDateTime;
   } else if (DateUtils.isSameDay(start, end)) {
-    return formatInterval(formatDateTime(start), formatTime(end));
+    return formatInterval(start.formattedDateTime, end.formattedTime);
   } else {
-    return formatInterval(formatDateTime(start), formatDateTime(end));
+    return formatInterval(start.formattedDateTime, end.formattedDateTime);
   }
 }
 
-String formatMonth(DateTime month) => DateFormat.yMMMM().format(month);
-
-DateTime dateInfinity() => DateTime(DateTime.now().year + 100);
-
-DateTime startOfDay() => DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
-DateTimeRange todayOrFuture() => DateTimeRange(start: startOfDay(), end: dateInfinity());
+DateTimeRange todayOrFuture() => DateTimeRange(start: DateTime.now().startOfDay, end: dateInfinity());
