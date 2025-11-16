@@ -26,7 +26,7 @@ class EventsList extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Text(formatMonth(group.month), style: theme.textTheme.titleMedium),
+              child: Text(group.month.formattedMonth, style: theme.textTheme.titleMedium),
             ),
             ...group.events.map(
               (event) => EventCard(
