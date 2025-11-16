@@ -21,7 +21,7 @@ class DateRangePicker extends StatelessWidget {
     setDateRange(newDateRange);
   }
 
-  String format(DateTime? date) => date == null || date == dateInfinity() ? '–' : formatDate(date);
+  String format(DateTime? date) => date == null || date == dateInfinity() ? '–' : date.formattedDate;
 
   @override
   Widget build(BuildContext context) {

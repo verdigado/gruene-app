@@ -44,7 +44,7 @@ class LoginAttemptCard extends StatelessWidget {
                     ],
                   ),
                   TableRow(children: [Text(t.mfa.verify.device), Text('${loginAttempt.browser} ${loginAttempt.os}')]),
-                  TableRow(children: [Text(t.mfa.verify.date), Text(formatDate(loginAttempt.loggedInAt))]),
+                  TableRow(children: [Text(t.mfa.verify.date), Text(loginAttempt.loggedInAt.formattedDate)]),
                   TableRow(
                     children: [
                       Text(t.mfa.verify.time),
