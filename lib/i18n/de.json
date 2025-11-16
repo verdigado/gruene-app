@@ -8,6 +8,8 @@
     "dateUntil": "bis",
     "search": "Suche",
     "multiSelect": "Mehrfachauswahl (${count})",
+    "optional": "optional",
+    "notAvailable": "N/A",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
@@ -379,6 +381,34 @@
     "list": "Liste",
     "map": "Karte",
     "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
-    "digital": "digital"
+    "digital": "digital",
+    "title": "Neues Event erstellen",
+    "intro": "Erstelle ein Event im Kalender ${calendar}",
+    "name": "Name",
+    "nameRequired": "Gib einen Namen ein",
+    "description": "Beschreibung",
+    "dateAndTime": "Datum & Uhrzeit",
+    "start": "Beginn",
+    "startRequired": "Gib einen gültigen Beginn in der Zukunft ein",
+    "end": "Ende",
+    "endBeforeStart": "Das Ende muss nach dem Beginn liegen",
+    "location": "Veranstaltungsort",
+    "locationType": {
+      "physical": "Vor Ort",
+      "hybrid": "Hybrid",
+      "online": "Digital"
+    },
+    "street": "Straße",
+    "number": "Nr.",
+    "zipCode": "PLZ",
+    "city": "Ort",
+    "locationUrl": "Link zur Online-Veranstaltung",
+    "locationUrlRequired": "Gib einen gültigen ein",
+    "other": "Sonstiges",
+    "limitedSlots": "Teilnehmerplätze begrenzen",
+    "availableSlots": "Anzahl verfügbarer Plätze",
+    "useExternalUrl": "Externe Event-Seite nutzen",
+    "externalUrl": "URL Event-Seite",
+    "create": "Event erstellen"
   }
 }
