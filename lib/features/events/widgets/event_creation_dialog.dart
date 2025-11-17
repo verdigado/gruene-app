@@ -57,6 +57,16 @@ class _EventCreateDialogState extends State<EventCreateDialog> {
                     ),
                     maxLines: 5,
                   ),
+                  FormBuilderTextField(
+                    name: 'url',
+                    decoration: InputDecoration(
+                      labelText: '${t.events.url} (${t.common.optional})',
+                      helperText: t.events.urlHelp,
+                      helperMaxLines: 3,
+                    ),
+                    validator: (url) =>
+                        url != null ? FormBuilderValidators.url(errorText: t.events.urlRequired)(url) : null,
+                  ),
                 ],
               ),
 
@@ -145,46 +155,39 @@ class _EventCreateDialogState extends State<EventCreateDialog> {
                   if ([LocationType.digital, LocationType.hybrid].contains(locationType))
                     FormBuilderTextField(
                       name: 'link',
-                      validator: FormBuilderValidators.url(errorText: t.events.locationUrlRequired),
+                      validator: FormBuilderValidators.url(errorText: t.events.urlRequired),
                       decoration: InputDecoration(labelText: t.events.locationUrl),
                     ),
                 ],
               ),
 
-              Section(
-                title: t.events.other,
-                children: [
-                  FormBuilderSwitch(
-                    name: 'limitedSlots',
-                    title: Text(t.events.limitedSlots),
-                    onChanged: (value) {
-                      setState(() => showAvailableSlots = value ?? false);
-                    },
-                  ),
-                  if (showAvailableSlots) ...[
-                    Text(t.events.availableSlots, style: theme.textTheme.bodyMedium),
-                    FormBuilderTextField(name: 'availableSlots'),
-                  ],
-                  FormBuilderSwitch(
-                    name: 'useExternalUrl',
-                    title: Text(t.events.useExternalUrl),
-                    onChanged: (value) {
-                      setState(() => showExternalUrl = value ?? false);
-                    },
-                  ),
-                  if (showExternalUrl) ...[
-                    Text(t.events.externalUrl, style: theme.textTheme.bodyMedium),
-                    FormBuilderTextField(name: 'externalUrl'),
-                  ],
-                ],
-              ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 height: 64,
-                child: FilledButton(
-                  // TODO submit
-                  onPressed: () => {},
-                  child: Text(t.events.create),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: 24,
+                  children: [
+                    TextButton(
+                      onPressed: Navigator.of(context).pop,
+                      child: Text(
+                        t.common.actions.cancel,
+                        style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.primary),
+                      ),
+                    ),
+                    Expanded(
+                      child: FilledButton(
+                        // TODO submit
+                        onPressed: () => {},
+                        child: Text(
+                          t.events.create,
+                          style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
