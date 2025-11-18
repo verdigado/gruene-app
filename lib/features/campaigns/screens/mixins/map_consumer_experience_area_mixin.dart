@@ -5,7 +5,7 @@ mixin MapConsumerExperienceAreaMixin {
   GrueneApiCampaignsPoiBaseService get campaignService;
 
   Future<void> addExperienceAreaLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
-    final data = turf.FeatureCollection().toJson();
+    final data = <turf.Feature>{}.toList();
 
     addImageFromAsset(
       mapLibreController,
@@ -13,7 +13,7 @@ mixin MapConsumerExperienceAreaMixin {
       CampaignConstants.experienceAreaFillPatternAssetName,
     );
 
-    await mapLibreController.addGeoJsonSource(CampaignConstants.experienceAreaSourceName, data);
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.experienceAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.experienceAreaSourceName,
@@ -29,16 +29,13 @@ mixin MapConsumerExperienceAreaMixin {
     await mapLibreController.addLineLayer(
       CampaignConstants.experienceAreaSourceName,
       CampaignConstants.experienceAreaOutlineLayerId,
-      LineLayerProperties(lineColor: 'white', lineWidth: 0.5, lineOpacity: 0.8),
+      LineLayerProperties(lineColor: 'white', lineWidth: 0.3, lineOpacity: 0.8),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );
 
     // add selected map layers
-    await mapLibreController.addGeoJsonSource(
-      CampaignConstants.experienceAreaSelectedSourceName,
-      turf.FeatureCollection().toJson(),
-    );
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.experienceAreaSelectedSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.experienceAreaSelectedSourceName,
@@ -51,7 +48,7 @@ mixin MapConsumerExperienceAreaMixin {
     await mapLibreController.addLineLayer(
       CampaignConstants.experienceAreaSelectedSourceName,
       CampaignConstants.experienceAreaSelectedOutlineLayerId,
-      LineLayerProperties(lineColor: 'white', lineWidth: 1),
+      LineLayerProperties(lineColor: 'white', lineWidth: 2),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );
@@ -72,12 +69,16 @@ mixin MapConsumerExperienceAreaMixin {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final experienceAreas = await campaignService.loadExperienceAreasInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureCollection(
+      mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.experienceAreaSourceName,
-        experienceAreas.transformToFeatureCollection(),
+        experienceAreas.transformToFeatureList(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();
     }
+  }
+
+  void loadCachedActionAreas(LoadCachedLayerCallback loadCachedLayer) {
+    loadCachedLayer(PoiCacheType.actionArea, CampaignConstants.actionAreaSourceName);
   }
 }

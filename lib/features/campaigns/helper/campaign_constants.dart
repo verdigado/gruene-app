@@ -16,8 +16,10 @@ class CampaignConstants {
   static const experienceAreaFillPatternAssetName = 'assets/maps/layer_styles/experience_area_16x16.png';
   static const actionAreaFillPatternAssetName = 'assets/maps/layer_styles/action_area_16x16.png';
 
-  static const markerSourceName = 'markers';
-  static const markerLayerName = 'markerSymbols';
+  static const poiMarkerSourceId = 'poi_markers';
+  static const markerSelectedSourceId = '${poiMarkerSourceId}_selected';
+  static const markerLayerId = 'marker_symbols';
+  static const markerSelectedLayerId = '${markerLayerId}_selected';
 
   static const focusAreaSourceName = 'focusArea';
   static const focusAreaBorderLayerId = 'focusArea_border';
@@ -41,11 +43,11 @@ class CampaignConstants {
   static const experienceAreaSelectedOutlineLayerId = '${experienceAreaSelectedLayerId}_line';
 
   static const actionAreaSourceName = 'action_areas';
-  // static const actionAreaSelectedSourceName = 'action_areas_selected';
+  static const actionAreaSelectedSourceName = 'action_areas_selected';
   static const actionAreaLayerId = 'action_areas_layer';
   static const actionAreaOutlineLayerId = '${actionAreaLayerId}_line';
   // static const actionAreaSelectedLayerId = 'action_areas_layer_selected';
-  // static const actionAreaSelectedOutlineLayerId = '${actionAreaSelectedLayerId}_line';
+  static const actionAreaSelectedOutlineLayerId = '${actionAreaOutlineLayerId}_selected';
 
   static Map<int, String> scoreInfos = {
     1: 'Stufe 1: wenige Plakate aufhängen, keine Flyer verteilen, keine Haustüren',
@@ -54,6 +56,9 @@ class CampaignConstants {
     4: 'Stufe 4: viele Plakate aufhängen, viele Flyer verteilen, Haustüren',
     5: 'Stufe 5: viele Plakate aufhängen, sehr viele Flyer verteilen, Haustüren auf jeden Fall',
   };
+
+  static const featurePropertyStatusType = 'status_type';
+  static const featurePropertyIsVirtual = 'is_virtual';
 
   static LatLngBounds viewBoxGermany = LatLngBounds(
     southwest: LatLng(46.8, 5.6),

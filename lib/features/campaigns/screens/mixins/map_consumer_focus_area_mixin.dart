@@ -7,8 +7,8 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
   void showInfoToast(String toastText, {void Function()? moreInfoCallback});
 
   Future<void> addFocusAreaLayers(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
-    final data = <FocusArea>[].toList().transformToFeatureCollection().toJson();
-    await mapLibreController.addGeoJsonSource(CampaignConstants.focusAreaSourceName, data);
+    final data = <turf.Feature>{}.toList();
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.focusAreaSourceName,
@@ -25,7 +25,7 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
       ),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
-      belowLayerId: CampaignConstants.markerLayerName,
+      belowLayerId: CampaignConstants.markerLayerId,
     );
 
     await mapLibreController.addLineLayer(
@@ -61,9 +61,9 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final focusAreas = await campaignService.loadFocusAreasInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureCollection(
+      mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.focusAreaSourceName,
-        focusAreas.transformToFeatureCollection(),
+        focusAreas.transformToFeatureList(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

@@ -1,11 +1,11 @@
 part of '../converters.dart';
 
 extension PoiParsing on Poi {
-  MarkerItemModel transformToMarkerItem() {
+  PoiDetailModel transformToMarkerItem() {
     final poi = this;
     String statusSuffix = '';
     if (poi.poster != null) statusSuffix = '_${poi.poster!.status.name}';
-    return MarkerItemModel(
+    return PoiDetailModel(
       id: int.parse(poi.id),
       location: poi.coords.transformToLatLng(),
       status: '${poi.type.transformToPoiServiceType().name}$statusSuffix',

@@ -1,5 +1,6 @@
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:tuple/tuple.dart';
 import 'package:turf/turf.dart';
@@ -76,14 +77,14 @@ class MapHelper {
   static bool extractIsCachedFromFeature(Map<String, dynamic> feature) {
     if (feature['properties'] == null) return false;
     final properties = feature['properties'] as Map<String, dynamic>;
-    if (properties['is_virtual'] == null) return false;
-    return bool.parse(properties['is_virtual'].toString());
+    if (properties[CampaignConstants.featurePropertyIsVirtual] == null) return false;
+    return bool.parse(properties[CampaignConstants.featurePropertyIsVirtual].toString());
   }
 
   static String extractStatusTypeFromFeature(Map<String, dynamic> feature) {
     if (feature['properties'] == null) return '';
     final properties = feature['properties'] as Map<String, dynamic>;
-    if (properties['status_type'] == null) return '';
-    return properties['status_type'].toString();
+    if (properties[CampaignConstants.featurePropertyStatusType] == null) return '';
+    return properties[CampaignConstants.featurePropertyStatusType].toString();
   }
 }
