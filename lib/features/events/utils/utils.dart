@@ -40,6 +40,8 @@ extension CalendarEventExtension on CalendarEvent {
     final end = this.end != null ? start.add(this.end!.difference(this.start)) : null;
     return formatStartEnd(start, end);
   }
+
+  Calendar calendar(List<Calendar> calendars) => calendars.firstWhere((calendar) => calendar.id == calendarId);
 }
 
 extension CalendarEventListExtension on List<CalendarEvent> {
@@ -47,7 +49,7 @@ extension CalendarEventListExtension on List<CalendarEvent> {
     return where(
       (it) =>
           calendars.map((calendar) => calendar.id).contains(it.calendarId) &&
-          (categories.isEmpty || (it.categories?.any((category) => categories.contains(category)) ?? false)) &&
+          (categories.isEmpty || it.categories.any((category) => categories.contains(category))) &&
           it.inRange(dateRange),
     ).toList();
   }

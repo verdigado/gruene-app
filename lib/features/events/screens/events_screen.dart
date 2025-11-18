@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/date.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
@@ -65,6 +66,7 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
     final events = widget.events.filter(_selectedCalendars, _selectedCategories, _dateRange);
+    final writableCalendar = widget.calendars.firstWhereOrNull((calendar) => !calendar.readOnly);
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
     final calendarFilter = FilterModel(
@@ -88,7 +90,7 @@ class _EventsScreenState extends State<EventsScreen> {
     return Stack(
       children: [
         isMapView
-            ? EventsMap(events: events)
+            ? EventsMap(events: events, calendars: widget.calendars)
             : Container(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Column(
@@ -106,7 +108,7 @@ class _EventsScreenState extends State<EventsScreen> {
                       ),
                     ),
                     Expanded(
-                      child: EventsList(events: events, dateRange: _dateRange),
+                      child: EventsList(events: events, calendars: widget.calendars, dateRange: _dateRange),
                     ),
                   ],
                 ),
@@ -127,15 +129,16 @@ class _EventsScreenState extends State<EventsScreen> {
             ),
           ),
         ),
-        // TODO only show button if write permissions for calendar
-        Positioned(
-          bottom: 8,
-          right: 16,
-          child: FloatingActionButton.small(
-            onPressed: () => showFullScreenDialog(context, (_) => EventCreateDialog(calendar: widget.calendars.first)),
-            child: Icon(Icons.edit_calendar),
+        if (writableCalendar != null)
+          Positioned(
+            bottom: 8,
+            right: 16,
+            child: FloatingActionButton.small(
+              onPressed: () =>
+                  showFullScreenDialog(context, (_) => EventEditDialog(calendar: writableCalendar, event: null)),
+              child: Icon(Icons.edit_calendar),
+            ),
           ),
-        ),
       ],
     );
   }
