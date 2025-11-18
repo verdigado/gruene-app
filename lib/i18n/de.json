@@ -192,7 +192,8 @@
       "confirmation_dialog": "Möchtest Du diesen Eintrag wirklich löschen? Dies kann nicht rückgängig gemacht werden."
     },
     "team": {
-      "label": "Team"
+      "label": "Team",
+      "create_team": "Team erstellen"
     },
     "statistic": {
       "label": "Statistik",
