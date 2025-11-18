@@ -7,32 +7,37 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
 
-enum LocationType { physical, digital, hybrid }
-
-class EventCreateDialog extends StatefulWidget {
+class EventEditDialog extends StatefulWidget {
   final Calendar calendar;
+  final CalendarEvent? event;
 
-  const EventCreateDialog({super.key, required this.calendar});
+  const EventEditDialog({super.key, required this.calendar, required this.event});
 
   @override
-  State<EventCreateDialog> createState() => _EventCreateDialogState();
+  State<EventEditDialog> createState() => _EventEditDialogState();
 }
 
-class _EventCreateDialogState extends State<EventCreateDialog> {
+class _EventEditDialogState extends State<EventEditDialog> {
   final formKey = GlobalKey<FormBuilderState>();
-  DateTime start = DateTime.now().startOfHour.add(Duration(hours: 2));
-  LocationType? locationType = LocationType.physical;
-  bool showAvailableSlots = false;
-  bool showExternalUrl = false;
+  late DateTime start;
+  late CalendarEventLocationType? locationType;
+
+  @override
+  void initState() {
+    super.initState();
+    start = widget.event?.start ?? DateTime.now().startOfHour.add(Duration(hours: 2));
+    locationType = widget.event?.locationType ?? CalendarEventLocationType.physical;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    DateTime initialEnd = start.add(Duration(hours: 2));
+    DateTime initialEnd = widget.event?.end ?? start.add(Duration(hours: 2));
 
     return FormBuilder(
       key: formKey,
       autovalidateMode: AutovalidateMode.onUnfocus,
+      clearValueOnUnregister: true,
       child: FullScreenDialog(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -42,15 +47,20 @@ class _EventCreateDialogState extends State<EventCreateDialog> {
             children: [
               Section(
                 children: [
-                  Text(t.events.title, style: theme.textTheme.titleLarge),
-                  Text(t.events.intro(calendar: widget.calendar.displayName)),
+                  Text(
+                    widget.event == null ? t.events.createTitle : t.events.updateTitle,
+                    style: theme.textTheme.titleLarge,
+                  ),
+                  if (widget.event == null) Text(t.events.intro(calendar: widget.calendar.displayName)),
                   FormBuilderTextField(
                     name: 'name',
+                    initialValue: widget.event?.title,
                     decoration: InputDecoration(labelText: t.events.name),
                     validator: FormBuilderValidators.required(errorText: t.events.nameRequired),
                   ),
                   FormBuilderTextField(
                     name: 'description',
+                    initialValue: widget.event?.description,
                     decoration: InputDecoration(
                       labelText: '${t.events.description} (${t.common.optional})',
                       alignLabelWithHint: true,
@@ -59,6 +69,7 @@ class _EventCreateDialogState extends State<EventCreateDialog> {
                   ),
                   FormBuilderTextField(
                     name: 'url',
+                    initialValue: widget.event?.url,
                     decoration: InputDecoration(
                       labelText: '${t.events.url} (${t.common.optional})',
                       helperText: t.events.urlHelp,
@@ -75,7 +86,7 @@ class _EventCreateDialogState extends State<EventCreateDialog> {
                 children: [
                   FormBuilderDateTimePicker(
                     name: 'start',
-                    initialValue: DateTime.now().startOfHour.add(Duration(hours: 2)),
+                    initialValue: start,
                     validator: (start) => start?.isBefore(DateTime.now()) == true ? t.events.startRequired : null,
                     onChanged: (start) {
                       setState(() => this.start = start ?? this.start);
@@ -88,6 +99,7 @@ class _EventCreateDialogState extends State<EventCreateDialog> {
                   FormBuilderDateTimePicker(
                     name: 'end',
                     format: DateFormat(dateTimeFormat),
+                    initialValue: widget.event?.end,
                     initialDate: initialEnd,
                     initialTime: TimeOfDay(hour: initialEnd.hour, minute: initialEnd.minute),
                     firstDate: start,
@@ -109,55 +121,44 @@ class _EventCreateDialogState extends State<EventCreateDialog> {
                     initialValue: locationType,
                     onChanged: (locationType) => setState(() => this.locationType = locationType),
                     options: [
-                      FormBuilderFieldOption(value: LocationType.physical, child: Text(t.events.locationType.physical)),
-                      FormBuilderFieldOption(value: LocationType.digital, child: Text(t.events.locationType.online)),
-                      FormBuilderFieldOption(value: LocationType.hybrid, child: Text(t.events.locationType.hybrid)),
+                      FormBuilderFieldOption(
+                        value: CalendarEventLocationType.physical,
+                        child: Text(t.events.locationType.physical),
+                      ),
+                      FormBuilderFieldOption(
+                        value: CalendarEventLocationType.digital,
+                        child: Text(t.events.locationType.digital),
+                      ),
+                      FormBuilderFieldOption(
+                        value: CalendarEventLocationType.hybrid,
+                        child: Text(t.events.locationType.hybrid),
+                      ),
                     ],
                   ),
-                  if ([LocationType.physical, LocationType.hybrid].contains(locationType)) ...[
-                    Row(
-                      spacing: 12,
-                      children: [
-                        Expanded(
-                          child: FormBuilderTextField(
-                            name: 'street',
-                            decoration: InputDecoration(labelText: t.events.street),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 64,
-                          child: FormBuilderTextField(
-                            name: 'number',
-                            decoration: InputDecoration(labelText: t.events.number),
-                          ),
-                        ),
-                      ],
+                  Visibility(
+                    visible: [
+                      CalendarEventLocationType.physical,
+                      CalendarEventLocationType.hybrid,
+                    ].contains(locationType),
+                    child: FormBuilderTextField(
+                      name: 'locationAddress',
+                      initialValue: widget.event?.locationAddress,
+                      validator: FormBuilderValidators.required(),
+                      decoration: InputDecoration(labelText: t.events.address),
                     ),
-                    Row(
-                      spacing: 12,
-                      children: [
-                        SizedBox(
-                          width: 96,
-                          child: FormBuilderTextField(
-                            name: 'zipCode',
-                            decoration: InputDecoration(labelText: t.events.zipCode),
-                          ),
-                        ),
-                        Expanded(
-                          child: FormBuilderTextField(
-                            name: 'city',
-                            decoration: InputDecoration(labelText: t.events.city),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                  if ([LocationType.digital, LocationType.hybrid].contains(locationType))
-                    FormBuilderTextField(
-                      name: 'link',
+                  ),
+                  Visibility(
+                    visible: [
+                      CalendarEventLocationType.digital,
+                      CalendarEventLocationType.hybrid,
+                    ].contains(locationType),
+                    child: FormBuilderTextField(
+                      name: 'locationUrl',
+                      initialValue: widget.event?.locationUrl,
                       validator: FormBuilderValidators.url(errorText: t.events.urlRequired),
                       decoration: InputDecoration(labelText: t.events.locationUrl),
                     ),
+                  ),
                 ],
               ),
 
@@ -182,7 +183,7 @@ class _EventCreateDialogState extends State<EventCreateDialog> {
                         // TODO submit
                         onPressed: () => {},
                         child: Text(
-                          t.events.create,
+                          widget.event == null ? t.events.create : t.events.update,
                           style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
                         ),
                       ),

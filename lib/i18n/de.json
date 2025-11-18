@@ -382,7 +382,8 @@
     "map": "Karte",
     "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
     "digital": "digital",
-    "title": "Neues Event erstellen",
+    "createTitle": "Neues Event erstellen",
+    "updateTitle": "Event bearbeiten",
     "intro": "Erstelle ein Event im Kalender ${calendar}",
     "name": "Name",
     "nameRequired": "Gib einen Namen ein",
@@ -399,15 +400,13 @@
     "locationType": {
       "physical": "Vor Ort",
       "hybrid": "Hybrid",
-      "online": "Digital"
+      "digital": "Digital"
     },
-    "street": "Straße",
-    "number": "Nr.",
-    "zipCode": "PLZ",
-    "city": "Ort",
+    "address": "Adresse",
     "locationUrl": "Link zum digitalen Event",
     "categories": "Kategorien",
     "moreCategories": "Mehr Kategorien",
-    "create": "Event erstellen"
+    "create": "Event erstellen",
+    "update": "Speichern"
   }
 }

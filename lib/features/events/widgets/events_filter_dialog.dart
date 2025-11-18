@@ -56,7 +56,6 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final calendars = widget.calendarFilter.values;
-    final categories = widget.categoryFilter.values;
 
     final filtersModified =
         widget.calendarFilter.modified(_localSelectedCalendars) ||
