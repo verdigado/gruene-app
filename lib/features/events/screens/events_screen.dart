@@ -4,9 +4,12 @@ import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
+import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
+import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/repository/events_repository.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
+import 'package:gruene_app/features/events/widgets/event_creation_dialog.dart';
 import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';
 import 'package:gruene_app/features/events/widgets/events_list.dart';
 import 'package:gruene_app/features/events/widgets/events_map.dart';
@@ -49,6 +52,7 @@ class _EventsScreenState extends State<EventsScreen> {
   bool isMapView = false;
   String _query = '';
   late List<Calendar> _selectedCalendars;
+  List<String> _selectedCategories = [];
   DateTimeRange? _dateRange;
 
   @override
@@ -60,7 +64,7 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final events = widget.events.filter(_selectedCalendars, _dateRange);
+    final events = widget.events.filter(_selectedCalendars, _selectedCategories, _dateRange);
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
     final calendarFilter = FilterModel(
@@ -68,6 +72,12 @@ class _EventsScreenState extends State<EventsScreen> {
       initial: widget.calendars,
       selected: _selectedCalendars,
       values: widget.calendars,
+    );
+    final categoryFilter = FilterModel<List<String>>(
+      update: (categories) => setState(() => _selectedCategories = categories),
+      initial: [],
+      selected: _selectedCategories,
+      values: eventCategories,
     );
     final dateRangeFilter = FilterModel(
       update: (dateRange) => setState(() => _dateRange = dateRange),
@@ -88,9 +98,10 @@ class _EventsScreenState extends State<EventsScreen> {
                   children: [
                     FilterBar(
                       searchFilter: searchFilter,
-                      modified: [calendarFilter, dateRangeFilter].modified(),
+                      modified: [calendarFilter, categoryFilter, dateRangeFilter].modified(),
                       filterDialog: EventsFilterDialog(
                         calendarFilter: calendarFilter,
+                        categoryFilter: categoryFilter,
                         dateRangeFilter: dateRangeFilter,
                       ),
                     ),
@@ -114,6 +125,15 @@ class _EventsScreenState extends State<EventsScreen> {
               onSelectionChanged: (newSelection) => setState(() => isMapView = newSelection.first),
               showSelectedIcon: false,
             ),
+          ),
+        ),
+        // TODO only show button if write permissions for calendar
+        Positioned(
+          bottom: 8,
+          right: 16,
+          child: FloatingActionButton.small(
+            onPressed: () => showFullScreenDialog(context, (_) => EventCreateDialog(calendar: widget.calendars.first)),
+            child: Icon(Icons.edit_calendar),
           ),
         ),
       ],
