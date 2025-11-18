@@ -7,9 +7,10 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventsList extends StatelessWidget {
   final List<CalendarEvent> events;
+  final List<Calendar> calendars;
   final DateTimeRange? dateRange;
 
-  const EventsList({super.key, required this.events, required this.dateRange});
+  const EventsList({super.key, required this.events, required this.dateRange, required this.calendars});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,10 @@ class EventsList extends StatelessWidget {
               (event) => EventCard(
                 event: event.event,
                 recurrence: event.recurrence,
-                onTap: () => context.pushNested(event.event.id, extra: event),
+                onTap: () => context.pushNested(
+                  event.event.id,
+                  extra: (event: event.event, recurrence: event.recurrence, calendar: event.event.calendar(calendars)),
+                ),
               ),
             ),
           ],

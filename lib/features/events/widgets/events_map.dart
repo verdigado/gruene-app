@@ -8,6 +8,7 @@ import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
+import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_card.dart';
 import 'package:gruene_app/features/events/widgets/event_detail.dart';
 import 'package:gruene_app/features/events/widgets/map_bottom_sheet.dart';
@@ -19,9 +20,10 @@ const double userZoom = 10;
 
 class EventsMap extends StatefulWidget {
   final List<CalendarEvent> events;
+  final List<Calendar> calendars;
   final String? initialEventId;
 
-  const EventsMap({super.key, required this.events, this.initialEventId});
+  const EventsMap({super.key, required this.events, this.initialEventId, required this.calendars});
 
   @override
   State<EventsMap> createState() => _EventsMapState();
@@ -51,11 +53,12 @@ class _EventsMapState extends State<EventsMap> {
         return StatefulBuilder(
           builder: (context, setState) {
             final event = events.length == 1 ? events[0] : selectedEvent;
+
             return MapBottomSheet(
               image: event?.image,
               onClose: () => Navigator.pop(context),
               child: event != null
-                  ? EventDetail(event: event, recurrence: null)
+                  ? EventDetail(event: event, recurrence: null, calendar: event.calendar(widget.calendars))
                   : Column(
                       children: events
                           .map(

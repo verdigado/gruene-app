@@ -2429,6 +2429,24 @@ paths:
       summary: Delete Green Directory Location
       tags:
         - green-directory
+  /v1/calendars:
+    get:
+      operationId: findCalendars
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindCalendarsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find calendars
+      tags:
+        - calendars
   /v1/calendars/events:
     get:
       operationId: findCalendarEvents
@@ -2625,6 +2643,42 @@ paths:
       security:
         - bearer: []
       summary: Delete calendar event image
+      tags:
+        - calendars
+  /v1/calendars/{calendarId}/{eventId}/attendance:
+    put:
+      operationId: updateCalendarEventAttendance
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarEventAttendance'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '400':
+          description: No user provided by used authentication method
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Set the user's attendance status for an event
       tags:
         - calendars
   /health:
@@ -5331,6 +5385,48 @@ components:
       required:
         - country
         - level
+    Calendar:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the calendar
+          example: a1b2c3d4e5f6
+        displayName:
+          type: string
+          description: Title of the calendar
+          example: Kreisverband Salzgitter
+        calendarColor:
+          type: string
+          description: Hex color code for calendar display
+          example: '#00AA44'
+        division:
+          nullable: true
+          description: Associated division
+          allOf:
+            - $ref: '#/components/schemas/Division'
+        url:
+          type: string
+          description: URL to access the calendar
+          example: >-
+            https://wolke.netzbegruenung.de/remote.php/dav/calendars/doejohn/10903700_central-public/
+        readOnly:
+          type: boolean
+          description: Tells if the user has write access to calendar and events or not.
+      required:
+        - id
+        - displayName
+        - division
+        - readOnly
+    FindCalendarsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Calendar'
+      required:
+        - data
     CalendarEvent:
       type: object
       properties:
@@ -5348,6 +5444,11 @@ components:
           type: string
           description: Unique identifier for the event
           example: '23456789'
+        revisionNumber:
+          type: number
+        updatedAt:
+          format: date-time
+          type: string
         calendarId:
           type: string
           description: Unique identifier of the calendar this event belongs to
@@ -5379,11 +5480,16 @@ components:
           example: PHYSICAL
           enum:
             - PHYSICAL
-            - ONLINE
+            - DIGITAL
+            - HYBRID
           type: string
         locationUrl:
           type: string
           description: The URL for the location or online meeting
+          example: https://example.com
+        url:
+          type: string
+          description: The URL with the event info
           example: https://example.com
         image:
           type: string
@@ -5417,42 +5523,15 @@ components:
           example: Kreisverband Salzgitter
         recurring:
           type: string
-          description: Recurring pattern for the event
-          example: weekly
+          description: Recurrence rule in iCalendar format
+          example: RRULE:BYDAY=TH,MO,TU,WE;FREQ=WEEKLY;UNTIL=20251217T230000Z
       required:
         - id
+        - updatedAt
         - calendarId
         - title
         - start
-    Calendar:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the calendar
-          example: a1b2c3d4e5f6
-        displayName:
-          type: string
-          description: Title of the calendar
-          example: Kreisverband Salzgitter
-        calendarColor:
-          type: string
-          description: Hex color code for calendar display
-          example: '#00AA44'
-        division:
-          nullable: true
-          description: Associated division
-          allOf:
-            - $ref: '#/components/schemas/Division'
-        url:
-          type: string
-          description: URL to access the calendar
-          example: >-
-            https://wolke.netzbegruenung.de/remote.php/dav/calendars/doejohn/10903700_central-public/
-      required:
-        - id
-        - displayName
-        - division
+        - categories
     FindCalendarEventsResponse:
       type: object
       properties:
@@ -5484,13 +5563,20 @@ components:
           description: Description of the event
           example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
         start:
+          format: date-time
           type: string
           description: Start date and time of the event
           example: '2025-10-15T19:00:00.000Z'
         end:
+          format: date-time
           type: string
           description: End date and time of the event
           example: '2025-10-15T21:00:00.000Z'
+        url:
+          type: string
+          description: The URL with the event info
+          example: https://example.com
+          format: uri
         locationAddress:
           type: string
           description: The location address where the event takes place
@@ -5500,11 +5586,13 @@ components:
           description: Type of location
           enum:
             - PHYSICAL
-            - ONLINE
+            - DIGITAL
+            - HYBRID
         locationUrl:
           type: string
           description: The URL for the location or online meeting
           example: https://example.com
+          format: uri
         availableSlots:
           type: number
           description: Number of available slots for registration
@@ -5534,8 +5622,8 @@ components:
           example: Kreisverband Salzgitter
         recurring:
           type: string
-          description: Recurring pattern for the event
-          example: weekly
+          description: Recurrence rule in iCalendar format
+          example: RRULE:BYDAY=TH,MO,TU,WE;FREQ=WEEKLY;UNTIL=20251217T230000Z
       required:
         - title
         - start
@@ -5551,13 +5639,20 @@ components:
           description: Description of the event
           example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
         start:
+          format: date-time
           type: string
           description: Start date and time of the event
           example: '2025-10-15T19:00:00.000Z'
         end:
+          format: date-time
           type: string
           description: End date and time of the event
           example: '2025-10-15T21:00:00.000Z'
+        url:
+          type: string
+          description: The URL with the event info
+          example: https://example.com
+          format: uri
         locationAddress:
           type: string
           description: The location address where the event takes place
@@ -5567,11 +5662,13 @@ components:
           description: Type of location
           enum:
             - PHYSICAL
-            - ONLINE
+            - DIGITAL
+            - HYBRID
         locationUrl:
           type: string
           description: The URL for the location or online meeting
           example: https://example.com
+          format: uri
         availableSlots:
           type: number
           description: Number of available slots for registration
@@ -5601,8 +5698,18 @@ components:
           example: Kreisverband Salzgitter
         recurring:
           type: string
-          description: Recurring pattern for the event
-          example: weekly
+          description: Recurrence rule in iCalendar format
+          example: RRULE:BYDAY=TH,MO,TU,WE;FREQ=WEEKLY;UNTIL=20251217T230000Z
+    UpdateCalendarEventAttendance:
+      type: object
+      properties:
+        status:
+          enum:
+            - ACCEPTED
+            - DECLINED
+          type: string
+      required:
+        - status
     HealthCheckResponse:
       type: object
       properties:
