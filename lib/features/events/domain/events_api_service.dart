@@ -1,11 +1,39 @@
 import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-Future<List<CalendarEvent>> getEvents() async =>
-    getFromApi(request: (api) => api.v1CalendarsEventsGet(), map: (result) => result.data.events);
-
-Future<CalendarEvent?> getEventById(String eventId) async => getFromApi(
+Future<(List<CalendarEvent>, List<Calendar>)> getEvents() async => getFromApi(
   request: (api) => api.v1CalendarsEventsGet(),
-  map: (result) => result.data.events.firstWhereOrNull((event) => event.id == eventId),
+  map: (result) => (
+    result.data.events,
+    result.data.calendars
+        .map((calendar) => calendar.copyWith(displayName: calendar.displayName.replaceAll(' - Central', '')))
+        .toList(),
+  ),
+);
+
+Future<({CalendarEvent event, Calendar calendar})?> getEventById(String eventId) async => getFromApi(
+  request: (api) => api.v1CalendarsEventsGet(),
+  map: (result) {
+    final event = result.data.events.firstWhereOrNull((event) => event.id == eventId);
+    return event != null ? (event: event, calendar: event.calendar(result.data.calendars)) : null;
+  },
+);
+
+Future<CalendarEvent> createEvent(Calendar calendar, CreateCalendarEvent event) async => postToApi(
+  request: (api) => api.v1CalendarsCalendarIdPost(calendarId: calendar.id, body: event),
+  map: (result) => result,
+);
+
+Future<CalendarEvent> updateEvent(Calendar calendar, CalendarEvent event, UpdateCalendarEvent updateEvent) async =>
+    postToApi(
+      request: (api) =>
+          api.v1CalendarsCalendarIdEventIdPatch(calendarId: calendar.id, eventId: event.id, body: updateEvent),
+      map: (result) => result,
+    );
+
+Future<CalendarEvent> deleteEvent(Calendar calendar, CalendarEvent event) async => deleteFromApi(
+  request: (api) => api.v1CalendarsCalendarIdEventIdDelete(calendarId: calendar.id, eventId: event.id),
+  map: (result) => result,
 );
