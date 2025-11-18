@@ -3,9 +3,22 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
+import 'package:gruene_app/app/widgets/selection_view.dart';
+import 'package:gruene_app/features/events/constants/index.dart';
+import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
+
+const nameField = 'name';
+const descriptionField = 'description';
+const urlField = 'url';
+const startField = 'start';
+const endField = 'end';
+const locationTypeField = 'locationType';
+const locationAddressField = 'locationAddress';
+const locationUrlField = 'locationUrl';
+const categoriesField = 'categories';
 
 class EventEditDialog extends StatefulWidget {
   final Calendar calendar;
@@ -53,13 +66,13 @@ class _EventEditDialogState extends State<EventEditDialog> {
                   ),
                   if (widget.event == null) Text(t.events.intro(calendar: widget.calendar.displayName)),
                   FormBuilderTextField(
-                    name: 'name',
+                    name: nameField,
                     initialValue: widget.event?.title,
                     decoration: InputDecoration(labelText: t.events.name),
                     validator: FormBuilderValidators.required(errorText: t.events.nameRequired),
                   ),
                   FormBuilderTextField(
-                    name: 'description',
+                    name: descriptionField,
                     initialValue: widget.event?.description,
                     decoration: InputDecoration(
                       labelText: '${t.events.description} (${t.common.optional})',
@@ -68,7 +81,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                     maxLines: 5,
                   ),
                   FormBuilderTextField(
-                    name: 'url',
+                    name: urlField,
                     initialValue: widget.event?.url,
                     decoration: InputDecoration(
                       labelText: '${t.events.url} (${t.common.optional})',
@@ -85,26 +98,26 @@ class _EventEditDialogState extends State<EventEditDialog> {
                 title: t.events.dateAndTime,
                 children: [
                   FormBuilderDateTimePicker(
-                    name: 'start',
+                    name: startField,
                     initialValue: start,
                     validator: (start) => start?.isBefore(DateTime.now()) == true ? t.events.startRequired : null,
                     onChanged: (start) {
                       setState(() => this.start = start ?? this.start);
-                      formKey.currentState?.fields['start']?.validate();
+                      formKey.currentState?.fields[startField]?.validate();
                     },
                     firstDate: DateTime.now(),
                     format: DateFormat(dateTimeFormat),
                     decoration: InputDecoration(labelText: t.events.start, suffixIcon: Icon(Icons.today)),
                   ),
                   FormBuilderDateTimePicker(
-                    name: 'end',
+                    name: endField,
                     format: DateFormat(dateTimeFormat),
                     initialValue: widget.event?.end,
                     initialDate: initialEnd,
                     initialTime: TimeOfDay(hour: initialEnd.hour, minute: initialEnd.minute),
                     firstDate: start,
                     validator: (end) => end?.isBefore(start) == true ? t.events.endBeforeStart : null,
-                    onChanged: (_) => formKey.currentState?.fields['end']?.validate(),
+                    onChanged: (_) => formKey.currentState?.fields[endField]?.validate(),
                     decoration: InputDecoration(
                       labelText: '${t.events.end} (${t.common.optional})',
                       suffixIcon: Icon(Icons.today),
@@ -117,7 +130,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                 title: t.events.location,
                 children: [
                   FormBuilderRadioGroup(
-                    name: 'locationType',
+                    name: locationTypeField,
                     initialValue: locationType,
                     onChanged: (locationType) => setState(() => this.locationType = locationType),
                     options: [
@@ -141,7 +154,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                       CalendarEventLocationType.hybrid,
                     ].contains(locationType),
                     child: FormBuilderTextField(
-                      name: 'locationAddress',
+                      name: locationAddressField,
                       initialValue: widget.event?.locationAddress,
                       validator: FormBuilderValidators.required(),
                       decoration: InputDecoration(labelText: t.events.address),
@@ -153,10 +166,29 @@ class _EventEditDialogState extends State<EventEditDialog> {
                       CalendarEventLocationType.hybrid,
                     ].contains(locationType),
                     child: FormBuilderTextField(
-                      name: 'locationUrl',
+                      name: locationUrlField,
                       initialValue: widget.event?.locationUrl,
                       validator: FormBuilderValidators.url(errorText: t.events.urlRequired),
                       decoration: InputDecoration(labelText: t.events.locationUrl),
+                    ),
+                  ),
+                ],
+              ),
+
+              Section(
+                title: t.events.categories,
+                children: [
+                  FormBuilderField(
+                    name: categoriesField,
+                    initialValue: widget.event?.categories
+                        .where((category) => eventCategories.contains(category))
+                        .toList(),
+                    builder: (FormFieldState<List<String>> field) => SelectionView(
+                      setSelectedOptions: (categories) => field.didChange(categories),
+                      options: eventCategories,
+                      selectedOptions: field.value ?? <String>[],
+                      getLabel: (category) => category,
+                      backgroundColor: theme.colorScheme.surfaceDim,
                     ),
                   ),
                 ],
@@ -180,8 +212,57 @@ class _EventEditDialogState extends State<EventEditDialog> {
                     ),
                     Expanded(
                       child: FilledButton(
-                        // TODO submit
-                        onPressed: () => {},
+                        onPressed: () async {
+                          if (formKey.currentState?.saveAndValidate() == true) {
+                            final existingEvent = widget.event;
+                            final title = formKey.currentState!.value[nameField] as String;
+                            final description = formKey.currentState!.value[descriptionField] as String?;
+                            final url = formKey.currentState!.value[urlField] as String?;
+                            final start = formKey.currentState!.value[startField] as DateTime;
+                            final end = formKey.currentState!.value[endField] as DateTime?;
+                            final locationType =
+                                (formKey.currentState!.value[locationTypeField] as CalendarEventLocationType).value!;
+                            final locationAddress = formKey.currentState!.value[locationAddressField] as String?;
+                            final locationUrl = formKey.currentState!.value[locationUrlField] as String?;
+                            final categories = formKey.currentState!.value[categoriesField] as List<String>;
+                            if (existingEvent == null) {
+                              await createEvent(
+                                widget.calendar,
+                                CreateCalendarEvent(
+                                  title: title,
+                                  description: description,
+                                  url: url,
+                                  start: start,
+                                  end: end,
+                                  locationType: CreateCalendarEventLocationType.values.firstWhere(
+                                    (type) => type.value == locationType,
+                                  ),
+                                  locationAddress: locationAddress,
+                                  locationUrl: locationUrl,
+                                  categories: categories,
+                                ),
+                              );
+                            } else {
+                              await updateEvent(
+                                widget.calendar,
+                                existingEvent,
+                                UpdateCalendarEvent(
+                                  title: title,
+                                  description: description,
+                                  url: url,
+                                  start: start,
+                                  end: end,
+                                  locationType: UpdateCalendarEventLocationType.values.firstWhere(
+                                    (type) => type.value == locationType,
+                                  ),
+                                  locationAddress: locationAddress,
+                                  locationUrl: locationUrl,
+                                  categories: categories,
+                                ),
+                              );
+                            }
+                          }
+                        },
                         child: Text(
                           widget.event == null ? t.events.create : t.events.update,
                           style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
