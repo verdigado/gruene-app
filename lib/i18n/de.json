@@ -406,6 +406,8 @@
     "zipCode": "PLZ",
     "city": "Ort",
     "locationUrl": "Link zum digitalen Event",
+    "categories": "Kategorien",
+    "moreCategories": "Mehr Kategorien",
     "create": "Event erstellen"
   }
 }
