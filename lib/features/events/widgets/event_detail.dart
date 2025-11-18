@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
+import 'package:gruene_app/features/events/widgets/event_creation_dialog.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventDetail extends StatelessWidget {
   final CalendarEvent event;
+  final Calendar calendar;
   final DateTime? recurrence;
 
-  const EventDetail({super.key, required this.event, required this.recurrence});
+  const EventDetail({super.key, required this.event, required this.recurrence, required this.calendar});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,19 @@ class EventDetail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        Text(event.title, style: theme.textTheme.titleLarge),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          spacing: 8,
+          children: [
+            Flexible(child: Text(event.title, style: theme.textTheme.titleLarge)),
+            if (!calendar.readOnly) IconButton(
+              color: theme.colorScheme.secondary,
+              onPressed: () => showFullScreenDialog(context, (_) => EventEditDialog(calendar: calendar, event: event)),
+              icon: Icon(Icons.edit),
+            ),
+          ],
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

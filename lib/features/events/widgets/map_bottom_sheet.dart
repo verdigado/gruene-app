@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 class MapBottomSheet extends StatelessWidget {
   final String? image;
   final Widget child;
+  final Widget? aside;
   final void Function() onClose;
 
-  const MapBottomSheet({super.key, required this.child, required this.onClose, this.image});
+  const MapBottomSheet({super.key, required this.child, required this.onClose, this.image, this.aside});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final image = this.image;
+    final aside = this.aside;
 
     return Stack(
       children: [
@@ -46,6 +48,7 @@ class MapBottomSheet extends StatelessWidget {
             child: IconButton(icon: const Icon(Icons.close), onPressed: onClose, color: theme.colorScheme.onSurface),
           ),
         ),
+        if (aside != null) aside,
       ],
     );
   }
