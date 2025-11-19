@@ -10,7 +10,7 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(de
 GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigatorKey) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: Routes.news.path,
+    initialLocation: Routes.events.path,
     routes: [
       Routes.login,
       Routes.mfaLogin,

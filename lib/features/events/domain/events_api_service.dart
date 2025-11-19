@@ -3,14 +3,14 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-Future<(List<CalendarEvent>, List<Calendar>)> getEvents() async => getFromApi(
-  request: (api) => api.v1CalendarsEventsGet(),
-  map: (result) => (
-    result.data.events,
-    result.data.calendars
-        .map((calendar) => calendar.copyWith(displayName: calendar.displayName.replaceAll(' - Central', '')))
-        .toList(),
-  ),
+Future<List<CalendarEvent>> getEvents() async =>
+    getFromApi(request: (api) => api.v1CalendarsEventsGet(), map: (result) => result.data.events);
+
+Future<List<Calendar>> getCalendars() async => getFromApi(
+  request: (api) => api.v1CalendarsGet(),
+  map: (result) => result.data
+      .map((calendar) => calendar.copyWith(displayName: calendar.displayName.replaceAll(' - Central', '')))
+      .toList(),
 );
 
 Future<({CalendarEvent event, Calendar calendar})?> getEventById(String eventId) async => getFromApi(
