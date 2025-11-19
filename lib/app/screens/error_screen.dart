@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/error_message.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
@@ -13,15 +12,12 @@ class ErrorScreen<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            errorMessage ?? getErrorMessage(error!),
-            textAlign: TextAlign.center,
-            style: TextStyle(color: ThemeColors.textWarning),
-          ),
+          Text(errorMessage ?? getErrorMessage(error!), textAlign: TextAlign.center, style: theme.textTheme.bodyLarge),
           SizedBox(height: 16),
           ElevatedButton(onPressed: retry, child: Text(t.error.retry)),
         ],

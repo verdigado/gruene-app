@@ -37,8 +37,10 @@ extension CalendarEventExtension on CalendarEvent {
     return recurrences(dateRange)?.firstOrNull != null;
   }
 
+  DateTime nextDate(DateTime? recurrence) => recurrence ?? recurrences()?.firstOrNull ?? start;
+
   String formattedDate(DateTime? recurrence) {
-    final start = recurrence ?? recurrences()?.firstOrNull ?? this.start;
+    final start = nextDate(recurrence);
     final end = this.end != null ? start.add(this.end!.difference(this.start)) : null;
     return formatStartEnd(start, end);
   }

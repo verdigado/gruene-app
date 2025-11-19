@@ -202,4 +202,8 @@ final ThemeData appTheme = ThemeData.light().copyWith(
   ),
   dividerTheme: DividerThemeData(color: ThemeColors.textLight, space: 0.5, thickness: 0.5),
   datePickerTheme: DatePickerThemeData(rangeSelectionBackgroundColor: ThemeColors.textDisabled),
+  dialogTheme: DialogThemeData(
+    backgroundColor: ThemeColors.backgroundSecondary,
+    titleTextStyle: _ThemeTextStyles.titleLarge,
+  )
 );

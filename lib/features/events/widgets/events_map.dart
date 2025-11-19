@@ -19,11 +19,18 @@ import 'package:turf/along.dart';
 const double userZoom = 10;
 
 class EventsMap extends StatefulWidget {
+  final void Function(CalendarEvent) update;
   final List<CalendarEvent> events;
   final List<Calendar> calendars;
   final String? initialEventId;
 
-  const EventsMap({super.key, required this.events, this.initialEventId, required this.calendars});
+  const EventsMap({
+    super.key,
+    required this.events,
+    this.initialEventId,
+    required this.calendars,
+    required this.update,
+  });
 
   @override
   State<EventsMap> createState() => _EventsMapState();
@@ -58,7 +65,12 @@ class _EventsMapState extends State<EventsMap> {
               image: event?.image,
               onClose: () => Navigator.pop(context),
               child: event != null
-                  ? EventDetail(event: event, recurrence: null, calendar: event.calendar(widget.calendars))
+                  ? EventDetail(
+                      event: event,
+                      recurrence: null,
+                      calendar: event.calendar(widget.calendars),
+                      update: widget.update,
+                    )
                   : Column(
                       children: events
                           .map(
