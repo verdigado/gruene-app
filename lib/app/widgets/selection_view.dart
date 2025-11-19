@@ -50,7 +50,7 @@ class SelectionView<T> extends StatelessWidget {
         ...title != null ? [SectionTitle(title: title!)] : [],
         ...renderSelectionListItems(options),
         ...moreOptions != null && moreOptions!.isNotEmpty
-            ? [ExpansionListTile(title: moreOptionsTitle ?? '', children: renderSelectionListItems(moreOptions!))]
+            ? [ExpansionListTile(titleText: moreOptionsTitle ?? '', children: renderSelectionListItems(moreOptions!))]
             : [],
       ],
     );

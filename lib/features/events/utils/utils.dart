@@ -8,6 +8,8 @@ import 'package:rrule/rrule.dart';
 
 const maxRecurrences = 30;
 
+enum RecurrenceEndType { until, count }
+
 extension CalendarEventExtension on CalendarEvent {
   RecurrenceRule? get rrule => recurring != null ? RecurrenceRule.fromString(recurring!) : null;
 
@@ -82,5 +84,13 @@ extension CalendarEventListExtension on List<CalendarEvent> {
     groupedList.sort((a, b) => a.month.compareTo(b.month));
 
     return groupedList;
+  }
+}
+
+extension RruleExtension on RecurrenceRule? {
+  RecurrenceEndType? get recurrenceEndType {
+    if (this?.until != null) return RecurrenceEndType.until;
+    if (this?.count != null) return RecurrenceEndType.count;
+    return null;
   }
 }

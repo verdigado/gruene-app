@@ -40,7 +40,7 @@ class Routes {
       child: EventDetailScreen(eventId: state.pathParameters['eventId']!),
     ),
   );
-  static GoRoute events = buildRoute('/events', EventsScreen(), routes: [eventDetail]);
+  static GoRoute events = buildRoute('/events', EventsScreenContainer(), routes: [eventDetail]);
   static GoRoute campaigns = buildRoute('/campaigns', CampaignsScreen());
   static GoRoute digitalMembershipCard = buildRoute('digital-membership-card', DigitalMembershipCardScreen());
   static GoRoute profiles = buildRoute('/profiles', OwnProfileScreen(), routes: [digitalMembershipCard]);
