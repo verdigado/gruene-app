@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gruene_app/app/utils/date.dart';
+import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
-import 'package:gruene_app/features/events/domain/events_api_service.dart';
+import 'package:gruene_app/features/events/utils/utils.dart';
+import 'package:gruene_app/features/events/widgets/event_recurrence_form.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
+import 'package:rrule/rrule.dart';
 
 const nameField = 'name';
 const descriptionField = 'description';
@@ -58,7 +61,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 32,
             children: [
-              Section(
+              FormSection(
                 children: [
                   Text(
                     widget.event == null ? t.events.createTitle : t.events.updateTitle,
@@ -94,13 +97,14 @@ class _EventEditDialogState extends State<EventEditDialog> {
                 ],
               ),
 
-              Section(
+              FormSection(
                 title: t.events.dateAndTime,
                 children: [
                   FormBuilderDateTimePicker(
                     name: startField,
                     initialValue: start,
-                    validator: (start) => start?.isBefore(DateTime.now()) == true ? t.events.startRequired : null,
+                    validator: (start) =>
+                        start?.isBefore(DateTime.now()) == true && widget.event == null ? t.events.dateRequired : null,
                     onChanged: (start) {
                       setState(() => this.start = start ?? this.start);
                       formKey.currentState?.fields[startField]?.validate();
@@ -123,10 +127,11 @@ class _EventEditDialogState extends State<EventEditDialog> {
                       suffixIcon: Icon(Icons.today),
                     ),
                   ),
+                  EventRecurrenceForm(event: widget.event, formKey: formKey),
                 ],
               ),
 
-              Section(
+              FormSection(
                 title: t.events.location,
                 children: [
                   FormBuilderRadioGroup(
@@ -175,7 +180,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                 ],
               ),
 
-              Section(
+              FormSection(
                 title: t.events.categories,
                 children: [
                   FormBuilderField(
@@ -215,51 +220,65 @@ class _EventEditDialogState extends State<EventEditDialog> {
                         onPressed: () async {
                           if (formKey.currentState?.saveAndValidate() == true) {
                             final existingEvent = widget.event;
-                            final title = formKey.currentState!.value[nameField] as String;
-                            final description = formKey.currentState!.value[descriptionField] as String?;
-                            final url = formKey.currentState!.value[urlField] as String?;
-                            final start = formKey.currentState!.value[startField] as DateTime;
-                            final end = formKey.currentState!.value[endField] as DateTime?;
-                            final locationType =
-                                (formKey.currentState!.value[locationTypeField] as CalendarEventLocationType).value!;
-                            final locationAddress = formKey.currentState!.value[locationAddressField] as String?;
-                            final locationUrl = formKey.currentState!.value[locationUrlField] as String?;
-                            final categories = formKey.currentState!.value[categoriesField] as List<String>;
+                            final state = formKey.currentState!;
+                            final title = state.value[nameField] as String;
+                            final description = state.value[descriptionField] as String?;
+                            final url = state.value[urlField] as String?;
+                            final start = state.value[startField] as DateTime;
+                            final end = state.value[endField] as DateTime?;
+                            final frequency = state.value[recurrenceFrequencyField] as Frequency?;
+                            final interval = state.value[recurrenceIntervalField] as String?;
+                            final endType = state.value[recurrenceEndTypeField] as RecurrenceEndType?;
+                            final until = state.value[recurrenceUntilField] as DateTime?;
+                            final count = state.value[recurrenceCountField] as String?;
+                            final locationType = state.value[locationTypeField] as CalendarEventLocationType;
+                            final locationAddress = state.value[locationAddressField] as String?;
+                            final locationUrl = state.value[locationUrlField] as String?;
+                            final categories = state.value[categoriesField] as List<String>?;
+
+                            final rrule = frequency != null
+                                ? RecurrenceRule(
+                                    frequency: frequency,
+                                    interval: int.tryParse(interval ?? ''),
+                                    until: endType == RecurrenceEndType.until ? until?.copyWith(isUtc: true) : null,
+                                    count: endType == RecurrenceEndType.count ? int.tryParse(count ?? '') : null,
+                                  )
+                                : null;
+                            print(rrule);
+
                             if (existingEvent == null) {
-                              await createEvent(
-                                widget.calendar,
-                                CreateCalendarEvent(
-                                  title: title,
-                                  description: description,
-                                  url: url,
-                                  start: start,
-                                  end: end,
-                                  locationType: CreateCalendarEventLocationType.values.firstWhere(
-                                    (type) => type.value == locationType,
-                                  ),
-                                  locationAddress: locationAddress,
-                                  locationUrl: locationUrl,
-                                  categories: categories,
-                                ),
-                              );
+                              // await createEvent(
+                              //   widget.calendar,
+                              //   CreateCalendarEvent(
+                              //     title: title,
+                              //     description: description,
+                              //     url: url,
+                              //     start: start,
+                              //     end: end,
+                              //     locationType: locationType,
+                              //     locationAddress: locationAddress,
+                              //     locationUrl: locationUrl,
+                              //     categories: categories,
+                              //   ),
+                              // );
+                              print(formKey.currentState?.value.toString());
                             } else {
-                              await updateEvent(
-                                widget.calendar,
-                                existingEvent,
-                                UpdateCalendarEvent(
-                                  title: title,
-                                  description: description,
-                                  url: url,
-                                  start: start,
-                                  end: end,
-                                  locationType: UpdateCalendarEventLocationType.values.firstWhere(
-                                    (type) => type.value == locationType,
-                                  ),
-                                  locationAddress: locationAddress,
-                                  locationUrl: locationUrl,
-                                  categories: categories,
-                                ),
-                              );
+                              print(formKey.currentState?.value.toString());
+                              // await updateEvent(
+                              //   widget.calendar,
+                              //   existingEvent,
+                              //   UpdateCalendarEvent(
+                              //     title: title,
+                              //     description: description,
+                              //     url: url,
+                              //     start: start,
+                              //     end: end,
+                              //     locationType: locationType,
+                              //     locationAddress: locationAddress,
+                              //     locationUrl: locationUrl,
+                              //     categories: categories,
+                              //   ),
+                              // );
                             }
                           }
                         },
@@ -276,28 +295,6 @@ class _EventEditDialogState extends State<EventEditDialog> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class Section extends StatelessWidget {
-  final List<Widget> children;
-  final String? title;
-
-  const Section({super.key, required this.children, this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final title = this.title;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 16,
-      children: [
-        if (title != null) Text(title, style: theme.textTheme.titleMedium),
-        ...children,
-      ],
     );
   }
 }

@@ -5474,9 +5474,21 @@ components:
             $ref: '#/components/schemas/Calendar'
       required:
         - data
+    CalendarEventLocationType:
+      type: string
+      enum:
+        - PHYSICAL
+        - DIGITAL
+        - HYBRID
+      description: Type of location
     CalendarEvent:
       type: object
       properties:
+        locationType:
+          description: Type of location
+          example: PHYSICAL
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventLocationType'
         coords:
           description: Coordinates represented in GeoJSON [longitude, latitude]
           example:
@@ -5522,14 +5534,6 @@ components:
           type: string
           description: The location address where the event takes place
           example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
-        locationType:
-          description: Type of location
-          example: PHYSICAL
-          enum:
-            - PHYSICAL
-            - DIGITAL
-            - HYBRID
-          type: string
         locationUrl:
           type: string
           description: The URL for the location or online meeting
@@ -5601,6 +5605,10 @@ components:
     CreateCalendarEvent:
       type: object
       properties:
+        locationType:
+          description: Type of location
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventLocationType'
         title:
           type: string
           description: Title of the event
@@ -5628,13 +5636,6 @@ components:
           type: string
           description: The location address where the event takes place
           example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
-        locationType:
-          type: string
-          description: Type of location
-          enum:
-            - PHYSICAL
-            - DIGITAL
-            - HYBRID
         locationUrl:
           type: string
           description: The URL for the location or online meeting
@@ -5677,6 +5678,10 @@ components:
     UpdateCalendarEvent:
       type: object
       properties:
+        locationType:
+          description: Type of location
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventLocationType'
         title:
           type: string
           description: Title of the event
@@ -5704,13 +5709,6 @@ components:
           type: string
           description: The location address where the event takes place
           example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
-        locationType:
-          type: string
-          description: Type of location
-          enum:
-            - PHYSICAL
-            - DIGITAL
-            - HYBRID
         locationUrl:
           type: string
           description: The URL for the location or online meeting
