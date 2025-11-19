@@ -31,7 +31,8 @@
     "unknownError": "Ein unbekannter Fehler ist aufgetreten.",
     "offlineError": "Du bist offline. Keine Verbindung zum Internet möglich.",
     "apiError": "Die Kommunikation mit dem Server ist fehlgeschlagen (${statusCode}).",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "deletionFailed": "Löschen fehlgeschlagen."
   },
   "news": {
     "news": "News",
@@ -376,6 +377,7 @@
     "calendars": "Kalender",
     "dateRange": "Zeitraum",
     "list": "Liste",
+    "noEvents": "Keine Events verfügbar",
     "map": "Karte",
     "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
     "digital": "digital",
@@ -419,6 +421,11 @@
     "categories": "Kategorien",
     "moreCategories": "Mehr Kategorien",
     "create": "Event erstellen",
-    "update": "Speichern"
+    "created": "Event erstellt",
+    "update": "Speichern",
+    "updated": "Event gespeichert",
+    "delete": "Event löschen",
+    "deleteDescription": "Bist du sicher, dass du das Event endgültig löschen willst?",
+    "deleted": "Event gelöscht"
   }
 }

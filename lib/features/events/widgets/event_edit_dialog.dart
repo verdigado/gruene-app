@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gruene_app/app/utils/date.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
+import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_recurrence_form.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -24,10 +26,18 @@ const locationUrlField = 'locationUrl';
 const categoriesField = 'categories';
 
 class EventEditDialog extends StatefulWidget {
+  final void Function(CalendarEvent) update;
   final Calendar calendar;
   final CalendarEvent? event;
+  final BuildContext context;
 
-  const EventEditDialog({super.key, required this.calendar, required this.event});
+  const EventEditDialog({
+    super.key,
+    required this.calendar,
+    required this.event,
+    required this.context,
+    required this.update,
+  });
 
   @override
   State<EventEditDialog> createState() => _EventEditDialogState();
@@ -48,7 +58,8 @@ class _EventEditDialogState extends State<EventEditDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    DateTime initialEnd = widget.event?.end ?? start.add(Duration(hours: 2));
+    final event = widget.event;
+    DateTime initialEnd = event?.end ?? start.add(Duration(hours: 2));
 
     return FormBuilder(
       key: formKey,
@@ -244,41 +255,46 @@ class _EventEditDialogState extends State<EventEditDialog> {
                                     count: endType == RecurrenceEndType.count ? int.tryParse(count ?? '') : null,
                                   )
                                 : null;
-                            print(rrule);
 
                             if (existingEvent == null) {
-                              // await createEvent(
-                              //   widget.calendar,
-                              //   CreateCalendarEvent(
-                              //     title: title,
-                              //     description: description,
-                              //     url: url,
-                              //     start: start,
-                              //     end: end,
-                              //     locationType: locationType,
-                              //     locationAddress: locationAddress,
-                              //     locationUrl: locationUrl,
-                              //     categories: categories,
-                              //   ),
-                              // );
-                              print(formKey.currentState?.value.toString());
+                              final event = await createEvent(
+                                widget.calendar,
+                                CreateCalendarEvent(
+                                  title: title,
+                                  description: description,
+                                  url: url,
+                                  start: start,
+                                  end: end,
+                                  locationType: locationType,
+                                  locationAddress: locationAddress,
+                                  locationUrl: locationUrl,
+                                  categories: categories,
+                                  recurring: rrule?.toString(),
+                                ),
+                              );
+                              widget.update(event);
                             } else {
-                              print(formKey.currentState?.value.toString());
-                              // await updateEvent(
-                              //   widget.calendar,
-                              //   existingEvent,
-                              //   UpdateCalendarEvent(
-                              //     title: title,
-                              //     description: description,
-                              //     url: url,
-                              //     start: start,
-                              //     end: end,
-                              //     locationType: locationType,
-                              //     locationAddress: locationAddress,
-                              //     locationUrl: locationUrl,
-                              //     categories: categories,
-                              //   ),
-                              // );
+                              final event = await updateEvent(
+                                widget.calendar,
+                                existingEvent,
+                                UpdateCalendarEvent(
+                                  title: title,
+                                  description: description,
+                                  url: url,
+                                  start: start,
+                                  end: end,
+                                  locationType: locationType,
+                                  locationAddress: locationAddress,
+                                  locationUrl: locationUrl,
+                                  categories: categories,
+                                  recurring: rrule?.toString(),
+                                ),
+                              );
+                              widget.update(event);
+                            }
+                            if (context.mounted) {
+                              Navigator.of(context).pop(true);
+                              showSnackBar(context, event == null ? t.events.created : t.events.updated);
                             }
                           }
                         },

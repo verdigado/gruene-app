@@ -10,7 +10,7 @@ import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/repository/events_repository.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
-import 'package:gruene_app/features/events/widgets/event_creation_dialog.dart';
+import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';
 import 'package:gruene_app/features/events/widgets/events_list.dart';
 import 'package:gruene_app/features/events/widgets/events_map.dart';
@@ -25,13 +25,19 @@ class EventsScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.events.events),
       body: FutureLoadingScreen(
-        load: () async => (await getEvents(), await readCalendarFilterKeys()),
-        buildChild: (params, _) {
-          final ((events, calendars), calendarFilterKeys) = params;
+        load: () async => (await getEvents(), await getCalendars(), await readCalendarFilterKeys()),
+        buildChild: (data, extra) {
+          final (events, calendars, calendarFilterKeys) = data;
           final List<Calendar> initialCalendarFilters = calendarFilterKeys == null
               ? calendars
               : calendars.where((calendar) => calendarFilterKeys.contains(calendar.id)).nonNulls.toList();
-          return EventsScreen(events: events, calendars: calendars, initialCalendarFilters: initialCalendarFilters);
+          return EventsScreen(
+            events: events,
+            calendars: calendars,
+            initialCalendarFilters: initialCalendarFilters,
+            updateEvents: (List<CalendarEvent> events) => extra.update((events, calendars, calendarFilterKeys)),
+            refresh: extra.refresh,
+          );
         },
       ),
     );
@@ -39,11 +45,20 @@ class EventsScreenContainer extends StatelessWidget {
 }
 
 class EventsScreen extends StatefulWidget {
+  final void Function(List<CalendarEvent>) updateEvents;
+  final void Function() refresh;
   final List<CalendarEvent> events;
   final List<Calendar> calendars;
   final List<Calendar> initialCalendarFilters;
 
-  const EventsScreen({super.key, required this.initialCalendarFilters, required this.events, required this.calendars});
+  const EventsScreen({
+    super.key,
+    required this.initialCalendarFilters,
+    required this.events,
+    required this.calendars,
+    required this.refresh,
+    required this.updateEvents,
+  });
 
   @override
   State<EventsScreen> createState() => _EventsScreenState();
@@ -55,6 +70,16 @@ class _EventsScreenState extends State<EventsScreen> {
   late List<Calendar> _selectedCalendars;
   List<String> _selectedCategories = [];
   DateTimeRange? _dateRange;
+
+  void addOrUpdateEvent(CalendarEvent newEvent) {
+    final events = widget.events.where((event) => event.id != newEvent.id);
+    widget.updateEvents([...events, newEvent].toList());
+  }
+
+  void deleteEvent(CalendarEvent deletedEvent) {
+    final events = widget.events.where((event) => event.id != deletedEvent.id);
+    widget.updateEvents(events.toList());
+  }
 
   @override
   void initState() {
@@ -90,7 +115,7 @@ class _EventsScreenState extends State<EventsScreen> {
     return Stack(
       children: [
         isMapView
-            ? EventsMap(events: events, calendars: widget.calendars)
+            ? EventsMap(events: events, calendars: widget.calendars, update: addOrUpdateEvent)
             : Container(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Column(
@@ -108,7 +133,12 @@ class _EventsScreenState extends State<EventsScreen> {
                       ),
                     ),
                     Expanded(
-                      child: EventsList(events: events, calendars: widget.calendars, dateRange: _dateRange),
+                      child: EventsList(
+                        events: events,
+                        calendars: widget.calendars,
+                        dateRange: _dateRange,
+                        refresh: widget.refresh,
+                      ),
                     ),
                   ],
                 ),
@@ -134,8 +164,15 @@ class _EventsScreenState extends State<EventsScreen> {
             bottom: 8,
             right: 16,
             child: FloatingActionButton.small(
-              onPressed: () =>
-                  showFullScreenDialog(context, (_) => EventEditDialog(calendar: writableCalendar, event: null)),
+              onPressed: () => showFullScreenDialog(
+                context,
+                (_) => EventEditDialog(
+                  calendar: writableCalendar,
+                  event: null,
+                  context: context,
+                  update: addOrUpdateEvent,
+                ),
+              ),
               child: Icon(Icons.edit_calendar),
             ),
           ),
