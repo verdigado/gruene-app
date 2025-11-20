@@ -26,14 +26,13 @@ Future<CalendarEvent> createEvent(Calendar calendar, CreateCalendarEvent event) 
   map: (result) => result,
 );
 
-Future<CalendarEvent> updateEvent(Calendar calendar, CalendarEvent event, UpdateCalendarEvent updateEvent) async =>
-    postToApi(
-      request: (api) =>
-          api.v1CalendarsCalendarIdEventIdPatch(calendarId: calendar.id, eventId: event.id, body: updateEvent),
-      map: (result) => result,
-    );
+Future<CalendarEvent> updateEvent(CalendarEvent event, UpdateCalendarEvent updateEvent) async => postToApi(
+  request: (api) =>
+      api.v1CalendarsCalendarIdEventIdPatch(calendarId: event.calendarId, eventId: event.id, body: updateEvent),
+  map: (result) => result,
+);
 
-Future<CalendarEvent> deleteEvent(Calendar calendar, CalendarEvent event) async => deleteFromApi(
-  request: (api) => api.v1CalendarsCalendarIdEventIdDelete(calendarId: calendar.id, eventId: event.id),
+Future<CalendarEvent> deleteEvent(CalendarEvent event) async => deleteFromApi(
+  request: (api) => api.v1CalendarsCalendarIdEventIdDelete(calendarId: event.calendarId, eventId: event.id),
   map: (result) => result,
 );

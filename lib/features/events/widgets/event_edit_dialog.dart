@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gruene_app/app/utils/date.dart';
-import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
@@ -230,71 +230,14 @@ class _EventEditDialogState extends State<EventEditDialog> {
                       child: FilledButton(
                         onPressed: () async {
                           if (formKey.currentState?.saveAndValidate() == true) {
-                            final existingEvent = widget.event;
-                            final state = formKey.currentState!;
-                            final title = state.value[nameField] as String;
-                            final description = state.value[descriptionField] as String?;
-                            final url = state.value[urlField] as String?;
-                            final start = state.value[startField] as DateTime;
-                            final end = state.value[endField] as DateTime?;
-                            final frequency = state.value[recurrenceFrequencyField] as Frequency?;
-                            final interval = state.value[recurrenceIntervalField] as String?;
-                            final endType = state.value[recurrenceEndTypeField] as RecurrenceEndType?;
-                            final until = state.value[recurrenceUntilField] as DateTime?;
-                            final count = state.value[recurrenceCountField] as String?;
-                            final locationType = state.value[locationTypeField] as CalendarEventLocationType;
-                            final locationAddress = state.value[locationAddressField] as String?;
-                            final locationUrl = state.value[locationUrlField] as String?;
-                            final categories = state.value[categoriesField] as List<String>?;
-
-                            final rrule = frequency != null
-                                ? RecurrenceRule(
-                                    frequency: frequency,
-                                    interval: int.tryParse(interval ?? ''),
-                                    until: endType == RecurrenceEndType.until ? until?.copyWith(isUtc: true) : null,
-                                    count: endType == RecurrenceEndType.count ? int.tryParse(count ?? '') : null,
-                                  )
-                                : null;
-
-                            if (existingEvent == null) {
-                              final event = await createEvent(
-                                widget.calendar,
-                                CreateCalendarEvent(
-                                  title: title,
-                                  description: description,
-                                  url: url,
-                                  start: start,
-                                  end: end,
-                                  locationType: locationType,
-                                  locationAddress: locationAddress,
-                                  locationUrl: locationUrl,
-                                  categories: categories,
-                                  recurring: rrule?.toString(),
-                                ),
-                              );
+                            final event = await tryAndNotify(
+                              function: save(formKey, widget.calendar, widget.event),
+                              context: context,
+                              successMessage: t.events.updated,
+                            );
+                            if (context.mounted && event != null) {
+                              Navigator.of(context).pop(event);
                               widget.update(event);
-                            } else {
-                              final event = await updateEvent(
-                                widget.calendar,
-                                existingEvent,
-                                UpdateCalendarEvent(
-                                  title: title,
-                                  description: description,
-                                  url: url,
-                                  start: start,
-                                  end: end,
-                                  locationType: locationType,
-                                  locationAddress: locationAddress,
-                                  locationUrl: locationUrl,
-                                  categories: categories,
-                                  recurring: rrule?.toString(),
-                                ),
-                              );
-                              widget.update(event);
-                            }
-                            if (context.mounted) {
-                              Navigator.of(context).pop(true);
-                              showSnackBar(context, event == null ? t.events.created : t.events.updated);
                             }
                           }
                         },
@@ -313,4 +256,67 @@ class _EventEditDialogState extends State<EventEditDialog> {
       ),
     );
   }
+}
+
+Future<CalendarEvent> Function() save(
+  GlobalKey<FormBuilderState> formKey,
+  Calendar calendar,
+  CalendarEvent? previousEvent,
+) {
+  final state = formKey.currentState!;
+  final title = state.value[nameField] as String;
+  final description = state.value[descriptionField] as String?;
+  final url = state.value[urlField] as String?;
+  final start = state.value[startField] as DateTime;
+  final end = state.value[endField] as DateTime?;
+  final frequency = state.value[recurrenceFrequencyField] as Frequency?;
+  final interval = state.value[recurrenceIntervalField] as String?;
+  final endType = state.value[recurrenceEndTypeField] as RecurrenceEndType?;
+  final until = state.value[recurrenceUntilField] as DateTime?;
+  final count = state.value[recurrenceCountField] as String?;
+  final locationType = state.value[locationTypeField] as CalendarEventLocationType;
+  final locationAddress = state.value[locationAddressField] as String?;
+  final locationUrl = state.value[locationUrlField] as String?;
+  final categories = state.value[categoriesField] as List<String>?;
+
+  final rrule = frequency != null
+      ? RecurrenceRule(
+          frequency: frequency,
+          interval: int.tryParse(interval ?? ''),
+          until: endType == RecurrenceEndType.until ? until?.copyWith(isUtc: true) : null,
+          count: endType == RecurrenceEndType.count ? int.tryParse(count ?? '') : null,
+        )
+      : null;
+
+  return previousEvent == null
+      ? () => createEvent(
+          calendar,
+          CreateCalendarEvent(
+            title: title,
+            description: description,
+            url: url,
+            start: start,
+            end: end,
+            locationType: locationType,
+            locationAddress: locationAddress,
+            locationUrl: locationUrl,
+            categories: categories,
+            recurring: rrule?.toString(),
+          ),
+        )
+      : () => updateEvent(
+          previousEvent,
+          UpdateCalendarEvent(
+            title: title,
+            description: description,
+            url: url,
+            start: start,
+            end: end,
+            locationType: locationType,
+            locationAddress: locationAddress,
+            locationUrl: locationUrl,
+            categories: categories,
+            recurring: rrule?.toString(),
+          ),
+        );
 }

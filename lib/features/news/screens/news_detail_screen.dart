@@ -50,7 +50,10 @@ class NewsDetailScreen extends StatelessWidget {
                             division != null ? Text(division.shortDisplayName()) : Container(),
                             Text(news.title, style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneTypeNeue')),
                             SizedBox(height: 16),
-                            Text(t.news.updatedAt(date: news.createdAt.formattedDate), style: theme.textTheme.labelSmall),
+                            Text(
+                              t.common.updatedAt(date: news.createdAt.formattedDate),
+                              style: theme.textTheme.labelSmall,
+                            ),
                             CustomHtml(data: news.content),
                           ],
                         ),

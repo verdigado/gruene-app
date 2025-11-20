@@ -9,6 +9,7 @@
     "search": "Suche",
     "multiSelect": "Mehrfachauswahl (${count})",
     "optional": "optional",
+    "updatedAt": "Stand: ${date}",
     "notAvailable": "N/A",
     "actions": {
       "save": "Speichern",
@@ -34,15 +35,13 @@
     "unknownError": "Ein unbekannter Fehler ist aufgetreten.",
     "offlineError": "Du bist offline. Keine Verbindung zum Internet möglich.",
     "apiError": "Die Kommunikation mit dem Server ist fehlgeschlagen (${statusCode}).",
-    "retry": "Erneut versuchen",
-    "deletionFailed": "Löschen fehlgeschlagen."
+    "retry": "Erneut versuchen"
   },
   "news": {
     "news": "News",
     "label": "Artikel",
     "newsDetail": "Artikel",
     "writtenBy": "Von ${author}",
-    "updatedAt": "Stand: ${date}",
     "noResults": "Es wurden leider keine Artikel gefunden.",
     "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden.",
     "latest": "Aktuelles",

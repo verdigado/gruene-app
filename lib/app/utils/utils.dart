@@ -32,9 +32,9 @@ extension WithDividers on Iterable<Widget> {
 }
 
 extension PushNested on BuildContext {
-  void pushNested(String nestedSlug, {Object? extra}) {
+  Future<Object?> pushNested(String nestedSlug, {Object? extra}) {
     final currentPath = GoRouterState.of(this).fullPath;
-    push('$currentPath/$nestedSlug', extra: extra);
+    return push('$currentPath/$nestedSlug', extra: extra);
   }
 }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventDetail extends StatelessWidget {
@@ -11,7 +13,13 @@ class EventDetail extends StatelessWidget {
   final Calendar calendar;
   final DateTime? recurrence;
 
-  const EventDetail({super.key, required this.event, required this.recurrence, required this.calendar, required this.update});
+  const EventDetail({
+    super.key,
+    required this.event,
+    required this.recurrence,
+    required this.calendar,
+    required this.update,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +48,7 @@ class EventDetail extends StatelessWidget {
               ),
           ],
         ),
+        if (event.categories.isNotEmpty) Text(event.categories.join(', ')),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -48,7 +57,9 @@ class EventDetail extends StatelessWidget {
           ],
         ),
         EventLocation(event: event),
+        if (event.url != null) PageInfo(icon: Icons.link, url: event.url),
         if (description != null) Text(description),
+        Text(t.common.updatedAt(date: event.updatedAt.formattedDate), style: theme.textTheme.labelSmall),
       ],
     );
   }

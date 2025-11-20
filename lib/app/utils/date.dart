@@ -6,13 +6,13 @@ const timeFormat = 'HH:mm';
 const dateTimeFormat = '$dateFormat, $timeFormat';
 
 extension DateTimeExtension on DateTime {
-  String get formattedDate => DateFormat(dateFormat).format(this);
+  String get formattedDate => DateFormat(dateFormat).format(toLocal());
 
-  String get formattedTime => DateFormat(timeFormat).format(this);
+  String get formattedTime => DateFormat(timeFormat).format(toLocal());
 
-  String get formattedDateTime => DateFormat(dateTimeFormat).format(this);
+  String get formattedDateTime => DateFormat(dateTimeFormat).format(toLocal());
 
-  String get formattedMonth => DateFormat.yMMMM().format(this);
+  String get formattedMonth => DateFormat.yMMMM().format(toLocal());
 
   DateTime get startOfDay => DateTime(year, month, day);
 
