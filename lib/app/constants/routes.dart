@@ -15,6 +15,7 @@ import 'package:gruene_app/features/profiles/screens/own_profile_screen.dart';
 import 'package:gruene_app/features/settings/screens/push_notifications_screen.dart';
 import 'package:gruene_app/features/settings/screens/settings_screen.dart';
 import 'package:gruene_app/features/tools/screens/tools_screen.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 GoRoute buildRoute(String path, Widget child, {List<RouteBase>? routes}) => GoRoute(
   path: path,
@@ -34,13 +35,16 @@ class Routes {
   static GoRoute news = buildRoute('/news', NewsScreenContainer(), routes: [newsDetail]);
   static GoRoute eventDetail = GoRoute(
     path: ':eventId',
-    pageBuilder: (context, state) => buildPageWithoutAnimation(
-      context: context,
-      state: state,
-      child: EventDetailScreen(eventId: state.pathParameters['eventId']!),
-    ),
+    pageBuilder: (context, state) {
+      final extra = state.extra as ({CalendarEvent event, DateTime recurrence, Calendar calendar});
+      return buildPageWithoutAnimation(
+        context: context,
+        state: state,
+        child: EventDetailScreen(event: extra.event, calendar: extra.calendar, recurrence: extra.recurrence),
+      );
+    },
   );
-  static GoRoute events = buildRoute('/events', EventsScreen(), routes: [eventDetail]);
+  static GoRoute events = buildRoute('/events', EventsScreenContainer(), routes: [eventDetail]);
   static GoRoute campaigns = buildRoute('/campaigns', CampaignsScreen());
   static GoRoute digitalMembershipCard = buildRoute('digital-membership-card', DigitalMembershipCardScreen());
   static GoRoute profiles = buildRoute('/profiles', OwnProfileScreen(), routes: [digitalMembershipCard]);

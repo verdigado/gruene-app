@@ -24,14 +24,16 @@ extension CalendarEventExtension on CalendarEvent {
     return rrule
         .getInstances(start: between.start.copyWith(isUtc: true), before: between.end.copyWith(isUtc: true))
         .take(maxRecurrences)
-        .map((recurrence) => recurrence.copyWith(isUtc: false));
+        .map(
+          (recurrence) => recurrence.copyWith(isUtc: false, hour: start.toLocal().hour, minute: start.toLocal().minute),
+        );
   }
 
   bool inRange(DateTimeRange? dateRange) {
     if (dateRange == null) return true;
 
     if (rrule == null) {
-      return !(start.isAfter(dateRange.end) || (end?.isBefore(dateRange.start) ?? true));
+      return !(start.isAfter(dateRange.end) || (end?.isBefore(dateRange.start) ?? false));
     }
 
     return recurrences(dateRange)?.firstOrNull != null;
