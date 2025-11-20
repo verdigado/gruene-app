@@ -9,6 +9,8 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventsList extends StatelessWidget {
   final void Function() refresh;
+  final void Function(CalendarEvent event) update;
+  final void Function(CalendarEvent event) delete;
   final List<CalendarEvent> events;
   final List<Calendar> calendars;
   final DateTimeRange? dateRange;
@@ -19,6 +21,8 @@ class EventsList extends StatelessWidget {
     required this.dateRange,
     required this.calendars,
     required this.refresh,
+    required this.update,
+    required this.delete,
   });
 
   @override
@@ -46,10 +50,21 @@ class EventsList extends StatelessWidget {
               (event) => EventCard(
                 event: event.event,
                 recurrence: event.recurrence,
-                onTap: () => context.pushNested(
-                  event.event.id,
-                  extra: (event: event.event, recurrence: event.recurrence, calendar: event.event.calendar(calendars)),
-                ),
+                onTap: () async {
+                  final updatedEvent = await context.pushNested(
+                    event.event.id,
+                    extra: (
+                      event: event.event,
+                      recurrence: event.recurrence,
+                      calendar: event.event.calendar(calendars),
+                    ),
+                  );
+                  if (updatedEvent != null) {
+                    update(updatedEvent as CalendarEvent);
+                  } else {
+                    delete(event.event);
+                  }
+                },
               ),
             ),
           ],

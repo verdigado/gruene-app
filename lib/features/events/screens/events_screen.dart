@@ -71,9 +71,21 @@ class _EventsScreenState extends State<EventsScreen> {
   List<String> _selectedCategories = [];
   DateTimeRange? _dateRange;
 
-  void addOrUpdateEvent(CalendarEvent newEvent) {
+  void addOrUpdateEvent(CalendarEvent newEvent) async {
     final events = widget.events.where((event) => event.id != newEvent.id);
+    final isNew = events.length == widget.events.length;
     widget.updateEvents([...events, newEvent].toList());
+    if (isNew) {
+      final updatedEvent = await context.pushNested(
+        newEvent.id,
+        extra: (event: newEvent, recurrence: newEvent.start, calendar: newEvent.calendar(widget.calendars)),
+      );
+      if (updatedEvent != null) {
+        addOrUpdateEvent(updatedEvent as CalendarEvent);
+      } else {
+        deleteEvent(newEvent);
+      }
+    }
   }
 
   void deleteEvent(CalendarEvent deletedEvent) {
@@ -138,6 +150,8 @@ class _EventsScreenState extends State<EventsScreen> {
                         calendars: widget.calendars,
                         dateRange: _dateRange,
                         refresh: widget.refresh,
+                        update: addOrUpdateEvent,
+                        delete: deleteEvent,
                       ),
                     ),
                   ],
