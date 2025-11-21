@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gruene_app/app/utils/date.dart';
+import 'package:gruene_app/app/utils/image.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
@@ -24,6 +28,7 @@ const locationTypeField = 'locationType';
 const locationAddressField = 'locationAddress';
 const locationUrlField = 'locationUrl';
 const categoriesField = 'categories';
+const imageField = 'image';
 
 class EventEditDialog extends StatefulWidget {
   final void Function(CalendarEvent) update;
@@ -93,17 +98,6 @@ class _EventEditDialogState extends State<EventEditDialog> {
                       alignLabelWithHint: true,
                     ),
                     maxLines: 5,
-                  ),
-                  FormBuilderTextField(
-                    name: urlField,
-                    initialValue: widget.event?.url,
-                    decoration: InputDecoration(
-                      labelText: '${t.events.url} (${t.common.optional})',
-                      helperText: t.events.urlHelp,
-                      helperMaxLines: 3,
-                    ),
-                    validator: (url) =>
-                        url != null ? FormBuilderValidators.url(errorText: t.events.urlRequired)(url) : null,
                   ),
                 ],
               ),
@@ -210,6 +204,29 @@ class _EventEditDialogState extends State<EventEditDialog> {
                 ],
               ),
 
+              FormSection(
+                title: t.events.other,
+                children: [
+                  FormBuilderImagePicker(
+                    name: imageField,
+                    initialValue: [widget.event?.image],
+                    decoration: InputDecoration(labelText: '${t.events.image} (${t.common.optional})'),
+                    maxImages: 1,
+                  ),
+                  FormBuilderTextField(
+                    name: urlField,
+                    initialValue: widget.event?.url,
+                    decoration: InputDecoration(
+                      labelText: '${t.events.url} (${t.common.optional})',
+                      helperText: t.events.urlHelp,
+                      helperMaxLines: 3,
+                    ),
+                    validator: (url) =>
+                        url != null ? FormBuilderValidators.url(errorText: t.events.urlRequired)(url) : null,
+                  ),
+                ],
+              ),
+
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 height: 64,
@@ -229,15 +246,18 @@ class _EventEditDialogState extends State<EventEditDialog> {
                     Expanded(
                       child: FilledButton(
                         onPressed: () async {
+                          formKey.currentState?.saveAndValidate();
                           if (formKey.currentState?.saveAndValidate() == true) {
-                            final event = await tryAndNotify(
-                              function: save(formKey, widget.calendar, widget.event),
+                            final newEvent = await save(
+                              formKey: formKey,
+                              calendar: widget.calendar,
+                              previousEvent: widget.event,
                               context: context,
-                              successMessage: t.events.updated,
+                              update: widget.update,
                             );
-                            if (context.mounted && event != null) {
-                              Navigator.of(context).pop(event);
-                              widget.update(event);
+                            if (context.mounted && newEvent != null) {
+                              Navigator.of(context).pop(newEvent);
+                              widget.update(newEvent);
                             }
                           }
                         },
@@ -258,15 +278,36 @@ class _EventEditDialogState extends State<EventEditDialog> {
   }
 }
 
-Future<CalendarEvent> Function() save(
-  GlobalKey<FormBuilderState> formKey,
-  Calendar calendar,
-  CalendarEvent? previousEvent,
-) {
+Future<CalendarEvent?> save({
+  required void Function(CalendarEvent) update,
+  required BuildContext context,
+  required GlobalKey<FormBuilderState> formKey,
+  required Calendar calendar,
+  required CalendarEvent? previousEvent,
+}) async {
+  final images = (formKey.currentState!.value[imageField] ?? <dynamic>[]) as List<dynamic>;
+  final image = images.isNotEmpty ? images[0] : null;
+  return await tryAndNotify(
+    function: () async {
+      final event = await _saveEvent(formKey, calendar, previousEvent);
+      if (image != null && image != previousEvent?.image) {
+        final imagePath = (image as XFile).path;
+        final imageFile = await multipartImage(File(imagePath), 'image');
+        return uploadEventImage(event, imageFile);
+      } else if (image == null && previousEvent?.image != null) {
+        return deleteEventImage(event);
+      }
+      return event;
+    },
+    context: context,
+    successMessage: t.events.updated,
+  );
+}
+
+Future<CalendarEvent> _saveEvent(GlobalKey<FormBuilderState> formKey, Calendar calendar, CalendarEvent? previousEvent) {
   final state = formKey.currentState!;
   final title = state.value[nameField] as String;
   final description = state.value[descriptionField] as String?;
-  final url = state.value[urlField] as String?;
   final start = state.value[startField] as DateTime;
   final end = state.value[endField] as DateTime?;
   final frequency = state.value[recurrenceFrequencyField] as Frequency?;
@@ -278,6 +319,7 @@ Future<CalendarEvent> Function() save(
   final locationAddress = state.value[locationAddressField] as String?;
   final locationUrl = state.value[locationUrlField] as String?;
   final categories = state.value[categoriesField] as List<String>?;
+  final url = state.value[urlField] as String?;
 
   final rrule = frequency != null
       ? RecurrenceRule(
@@ -289,7 +331,7 @@ Future<CalendarEvent> Function() save(
       : null;
 
   return previousEvent == null
-      ? () => createEvent(
+      ? createEvent(
           calendar,
           CreateCalendarEvent(
             title: title,
@@ -304,7 +346,7 @@ Future<CalendarEvent> Function() save(
             recurring: rrule?.toString(),
           ),
         )
-      : () => updateEvent(
+      : updateEvent(
           previousEvent,
           UpdateCalendarEvent(
             title: title,
