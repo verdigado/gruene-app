@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
-import 'package:gruene_app/app/utils/format_date.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/html.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
@@ -33,7 +33,6 @@ class NewsDetailScreen extends StatelessWidget {
           final division = news.division;
           return SizedBox(
             width: double.infinity,
-            height: double.infinity,
             child: Stack(
               children: [
                 Positioned.fill(
@@ -51,7 +50,10 @@ class NewsDetailScreen extends StatelessWidget {
                             division != null ? Text(division.shortDisplayName()) : Container(),
                             Text(news.title, style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneTypeNeue')),
                             SizedBox(height: 16),
-                            Text(t.news.updatedAt(date: formatDate(news.createdAt)), style: theme.textTheme.labelSmall),
+                            Text(
+                              t.common.updatedAt(date: news.createdAt.formattedDate),
+                              style: theme.textTheme.labelSmall,
+                            ),
                             CustomHtml(data: news.content),
                           ],
                         ),

@@ -129,7 +129,13 @@ final ThemeData appTheme = ThemeData.light().copyWith(
   disabledColor: ThemeColors.textDisabled,
   colorScheme: ThemeData.light().colorScheme.copyWith(
     primary: ThemeColors.primary,
+    onPrimary: ThemeColors.background,
+    primaryContainer: ThemeColors.background,
+    onPrimaryContainer: ThemeColors.primary,
     secondary: ThemeColors.secondary,
+    onSecondary: ThemeColors.background,
+    secondaryContainer: ThemeColors.secondary,
+    onSecondaryContainer: ThemeColors.background,
     tertiary: ThemeColors.tertiary,
     surface: ThemeColors.background,
     surfaceDim: ThemeColors.backgroundSecondary,
@@ -162,6 +168,18 @@ final ThemeData appTheme = ThemeData.light().copyWith(
     unselectedLabelStyle: _ThemeTextStyles.titleMedium,
     labelColor: ThemeColors.primary,
   ),
+  segmentedButtonTheme: SegmentedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? ThemeColors.primary : ThemeColors.background,
+      ),
+      foregroundColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? ThemeColors.background : ThemeColors.primary,
+      ),
+      side: WidgetStateProperty.all(BorderSide(color: ThemeColors.primary, width: 1.5)),
+      shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+    ),
+  ),
   switchTheme: SwitchThemeData(
     thumbIcon: thumbIcon,
     trackColor: trackColor,
@@ -184,4 +202,8 @@ final ThemeData appTheme = ThemeData.light().copyWith(
   ),
   dividerTheme: DividerThemeData(color: ThemeColors.textLight, space: 0.5, thickness: 0.5),
   datePickerTheme: DatePickerThemeData(rangeSelectionBackgroundColor: ThemeColors.textDisabled),
+  dialogTheme: DialogThemeData(
+    backgroundColor: ThemeColors.backgroundSecondary,
+    titleTextStyle: _ThemeTextStyles.titleLarge,
+  ),
 );

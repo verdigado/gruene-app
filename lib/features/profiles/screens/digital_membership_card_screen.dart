@@ -63,7 +63,7 @@ class DigitalMembershipCardScreen extends StatelessWidget {
                           RotatedBox(
                             quarterTurns: -1,
                             child: Text(
-                              '${t.profiles.digitalMembershipCard.card.party}\n${t.profiles.digitalMembershipCard.card.membershipNumber}\n${data.personalId}',
+                              '${t.common.party}\n${t.profiles.digitalMembershipCard.card.membershipNumber}\n${data.personalId}',
                               style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                             ),
                           ),

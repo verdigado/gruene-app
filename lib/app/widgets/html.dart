@@ -15,7 +15,7 @@ final TagExtension accordionTagExtension = TagExtension(
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: ExpansionListTile(
-        title: title?.text ?? '',
+        titleText: title?.text ?? '',
         backgroundColor: ThemeColors.textLight,
         titlePadding: const EdgeInsets.symmetric(horizontal: 8),
         children: innerHtml != null
