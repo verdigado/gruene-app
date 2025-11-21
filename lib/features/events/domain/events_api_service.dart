@@ -2,6 +2,7 @@ import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:http/http.dart';
 
 Future<List<CalendarEvent>> getEvents() async =>
     getFromApi(request: (api) => api.v1CalendarsEventsGet(), map: (result) => result.data.events);
@@ -35,4 +36,15 @@ Future<CalendarEvent> updateEvent(CalendarEvent event, UpdateCalendarEvent updat
 Future<CalendarEvent> deleteEvent(CalendarEvent event) async => deleteFromApi(
   request: (api) => api.v1CalendarsCalendarIdEventIdDelete(calendarId: event.calendarId, eventId: event.id),
   map: (result) => result,
+);
+
+Future<CalendarEvent> uploadEventImage(CalendarEvent event, MultipartFile image) async => getFromApi(
+  request: (api) =>
+      api.v1CalendarsCalendarIdEventIdImagePut(calendarId: event.calendarId, eventId: event.id, image: image),
+  map: (result) => result,
+);
+
+Future<CalendarEvent> deleteEventImage(CalendarEvent event) async => deleteFromApi(
+  request: (api) => api.v1CalendarsCalendarIdEventIdImageDelete(calendarId: event.calendarId, eventId: event.id),
+  map: (data) => data,
 );

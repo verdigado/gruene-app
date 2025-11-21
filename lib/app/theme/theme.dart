@@ -205,5 +205,5 @@ final ThemeData appTheme = ThemeData.light().copyWith(
   dialogTheme: DialogThemeData(
     backgroundColor: ThemeColors.backgroundSecondary,
     titleTextStyle: _ThemeTextStyles.titleLarge,
-  )
+  ),
 );

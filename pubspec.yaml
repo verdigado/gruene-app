@@ -77,6 +77,7 @@ dependencies:
     git: https://github.com/steffenkleinle/rrule.git
   flutter_form_builder: ^10.1.0
   form_builder_validators: ^11.2.0
+  form_builder_image_picker: ^4.3.1
 
 dev_dependencies:
 
