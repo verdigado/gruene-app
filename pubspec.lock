@@ -677,6 +677,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  form_builder_image_picker:
+    dependency: "direct main"
+    description:
+      name: form_builder_image_picker
+      sha256: "0b460b2cb4a58f21725d750cb9f8afd684df5e03afddf54b7dabb3dc9d036f49"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.1"
   form_builder_validators:
     dependency: "direct main"
     description:

@@ -24,7 +24,8 @@
       "applyFilter": "Filter anwenden",
       "resetFilter": "Filter zurücksetzen",
       "change": "Ändern",
-      "loading": "Laden ..."
+      "loading": "Laden ...",
+      "crop": "Ausschnitt wählen"
     },
     "map": {
       "mapData": "Kartendaten",
@@ -241,9 +242,8 @@
     "noResult": "Leider gab es einen Fehler beim Laden des Profils.",
     "profileImage": {
       "update": "Profilbild bearbeiten",
-      "crop": "Ausschnitt wählen",
-      "updateError": "Beim Hochladen des Profilbildes ist leider ein Fehler aufgetreten.",
       "delete": "Profilbild löschen",
+      "updated": "Profilbild gespeichert",
       "deleteError": "Beim Löschen des Profilbildes ist leider ein Fehler aufgetreten.",
       "confirmDelete": {
         "title": "Profilbild löschen",
@@ -389,9 +389,6 @@
     "name": "Name",
     "nameRequired": "Gib einen Namen ein",
     "description": "Beschreibung",
-    "url": "Website",
-    "urlRequired": "Gib einen gültigen Link ein",
-    "urlHelp": "Link zu einer Website mit weiterführenden Informationen. Für digitale Events nutze bitte das Feld weiter unten.",
     "dateAndTime": "Datum & Uhrzeit",
     "start": "Beginn",
     "dateRequired": "Gib ein gültiges Datum in der Zukunft ein",
@@ -422,6 +419,11 @@
     "locationUrl": "Link zum digitalen Event",
     "categories": "Kategorien",
     "moreCategories": "Mehr Kategorien",
+    "other": "Sonstiges",
+    "image": "Bild",
+    "url": "Website",
+    "urlRequired": "Gib einen gültigen Link ein",
+    "urlHelp": "Link zu einer Website mit weiterführenden Informationen. Für digitale Events nutze bitte das Feld bei \"Veranstaltungsort\".",
     "create": "Event erstellen",
     "created": "Event erstellt",
     "update": "Speichern",
