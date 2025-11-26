@@ -52,7 +52,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       ),
       body: PopScope(
         canPop: false,
-        onPopInvokedWithResult: (_, _) => Navigator.of(context).pop(event),
+        onPopInvokedWithResult: (didPop, _) => !didPop ? Navigator.of(context).pop(event) : null,
         child: ExpandingScrollView(
           children: [
             if (image != null) Image.network(image, width: double.infinity, fit: BoxFit.fitWidth),
