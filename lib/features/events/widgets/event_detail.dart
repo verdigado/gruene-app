@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/date.dart';
+import 'package:gruene_app/app/utils/loading_overlay.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
+import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
+import 'package:gruene_app/features/events/widgets/event_attendance_selection.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -26,6 +30,11 @@ class EventDetail extends StatelessWidget {
     final theme = Theme.of(context);
     final description = event.description;
     final formattedRrule = event.formattedRrule;
+    final attendanceStatus = event.attendanceStatus;
+    final groupedAttendees = event.attendees.groupBy((attendee) => attendee.status);
+    final accepted = groupedAttendees[CalendarEventAttendanceStatus.accepted]?.length ?? 0;
+    final tentative = groupedAttendees[CalendarEventAttendanceStatus.tentative]?.length ?? 0;
+    final declined = groupedAttendees[CalendarEventAttendanceStatus.declined]?.length ?? 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,6 +67,30 @@ class EventDetail extends StatelessWidget {
         ),
         EventLocation(event: event),
         if (event.url != null) PageInfo(icon: Icons.link, url: event.url),
+        PageInfo(
+          icon: Icons.people,
+          text: '$accepted ${t.events.accepted}, $tentative ${t.common.maybe}, $declined ${t.events.declined}',
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(t.events.attend),
+            EventAttendanceSelection(
+              attendanceStatus: attendanceStatus != null ? {attendanceStatus} : {},
+              setAttendanceStatus: (attendanceStatus) async {
+                final event = await tryAndNotify(
+                  function: () => updateEventAttendance(this.event, attendanceStatus.firstOrNull),
+                  context: context,
+                  successMessage: t.common.saved,
+                  setLoading: (_) => {},
+                );
+                if (event != null) {
+                  update(event);
+                }
+              },
+            ),
+          ],
+        ),
         if (description != null) Text(description),
         Text(t.common.updatedAt(date: event.updatedAt.formattedDate), style: theme.textTheme.labelSmall),
       ],

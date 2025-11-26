@@ -5434,6 +5434,31 @@ components:
         - DIGITAL
         - HYBRID
       description: Type of location
+    CalendarEventAttendanceStatus:
+      type: string
+      enum:
+        - ACCEPTED
+        - DECLINED
+        - TENTATIVE
+      description: Attendance status of the authenticated user
+    CalendarEventAttendee:
+      type: object
+      properties:
+        status:
+          description: Attendance status of attende
+          example: ACCEPTED
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventAttendanceStatus'
+        name:
+          type: string
+          description: Name of the attendee
+          example: John Doe
+        email:
+          type: string
+          description: Email of the attendee
+          example: johndoe@example.com
+      required:
+        - name
     CalendarEvent:
       type: object
       properties:
@@ -5442,6 +5467,10 @@ components:
           example: PHYSICAL
           allOf:
             - $ref: '#/components/schemas/CalendarEventLocationType'
+        attendanceStatus:
+          description: Attendance status of the authenticated user
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventAttendanceStatus'
         coords:
           description: Coordinates represented in GeoJSON [longitude, latitude]
           example:
@@ -5512,6 +5541,11 @@ components:
           type: string
           description: Deadline for registration
           example: '2025-10-14T23:59:59.000Z'
+        attendees:
+          description: List of event attendees
+          type: array
+          items:
+            $ref: '#/components/schemas/CalendarEventAttendee'
         categories:
           description: Event categories/tags
           example:
@@ -5535,6 +5569,7 @@ components:
         - calendarId
         - title
         - start
+        - attendees
         - categories
     FindCalendarEventsResponse:
       type: object
@@ -5702,10 +5737,9 @@ components:
       type: object
       properties:
         status:
-          enum:
-            - ACCEPTED
-            - DECLINED
-          type: string
+          description: Attendance status of the authenticated user
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventAttendanceStatus'
       required:
         - status
     HealthCheckResponse:

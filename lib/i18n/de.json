@@ -10,6 +10,10 @@
     "multiSelect": "Mehrfachauswahl (${count})",
     "optional": "optional",
     "updatedAt": "Stand: ${date}",
+    "yes": "Ja",
+    "maybe": "Vielleicht",
+    "no": "Nein",
+    "saved": "Gespeichert",
     "notAvailable": "N/A",
     "actions": {
       "save": "Speichern",
@@ -430,6 +434,10 @@
     "updated": "Event gespeichert",
     "delete": "Event löschen",
     "deleteDescription": "Bist du sicher, dass du das Event endgültig löschen willst?",
-    "deleted": "Event gelöscht"
+    "deleted": "Event gelöscht",
+    "attendance": "Teilnahme",
+    "attend": "Teilnehmen?",
+    "accepted": "Zusagen",
+    "declined": "Absagen"
   }
 }

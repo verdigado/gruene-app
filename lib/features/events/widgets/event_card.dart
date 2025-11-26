@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -20,11 +21,7 @@ class EventCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.04), offset: Offset(0, 1), blurRadius: 12)],
-      ),
+      decoration: BoxDecoration(color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(16)),
       child: Material(
         type: MaterialType.transparency,
         borderRadius: BorderRadius.circular(16),
@@ -42,7 +39,7 @@ class EventCard extends StatelessWidget {
                       topLeft: Radius.circular(16),
                       bottomLeft: Radius.circular(16),
                     ),
-                    color: Colors.grey[200],
+                    color: ThemeColors.textDisabled,
                     image: hasImage ? DecorationImage(image: NetworkImage(event.image!), fit: BoxFit.cover) : null,
                   ),
                   child: !hasImage
@@ -55,9 +52,15 @@ class EventCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(event.formattedDate(recurrence), style: theme.textTheme.labelSmall),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(event.formattedDate(recurrence), style: theme.textTheme.labelSmall),
+                            event.attendanceStatus.icon(context, 16) ?? SizedBox.shrink(),
+                          ],
+                        ),
                         const SizedBox(height: 4),
-                        Text(event.title, style: theme.textTheme.titleSmall?.copyWith(height: 1.375)),
+                        Text(event.title, style: theme.textTheme.titleSmall),
                         ...(location != null
                             ? [SizedBox(height: 12), Text(location, style: theme.textTheme.labelSmall)]
                             : []),

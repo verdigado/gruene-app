@@ -69,6 +69,7 @@ class _EventsScreenState extends State<EventsScreen> {
   String _query = '';
   late List<Calendar> _selectedCalendars;
   List<String> _selectedCategories = [];
+  Set<CalendarEventAttendanceStatus> _selectedAttendanceStatuses = {};
   DateTimeRange? _dateRange;
 
   void addOrUpdateEvent(CalendarEvent newEvent) async {
@@ -102,7 +103,7 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final events = widget.events.filter(_selectedCalendars, _selectedCategories, _dateRange);
+    final events = widget.events.filter(_selectedCalendars, _selectedAttendanceStatuses, _selectedCategories, _dateRange);
     final writableCalendar = widget.calendars.firstWhereOrNull((calendar) => !calendar.readOnly);
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
@@ -111,6 +112,11 @@ class _EventsScreenState extends State<EventsScreen> {
       initial: widget.calendars,
       selected: _selectedCalendars,
       values: widget.calendars,
+    );
+    final attendanceStatusFilter = FilterModel<Set<CalendarEventAttendanceStatus>>(
+      update: (attendanceStatuses) => setState(() => _selectedAttendanceStatuses = attendanceStatuses),
+      initial: {},
+      selected: _selectedAttendanceStatuses,
     );
     final categoryFilter = FilterModel<List<String>>(
       update: (categories) => setState(() => _selectedCategories = categories),
@@ -137,9 +143,10 @@ class _EventsScreenState extends State<EventsScreen> {
                   children: [
                     FilterBar(
                       searchFilter: searchFilter,
-                      modified: [calendarFilter, categoryFilter, dateRangeFilter].modified(),
+                      modified: [calendarFilter, attendanceStatusFilter, categoryFilter, dateRangeFilter].modified(),
                       filterDialog: EventsFilterDialog(
                         calendarFilter: calendarFilter,
+                        attendanceStatusFilter: attendanceStatusFilter,
                         categoryFilter: categoryFilter,
                         dateRangeFilter: dateRangeFilter,
                       ),

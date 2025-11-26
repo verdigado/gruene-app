@@ -16,9 +16,13 @@ class FilterModel<T> {
   bool modified([T? other]) {
     final localInitial = initial;
     final localSelected = other ?? selected;
-    return (localInitial is List && localSelected is List)
-        ? !setEquals(localInitial.toSet(), localSelected.toSet())
-        : localInitial != localSelected;
+    if (localInitial is List && localSelected is List) {
+      return !setEquals(localInitial.toSet(), localSelected.toSet());
+    }
+    if (localInitial is Set && localSelected is Set) {
+      return !setEquals(localInitial, localSelected);
+    }
+    return localInitial != localSelected;
   }
 }
 
