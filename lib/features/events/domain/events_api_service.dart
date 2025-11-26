@@ -48,3 +48,15 @@ Future<CalendarEvent> deleteEventImage(CalendarEvent event) async => deleteFromA
   request: (api) => api.v1CalendarsCalendarIdEventIdImageDelete(calendarId: event.calendarId, eventId: event.id),
   map: (data) => data,
 );
+
+Future<CalendarEvent> updateEventAttendance(
+  CalendarEvent event,
+  CalendarEventAttendanceStatus? attendanceStatus,
+) async => getFromApi(
+  request: (api) => api.v1CalendarsCalendarIdEventIdAttendancePut(
+    calendarId: event.calendarId,
+    eventId: event.id,
+    body: attendanceStatus != null ? UpdateCalendarEventAttendance(status: attendanceStatus) : null,
+  ),
+  map: (result) => result,
+);

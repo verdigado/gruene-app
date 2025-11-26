@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/events/models/month_group_model.dart';
 import 'package:gruene_app/main.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -51,30 +53,34 @@ extension CalendarEventExtension on CalendarEvent {
 }
 
 extension CalendarEventListExtension on List<CalendarEvent> {
-  List<CalendarEvent> filter(List<Calendar> calendars, List<String> categories, DateTimeRange? dateRange) {
+  List<CalendarEvent> filter(
+    List<Calendar> calendars,
+    Set<CalendarEventAttendanceStatus> attendanceStatuses,
+    List<String> categories,
+    DateTimeRange? dateRange,
+  ) {
     return where(
       (it) =>
           calendars.map((calendar) => calendar.id).contains(it.calendarId) &&
+          (attendanceStatuses.isEmpty || attendanceStatuses.contains(it.attendanceStatus)) &&
           (categories.isEmpty || it.categories.any((category) => categories.contains(category))) &&
           it.inRange(dateRange),
     ).toList();
   }
 
   List<MonthGroup> groupEventsByMonth(DateTimeRange? dateRange) {
-    final Map<DateTime, List<({CalendarEvent event, DateTime recurrence})>> groupedMap = {};
     final now = DateTime.now();
-
     final eventsWithRecurrences = map(
       (event) =>
-          event.recurrences(dateRange)?.map((recurrence) => (event, recurrence)).toList() ?? [(event, event.start)],
+          event.recurrences(dateRange)?.map((recurrence) => (event: event, recurrence: recurrence)).toList() ??
+          [(event: event, recurrence: event.start)],
     ).expand((it) => it).toList();
 
-    for (final (event, recurrence) in eventsWithRecurrences) {
-      final startMonth = DateTime(recurrence.year, recurrence.month);
+    final groupedMap = eventsWithRecurrences.groupBy((event) {
+      final startMonth = DateTime(event.recurrence.year, event.recurrence.month);
       final currentMonth = DateTime(now.year, now.month);
-      final month = startMonth.isBefore(currentMonth) ? currentMonth : startMonth;
-      groupedMap.putIfAbsent(month, () => []).add((event: event, recurrence: recurrence));
-    }
+      return startMonth.isBefore(currentMonth) ? currentMonth : startMonth;
+    });
 
     final groupedList = groupedMap.entries.map((entry) {
       entry.value.sort(
@@ -96,5 +102,21 @@ extension RruleExtension on RecurrenceRule? {
     if (this?.until != null) return RecurrenceEndType.until;
     if (this?.count != null) return RecurrenceEndType.count;
     return null;
+  }
+}
+
+extension CalendarEventAttendanceStatusExtension on CalendarEventAttendanceStatus? {
+  Widget? icon(BuildContext context, [double? size]) {
+    final theme = Theme.of(context);
+    switch (this) {
+      case CalendarEventAttendanceStatus.accepted:
+        return Icon(Icons.check, color: theme.colorScheme.primary, size: size);
+      case CalendarEventAttendanceStatus.tentative:
+        return Icon(Icons.question_mark, color: ThemeColors.warning, size: size);
+      case CalendarEventAttendanceStatus.declined:
+        return Icon(Icons.close, color: theme.colorScheme.error, size: size);
+      default:
+        return null;
+    }
   }
 }

@@ -2,22 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/widgets/date_range_filter.dart';
 import 'package:gruene_app/app/widgets/filter_dialog.dart';
+import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/repository/events_repository.dart';
+import 'package:gruene_app/features/events/widgets/event_attendance_selection.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventsFilterDialog extends StatefulWidget {
   final FilterModel<List<Calendar>> calendarFilter;
+  final FilterModel<Set<CalendarEventAttendanceStatus>> attendanceStatusFilter;
   final FilterModel<List<String>> categoryFilter;
   final FilterModel<DateTimeRange?> dateRangeFilter;
 
   const EventsFilterDialog({
     super.key,
     required this.calendarFilter,
-    required this.dateRangeFilter,
+    required this.attendanceStatusFilter,
     required this.categoryFilter,
+    required this.dateRangeFilter,
   });
 
   @override
@@ -28,6 +32,7 @@ class EventsFilterDialog extends StatefulWidget {
 // We therefore need a local copy to reflect the state changes here as well
 class _EventsFilterDialogState extends State<EventsFilterDialog> {
   late List<Calendar> _localSelectedCalendars;
+  late Set<CalendarEventAttendanceStatus> _localSelectedAttendanceStatuses;
   late List<String> _localSelectedCategories;
   late DateTimeRange? _localDateRange;
 
@@ -35,6 +40,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   void initState() {
     super.initState();
     _localSelectedCalendars = widget.calendarFilter.selected;
+    _localSelectedAttendanceStatuses = widget.attendanceStatusFilter.selected;
     _localSelectedCategories = widget.categoryFilter.selected;
     _localDateRange = widget.dateRangeFilter.selected;
   }
@@ -47,6 +53,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
 
   void resetFilters() {
     setCalendars(widget.calendarFilter.initial);
+    widget.attendanceStatusFilter.reset();
+    setState(() => _localSelectedAttendanceStatuses = widget.attendanceStatusFilter.initial);
     widget.categoryFilter.reset();
     setState(() => _localSelectedCategories = widget.categoryFilter.initial);
     widget.dateRangeFilter.reset();
@@ -59,6 +67,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
 
     final filtersModified =
         widget.calendarFilter.modified(_localSelectedCalendars) ||
+        widget.attendanceStatusFilter.modified(_localSelectedAttendanceStatuses) ||
         widget.categoryFilter.modified(_localSelectedCategories) ||
         widget.dateRangeFilter.modified(_localDateRange);
 
@@ -72,6 +81,24 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
           options: calendars,
           selectedOptions: _localSelectedCalendars,
           getLabel: (calendar) => calendar.displayName,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SectionTitle(title: t.events.attendance),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              child: EventAttendanceSelection(
+                attendanceStatus: _localSelectedAttendanceStatuses,
+                setAttendanceStatus: (attendanceStatuses) {
+                  setState(() => _localSelectedAttendanceStatuses = attendanceStatuses);
+                  widget.attendanceStatusFilter.update(attendanceStatuses);
+                },
+                multiSelect: true,
+              ),
+            ),
+          ],
         ),
         SelectionView(
           setSelectedOptions: (categories) {
