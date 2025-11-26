@@ -54,10 +54,7 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
                 ),
                 Row(
                   children: [
-                    Expanded(
-                      // alignment: Alignment.centerLeft,
-                      child: Text(t.campaigns.team.team_self_join, style: theme.textTheme.labelMedium),
-                    ),
+                    Expanded(child: Text(t.campaigns.team.team_self_join, style: theme.textTheme.labelMedium)),
                     Switch(
                       value: selfJoin,
                       onChanged: (value) => setState(() {

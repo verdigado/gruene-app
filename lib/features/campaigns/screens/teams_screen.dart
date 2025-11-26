@@ -121,7 +121,8 @@ class TeamsScreen extends StatelessWidget {
 
   Future<void> _showStepTeamMemberSelect(NewTeamDetails newTeamDetails, BuildContext context) async {
     final theme = Theme.of(context);
-    while (true) {
+    var canceledOrSaved = false;
+    while (!canceledOrSaved) {
       var newTeamWidget = NewTeamSelectTeamMemberWidget(newTeamDetails: newTeamDetails);
       if (!context.mounted) return;
       var newDetails = await showModalBottomSheet<NewTeamDetails>(
@@ -137,11 +138,13 @@ class TeamsScreen extends StatelessWidget {
 
         try {
           await teamService.createNewTeam(newDetails);
-          break;
+          canceledOrSaved = true;
         } on ApiException catch (e) {
           if (context.mounted) showSnackBar(context, e.message);
           newTeamDetails = newDetails;
         }
+      } else {
+        canceledOrSaved = true;
       }
     }
   }
