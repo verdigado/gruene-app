@@ -213,7 +213,8 @@
       "select_as_team_lead": "Als Teamlead einladen",
       "select_team_member_label": "Team-Mitglieder einladen",
       "select_team_member_hint": "Lade jetzt weitere Team-Mitglieder ein. Teams können maximal 10 Mitglieder haben.",
-      "select_as_team_member": "Ins Team einladen"
+      "select_as_team_member": "Ins Team einladen",
+      "edit_team_members": "Teammitglieder bearbeiten"
     },
     "statistic": {
       "label": "Statistik",
