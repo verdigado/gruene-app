@@ -3,6 +3,7 @@ import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -32,7 +33,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
   void _loadData() async {
     setState(() => _loading = true);
 
-    // TODO remove mock data when getOwnTeam is working
+    // TODO #733 remove mock data when getOwnTeam is working
     // var teamsService = GetIt.I<GrueneApiTeamsService>();
     // var team = await teamsService.getOwnTeam();
     var team = Team(
@@ -74,6 +75,8 @@ Chat: https://signal.group/#123456''',
     return Column(
       children: [
         TeamProfile(currentTeam: _currentTeam!, currentUser: widget.currentUser),
+        TeamAssignedElements(currentTeam: _currentTeam!),
+
         GestureDetector(
           onTap: _leaveTeam,
           child: Container(
