@@ -8,7 +8,6 @@ class MultiLineTextInputField extends StatefulWidget {
   final double? width;
   final TextEditingController? textController;
   final Color? borderColor;
-  final int maxLength;
 
   const MultiLineTextInputField({
     required this.labelText,
@@ -16,7 +15,6 @@ class MultiLineTextInputField extends StatefulWidget {
     this.width,
     this.textController,
     this.borderColor,
-    this.maxLength = 200,
     super.key,
   });
 
@@ -26,6 +24,7 @@ class MultiLineTextInputField extends StatefulWidget {
 
 class _MultiLineTextInputFieldState extends State<MultiLineTextInputField> {
   late TextEditingController _textEditingController;
+  final maxLength = 200;
 
   @override
   void dispose() {
@@ -76,7 +75,7 @@ class _MultiLineTextInputFieldState extends State<MultiLineTextInputField> {
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  '${_textEditingController.text.length}/${widget.maxLength}',
+                  '${_textEditingController.text.length}/$maxLength',
                   style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
                 ),
               ),
@@ -86,7 +85,7 @@ class _MultiLineTextInputFieldState extends State<MultiLineTextInputField> {
             controller: _textEditingController,
             style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.text),
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            maxLength: widget.maxLength,
+            maxLength: 200,
             maxLines: 3,
             decoration: InputDecoration(
               hintText: widget.hint,

@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
@@ -46,7 +44,7 @@ class AuthRepository {
     } on FlutterAppAuthUserCancelledException catch (e) {
       logger.d('Login cancelled: $e');
     } catch (e) {
-      logger.w('Login failed: $e');
+      logger.w('SLogin failed: $e');
     } finally {
       stopPolling(pollingTimer);
     }
@@ -123,28 +121,6 @@ class AuthRepository {
       logger.w('Token refresh failed: $e');
     }
     return false;
-  }
-
-  Future<UserInfo> getUserInfo() async {
-    if (!(await isTokenValid())) {
-      await refreshToken();
-    }
-    var accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
-
-    final dio = Dio();
-    final Response<Object> response = await dio.get(
-      '${Config.oidcIssuer}/protocol/openid-connect/userinfo',
-      options: Options(
-        headers: {HttpHeaders.authorizationHeader: 'Bearer $accessToken'},
-        validateStatus: (status) => true,
-      ),
-    );
-
-    final statusCode = response.statusCode;
-    if (statusCode != null && (statusCode < 200 || statusCode >= 300)) {
-      throw Exception('Getting user info failed with status: ${response.statusCode}');
-    }
-    return UserInfo.fromMap(response.data as Map<String, dynamic>);
   }
 
   Future<void> _deleteTokens() async {

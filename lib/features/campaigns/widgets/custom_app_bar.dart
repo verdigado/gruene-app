@@ -4,16 +4,14 @@ import 'package:gruene_app/app/constants/routes.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final bool showBackButton;
-  const CustomAppBar({super.key, required this.title, this.showBackButton = true});
+  const CustomAppBar({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return AppBar(
       title: Text(title, style: theme.textTheme.displayMedium?.apply(color: theme.colorScheme.surface)),
-      leading: showBackButton ? BackButton() : null,
-      automaticallyImplyLeading: false,
+      leading: BackButton(),
       foregroundColor: theme.colorScheme.surface,
       backgroundColor: theme.primaryColor,
       centerTitle: true,

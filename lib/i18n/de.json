@@ -7,7 +7,6 @@
     "dateUntil": "bis",
     "search": "Suche",
     "multiSelect": "Mehrfachauswahl (${count})",
-    "notAvailable": "N/A",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
@@ -18,9 +17,7 @@
       "settings": "Einstellungen",
       "openSettings": "Einstellungen öffnen",
       "close": "Schließen",
-      "reset": "Filter zurücksetzen",
-      "change": "Ändern",
-      "loading": "Laden ..."
+      "reset": "Filter zurücksetzen"
     }
   },
   "error": {
@@ -63,9 +60,7 @@
       "createdAt": "Erstellt"
     },
     "search": {
-      "hintTextAddress": "Ort oder Straße finden",
-      "hintTextDivision": "Gliederung finden",
-      "hintTextProfile": "Nutzerprofil finden",
+      "hintText": "Ort oder Straße finden",
       "no_entries_found": "Leider nichts gefunden",
       "country_code": "de-de"
     },
@@ -197,23 +192,7 @@
       "confirmation_dialog": "Möchtest Du diesen Eintrag wirklich löschen? Dies kann nicht rückgängig gemacht werden."
     },
     "team": {
-      "label": "Team",
-      "create_team": "Team erstellen",
-      "create_new_team": "Neues Team erstellen",
-      "team_name_label": "Team Name",
-      "team_description_label": "Beschreibung (nur für Mitglieder sichtbar)",
-      "team_self_join": "Selber beitreten",
-      "next_step": "Weiter",
-      "select_division_label": "Gliederung auswählen",
-      "select_division_hint": "Zu welcher Gliederung gehört dieses Team? In der Regel ist das dein Kreis- oder Ortsverband.",
-      "select_as_division": "Als Gliederung wählen",
-      "team_lead_label": "Team-Lead",
-      "select_team_lead_label": "Team-Lead benennen",
-      "select_team_lead_hint": "Wenn du nicht selbst beitrittst, benenne zunächst die Team-Lead-Rolle. Team-Leads können das Team bearbeiten, Mitglieder einladen, etc.",
-      "select_as_team_lead": "Als Teamlead einladen",
-      "select_team_member_label": "Team-Mitglieder einladen",
-      "select_team_member_hint": "Lade jetzt weitere Team-Mitglieder ein. Teams können maximal 10 Mitglieder haben.",
-      "select_as_team_member": "Ins Team einladen"
+      "label": "Team"
     },
     "statistic": {
       "label": "Statistik",

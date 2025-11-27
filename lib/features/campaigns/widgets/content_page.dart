@@ -4,7 +4,7 @@ import 'package:gruene_app/features/campaigns/widgets/custom_app_bar.dart';
 class ContentPage extends StatelessWidget {
   final String title;
   final Widget child;
-  final bool showBackButton;
+
   final Color? contentBackgroundColor;
 
   final Alignment alignment;
@@ -15,7 +15,6 @@ class ContentPage extends StatelessWidget {
     required this.child,
     this.contentBackgroundColor,
     this.alignment = Alignment.center,
-    this.showBackButton = true,
   });
 
   @override
@@ -27,7 +26,7 @@ class ContentPage extends StatelessWidget {
         alignment: alignment,
         child: SingleChildScrollView(child: child),
       ),
-      appBar: CustomAppBar(title: title, showBackButton: showBackButton),
+      appBar: CustomAppBar(title: title),
     );
   }
 }
