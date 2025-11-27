@@ -1308,17 +1308,62 @@ paths:
               - FLYER_SPOT
               - POSTER
               - HOUSE
+        - name: campaignId
+          required: false
+          in: query
+          description: Filter by campaign ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: status
+          required: false
+          in: query
+          description: Filter by POI status
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - OK
+                - DAMAGED
+                - REMOVED
+                - MISSING
+                - TO_BE_MOVED
+                - OPENED_DOORS
+                - CLOSED_DOORS
+        - name: divisionKeys
+          required: false
+          in: query
+          description: Filter by division keys
+          schema:
+            type: array
+            items:
+              type: string
         - name: bbox
           required: false
           in: query
           schema:
             example: 52.521,13.411,52.537,13.449
             type: string
-        - name: campaignId
+        - name: sort
           required: false
           in: query
           schema:
+            example: addressCity,-updatedAt
             type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: number
       responses:
         '200':
           description: ''
@@ -1348,17 +1393,62 @@ paths:
               - FLYER_SPOT
               - POSTER
               - HOUSE
+        - name: campaignId
+          required: false
+          in: query
+          description: Filter by campaign ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: status
+          required: false
+          in: query
+          description: Filter by POI status
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - OK
+                - DAMAGED
+                - REMOVED
+                - MISSING
+                - TO_BE_MOVED
+                - OPENED_DOORS
+                - CLOSED_DOORS
+        - name: divisionKeys
+          required: false
+          in: query
+          description: Filter by division keys
+          schema:
+            type: array
+            items:
+              type: string
         - name: bbox
           required: false
           in: query
           schema:
             example: 52.521,13.411,52.537,13.449
             type: string
-        - name: campaignId
+        - name: sort
           required: false
           in: query
           schema:
+            example: addressCity,-updatedAt
             type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: number
       responses:
         '200':
           description: ''
@@ -4496,8 +4586,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Poi'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
       required:
         - data
+        - total
+        - offset
+        - limit
     LineString:
       type: object
       properties:
