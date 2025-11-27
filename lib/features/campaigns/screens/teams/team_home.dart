@@ -99,7 +99,7 @@ Chat: https://signal.group/#123456''',
   }
 
   void _leaveTeam() {
-    void _executeLeaveTeam() {
+    void executeLeaveTeam() {
       // TODO #300 use leave functionality on API
       // var teamsService = GetIt.I<GrueneApiTeamsService>();
       // teamsService.leaveTeam(_currentTeam.id);
@@ -107,7 +107,7 @@ Chat: https://signal.group/#123456''',
 
     confirmDelete(
       context,
-      onDeletePressed: _executeLeaveTeam,
+      onDeletePressed: executeLeaveTeam,
       title: '${t.campaigns.team.leave_team}?',
       confirmationDialogText: t.campaigns.team.leave_team_confirmation_dialog,
       actionTitle: t.common.actions.confirm,
