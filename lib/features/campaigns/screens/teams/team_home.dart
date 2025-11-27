@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/auth/repository/user_info.dart';
+import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class TeamHome extends StatefulWidget {
@@ -12,7 +15,7 @@ class TeamHome extends StatefulWidget {
   State<TeamHome> createState() => _TeamHomeState();
 }
 
-class _TeamHomeState extends State<TeamHome> {
+class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
   bool _loading = true;
 
   late Team? _currentTeam;
@@ -64,12 +67,50 @@ Chat: https://signal.group/#123456''',
     if (_loading) {
       return Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator());
     }
+    if (_currentTeam == null) return SizedBox.shrink();
+
+    var theme = Theme.of(context);
     return Column(
       children: [
-        _currentTeam != null
-            ? TeamProfile(currentTeam: _currentTeam!, currentUser: widget.currentUser)
-            : SizedBox.shrink(),
+        TeamProfile(currentTeam: _currentTeam!, currentUser: widget.currentUser),
+        GestureDetector(
+          onTap: _leaveTeam,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+            ),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(t.campaigns.team.leave_team, style: theme.textTheme.bodyLarge),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(Icons.chevron_right, color: theme.textTheme.bodyLarge?.color),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  void _leaveTeam() {
+    void _executeLeaveTeam() {
+      // TODO #300 use leave functionality on API
+      // var teamsService = GetIt.I<GrueneApiTeamsService>();
+      // teamsService.leaveTeam(_currentTeam.id);
+    }
+
+    confirmDelete(
+      context,
+      onDeletePressed: _executeLeaveTeam,
+      title: '${t.campaigns.team.leave_team}?',
+      confirmationDialogText: t.campaigns.team.leave_team_confirmation_dialog,
+      actionTitle: t.common.actions.confirm,
     );
   }
 }
