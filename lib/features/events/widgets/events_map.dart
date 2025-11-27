@@ -103,7 +103,7 @@ class _EventsMapState extends State<EventsMap> {
 
   Future<void> _addEventsLayer() async {
     final features = widget.events
-        .where((event) => event.coords != null)
+        .where((event) => event.coords?.length == 2)
         .map(
           (event) => Feature(
             id: event.id,

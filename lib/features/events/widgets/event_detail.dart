@@ -30,6 +30,8 @@ class EventDetail extends StatelessWidget {
     final theme = Theme.of(context);
     final description = event.description;
     final formattedRrule = event.formattedRrule;
+    final locationAddress = event.locationAddress;
+    final locationUrl = event.locationUrl;
     final attendanceStatus = event.attendanceStatus;
     final groupedAttendees = event.attendees.groupBy((attendee) => attendee.status);
     final accepted = groupedAttendees[CalendarEventAttendanceStatus.accepted]?.length ?? 0;
@@ -65,7 +67,14 @@ class EventDetail extends StatelessWidget {
             if (formattedRrule != null) PageInfo(icon: Icons.repeat, text: formattedRrule),
           ],
         ),
-        EventLocation(event: event),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (locationAddress != null)
+              PageInfo(icon: Icons.location_on_outlined, text: locationAddress, url: event.locationGeoUrl),
+            if (locationUrl != null) PageInfo(icon: Icons.videocam_outlined, url: locationUrl),
+          ],
+        ),
         if (event.url != null) PageInfo(icon: Icons.link, url: event.url),
         PageInfo(
           icon: Icons.people,
@@ -109,30 +118,6 @@ class EventDetail extends StatelessWidget {
         ),
         if (description != null) Text(description),
         Text(t.common.updatedAt(date: event.updatedAt.formattedDate), style: theme.textTheme.labelSmall),
-      ],
-    );
-  }
-}
-
-class EventLocation extends StatelessWidget {
-  final CalendarEvent event;
-
-  const EventLocation({super.key, required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    final locationAddress = event.locationAddress;
-    final locationUrl = event.locationUrl;
-
-    if (locationAddress == null && locationUrl == null) {
-      return SizedBox.shrink();
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (locationAddress != null) PageInfo(icon: Icons.location_on_outlined, text: locationAddress),
-        if (locationUrl != null) PageInfo(icon: Icons.videocam_outlined, url: locationUrl),
       ],
     );
   }
