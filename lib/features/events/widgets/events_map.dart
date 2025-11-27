@@ -107,7 +107,7 @@ class _EventsMapState extends State<EventsMap> {
         .map(
           (event) => Feature(
             id: event.id,
-            geometry: Point(coordinates: Position(event.coords![1], event.coords![0])),
+            geometry: Point(coordinates: Position(event.coords![0], event.coords![1])),
             properties: {'eventId': event.id},
           ),
         )

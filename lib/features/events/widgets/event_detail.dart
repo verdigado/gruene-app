@@ -70,6 +70,23 @@ class EventDetail extends StatelessWidget {
         PageInfo(
           icon: Icons.people,
           text: '$accepted ${t.events.accepted}, $tentative ${t.common.maybe}, $declined ${t.events.declined}',
+          onPress: accepted > 0
+              ? () => showDialog<void>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text(t.events.accepted),
+                    content: SizedBox(
+                      width: double.maxFinite,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: event.attendees.length,
+                        itemBuilder: (context, index) => Text(event.attendees[index].name),
+                      ),
+                    ),
+                    actions: [TextButton(onPressed: Navigator.of(context).pop, child: Text(t.common.actions.close))],
+                  ),
+                )
+              : null,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +99,6 @@ class EventDetail extends StatelessWidget {
                   function: () => updateEventAttendance(this.event, attendanceStatus.firstOrNull),
                   context: context,
                   successMessage: t.common.saved,
-                  setLoading: (_) => {},
                 );
                 if (event != null) {
                   update(event);

@@ -4,8 +4,10 @@ import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
 
-Future<List<CalendarEvent>> getEvents() async =>
-    getFromApi(request: (api) => api.v1CalendarsEventsGet(), map: (result) => result.data.events);
+Future<List<CalendarEvent>> getEvents() async => getFromApi(
+  request: (api) => api.v1CalendarsEventsGet(selection: V1CalendarsEventsGetSelection.central),
+  map: (result) => result.data.events,
+);
 
 Future<List<Calendar>> getCalendars() async => getFromApi(
   request: (api) => api.v1CalendarsGet(),

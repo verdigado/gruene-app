@@ -8,16 +8,18 @@ class EventAttendanceSelection extends StatelessWidget {
   final Set<CalendarEventAttendanceStatus> attendanceStatus;
   final bool multiSelect;
 
-  const EventAttendanceSelection({super.key, required this.attendanceStatus, this.multiSelect = false, required this.setAttendanceStatus});
+  const EventAttendanceSelection({
+    super.key,
+    required this.attendanceStatus,
+    this.multiSelect = false,
+    required this.setAttendanceStatus,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SegmentedButton(
       segments: [
-        ButtonSegment(
-          value: CalendarEventAttendanceStatus.accepted,
-          label: Text(t.common.yes),
-        ),
+        ButtonSegment(value: CalendarEventAttendanceStatus.accepted, label: Text(t.common.yes)),
         ButtonSegment(
           value: CalendarEventAttendanceStatus.tentative,
           icon: CalendarEventAttendanceStatus.tentative.icon(context),

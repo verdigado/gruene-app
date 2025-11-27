@@ -103,7 +103,12 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final events = widget.events.filter(_selectedCalendars, _selectedAttendanceStatuses, _selectedCategories, _dateRange);
+    final events = widget.events.filter(
+      _selectedCalendars,
+      _selectedAttendanceStatuses,
+      _selectedCategories,
+      _dateRange,
+    );
     final writableCalendar = widget.calendars.firstWhereOrNull((calendar) => !calendar.readOnly);
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
