@@ -17,6 +17,9 @@ extension CalendarEventExtension on CalendarEvent {
 
   String? get formattedRrule => rrule?.toText(l10n: rruleL10n, untilDateFormat: DateFormat(dateFormat));
 
+  String? get locationGeoUrl =>
+      coords != null && locationAddress != null ? 'geo:${coords![1]},${coords![0]}?q=$locationAddress' : null;
+
   Iterable<DateTime>? recurrences([DateTimeRange? dateRange]) {
     final rrule = this.rrule;
 
