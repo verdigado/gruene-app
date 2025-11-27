@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/auth/repository/user_info.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
@@ -94,6 +95,30 @@ Chat: https://signal.group/#123456''',
             ),
           ),
         ),
+        _currentTeam!.isTeamLead(widget.currentUser)
+            ? GestureDetector(
+                onTap: _archiveTeam,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+                  ),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(t.campaigns.team.archive_team, style: theme.textTheme.bodyLarge),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(Icons.chevron_right, color: theme.textTheme.bodyLarge?.color),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : SizedBox.shrink(),
+        SizedBox(height: 24),
       ],
     );
   }
@@ -110,6 +135,22 @@ Chat: https://signal.group/#123456''',
       onDeletePressed: executeLeaveTeam,
       title: '${t.campaigns.team.leave_team}?',
       confirmationDialogText: t.campaigns.team.leave_team_confirmation_dialog,
+      actionTitle: t.common.actions.confirm,
+    );
+  }
+
+  void _archiveTeam() {
+    void executeArchiveTeam() {
+      // TODO #735 use archive functionality on API
+      // var teamsService = GetIt.I<GrueneApiTeamsService>();
+      // teamsService.deleteTeam(_currentTeam.id);
+    }
+
+    confirmDelete(
+      context,
+      onDeletePressed: executeArchiveTeam,
+      title: '${t.campaigns.team.archive_team}?',
+      confirmationDialogText: t.campaigns.team.archive_team_confirmation_dialog,
       actionTitle: t.common.actions.confirm,
     );
   }

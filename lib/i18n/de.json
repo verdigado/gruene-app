@@ -203,6 +203,8 @@
       "create_new_team": "Neues Team erstellen",
       "leave_team": "Team verlassen",
       "leave_team_confirmation_dialog": "Möchtest Du dein Team wirklich verlassen? Du kannst nur mit einer erneuten Einladung wieder beitreten.",
+      "archive_team": "Team archivieren",
+      "archive_team_confirmation_dialog": "Bist du sicher, dass du das Team archivieren möchtest? Dieser Schritt kann nicht rückgängig gemacht werden.",
       "team_name_label": "Team Name",
       "team_description_label": "Beschreibung (nur für Mitglieder sichtbar)",
       "team_self_join": "Selber beitreten",
