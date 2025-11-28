@@ -98,10 +98,18 @@ class TeamProfile extends StatelessWidget {
   }
 
   void _onEditTeam() {
+<<<<<<< HEAD
     // TODO #298 edit Team and update view after
   }
 
   void _onEditTeamMembers() {
     // TODO #299 edit Team and update view after
+=======
+    // TODO edit Team and update view after GITHUB ISSUE #298
+  }
+
+  void _onEditTeamMembers() {
+    // TODO edit Team and update view after GITHUB ISSUE #299
+>>>>>>> develop/feature_teams
   }
 }
