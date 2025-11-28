@@ -8,7 +8,6 @@ import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
-import 'package:gruene_app/features/events/repository/events_repository.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';
@@ -25,16 +24,12 @@ class EventsScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.events.events),
       body: FutureLoadingScreen(
-        load: () async => (await getEvents(), await getCalendars(), await readCalendarFilterKeys()),
+        load: () async => (await getEvents(), await getCalendars()),
         buildChild: (data, extra) {
-          final (events, calendars, calendarFilterKeys) = data;
-          final List<Calendar> initialCalendarFilters = calendarFilterKeys == null
-              ? calendars
-              : calendars.where((calendar) => calendarFilterKeys.contains(calendar.id)).nonNulls.toList();
+          final (events, calendars) = data;
           return EventsScreen(
             events: events,
             calendars: calendars,
-            initialCalendarFilters: initialCalendarFilters,
             refresh: extra.refresh,
           );
         },
@@ -47,11 +42,9 @@ class EventsScreen extends StatefulWidget {
   final void Function() refresh;
   final List<CalendarEvent> events;
   final List<Calendar> calendars;
-  final List<Calendar> initialCalendarFilters;
 
   const EventsScreen({
     super.key,
-    required this.initialCalendarFilters,
     required this.events,
     required this.calendars,
     required this.refresh,
@@ -65,7 +58,6 @@ class _EventsScreenState extends State<EventsScreen> {
   late List<CalendarEvent> _events;
   bool _isMapView = false;
   String _query = '';
-  late List<Calendar> _selectedCalendars;
   List<String> _selectedCategories = [];
   Set<CalendarEventAttendanceStatus> _selectedAttendanceStatuses = {};
   DateTimeRange? _dateRange;
@@ -96,22 +88,15 @@ class _EventsScreenState extends State<EventsScreen> {
   void initState() {
     super.initState();
     _events = widget.events;
-    _selectedCalendars = widget.initialCalendarFilters;
     _dateRange = todayOrFuture();
   }
 
   @override
   Widget build(BuildContext context) {
-    final events = _events.filter(_selectedCalendars, _selectedAttendanceStatuses, _selectedCategories, _dateRange);
+    final events = _events.filter(_selectedAttendanceStatuses, _selectedCategories, _dateRange);
     final writableCalendar = widget.calendars.firstWhereOrNull((calendar) => !calendar.readOnly);
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
-    final calendarFilter = FilterModel(
-      update: (calendars) => setState(() => _selectedCalendars = calendars),
-      initial: widget.calendars,
-      selected: _selectedCalendars,
-      values: widget.calendars,
-    );
     final attendanceStatusFilter = FilterModel<Set<CalendarEventAttendanceStatus>>(
       update: (attendanceStatuses) => setState(() => _selectedAttendanceStatuses = attendanceStatuses),
       initial: {},
@@ -142,9 +127,8 @@ class _EventsScreenState extends State<EventsScreen> {
                   children: [
                     FilterBar(
                       searchFilter: searchFilter,
-                      modified: [calendarFilter, attendanceStatusFilter, categoryFilter, dateRangeFilter].modified(),
+                      modified: [attendanceStatusFilter, categoryFilter, dateRangeFilter].modified(),
                       filterDialog: EventsFilterDialog(
-                        calendarFilter: calendarFilter,
                         attendanceStatusFilter: attendanceStatusFilter,
                         categoryFilter: categoryFilter,
                         dateRangeFilter: dateRangeFilter,

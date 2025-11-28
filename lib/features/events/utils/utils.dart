@@ -57,14 +57,12 @@ extension CalendarEventExtension on CalendarEvent {
 
 extension CalendarEventListExtension on List<CalendarEvent> {
   List<CalendarEvent> filter(
-    List<Calendar> calendars,
     Set<CalendarEventAttendanceStatus> attendanceStatuses,
     List<String> categories,
     DateTimeRange? dateRange,
   ) {
     return where(
       (it) =>
-          calendars.map((calendar) => calendar.id).contains(it.calendarId) &&
           (attendanceStatuses.isEmpty || attendanceStatuses.contains(it.attendanceStatus)) &&
           (categories.isEmpty || it.categories.any((category) => categories.contains(category))) &&
           it.inRange(dateRange),
