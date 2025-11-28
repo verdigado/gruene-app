@@ -3,6 +3,7 @@ import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
+import 'package:gruene_app/app/widgets/full_width_image.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/widgets/event_detail.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
@@ -61,7 +62,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             children: [
               ExpandingScrollView(
                 children: [
-                  if (image != null) Image.network(image, width: double.infinity, fit: BoxFit.fitWidth),
+                  if (image != null) FullWidthImage(image: image),
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: EventDetail(

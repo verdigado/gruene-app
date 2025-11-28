@@ -8,12 +8,12 @@ import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
+import 'package:gruene_app/app/widgets/modal_bottom_sheet.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_card.dart';
 import 'package:gruene_app/features/events/widgets/event_detail.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
-import 'package:gruene_app/features/events/widgets/map_bottom_sheet.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/along.dart';
@@ -140,7 +140,7 @@ Future<void> _showBottomSheet({
           final event = events.length == 1 ? events[0] : selectedEvent;
           final calendar = event?.calendar(calendars);
 
-          return MapBottomSheet(
+          return ModalBottomSheet(
             image: event?.image,
             onClose: () => Navigator.pop(context),
             aside: calendar != null && !calendar.readOnly
