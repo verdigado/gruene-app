@@ -15,7 +15,7 @@ class CampaignsScreen extends StatelessWidget {
     TabModel(label: t.campaigns.door.label, view: DoorsScreen()),
     TabModel(label: t.campaigns.poster.label, view: PostersScreen()),
     TabModel(label: t.campaigns.flyer.label, view: FlyerScreen()),
-    TabModel(label: t.campaigns.team.label, view: TeamsScreen()),
+    TabModel(label: t.campaigns.team.label, view: TeamsScreen(), disabled: true),
     TabModel(label: t.campaigns.statistic.label, view: StatisticsScreen()),
   ];
 

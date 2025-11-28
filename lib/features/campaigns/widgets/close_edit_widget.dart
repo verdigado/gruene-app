@@ -13,12 +13,12 @@ class CloseEditWidget extends StatelessWidget {
     return Row(
       children: [
         GestureDetector(onTap: onClose, child: Icon(Icons.close_outlined)),
-        _getEditAction(theme),
+        _getSaveAction(theme),
       ],
     );
   }
 
-  Widget _getEditAction(ThemeData theme) {
+  Widget _getSaveAction(ThemeData theme) {
     if (onEdit == null) return SizedBox.shrink();
     return Expanded(
       child: GestureDetector(
