@@ -15,14 +15,13 @@ class ModalBottomSheet extends StatelessWidget {
     final image = this.image;
     final aside = this.aside;
 
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-          child: Container(
-            width: double.infinity,
-            color: theme.colorScheme.surface,
-            child: SingleChildScrollView(
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+      child: Scaffold(
+        backgroundColor: theme.colorScheme.surface,
+        body: Stack(
+          children: [
+            SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,20 +32,24 @@ class ModalBottomSheet extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+            Container(
+              alignment: Alignment.topRight,
+              padding: EdgeInsets.all(8),
+              width: double.infinity,
+              height: 64,
+              child: CircleAvatar(
+                backgroundColor: theme.colorScheme.surface,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: onClose,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+            ),
+            if (aside != null) aside,
+          ],
         ),
-        Container(
-          alignment: Alignment.topRight,
-          padding: EdgeInsets.all(8),
-          width: double.infinity,
-          height: 64,
-          child: CircleAvatar(
-            backgroundColor: theme.colorScheme.surface,
-            child: IconButton(icon: const Icon(Icons.close), onPressed: onClose, color: theme.colorScheme.onSurface),
-          ),
-        ),
-        if (aside != null) aside,
-      ],
+      ),
     );
   }
 }
