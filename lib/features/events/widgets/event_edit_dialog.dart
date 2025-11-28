@@ -212,6 +212,10 @@ class _EventEditDialogState extends State<EventEditDialog> {
                     name: imageField,
                     initialValue: [widget.event?.image],
                     decoration: InputDecoration(labelText: '${t.events.image} (${t.common.optional})'),
+                    onTap: (imageSourceSheet) => showModalBottomSheet<void>(
+                      context: Navigator.of(context, rootNavigator: true).context,
+                      builder: (_) => SafeArea(child: imageSourceSheet),
+                    ),
                     maxImages: 1,
                   ),
                   FormBuilderTextField(

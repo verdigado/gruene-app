@@ -122,7 +122,10 @@ class _EventsMapState extends State<EventsMap> {
               onStyleLoadedCallback: _onStyleLoaded,
               trackCameraPosition: true,
               onCameraIdle: () {
-                appSettings.events = (lastPosition: mapController!.cameraPosition!.target, lastZoomLevel: mapController!.cameraPosition!.zoom);
+                appSettings.events = (
+                  lastPosition: mapController!.cameraPosition!.target,
+                  lastZoomLevel: mapController!.cameraPosition!.zoom,
+                );
               },
               // Replace with custom map attribution
               attributionButtonMargins: const math.Point(-100, -100),

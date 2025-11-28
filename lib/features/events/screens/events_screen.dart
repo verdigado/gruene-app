@@ -27,11 +27,7 @@ class EventsScreenContainer extends StatelessWidget {
         load: () async => (await getEvents(), await getCalendars()),
         buildChild: (data, extra) {
           final (events, calendars) = data;
-          return EventsScreen(
-            events: events,
-            calendars: calendars,
-            refresh: extra.refresh,
-          );
+          return EventsScreen(events: events, calendars: calendars, refresh: extra.refresh);
         },
       ),
     );
@@ -43,12 +39,7 @@ class EventsScreen extends StatefulWidget {
   final List<CalendarEvent> events;
   final List<Calendar> calendars;
 
-  const EventsScreen({
-    super.key,
-    required this.events,
-    required this.calendars,
-    required this.refresh,
-  });
+  const EventsScreen({super.key, required this.events, required this.calendars, required this.refresh});
 
   @override
   State<EventsScreen> createState() => _EventsScreenState();
