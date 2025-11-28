@@ -225,7 +225,9 @@
       "team_assigned_elements_show_closed": "Erledigte einblenden",
       "team_assigned_elements_area_info": "${area} km² Gebiet",
       "team_assigned_elements_route_info": "${distance} km Route",
-      "team_assigned_elements_assignment_info": "zugewiesen am ${date} von ${assignee}"
+      "team_assigned_elements_assignment_info": "zugewiesen am ${date} von ${assignee}",
+      "member_statistics": "Mitglieder-Statistik",
+      "member_statistics_member_info": "${division}, Team-Mitglied seit ${date}"
     },
     "statistic": {
       "label": "Statistik",

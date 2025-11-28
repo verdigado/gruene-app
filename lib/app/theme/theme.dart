@@ -43,6 +43,8 @@ class ThemeColors {
   static const Color infoBackground = Color(0xFFFFF7C8);
 
   static const Color sun = Color(0xFFFFF17A);
+
+  static const Color disabledShadow = Color(0xFFFBFCFC);
 }
 
 class _ThemeTextStyles {
