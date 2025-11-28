@@ -35,7 +35,6 @@ class EventsScreenContainer extends StatelessWidget {
             events: events,
             calendars: calendars,
             initialCalendarFilters: initialCalendarFilters,
-            updateEvents: (List<CalendarEvent> events) => extra.update((events, calendars, calendarFilterKeys)),
             refresh: extra.refresh,
           );
         },
@@ -45,7 +44,6 @@ class EventsScreenContainer extends StatelessWidget {
 }
 
 class EventsScreen extends StatefulWidget {
-  final void Function(List<CalendarEvent>) updateEvents;
   final void Function() refresh;
   final List<CalendarEvent> events;
   final List<Calendar> calendars;
@@ -57,7 +55,6 @@ class EventsScreen extends StatefulWidget {
     required this.events,
     required this.calendars,
     required this.refresh,
-    required this.updateEvents,
   });
 
   @override
@@ -65,7 +62,8 @@ class EventsScreen extends StatefulWidget {
 }
 
 class _EventsScreenState extends State<EventsScreen> {
-  bool isMapView = false;
+  late List<CalendarEvent> _events;
+  bool _isMapView = false;
   String _query = '';
   late List<Calendar> _selectedCalendars;
   List<String> _selectedCategories = [];
@@ -73,9 +71,9 @@ class _EventsScreenState extends State<EventsScreen> {
   DateTimeRange? _dateRange;
 
   void addOrUpdateEvent(CalendarEvent newEvent) async {
-    final events = widget.events.where((event) => event.id != newEvent.id);
-    final isNew = events.length == widget.events.length;
-    widget.updateEvents([...events, newEvent].toList());
+    final events = _events.where((event) => event.id != newEvent.id);
+    final isNew = events.length == _events.length;
+    setState(() => _events = [...events, newEvent].toList());
     if (isNew) {
       final updatedEvent = await context.pushNested(
         newEvent.id,
@@ -90,25 +88,21 @@ class _EventsScreenState extends State<EventsScreen> {
   }
 
   void deleteEvent(CalendarEvent deletedEvent) {
-    final events = widget.events.where((event) => event.id != deletedEvent.id);
-    widget.updateEvents(events.toList());
+    final events = _events.where((event) => event.id != deletedEvent.id);
+    setState(() => _events = events.toList());
   }
 
   @override
   void initState() {
     super.initState();
+    _events = widget.events;
     _selectedCalendars = widget.initialCalendarFilters;
     _dateRange = todayOrFuture();
   }
 
   @override
   Widget build(BuildContext context) {
-    final events = widget.events.filter(
-      _selectedCalendars,
-      _selectedAttendanceStatuses,
-      _selectedCategories,
-      _dateRange,
-    );
+    final events = _events.filter(_selectedCalendars, _selectedAttendanceStatuses, _selectedCategories, _dateRange);
     final writableCalendar = widget.calendars.firstWhereOrNull((calendar) => !calendar.readOnly);
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
@@ -137,7 +131,7 @@ class _EventsScreenState extends State<EventsScreen> {
 
     return Stack(
       children: [
-        isMapView
+        _isMapView
             ? EventsMap(events: events, calendars: widget.calendars, update: addOrUpdateEvent)
             : Container(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -179,8 +173,8 @@ class _EventsScreenState extends State<EventsScreen> {
                 ButtonSegment(value: false, icon: const Icon(Icons.list), label: Text(t.events.list)),
                 ButtonSegment(value: true, icon: const Icon(Icons.map), label: Text(t.events.map)),
               ],
-              selected: {isMapView},
-              onSelectionChanged: (newSelection) => setState(() => isMapView = newSelection.first),
+              selected: {_isMapView},
+              onSelectionChanged: (newSelection) => setState(() => _isMapView = newSelection.first),
               showSelectedIcon: false,
             ),
           ),

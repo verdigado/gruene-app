@@ -6,11 +6,13 @@ import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_card.dart';
 import 'package:gruene_app/features/events/widgets/event_detail.dart';
+import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/features/events/widgets/map_bottom_sheet.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -51,44 +53,6 @@ class _EventsMapState extends State<EventsMap> {
     }
   }
 
-  Future<void> _showBottomSheet(List<CalendarEvent> events) async {
-    showModalBottomSheet<void>(
-      context: context,
-      useRootNavigator: true,
-      builder: (context) {
-        CalendarEvent? selectedEvent;
-        return StatefulBuilder(
-          builder: (context, setState) {
-            final event = events.length == 1 ? events[0] : selectedEvent;
-
-            return MapBottomSheet(
-              image: event?.image,
-              onClose: () => Navigator.pop(context),
-              child: event != null
-                  ? EventDetail(
-                      event: event,
-                      recurrence: null,
-                      calendar: event.calendar(widget.calendars),
-                      update: widget.update,
-                    )
-                  : Column(
-                      children: events
-                          .map(
-                            (event) => EventCard(
-                              event: event,
-                              recurrence: null,
-                              onTap: () => setState(() => selectedEvent = event),
-                            ),
-                          )
-                          .toList(),
-                    ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   Future<void> _onFeatureTapped(_, math.Point<double> point, LatLng coordinates, String layer) async {
     final features = await mapController!.queryRenderedFeatures(point, ['events-layer'], null);
     final events = features
@@ -97,7 +61,7 @@ class _EventsMapState extends State<EventsMap> {
         .toList();
 
     if (mounted && events.isNotEmpty) {
-      _showBottomSheet(events);
+      _showBottomSheet(events: events, calendars: widget.calendars, context: context, update: widget.update);
     }
   }
 
@@ -158,4 +122,56 @@ class _EventsMapState extends State<EventsMap> {
       },
     );
   }
+}
+
+Future<void> _showBottomSheet({
+  required BuildContext context,
+  required List<CalendarEvent> events,
+  required List<Calendar> calendars,
+  required void Function(CalendarEvent) update,
+}) async {
+  showModalBottomSheet<void>(
+    context: context,
+    useRootNavigator: true,
+    builder: (context) {
+      CalendarEvent? selectedEvent;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          final event = events.length == 1 ? events[0] : selectedEvent;
+          final calendar = event?.calendar(calendars);
+
+          return MapBottomSheet(
+            image: event?.image,
+            onClose: () => Navigator.pop(context),
+            aside: calendar != null && !calendar.readOnly
+                ? Positioned(
+                    bottom: 32,
+                    right: 16,
+                    child: FloatingActionButton(
+                      onPressed: () => showFullScreenDialog(
+                        context,
+                        (_) => EventEditDialog(calendar: calendar, event: event, context: context, update: update),
+                      ),
+                      child: Icon(Icons.edit),
+                    ),
+                  )
+                : null,
+            child: event != null && calendar != null
+                ? EventDetail(event: event, recurrence: null, calendar: calendar, update: update)
+                : Column(
+                    children: events
+                        .map(
+                          (event) => EventCard(
+                            event: event,
+                            recurrence: null,
+                            onTap: () => setState(() => selectedEvent = event),
+                          ),
+                        )
+                        .toList(),
+                  ),
+          );
+        },
+      );
+    },
+  );
 }

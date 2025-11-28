@@ -5,15 +5,13 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
 
 Future<List<CalendarEvent>> getEvents() async => getFromApi(
-  request: (api) => api.v1CalendarsEventsGet(selection: V1CalendarsEventsGetSelection.central),
+  request: (api) => api.v1CalendarsEventsGet(selection: CalendarSelection.central),
   map: (result) => result.data.events,
 );
 
 Future<List<Calendar>> getCalendars() async => getFromApi(
-  request: (api) => api.v1CalendarsGet(),
-  map: (result) => result.data
-      .map((calendar) => calendar.copyWith(displayName: calendar.displayName.replaceAll(' - Central', '')))
-      .toList(),
+  request: (api) => api.v1CalendarsGet(selection: CalendarSelection.central),
+  map: (result) => result.data,
 );
 
 Future<({CalendarEvent event, Calendar calendar})?> getEventById(String eventId) async => getFromApi(

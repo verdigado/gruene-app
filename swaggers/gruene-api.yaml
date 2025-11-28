@@ -2522,7 +2522,13 @@ paths:
   /v1/calendars:
     get:
       operationId: findCalendars
-      parameters: []
+      parameters:
+        - name: selection
+          required: false
+          in: query
+          description: use given rule to select calendars (enum or any string)
+          schema:
+            $ref: '#/components/schemas/CalendarSelection'
       responses:
         '200':
           description: ''
@@ -2560,9 +2566,7 @@ paths:
           in: query
           description: use given rule to select calendars (enum or any string)
           schema:
-            type: string
-            enum:
-              - CENTRAL
+            $ref: '#/components/schemas/CalendarSelection'
       responses:
         '200':
           description: ''
@@ -5484,6 +5488,10 @@ components:
       required:
         - country
         - level
+    CalendarSelection:
+      type: string
+      enum:
+        - CENTRAL
     Calendar:
       type: object
       properties:
@@ -5654,10 +5662,6 @@ components:
           type: array
           items:
             type: string
-        organizer:
-          type: string
-          description: Event organizer name or organization
-          example: Kreisverband Salzgitter
         recurring:
           type: string
           description: Recurrence rule in iCalendar format
@@ -5693,6 +5697,7 @@ components:
       type: object
       properties:
         locationType:
+          nullable: true
           description: Type of location
           allOf:
             - $ref: '#/components/schemas/CalendarEventLocationType'
@@ -5702,6 +5707,7 @@ components:
           example: Mitgliederversammlung
         description:
           type: string
+          nullable: true
           description: Description of the event
           example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
         start:
@@ -5712,37 +5718,45 @@ components:
         end:
           format: date-time
           type: string
+          nullable: true
           description: End date and time of the event
           example: '2025-10-15T21:00:00.000Z'
         url:
           type: string
+          nullable: true
           description: The URL with the event info
           example: https://example.com
           format: uri
         locationAddress:
           type: string
+          nullable: true
           description: The location address where the event takes place
           example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
         locationUrl:
           type: string
+          nullable: true
           description: The URL for the location or online meeting
           example: https://example.com
           format: uri
         availableSlots:
           type: number
+          nullable: true
           description: Number of available slots for registration
           example: 50
           minimum: 1
         registrationRequired:
           type: boolean
+          nullable: true
           description: Whether registration is required for the event
           example: true
         registrationDeadline:
           format: date-time
           type: string
+          nullable: true
           description: Deadline for registration
           example: '2025-10-14T23:59:59.000Z'
         categories:
+          nullable: true
           description: Event categories/tags
           example:
             - Politik
@@ -5751,12 +5765,9 @@ components:
           type: array
           items:
             type: string
-        organizer:
-          type: string
-          description: Event organizer name or organization
-          example: Kreisverband Salzgitter
         recurring:
           type: string
+          nullable: true
           description: Recurrence rule in iCalendar format
           example: RRULE:BYDAY=TH,MO,TU,WE;FREQ=WEEKLY;UNTIL=20251217T230000Z
       required:
@@ -5766,6 +5777,7 @@ components:
       type: object
       properties:
         locationType:
+          nullable: true
           description: Type of location
           allOf:
             - $ref: '#/components/schemas/CalendarEventLocationType'
@@ -5775,6 +5787,7 @@ components:
           example: Mitgliederversammlung
         description:
           type: string
+          nullable: true
           description: Description of the event
           example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
         start:
@@ -5785,37 +5798,45 @@ components:
         end:
           format: date-time
           type: string
+          nullable: true
           description: End date and time of the event
           example: '2025-10-15T21:00:00.000Z'
         url:
           type: string
+          nullable: true
           description: The URL with the event info
           example: https://example.com
           format: uri
         locationAddress:
           type: string
+          nullable: true
           description: The location address where the event takes place
           example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
         locationUrl:
           type: string
+          nullable: true
           description: The URL for the location or online meeting
           example: https://example.com
           format: uri
         availableSlots:
           type: number
+          nullable: true
           description: Number of available slots for registration
           example: 50
           minimum: 1
         registrationRequired:
           type: boolean
+          nullable: true
           description: Whether registration is required for the event
           example: true
         registrationDeadline:
           format: date-time
           type: string
+          nullable: true
           description: Deadline for registration
           example: '2025-10-14T23:59:59.000Z'
         categories:
+          nullable: true
           description: Event categories/tags
           example:
             - Politik
@@ -5824,18 +5845,16 @@ components:
           type: array
           items:
             type: string
-        organizer:
-          type: string
-          description: Event organizer name or organization
-          example: Kreisverband Salzgitter
         recurring:
           type: string
+          nullable: true
           description: Recurrence rule in iCalendar format
           example: RRULE:BYDAY=TH,MO,TU,WE;FREQ=WEEKLY;UNTIL=20251217T230000Z
     UpdateCalendarEventAttendance:
       type: object
       properties:
         status:
+          nullable: true
           description: Attendance status of the authenticated user
           allOf:
             - $ref: '#/components/schemas/CalendarEventAttendanceStatus'
