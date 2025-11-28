@@ -257,7 +257,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
               Container(
                 padding: EdgeInsets.only(top: 6, bottom: 24),
                 child: DeleteAndSaveWidget(
-                  onDelete: () => confirmDelete(context, _onDeletePressed),
+                  onDelete: () => confirmDelete(context, onDeletePressed: _onDeletePressed),
                   onSave: _savePoster,
                 ),
               ),

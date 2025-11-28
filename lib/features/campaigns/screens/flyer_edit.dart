@@ -101,7 +101,10 @@ class _FlyerEditState extends State<FlyerEdit> with AddressExtension, FlyerValid
           ),
           Container(
             padding: EdgeInsets.only(top: 6, bottom: 24),
-            child: DeleteAndSaveWidget(onDelete: () => confirmDelete(context, _onDeletePressed), onSave: _saveFlyer),
+            child: DeleteAndSaveWidget(
+              onDelete: () => confirmDelete(context, onDeletePressed: _onDeletePressed),
+              onSave: _saveFlyer,
+            ),
           ),
         ],
       ),
