@@ -23,7 +23,7 @@ abstract class GrueneApiBaseService {
 
   Response<T> handleApiError<T>(Response<T> response) {
     if (!response.isSuccessful || response.body == null) {
-      throw ApiException(statusCode: response.statusCode);
+      throw ApiException(statusCode: response.statusCode, message: response.error.toString());
     }
     return response;
   }
@@ -31,5 +31,6 @@ abstract class GrueneApiBaseService {
 
 class ApiException implements Exception {
   int statusCode;
-  ApiException({required this.statusCode});
+  String message;
+  ApiException({required this.statusCode, this.message = ''});
 }
