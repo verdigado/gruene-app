@@ -156,14 +156,16 @@ Future<void> _showBottomSheet({
             onClose: () => Navigator.pop(context),
             aside: calendar != null && !calendar.readOnly
                 ? Positioned(
-                    bottom: 32,
+                    bottom: 16,
                     right: 16,
-                    child: FloatingActionButton(
-                      onPressed: () => showFullScreenDialog(
-                        context,
-                        (_) => EventEditDialog(calendar: calendar, event: event, context: context, update: update),
+                    child: SafeArea(
+                      child: FloatingActionButton(
+                        onPressed: () => showFullScreenDialog(
+                          context,
+                          (_) => EventEditDialog(calendar: calendar, event: event, context: context, update: update),
+                        ),
+                        child: Icon(Icons.edit),
                       ),
-                      child: Icon(Icons.edit),
                     ),
                   )
                 : null,
