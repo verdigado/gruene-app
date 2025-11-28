@@ -11,6 +11,7 @@ class SelectionView<T> extends StatelessWidget {
   final String? moreOptionsTitle;
   final List<T>? moreOptions;
   final List<T> selectedOptions;
+  final Color? backgroundColor;
 
   const SelectionView({
     super.key,
@@ -21,6 +22,7 @@ class SelectionView<T> extends StatelessWidget {
     this.title,
     this.moreOptions,
     this.moreOptionsTitle,
+    this.backgroundColor,
   });
 
   void toggleOption(T option) => setSelectedOptions(
@@ -35,6 +37,7 @@ class SelectionView<T> extends StatelessWidget {
           toggleSelection: () => toggleOption(option),
           title: getLabel(option),
           selected: selectedOptions.contains(option),
+          backgroundColor: backgroundColor,
         ),
       )
       .toList();
@@ -47,7 +50,7 @@ class SelectionView<T> extends StatelessWidget {
         ...title != null ? [SectionTitle(title: title!)] : [],
         ...renderSelectionListItems(options),
         ...moreOptions != null && moreOptions!.isNotEmpty
-            ? [ExpansionListTile(title: moreOptionsTitle ?? '', children: renderSelectionListItems(moreOptions!))]
+            ? [ExpansionListTile(titleText: moreOptionsTitle ?? '', children: renderSelectionListItems(moreOptions!))]
             : [],
       ],
     );

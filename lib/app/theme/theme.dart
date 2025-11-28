@@ -32,6 +32,8 @@ class ThemeColors {
   // Middle Grey (#9CABAF)
   static const Color textDisabled = Color(0xFF9CABAF);
 
+  static const Color warning = Colors.amber;
+
   static const Color textWarning = Color(0xFFCB4040);
 
   static const Color textCancel = Color(0xFF0A84FF);
@@ -124,64 +126,92 @@ final WidgetStateProperty<Color?> thumbColor = WidgetStateProperty.resolveWith<C
   return ThemeColors.background;
 });
 
-final ThemeData appTheme = ThemeData.light().copyWith(
-  primaryColor: ThemeColors.primary,
-  disabledColor: ThemeColors.textDisabled,
-  colorScheme: ThemeData.light().colorScheme.copyWith(
-    primary: ThemeColors.primary,
-    secondary: ThemeColors.secondary,
-    tertiary: ThemeColors.tertiary,
-    surface: ThemeColors.background,
-    surfaceDim: ThemeColors.backgroundSecondary,
-  ),
-  textTheme: TextTheme(
-    displayLarge: _ThemeTextStyles.displayLarge,
-    displayMedium: _ThemeTextStyles.displayMedium,
-    headlineLarge: _ThemeTextStyles.headlineLarge,
-    titleLarge: _ThemeTextStyles.titleLarge,
-    titleMedium: _ThemeTextStyles.titleMedium,
-    titleSmall: _ThemeTextStyles.titleSmall,
-    bodyLarge: _ThemeTextStyles.bodyLarge,
-    bodyMedium: _ThemeTextStyles.bodyMedium,
-    labelLarge: _ThemeTextStyles.labelLarge,
-    labelMedium: _ThemeTextStyles.labelMedium,
-    labelSmall: _ThemeTextStyles.labelSmall,
-  ),
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    backgroundColor: ThemeColors.background,
-    selectedItemColor: ThemeColors.primary,
-    unselectedItemColor: ThemeColors.textDisabled,
-    selectedLabelStyle: _ThemeTextStyles.labelSmall,
-    unselectedLabelStyle: _ThemeTextStyles.labelSmall,
-  ),
-  scaffoldBackgroundColor: ThemeColors.backgroundSecondary,
-  tabBarTheme: TabBarThemeData(
-    indicatorColor: ThemeColors.primary,
-    indicatorSize: TabBarIndicatorSize.tab,
-    labelStyle: _ThemeTextStyles.titleMedium,
-    unselectedLabelStyle: _ThemeTextStyles.titleMedium,
-    labelColor: ThemeColors.primary,
-  ),
-  switchTheme: SwitchThemeData(
-    thumbIcon: thumbIcon,
-    trackColor: trackColor,
-    thumbColor: thumbColor,
-    trackOutlineWidth: WidgetStatePropertyAll(0),
-  ),
-  inputDecorationTheme: InputDecorationTheme(
-    border: OutlineInputBorder(
-      borderSide: BorderSide(color: ThemeColors.textLight, width: 1),
-      borderRadius: BorderRadius.all(Radius.circular(5)),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: ThemeColors.textLight, width: 1),
-      borderRadius: BorderRadius.all(Radius.circular(5)),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: ThemeColors.textLight, width: 1),
-      borderRadius: BorderRadius.all(Radius.circular(5)),
-    ),
-  ),
-  dividerTheme: DividerThemeData(color: ThemeColors.textLight, space: 0.5, thickness: 0.5),
-  datePickerTheme: DatePickerThemeData(rangeSelectionBackgroundColor: ThemeColors.textDisabled),
-);
+final ThemeData appTheme =
+    ThemeData.from(
+      colorScheme: ColorScheme(
+        brightness: Brightness.light,
+        primary: ThemeColors.primary,
+        onPrimary: ThemeColors.background,
+        primaryContainer: ThemeColors.background,
+        onPrimaryContainer: ThemeColors.primary,
+        secondary: ThemeColors.secondary,
+        onSecondary: ThemeColors.background,
+        secondaryContainer: ThemeColors.secondary,
+        onSecondaryContainer: ThemeColors.background,
+        tertiary: ThemeColors.tertiary,
+        surface: ThemeColors.background,
+        onSurface: ThemeColors.text,
+        surfaceDim: ThemeColors.backgroundSecondary,
+        error: ThemeData.light().colorScheme.error,
+        onError: ThemeData.light().colorScheme.onError,
+      ),
+      textTheme: TextTheme(
+        displayLarge: _ThemeTextStyles.displayLarge,
+        displayMedium: _ThemeTextStyles.displayMedium,
+        headlineLarge: _ThemeTextStyles.headlineLarge,
+        titleLarge: _ThemeTextStyles.titleLarge,
+        titleMedium: _ThemeTextStyles.titleMedium,
+        titleSmall: _ThemeTextStyles.titleSmall,
+        bodyLarge: _ThemeTextStyles.bodyLarge,
+        bodyMedium: _ThemeTextStyles.bodyMedium,
+        labelLarge: _ThemeTextStyles.labelLarge,
+        labelMedium: _ThemeTextStyles.labelMedium,
+        labelSmall: _ThemeTextStyles.labelSmall,
+      ),
+    ).copyWith(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: ThemeColors.background,
+        selectedItemColor: ThemeColors.primary,
+        unselectedItemColor: ThemeColors.textDisabled,
+        selectedLabelStyle: _ThemeTextStyles.labelSmall,
+        unselectedLabelStyle: _ThemeTextStyles.labelSmall,
+      ),
+      scaffoldBackgroundColor: ThemeColors.backgroundSecondary,
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: ThemeColors.primary,
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelStyle: _ThemeTextStyles.titleMedium,
+        unselectedLabelStyle: _ThemeTextStyles.titleMedium,
+        labelColor: ThemeColors.primary,
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? ThemeColors.primary : ThemeColors.background,
+          ),
+          foregroundColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? ThemeColors.background : ThemeColors.primary,
+          ),
+          side: WidgetStateProperty.all(BorderSide(color: ThemeColors.primary, width: 1.5)),
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbIcon: thumbIcon,
+        trackColor: trackColor,
+        thumbColor: thumbColor,
+        trackOutlineWidth: WidgetStatePropertyAll(0),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: ThemeColors.textLight, width: 1),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: ThemeColors.textLight, width: 1),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: ThemeColors.textLight, width: 1),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ),
+      ),
+      dividerTheme: DividerThemeData(color: ThemeColors.textLight, space: 0.5, thickness: 0.5),
+      dialogTheme: DialogThemeData(
+        backgroundColor: ThemeColors.backgroundSecondary,
+        titleTextStyle: _ThemeTextStyles.titleLarge,
+      ),
+      timePickerTheme: TimePickerThemeData(
+        timeSelectorSeparatorTextStyle: WidgetStatePropertyAll(_ThemeTextStyles.displayLarge.copyWith(height: 2)),
+      ),
+    );

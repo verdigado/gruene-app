@@ -24,7 +24,7 @@ class OwnProfileScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.profiles),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile data, updateData) {
+        buildChild: (Profile data, extra) {
           Iterable<ProfileRole> mandateRoles = data.roles.where(
             (role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type),
           );
@@ -35,7 +35,7 @@ class OwnProfileScreen extends StatelessWidget {
           return ListView(
             children: [
               SizedBox(height: 24),
-              ProfileHeader(profile: data, onProfileUpdated: updateData),
+              ProfileHeader(profile: data, onProfileUpdated: extra.update),
               SizedBox(height: 24),
               TextListItem(
                 title: t.profiles.digitalMembershipCard.title,

@@ -5,22 +5,23 @@ import 'package:gruene_app/i18n/translations.g.dart';
 class DateRangePicker extends StatelessWidget {
   final void Function(DateTimeRange?) setDateRange;
   final DateTimeRange? dateRange;
+  final DateTime? lastDate;
 
-  const DateRangePicker({super.key, required this.setDateRange, required this.dateRange});
+  const DateRangePicker({super.key, required this.setDateRange, required this.dateRange, this.lastDate});
 
   Future<void> openDateRangePicker(BuildContext context) async {
     final theme = Theme.of(context);
     final newDateRange = await showDateRangePicker(
       context: context,
       firstDate: DateTime(1980),
-      lastDate: DateTime.now(),
+      lastDate: lastDate ?? dateInfinity(),
       initialDateRange: dateRange,
       barrierColor: theme.colorScheme.secondary,
     );
     setDateRange(newDateRange);
   }
 
-  String formatDate(DateTime? date) => date == null ? '–' : dateFormatter.format(date.toLocal());
+  String format(DateTime? date) => date == null || date == dateInfinity() ? '–' : date.formattedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class DateRangePicker extends StatelessWidget {
             side: BorderSide(color: theme.colorScheme.surfaceDim),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           ),
-          child: SizedBox(width: 84, child: Center(child: Text(formatDate(dateRange?.start)))),
+          child: SizedBox(width: 84, child: Center(child: Text(format(dateRange?.start)))),
         ),
         SizedBox(width: 16),
         Text(t.common.dateUntil),
@@ -49,7 +50,7 @@ class DateRangePicker extends StatelessWidget {
             side: BorderSide(color: theme.colorScheme.surfaceDim),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           ),
-          child: SizedBox(width: 84, child: Center(child: Text(formatDate(dateRange?.end)))),
+          child: SizedBox(width: 84, child: Center(child: Text(format(dateRange?.end)))),
         ),
         SizedBox(width: 24),
       ],
