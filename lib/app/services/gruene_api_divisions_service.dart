@@ -6,4 +6,9 @@ class GrueneApiDivisionsService extends GrueneApiBaseService {
     apiRequest: (api) => api.v1DivisionsGet(search: searchTerm),
     map: (result) => result.data,
   );
+
+  Future<Division> getDivision(String divisionKey) async => getFromApi(
+    apiRequest: (api) => api.v1DivisionsDivisionIdGet(divisionId: divisionKey),
+    map: (result) => result,
+  );
 }
