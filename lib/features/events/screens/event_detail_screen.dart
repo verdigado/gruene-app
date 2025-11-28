@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
+import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/widgets/event_detail.dart';
+import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 
@@ -53,19 +55,43 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       body: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, _) => !didPop ? Navigator.of(context).pop(event) : null,
-        child: ExpandingScrollView(
-          children: [
-            if (image != null) Image.network(image, width: double.infinity, fit: BoxFit.fitWidth),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: EventDetail(
-                event: event,
-                recurrence: recurrence,
-                calendar: calendar,
-                update: (event) => setState(() => this.event = event),
+        child: SizedBox(
+          width: double.infinity,
+          child: Stack(
+            children: [
+              ExpandingScrollView(
+                children: [
+                  if (image != null) Image.network(image, width: double.infinity, fit: BoxFit.fitWidth),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: EventDetail(
+                      event: event,
+                      recurrence: recurrence,
+                      calendar: calendar,
+                      update: (event) => setState(() => this.event = event),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              if (!calendar.readOnly)
+                Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: FloatingActionButton(
+                    onPressed: () => showFullScreenDialog(
+                      context,
+                      (_) => EventEditDialog(
+                        calendar: calendar,
+                        event: event,
+                        context: context,
+                        update: (event) => setState(() => this.event = event),
+                      ),
+                    ),
+                    child: Icon(Icons.edit),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

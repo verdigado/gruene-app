@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/utils.dart';
-import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_attendance_selection.dart';
-import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -42,23 +40,7 @@ class EventDetail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          spacing: 8,
-          children: [
-            Flexible(child: Text(event.title, style: theme.textTheme.titleLarge)),
-            if (!calendar.readOnly)
-              IconButton(
-                color: theme.colorScheme.secondary,
-                onPressed: () => showFullScreenDialog(
-                  context,
-                  (_) => EventEditDialog(calendar: calendar, event: event, context: context, update: update),
-                ),
-                icon: Icon(Icons.edit),
-              ),
-          ],
-        ),
+        Text(event.title, style: theme.textTheme.titleLarge),
         if (event.categories.isNotEmpty) Text(event.categories.join(', ')),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
