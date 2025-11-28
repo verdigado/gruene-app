@@ -15,11 +15,15 @@ import 'package:gruene_app/app/router.dart';
 import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
+import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
 import 'package:gruene_app/app/services/gruene_api_experience_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
+import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_route_service.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/services/push_notification_listener.dart';
@@ -83,6 +87,10 @@ Future<void> main() async {
   GetIt.I.registerFactory<GrueneApiActionAreaService>(() => GrueneApiActionAreaService());
   GetIt.I.registerFactory<GrueneApiExperienceAreaService>(() => GrueneApiExperienceAreaService());
   GetIt.I.registerFactory<GrueneApiCampaignsStatisticsService>(() => GrueneApiCampaignsStatisticsService());
+  GetIt.I.registerFactory<GrueneApiTeamsService>(() => GrueneApiTeamsService());
+  GetIt.I.registerFactory<GrueneApiDivisionsService>(() => GrueneApiDivisionsService());
+  GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
+  GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
 
   WidgetsFlutterBinding.ensureInitialized();
 
