@@ -116,37 +116,42 @@ class _EventsScreenState extends State<EventsScreen> {
 
     return Stack(
       children: [
-        _isMapView
-            ? EventsMap(events: events, calendars: widget.calendars, update: addOrUpdateEvent)
-            : Container(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  spacing: 8,
-                  children: [
-                    FilterBar(
-                      searchFilter: searchFilter,
-                      modified: [attendanceStatusFilter, categoryFilter, dateRangeFilter].modified(),
-                      filterDialog: EventsFilterDialog(
-                        attendanceStatusFilter: attendanceStatusFilter,
-                        categoryFilter: categoryFilter,
-                        dateRangeFilter: dateRangeFilter,
-                      ),
-                    ),
-                    Expanded(
-                      child: EventsList(
-                        events: events,
-                        calendars: widget.calendars,
-                        dateRange: _dateRange,
-                        refresh: widget.refresh,
-                        update: addOrUpdateEvent,
-                        delete: deleteEvent,
-                      ),
-                    ),
-                  ],
+        Offstage(
+          offstage: !_isMapView,
+          child: EventsMap(events: events, calendars: widget.calendars, update: addOrUpdateEvent),
+        ),
+        Offstage(
+          offstage: _isMapView,
+          child: Container(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8,
+              children: [
+                FilterBar(
+                  searchFilter: searchFilter,
+                  modified: [attendanceStatusFilter, categoryFilter, dateRangeFilter].modified(),
+                  filterDialog: EventsFilterDialog(
+                    attendanceStatusFilter: attendanceStatusFilter,
+                    categoryFilter: categoryFilter,
+                    dateRangeFilter: dateRangeFilter,
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: EventsList(
+                    events: events,
+                    calendars: widget.calendars,
+                    dateRange: _dateRange,
+                    refresh: widget.refresh,
+                    update: addOrUpdateEvent,
+                    delete: deleteEvent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         Positioned(
           bottom: 8,
           left: 0,

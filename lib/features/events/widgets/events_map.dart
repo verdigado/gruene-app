@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
@@ -9,6 +10,7 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/app/widgets/modal_bottom_sheet.dart';
+import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_card.dart';
@@ -94,6 +96,8 @@ class _EventsMapState extends State<EventsMap> {
 
   @override
   Widget build(BuildContext context) {
+    final appSettings = GetIt.I<AppSettings>();
+
     return FutureLoadingScreen(
       load: () => determinePosition(
         context,
@@ -104,7 +108,10 @@ class _EventsMapState extends State<EventsMap> {
         final position = requestedPosition?.toLatLng();
         final cameraPosition = position != null
             ? CameraPosition(target: position, zoom: userZoom)
-            : CameraPosition(target: Config.centerGermany, zoom: Config.germanyZoom);
+            : CameraPosition(
+                target: appSettings.events?.lastPosition ?? Config.centerGermany,
+                zoom: appSettings.events?.lastZoomLevel ?? Config.germanyZoom,
+              );
 
         return Stack(
           children: [
@@ -113,6 +120,10 @@ class _EventsMapState extends State<EventsMap> {
               initialCameraPosition: cameraPosition,
               onMapCreated: _onMapCreated,
               onStyleLoadedCallback: _onStyleLoaded,
+              trackCameraPosition: true,
+              onCameraIdle: () {
+                appSettings.events = (lastPosition: mapController!.cameraPosition!.target, lastZoomLevel: mapController!.cameraPosition!.zoom);
+              },
               // Replace with custom map attribution
               attributionButtonMargins: const math.Point(-100, -100),
             ),
