@@ -203,6 +203,8 @@
       "create_new_team": "Neues Team erstellen",
       "leave_team": "Team verlassen",
       "leave_team_confirmation_dialog": "Möchtest Du dein Team wirklich verlassen? Du kannst nur mit einer erneuten Einladung wieder beitreten.",
+      "archive_team": "Team archivieren",
+      "archive_team_confirmation_dialog": "Bist du sicher, dass du das Team archivieren möchtest? Dieser Schritt kann nicht rückgängig gemacht werden.",
       "team_name_label": "Team Name",
       "team_description_label": "Beschreibung (nur für Mitglieder sichtbar)",
       "team_self_join": "Selber beitreten",
@@ -217,7 +219,13 @@
       "select_team_member_label": "Team-Mitglieder einladen",
       "select_team_member_hint": "Lade jetzt weitere Team-Mitglieder ein. Teams können maximal 10 Mitglieder haben.",
       "select_as_team_member": "Ins Team einladen",
-      "edit_team_members": "Teammitglieder bearbeiten"
+      "edit_team_members": "Teammitglieder bearbeiten",
+      "team_assigned_elements": "Uns zugewiesen (${count})",
+      "team_assigned_elements_hide_closed": "Erledigte ausblenden",
+      "team_assigned_elements_show_closed": "Erledigte einblenden",
+      "team_assigned_elements_area_info": "${area} km² Gebiet",
+      "team_assigned_elements_route_info": "${distance} km Route",
+      "team_assigned_elements_assignment_info": "zugewiesen am ${date} von ${assignee}"
     },
     "statistic": {
       "label": "Statistik",
