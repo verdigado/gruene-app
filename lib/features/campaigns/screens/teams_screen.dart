@@ -44,6 +44,6 @@ class _TeamsScreenState extends State<TeamsScreen> with NewTeamMixin {
     rows.add(TeamHome(currentUser: _currentUserInfo));
     rows.add(_currentUserInfo.isCampaignManager() ? getNewTeamButton(context) : SizedBox.shrink());
 
-    return Column(children: rows);
+    return SingleChildScrollView(child: Column(children: rows));
   }
 }
