@@ -132,7 +132,8 @@ class _EventEditDialogState extends State<EventEditDialog> {
                       suffixIcon: Icon(Icons.today),
                     ),
                   ),
-                  EventRecurrenceForm(event: widget.event, formKey: formKey),
+                  // TODO uncomment once recurrences are better handled in the API
+                  // EventRecurrenceForm(event: widget.event, formKey: formKey),
                 ],
               ),
 
