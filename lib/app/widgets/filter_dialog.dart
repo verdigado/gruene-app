@@ -21,14 +21,15 @@ class FilterDialog extends StatelessWidget {
               ),
             ]
           : [],
-      child: ListView(
+      child: Column(
+        spacing: 16,
         children: [
           ...children,
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             child: FilledButton(
               onPressed: Navigator.of(context).pop,
-              style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
+              style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(48))),
               child: Text(
                 t.common.actions.applyFilter,
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),

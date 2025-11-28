@@ -56,7 +56,7 @@ class EventCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(event.formattedDate(recurrence), style: theme.textTheme.labelSmall),
-                            event.attendanceStatus.icon(context, 16) ?? SizedBox.shrink(),
+                            event.attendanceStatus.icon(context, {}, 16) ?? SizedBox.shrink(),
                           ],
                         ),
                         const SizedBox(height: 4),

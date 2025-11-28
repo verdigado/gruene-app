@@ -107,15 +107,33 @@ extension RruleExtension on RecurrenceRule? {
 }
 
 extension CalendarEventAttendanceStatusExtension on CalendarEventAttendanceStatus? {
-  Widget? icon(BuildContext context, [double? size]) {
+  Widget? icon(BuildContext context, Set<CalendarEventAttendanceStatus> attendanceStatuses, [double? size]) {
     final theme = Theme.of(context);
     switch (this) {
       case CalendarEventAttendanceStatus.accepted:
-        return Icon(Icons.check, color: theme.colorScheme.primary, size: size);
+        return Icon(
+          Icons.check,
+          color: attendanceStatuses.contains(CalendarEventAttendanceStatus.accepted)
+              ? theme.colorScheme.surface
+              : theme.colorScheme.primary,
+          size: size,
+        );
       case CalendarEventAttendanceStatus.tentative:
-        return Icon(Icons.question_mark, color: ThemeColors.warning, size: size);
+        return Icon(
+          Icons.question_mark,
+          color: attendanceStatuses.contains(CalendarEventAttendanceStatus.tentative)
+              ? theme.colorScheme.surface
+              : ThemeColors.warning,
+          size: size,
+        );
       case CalendarEventAttendanceStatus.declined:
-        return Icon(Icons.close, color: theme.colorScheme.error, size: size);
+        return Icon(
+          Icons.close,
+          color: attendanceStatuses.contains(CalendarEventAttendanceStatus.declined)
+              ? theme.colorScheme.surface
+              : theme.colorScheme.error,
+          size: size,
+        );
       default:
         return null;
     }

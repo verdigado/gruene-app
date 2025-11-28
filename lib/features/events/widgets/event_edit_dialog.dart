@@ -72,7 +72,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
       clearValueOnUnregister: true,
       child: FullScreenDialog(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 32,
@@ -230,7 +230,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                height: 64,
+                height: 48,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

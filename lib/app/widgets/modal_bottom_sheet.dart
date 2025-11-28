@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/full_width_image.dart';
 
 class ModalBottomSheet extends StatelessWidget {
@@ -32,20 +33,7 @@ class ModalBottomSheet extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              alignment: Alignment.topRight,
-              padding: EdgeInsets.all(8),
-              width: double.infinity,
-              height: 64,
-              child: CircleAvatar(
-                backgroundColor: theme.colorScheme.surface,
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: onClose,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-            ),
+            DialogCloseButton(),
             if (aside != null) aside,
           ],
         ),

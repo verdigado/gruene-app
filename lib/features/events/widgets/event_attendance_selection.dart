@@ -19,15 +19,19 @@ class EventAttendanceSelection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SegmentedButton(
       segments: [
-        ButtonSegment(value: CalendarEventAttendanceStatus.accepted, label: Text(t.common.yes)),
+        ButtonSegment(
+          value: CalendarEventAttendanceStatus.accepted,
+          icon: CalendarEventAttendanceStatus.accepted.icon(context, attendanceStatus),
+          label: Text(t.common.yes),
+        ),
         ButtonSegment(
           value: CalendarEventAttendanceStatus.tentative,
-          icon: CalendarEventAttendanceStatus.tentative.icon(context),
+          icon: CalendarEventAttendanceStatus.tentative.icon(context, attendanceStatus),
           label: Text(t.common.maybe),
         ),
         ButtonSegment(
           value: CalendarEventAttendanceStatus.declined,
-          icon: CalendarEventAttendanceStatus.declined.icon(context),
+          icon: CalendarEventAttendanceStatus.declined.icon(context, attendanceStatus),
           label: Text(t.common.no),
         ),
       ],
@@ -35,6 +39,7 @@ class EventAttendanceSelection extends StatelessWidget {
       onSelectionChanged: setAttendanceStatus,
       multiSelectionEnabled: multiSelect,
       emptySelectionAllowed: true,
+      showSelectedIcon: false,
     );
   }
 }

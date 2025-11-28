@@ -208,4 +208,7 @@ final ThemeData appTheme = ThemeData.light().copyWith(
     backgroundColor: ThemeColors.backgroundSecondary,
     titleTextStyle: _ThemeTextStyles.titleLarge,
   ),
+  timePickerTheme: TimePickerThemeData(
+    timeSelectorSeparatorTextStyle: WidgetStatePropertyAll(_ThemeTextStyles.displayLarge.copyWith(height: 2)),
+  ),
 );
