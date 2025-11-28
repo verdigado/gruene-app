@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/auth/repository/user_info.dart';
-<<<<<<< HEAD
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-=======
-import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
->>>>>>> develop/feature_teams
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class TeamHome extends StatefulWidget {
@@ -19,11 +15,7 @@ class TeamHome extends StatefulWidget {
   State<TeamHome> createState() => _TeamHomeState();
 }
 
-<<<<<<< HEAD
 class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
-=======
-class _TeamHomeState extends State<TeamHome> {
->>>>>>> develop/feature_teams
   bool _loading = true;
 
   late Team? _currentTeam;
@@ -75,7 +67,6 @@ Chat: https://signal.group/#123456''',
     if (_loading) {
       return Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator());
     }
-<<<<<<< HEAD
     if (_currentTeam == null) return SizedBox.shrink();
 
     var theme = Theme.of(context);
@@ -122,14 +113,4 @@ Chat: https://signal.group/#123456''',
       actionTitle: t.common.actions.confirm,
     );
   }
-=======
-    return Column(
-      children: [
-        _currentTeam != null
-            ? TeamProfile(currentTeam: _currentTeam!, currentUser: widget.currentUser)
-            : SizedBox.shrink(),
-      ],
-    );
-  }
->>>>>>> develop/feature_teams
 }
