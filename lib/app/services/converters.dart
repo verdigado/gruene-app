@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 // import 'package:geotypes/geotypes.dart';
+import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/geocode/nominatim.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
@@ -23,6 +24,7 @@ import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.
 import 'package:gruene_app/features/campaigns/models/posters/poster_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_update_model.dart';
+import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/widgets/enhanced_wheel_slider.dart';
 import 'package:gruene_app/features/campaigns/widgets/text_input_field.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -72,3 +74,6 @@ part 'converters/action_area_update_model_parsing.dart';
 part 'converters/geometry_converters.dart';
 part 'converters/feature_extension.dart';
 part 'converters/poi_detail_model_parsing.dart';
+part 'converters/public_profile_parsing.dart';
+part 'converters/new_team_details_parsing.dart';
+part 'converters/user_info_extensions.dart';
