@@ -26,12 +26,12 @@ class FullWidthImage extends StatelessWidget {
 }
 
 void showImageDialog(BuildContext context, String image) async => await showDialog<void>(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) => Stack(
-      children: [
-        CachedNetworkImage(imageUrl: image, fit: BoxFit.contain),
-        DialogCloseButton(),
-      ],
-    ),
-  );
+  context: context,
+  barrierDismissible: true,
+  builder: (BuildContext context) => Stack(
+    children: [
+      CachedNetworkImage(imageUrl: image, fit: BoxFit.contain),
+      DialogCloseButton(),
+    ],
+  ),
+);
