@@ -56,7 +56,7 @@ Future<CalendarEvent> updateEventAttendance(
   request: (api) => api.v1CalendarsCalendarIdEventIdAttendancePut(
     calendarId: event.calendarId,
     eventId: event.id,
-    body: attendanceStatus != null ? UpdateCalendarEventAttendance(status: attendanceStatus) : null,
+    body: UpdateCalendarEventAttendance(status: attendanceStatus),
   ),
   map: (result) => result,
 );
