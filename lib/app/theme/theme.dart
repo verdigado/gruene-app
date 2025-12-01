@@ -49,7 +49,7 @@ class _ThemeTextStyles {
   static TextStyle displayMedium = TextStyle(
     fontFamily: 'GrueneTypeNeue',
     fontSize: 18,
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w400,
     height: 1.6,
     letterSpacing: 0.02,
     color: ThemeColors.text,
