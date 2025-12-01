@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -224,7 +225,11 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       ),
       child: Row(
         children: [
-          SizedBox(height: 24, width: 24, child: Image.asset(_getAssetLocationByAssignmentType(assignedElement.type))),
+          SizedBox(
+            height: 24,
+            width: 24,
+            child: SvgPicture.asset(_getAssetLocationByAssignmentType(assignedElement.type)),
+          ),
           SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,11 +259,11 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
   String _getAssetLocationByAssignmentType(TeamAssignmentType type) {
     switch (type) {
       case TeamAssignmentType.door:
-        return 'assets/symbols/doors/door.png';
+        return 'assets/symbols/doors/door.svg';
       case TeamAssignmentType.flyer:
-        return 'assets/symbols/flyer/flyer.png';
+        return 'assets/symbols/flyer/flyer.svg';
       case TeamAssignmentType.poster:
-        return 'assets/symbols/posters/poster.png';
+        return 'assets/symbols/posters/poster.svg';
     }
   }
 
