@@ -82,7 +82,14 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
                     }
                   },
                 ),
-                ...(List<int>.generate(4, (i) => i + 1).map((i) => _getMemberWidget(i - 1))),
+                SizedBox(
+                  height: 150,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [...(List<int>.generate(9, (i) => i + 1).map((i) => _getMemberWidget(i - 1)))],
+                    ),
+                  ),
+                ),
               ],
             ),
           ],
