@@ -4,6 +4,7 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/team_member_statistics.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -76,6 +77,7 @@ Chat: https://signal.group/#123456''',
       children: [
         TeamProfile(currentTeam: _currentTeam!, currentUser: widget.currentUser),
         TeamAssignedElements(currentTeam: _currentTeam!),
+        TeamMemberStatistics(currentTeam: _currentTeam!),
 
         GestureDetector(
           onTap: _leaveTeam,
