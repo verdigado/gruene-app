@@ -37,7 +37,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     // TODO #733 remove mock data when getOwnTeam is working
     // var teamsService = GetIt.I<GrueneApiTeamsService>();
     // var team = await teamsService.getOwnTeam();
-    await Future.delayed(Duration(milliseconds: 250));
+    await Future<void>.delayed(Duration(milliseconds: 250));
     var team = Team(
       id: '1',
       userId: '123',
@@ -132,7 +132,7 @@ Chat: https://signal.group/#123456''',
   void _leaveTeam() {
     Future<void> executeLeaveTeam() async {
       // TODO #300 use leave functionality on API
-      await Future.delayed(Duration(milliseconds: 250));
+      await Future<void>.delayed(Duration(milliseconds: 250));
       // var teamsService = GetIt.I<GrueneApiTeamsService>();
       // teamsService.leaveTeam(_currentTeam.id);
     }
@@ -149,7 +149,7 @@ Chat: https://signal.group/#123456''',
   void _archiveTeam() {
     Future<void> executeArchiveTeam() async {
       // TODO #735 use archive functionality on API
-      await Future.delayed(Duration(milliseconds: 250));
+      await Future<void>.delayed(Duration(milliseconds: 250));
       // var teamsService = GetIt.I<GrueneApiTeamsService>();
       // teamsService.deleteTeam(_currentTeam.id);
     }

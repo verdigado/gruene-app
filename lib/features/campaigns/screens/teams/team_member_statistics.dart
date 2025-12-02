@@ -34,7 +34,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
 
     // await Future.delayed(Duration(milliseconds: 200));
     // TODO #729 remove mock data when getTeamStatistics is working
-    await Future.delayed(Duration(milliseconds: 250));
+    await Future<void>.delayed(Duration(milliseconds: 250));
     // var teamsService = GetIt.I<GrueneApiTeamsService>();
     // var team = await teamsService.getTeamStatistics();
 
