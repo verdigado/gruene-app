@@ -19,8 +19,9 @@ class ModalBottomSheet extends StatelessWidget {
     return ClipRRect(
       borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
       child: Scaffold(
-        backgroundColor: theme.colorScheme.surface,
+        backgroundColor: theme.colorScheme.surfaceDim,
         body: Stack(
+          fit: StackFit.expand,
           children: [
             SingleChildScrollView(
               child: Column(
@@ -29,7 +30,7 @@ class ModalBottomSheet extends StatelessWidget {
                 spacing: 8,
                 children: [
                   if (image != null) FullWidthImage(image: image, heightRatio: 9 / 16),
-                  Padding(padding: const EdgeInsets.fromLTRB(16, 16, 16, 60), child: child),
+                  Padding(padding: EdgeInsets.fromLTRB(16, image == null ? 32 : 16, 16, 60), child: child),
                 ],
               ),
             ),

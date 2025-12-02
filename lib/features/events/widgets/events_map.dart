@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
@@ -11,6 +12,7 @@ import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/app/widgets/modal_bottom_sheet.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
+import 'package:gruene_app/features/events/bloc/event_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_card.dart';
@@ -23,18 +25,11 @@ import 'package:turf/along.dart';
 const double userZoom = 10;
 
 class EventsMap extends StatefulWidget {
-  final void Function(CalendarEvent) update;
   final List<CalendarEvent> events;
   final List<Calendar> calendars;
   final String? initialEventId;
 
-  const EventsMap({
-    super.key,
-    required this.events,
-    this.initialEventId,
-    required this.calendars,
-    required this.update,
-  });
+  const EventsMap({super.key, required this.events, this.initialEventId, required this.calendars});
 
   @override
   State<EventsMap> createState() => _EventsMapState();
@@ -57,13 +52,12 @@ class _EventsMapState extends State<EventsMap> {
 
   Future<void> _onFeatureTapped(_, math.Point<double> point, LatLng coordinates, String layer) async {
     final features = await mapController!.queryRenderedFeatures(point, ['events-layer'], null);
-    final events = features
-        .map((feature) => widget.events.firstWhereOrNull((event) => event.id == feature['properties']['eventId']))
-        .nonNulls
-        .toList();
+    final eventIds = features.map((feature) => feature['properties']['eventId'] as String?).nonNulls.toList();
 
-    if (mounted && events.isNotEmpty) {
-      _showBottomSheet(events: events, calendars: widget.calendars, context: context, update: widget.update);
+    eventIds.sort((a, b) => a.compareTo(b));
+
+    if (mounted && eventIds.isNotEmpty) {
+      _showBottomSheet(eventIds: eventIds, calendars: widget.calendars, context: context);
     }
   }
 
@@ -139,54 +133,58 @@ class _EventsMapState extends State<EventsMap> {
 }
 
 Future<void> _showBottomSheet({
+  required List<String> eventIds,
   required BuildContext context,
-  required List<CalendarEvent> events,
   required List<Calendar> calendars,
-  required void Function(CalendarEvent) update,
 }) async {
   showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
     builder: (context) {
-      CalendarEvent? selectedEvent;
+      String? selectedEventId;
       return StatefulBuilder(
-        builder: (context, setState) {
-          final event = events.length == 1 ? events[0] : selectedEvent;
-          final calendar = event?.calendar(calendars);
+        builder: (context, setState) => BlocBuilder<EventsBloc, EventsState>(
+          builder: (context, state) {
+            final events = state.events.where((event) => eventIds.contains(event.id)).toList();
+            final event = events.length == 1
+                ? events[0]
+                : events.firstWhereOrNull((event) => event.id == selectedEventId);
+            final calendar = event?.calendar(calendars);
 
-          return ModalBottomSheet(
-            image: event?.image,
-            onClose: () => Navigator.pop(context),
-            aside: calendar != null && !calendar.readOnly
-                ? Positioned(
-                    bottom: 16,
-                    right: 16,
-                    child: SafeArea(
-                      child: FloatingActionButton(
-                        onPressed: () => showFullScreenDialog(
-                          context,
-                          (_) => EventEditDialog(calendar: calendar, event: event, context: context, update: update),
-                        ),
-                        child: Icon(Icons.edit),
-                      ),
-                    ),
-                  )
-                : null,
-            child: event != null && calendar != null
-                ? EventDetail(event: event, recurrence: null, calendar: calendar, update: update)
-                : Column(
-                    children: events
-                        .map(
-                          (event) => EventCard(
-                            event: event,
-                            recurrence: null,
-                            onTap: () => setState(() => selectedEvent = event),
+            return ModalBottomSheet(
+              image: event?.image,
+              onClose: () => Navigator.pop(context),
+              aside: calendar != null && !calendar.readOnly
+                  ? Positioned(
+                      bottom: 16,
+                      right: 16,
+                      child: SafeArea(
+                        child: FloatingActionButton(
+                          onPressed: () => showFullScreenDialog(
+                            context,
+                            (_) => EventEditDialog(calendar: calendar, event: event, context: context),
                           ),
-                        )
-                        .toList(),
-                  ),
-          );
-        },
+                          child: Icon(Icons.edit),
+                        ),
+                      ),
+                    )
+                  : null,
+              child: event != null && calendar != null
+                  ? EventDetail(event: event, recurrence: null, calendar: calendar)
+                  : Column(
+                      children: events
+                          .map(
+                            (event) => EventCard(
+                              event: event,
+                              recurrence: null,
+                              onTap: () => setState(() => selectedEventId = event.id),
+                            ),
+                          )
+                          .toList(),
+                    ),
+            );
+          },
+        ),
       );
     },
   );

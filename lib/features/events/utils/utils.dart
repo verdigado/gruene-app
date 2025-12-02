@@ -60,14 +60,12 @@ extension CalendarEventListExtension on List<CalendarEvent> {
     Set<CalendarEventAttendanceStatus> attendanceStatuses,
     List<String> categories,
     DateTimeRange? dateRange,
-  ) {
-    return where(
-      (it) =>
-          (attendanceStatuses.isEmpty || attendanceStatuses.contains(it.attendanceStatus)) &&
-          (categories.isEmpty || it.categories.any((category) => categories.contains(category))) &&
-          it.inRange(dateRange),
-    ).toList();
-  }
+  ) => where(
+    (it) =>
+        (attendanceStatuses.isEmpty || attendanceStatuses.contains(it.attendanceStatus)) &&
+        (categories.isEmpty || it.categories.any((category) => categories.contains(category))) &&
+        it.inRange(dateRange),
+  ).toList();
 
   List<MonthGroup> groupEventsByMonth(DateTimeRange? dateRange) {
     final now = DateTime.now();

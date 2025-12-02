@@ -36,11 +36,15 @@ class Routes {
   static GoRoute eventDetail = GoRoute(
     path: ':eventId',
     pageBuilder: (context, state) {
-      final extra = state.extra as ({CalendarEvent event, DateTime recurrence, Calendar calendar});
+      final extra = state.extra as ({DateTime recurrence, Calendar calendar});
       return buildPageWithoutAnimation(
         context: context,
         state: state,
-        child: EventDetailScreen(event: extra.event, calendar: extra.calendar, recurrence: extra.recurrence),
+        child: EventDetailScreenContainer(
+          eventId: state.pathParameters['eventId']!,
+          calendar: extra.calendar,
+          recurrence: extra.recurrence,
+        ),
       );
     },
   );

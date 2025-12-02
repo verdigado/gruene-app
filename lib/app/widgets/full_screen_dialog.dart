@@ -22,6 +22,5 @@ class FullScreenDialog extends StatelessWidget {
   }
 }
 
-void showFullScreenDialog(BuildContext context, WidgetBuilder builder) {
-  Navigator.of(context).push(MaterialPageRoute<void>(fullscreenDialog: true, builder: builder));
-}
+Future<T?> showFullScreenDialog<T extends Object?>(BuildContext context, WidgetBuilder builder) =>
+    Navigator.of(context).push(MaterialPageRoute<T>(fullscreenDialog: true, builder: builder));

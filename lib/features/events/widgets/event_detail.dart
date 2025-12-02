@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
+import 'package:gruene_app/features/events/bloc/event_bloc.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_attendance_selection.dart';
@@ -10,18 +12,11 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventDetail extends StatelessWidget {
-  final void Function(CalendarEvent) update;
   final CalendarEvent event;
   final Calendar calendar;
   final DateTime? recurrence;
 
-  const EventDetail({
-    super.key,
-    required this.event,
-    required this.recurrence,
-    required this.calendar,
-    required this.update,
-  });
+  const EventDetail({super.key, required this.event, required this.recurrence, required this.calendar});
 
   @override
   Widget build(BuildContext context) {
@@ -85,16 +80,16 @@ class EventDetail extends StatelessWidget {
             Text(t.events.attend),
             EventAttendanceSelection(
               attendanceStatus: attendanceStatus != null ? {attendanceStatus} : {},
-              setAttendanceStatus: (attendanceStatus) async {
-                final event = await tryAndNotify(
-                  function: () => updateEventAttendance(this.event, attendanceStatus.firstOrNull),
-                  context: context,
-                  successMessage: t.common.saved,
-                );
-                if (event != null) {
-                  update(event);
-                }
-              },
+              setAttendanceStatus: (attendanceStatus) async => await tryAndNotify(
+                function: () async {
+                  final updatedEvent = await updateEventAttendance(event, attendanceStatus.firstOrNull);
+                  if (context.mounted) {
+                    context.read<EventsBloc>().add(AddOrUpdateEvent(calendarEvent: updatedEvent));
+                  }
+                },
+                context: context,
+                successMessage: t.common.saved,
+              ),
             ),
           ],
         ),

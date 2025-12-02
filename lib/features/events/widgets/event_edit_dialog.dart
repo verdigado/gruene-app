@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -10,6 +11,7 @@ import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
+import 'package:gruene_app/features/events/bloc/event_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
@@ -31,18 +33,11 @@ const categoriesField = 'categories';
 const imageField = 'image';
 
 class EventEditDialog extends StatefulWidget {
-  final void Function(CalendarEvent) update;
   final Calendar calendar;
   final CalendarEvent? event;
   final BuildContext context;
 
-  const EventEditDialog({
-    super.key,
-    required this.calendar,
-    required this.event,
-    required this.context,
-    required this.update,
-  });
+  const EventEditDialog({super.key, required this.calendar, required this.event, required this.context});
 
   @override
   State<EventEditDialog> createState() => _EventEditDialogState();
@@ -258,11 +253,10 @@ class _EventEditDialogState extends State<EventEditDialog> {
                               calendar: widget.calendar,
                               previousEvent: widget.event,
                               context: context,
-                              update: widget.update,
                             );
                             if (context.mounted && newEvent != null) {
                               Navigator.of(context).pop(newEvent);
-                              widget.update(newEvent);
+                              context.read<EventsBloc>().add(AddOrUpdateEvent(calendarEvent: newEvent));
                             }
                           }
                         },
@@ -284,7 +278,6 @@ class _EventEditDialogState extends State<EventEditDialog> {
 }
 
 Future<CalendarEvent?> save({
-  required void Function(CalendarEvent) update,
   required BuildContext context,
   required GlobalKey<FormBuilderState> formKey,
   required Calendar calendar,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/date.dart';
@@ -6,6 +7,7 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
+import 'package:gruene_app/features/events/bloc/event_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
@@ -24,11 +26,20 @@ class EventsScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.events.events),
       body: FutureLoadingScreen(
-        load: () async => (await getEvents(), await getCalendars()),
-        buildChild: (data, extra) {
-          final (events, calendars) = data;
-          return EventsScreen(events: events, calendars: calendars, refresh: extra.refresh);
-        },
+        load: getCalendars,
+        buildChild: (calendars, _) => FutureLoadingScreen(
+          load: () async {
+            final events = await getEvents();
+            if (context.mounted) {
+              context.read<EventsBloc>().add(AddEvents(calendarEvents: events));
+              return events;
+            }
+          },
+          buildChild: (_, extra) => BlocBuilder<EventsBloc, EventsState>(
+            builder: (context, state) =>
+                EventsScreen(calendars: calendars, events: state.events, refresh: extra.refresh),
+          ),
+        ),
       ),
     );
   }
@@ -36,55 +47,31 @@ class EventsScreenContainer extends StatelessWidget {
 
 class EventsScreen extends StatefulWidget {
   final void Function() refresh;
-  final List<CalendarEvent> events;
   final List<Calendar> calendars;
+  final List<CalendarEvent> events;
 
-  const EventsScreen({super.key, required this.events, required this.calendars, required this.refresh});
+  const EventsScreen({super.key, required this.calendars, required this.events, required this.refresh});
 
   @override
   State<EventsScreen> createState() => _EventsScreenState();
 }
 
 class _EventsScreenState extends State<EventsScreen> {
-  late List<CalendarEvent> _events;
   bool _isMapView = false;
   String _query = '';
   List<String> _selectedCategories = [];
   Set<CalendarEventAttendanceStatus> _selectedAttendanceStatuses = {};
   DateTimeRange? _dateRange;
 
-  void addOrUpdateEvent(CalendarEvent newEvent) async {
-    final events = _events.where((event) => event.id != newEvent.id);
-    final isNew = events.length == _events.length;
-    setState(() => _events = [...events, newEvent].toList());
-    if (isNew) {
-      final updatedEvent = await context.pushNested(
-        newEvent.id,
-        extra: (event: newEvent, recurrence: newEvent.start, calendar: newEvent.calendar(widget.calendars)),
-      );
-      if (updatedEvent != null) {
-        addOrUpdateEvent(updatedEvent as CalendarEvent);
-      } else {
-        deleteEvent(newEvent);
-      }
-    }
-  }
-
-  void deleteEvent(CalendarEvent deletedEvent) {
-    final events = _events.where((event) => event.id != deletedEvent.id);
-    setState(() => _events = events.toList());
-  }
-
   @override
   void initState() {
     super.initState();
-    _events = widget.events;
     _dateRange = todayOrFuture();
   }
 
   @override
   Widget build(BuildContext context) {
-    final events = _events.filter(_selectedAttendanceStatuses, _selectedCategories, _dateRange);
+    final events = widget.events.filter(_selectedAttendanceStatuses, _selectedCategories, _dateRange);
     final writableCalendar = widget.calendars.firstWhereOrNull((calendar) => !calendar.readOnly);
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
@@ -109,7 +96,7 @@ class _EventsScreenState extends State<EventsScreen> {
       children: [
         Offstage(
           offstage: !_isMapView,
-          child: EventsMap(events: events, calendars: widget.calendars, update: addOrUpdateEvent),
+          child: EventsMap(events: events, calendars: widget.calendars),
         ),
         Offstage(
           offstage: _isMapView,
@@ -135,8 +122,6 @@ class _EventsScreenState extends State<EventsScreen> {
                     calendars: widget.calendars,
                     dateRange: _dateRange,
                     refresh: widget.refresh,
-                    update: addOrUpdateEvent,
-                    delete: deleteEvent,
                   ),
                 ),
               ],
@@ -164,15 +149,18 @@ class _EventsScreenState extends State<EventsScreen> {
             bottom: 8,
             right: 16,
             child: FloatingActionButton.small(
-              onPressed: () => showFullScreenDialog(
-                context,
-                (_) => EventEditDialog(
-                  calendar: writableCalendar,
-                  event: null,
-                  context: context,
-                  update: addOrUpdateEvent,
-                ),
-              ),
+              onPressed: () async {
+                final event = await showFullScreenDialog<CalendarEvent?>(
+                  context,
+                  (_) => EventEditDialog(calendar: writableCalendar, event: null, context: context),
+                );
+                if (context.mounted && event != null) {
+                  context.pushNested(
+                    event.id,
+                    extra: (recurrence: event.start, calendar: event.calendar(widget.calendars)),
+                  );
+                }
+              },
               child: Icon(Icons.edit_calendar),
             ),
           ),
