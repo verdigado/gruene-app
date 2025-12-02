@@ -7,6 +7,7 @@ import 'package:gruene_app/main.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
 import 'package:rrule/rrule.dart';
+import 'package:turf/along.dart';
 
 const maxRecurrences = 30;
 
@@ -57,15 +58,33 @@ extension CalendarEventExtension on CalendarEvent {
 
 extension CalendarEventListExtension on List<CalendarEvent> {
   List<CalendarEvent> filter(
+    String query,
     Set<CalendarEventAttendanceStatus> attendanceStatuses,
     List<String> categories,
-    DateTimeRange? dateRange,
   ) => where(
     (it) =>
+        ([
+          it.title,
+          it.description,
+          it.locationAddress,
+          it.locationUrl,
+        ].any((value) => value?.toLowerCase().contains(query.toLowerCase()) ?? false)) &&
         (attendanceStatuses.isEmpty || attendanceStatuses.contains(it.attendanceStatus)) &&
-        (categories.isEmpty || it.categories.any((category) => categories.contains(category))) &&
-        it.inRange(dateRange),
+        (categories.isEmpty || it.categories.any((category) => categories.contains(category))),
   ).toList();
+
+  FeatureCollection<Point> get featureCollection {
+    final features = where((event) => event.coords?.length == 2)
+        .map(
+          (event) => Feature(
+            id: event.id,
+            geometry: Point(coordinates: Position(event.coords![0], event.coords![1])),
+            properties: {'eventId': event.id},
+          ),
+        )
+        .toList();
+    return FeatureCollection(features: features);
+  }
 
   List<MonthGroup> groupEventsByMonth(DateTimeRange? dateRange) {
     final now = DateTime.now();

@@ -4,7 +4,7 @@ import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
-import 'package:gruene_app/features/events/bloc/event_bloc.dart';
+import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_attendance_selection.dart';

@@ -12,7 +12,7 @@ import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/app/widgets/modal_bottom_sheet.dart';
 import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
-import 'package:gruene_app/features/events/bloc/event_bloc.dart';
+import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_card.dart';
@@ -20,16 +20,13 @@ import 'package:gruene_app/features/events/widgets/event_detail.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:turf/along.dart';
 
 const double userZoom = 10;
 
 class EventsMap extends StatefulWidget {
-  final List<CalendarEvent> events;
   final List<Calendar> calendars;
-  final String? initialEventId;
 
-  const EventsMap({super.key, required this.events, this.initialEventId, required this.calendars});
+  const EventsMap({super.key, required this.calendars});
 
   @override
   State<EventsMap> createState() => _EventsMapState();
@@ -46,7 +43,9 @@ class _EventsMapState extends State<EventsMap> {
     if (mapController != null) {
       mapController!.onFeatureTapped.add(_onFeatureTapped);
       await addImageFromAsset(mapController!, 'eventIcon', 'assets/symbols/events/event.png');
-      await _addEventsLayer();
+      if (mounted) {
+        await _addEventsLayer(context);
+      }
     }
   }
 
@@ -61,24 +60,18 @@ class _EventsMapState extends State<EventsMap> {
     }
   }
 
-  Future<void> _addEventsLayer() async {
-    final features = widget.events
-        .where((event) => event.coords?.length == 2)
-        .map(
-          (event) => Feature(
-            id: event.id,
-            geometry: Point(coordinates: Position(event.coords![0], event.coords![1])),
-            properties: {'eventId': event.id},
-          ),
-        )
-        .toList();
-
-    await mapController?.addGeoJsonSource(eventsSourceName, FeatureCollection(features: features).toJson());
+  Future<void> _addEventsLayer(BuildContext context) async {
+    final events = context.read<EventsBloc>().state.events;
+    await mapController?.addGeoJsonSource(eventsSourceName, events.featureCollection.toJson());
     await mapController?.addLayer(
       eventsSourceName,
       eventsLayerName,
       const SymbolLayerProperties(iconImage: 'eventIcon', iconSize: 0.2, iconAllowOverlap: true),
     );
+  }
+
+  Future<void> _updateEventsLayer(List<CalendarEvent> events) async {
+    await mapController?.setGeoJsonSource(eventsSourceName, events.featureCollection.toJson());
   }
 
   @override
@@ -92,42 +85,44 @@ class _EventsMapState extends State<EventsMap> {
   Widget build(BuildContext context) {
     final appSettings = GetIt.I<AppSettings>();
 
-    return FutureLoadingScreen(
-      load: () => determinePosition(
-        context,
-        requestIfNotGranted: true,
-        preferLastKnownPosition: true,
-      ).timeout(const Duration(milliseconds: 400), onTimeout: RequestedPosition.unknown),
-      buildChild: (RequestedPosition? requestedPosition, _) {
-        final position = requestedPosition?.toLatLng();
-        final cameraPosition = position != null
-            ? CameraPosition(target: position, zoom: userZoom)
-            : CameraPosition(
-                target: appSettings.events?.lastPosition ?? Config.centerGermany,
-                zoom: appSettings.events?.lastZoomLevel ?? Config.germanyZoom,
-              );
+    // return FutureLoadingScreen(
+    //   load: () => determinePosition(
+    //     context,
+    //     requestIfNotGranted: true,
+    //     preferLastKnownPosition: true,
+    //   ).timeout(const Duration(milliseconds: 400), onTimeout: RequestedPosition.unknown),
+    //   buildChild: (RequestedPosition? requestedPosition, _) {
+    //     final position = requestedPosition?.toLatLng();
+    final LatLng? position = null;
+    final cameraPosition = position != null
+        ? CameraPosition(target: position, zoom: userZoom)
+        : CameraPosition(
+            target: appSettings.events?.lastPosition ?? Config.centerGermany,
+            zoom: appSettings.events?.lastZoomLevel ?? Config.germanyZoom,
+          );
 
-        return Stack(
-          children: [
-            MapLibreMap(
-              styleString: Config.maplibreUrl,
-              initialCameraPosition: cameraPosition,
-              onMapCreated: _onMapCreated,
-              onStyleLoadedCallback: _onStyleLoaded,
-              trackCameraPosition: true,
-              onCameraIdle: () {
-                appSettings.events = (
-                  lastPosition: mapController!.cameraPosition!.target,
-                  lastZoomLevel: mapController!.cameraPosition!.zoom,
-                );
-              },
-              // Replace with custom map attribution
-              attributionButtonMargins: const math.Point(-100, -100),
-            ),
-            MapAttribution(),
-          ],
-        );
-      },
+    return BlocListener<EventsBloc, EventsState>(
+      listener: (context, state) => _updateEventsLayer(state.events),
+      child: Stack(
+        children: [
+          MapLibreMap(
+            styleString: Config.maplibreUrl,
+            initialCameraPosition: cameraPosition,
+            onMapCreated: _onMapCreated,
+            onStyleLoadedCallback: _onStyleLoaded,
+            trackCameraPosition: true,
+            onCameraIdle: () {
+              appSettings.events = (
+                lastPosition: mapController!.cameraPosition!.target,
+                lastZoomLevel: mapController!.cameraPosition!.zoom,
+              );
+            },
+            // Replace with custom map attribution
+            attributionButtonMargins: const math.Point(-100, -100),
+          ),
+          MapAttribution(),
+        ],
+      ),
     );
   }
 }

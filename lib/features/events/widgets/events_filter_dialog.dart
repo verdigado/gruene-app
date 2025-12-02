@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/widgets/date_range_filter.dart';
+import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/filter_dialog.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
+import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/widgets/event_attendance_selection.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -12,7 +15,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class EventsFilterDialog extends StatefulWidget {
   final FilterModel<Set<CalendarEventAttendanceStatus>> attendanceStatusFilter;
   final FilterModel<List<String>> categoryFilter;
-  final FilterModel<DateTimeRange?> dateRangeFilter;
+  final FilterModel<DateTimeRange> dateRangeFilter;
 
   const EventsFilterDialog({
     super.key,
@@ -40,12 +43,18 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
     _localDateRange = widget.dateRangeFilter.selected;
   }
 
-  void resetFilters() {
+  void resetFilters(BuildContext context) {
     setState(() => _localSelectedAttendanceStatuses = widget.attendanceStatusFilter.initial);
-    widget.categoryFilter.reset();
     setState(() => _localSelectedCategories = widget.categoryFilter.initial);
-    widget.dateRangeFilter.reset();
     setState(() => _localDateRange = widget.dateRangeFilter.initial);
+    context.read<EventsBloc>().add(
+      LoadEvents(
+        query: defaultQuery,
+        attendanceStatuses: defaultAttendanceStatuses,
+        categories: defaultCategories,
+        dateRange: defaultDateRange,
+      ),
+    );
   }
 
   @override
@@ -56,9 +65,29 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
         widget.dateRangeFilter.modified(_localDateRange);
 
     return FilterDialog(
-      resetFilters: resetFilters,
+      resetFilters: () => resetFilters(context),
       modified: filtersModified,
       children: [
+        DateRangeFilter(
+          title: t.events.dateRange,
+          dateRange: _localDateRange,
+          setDateRange: (dateRange) {
+            setState(() => _localDateRange = dateRange ?? defaultDateRange);
+            widget.dateRangeFilter.update(dateRange ?? defaultDateRange);
+          },
+        ),
+        SelectionView(
+          setSelectedOptions: (categories) {
+            setState(() => _localSelectedCategories = categories);
+            widget.categoryFilter.update(categories);
+          },
+          title: t.events.categories,
+          options: prominentEventCategories,
+          moreOptionsTitle: t.events.moreCategories,
+          moreOptions: moreEventCategories,
+          selectedOptions: _localSelectedCategories,
+          getLabel: (category) => category,
+        ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -77,27 +106,50 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
             ),
           ],
         ),
-        SelectionView(
-          setSelectedOptions: (categories) {
-            setState(() => _localSelectedCategories = categories);
-            widget.categoryFilter.update(categories);
-          },
-          title: t.events.categories,
-          options: prominentEventCategories,
-          moreOptionsTitle: t.events.moreCategories,
-          moreOptions: moreEventCategories,
-          selectedOptions: _localSelectedCategories,
-          getLabel: (category) => category,
-        ),
-        DateRangeFilter(
-          title: t.events.dateRange,
-          dateRange: _localDateRange,
-          setDateRange: (dateRange) {
-            setState(() => _localDateRange = dateRange);
-            widget.dateRangeFilter.update(dateRange);
-          },
-        ),
       ],
+    );
+  }
+}
+
+class EventsFilterBar extends StatelessWidget {
+  const EventsFilterBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EventsBloc, EventsState>(
+      builder: (context, state) {
+        final searchFilter = FilterModel(
+          update: (query) => context.read<EventsBloc>().add(LoadEvents(query: query)),
+          initial: defaultQuery,
+          selected: state.query,
+        );
+        final dateRangeFilter = FilterModel(
+          update: (dateRange) => context.read<EventsBloc>().add(LoadEvents(dateRange: dateRange)),
+          initial: defaultDateRange,
+          selected: state.dateRange,
+        );
+        final categoryFilter = FilterModel(
+          update: (categories) => context.read<EventsBloc>().add(LoadEvents(categories: categories)),
+          initial: defaultCategories,
+          selected: state.categories,
+        );
+        final attendanceStatusFilter = FilterModel(
+          update: (attendanceStatuses) =>
+              context.read<EventsBloc>().add(LoadEvents(attendanceStatuses: attendanceStatuses)),
+          initial: defaultAttendanceStatuses,
+          selected: state.attendanceStatuses,
+        );
+        return FilterBar(
+          searchFilter: searchFilter,
+          modified: [attendanceStatusFilter, categoryFilter, dateRangeFilter].modified(),
+          loading: state.loading,
+          filterDialog: EventsFilterDialog(
+            attendanceStatusFilter: attendanceStatusFilter,
+            categoryFilter: categoryFilter,
+            dateRangeFilter: dateRangeFilter,
+          ),
+        );
+      },
     );
   }
 }

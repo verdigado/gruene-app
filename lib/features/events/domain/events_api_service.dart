@@ -1,25 +1,20 @@
+import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
-import 'package:gruene_app/app/utils/utils.dart';
-import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
 
-Future<List<CalendarEvent>> getEvents() async => getFromApi(
-  request: (api) => api.v1CalendarsEventsGet(selection: CalendarSelection.central),
+Future<List<CalendarEvent>> getEvents(DateTimeRange dateRange) async => getFromApi(
+  request: (api) => api.v1CalendarsEventsGet(
+    selection: CalendarSelection.central,
+    start: dateRange.start.toIso8601String(),
+    end: dateRange.end.toIso8601String(),
+  ),
   map: (result) => result.data.events,
 );
 
 Future<List<Calendar>> getCalendars() async => getFromApi(
   request: (api) => api.v1CalendarsGet(selection: CalendarSelection.central),
   map: (result) => result.data,
-);
-
-Future<({CalendarEvent event, Calendar calendar})?> getEventById(String eventId) async => getFromApi(
-  request: (api) => api.v1CalendarsEventsGet(),
-  map: (result) {
-    final event = result.data.events.firstWhereOrNull((event) => event.id == eventId);
-    return event != null ? (event: event, calendar: event.calendar(result.data.calendars)) : null;
-  },
 );
 
 Future<CalendarEvent> createEvent(Calendar calendar, CreateCalendarEvent event) async => postToApi(

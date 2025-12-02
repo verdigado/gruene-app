@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
-import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
-import 'package:gruene_app/features/events/bloc/event_bloc.dart';
-import 'package:gruene_app/features/events/constants/index.dart';
+import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
@@ -27,104 +23,59 @@ class EventsScreenContainer extends StatelessWidget {
       appBar: MainAppBar(title: t.events.events),
       body: FutureLoadingScreen(
         load: getCalendars,
-        buildChild: (calendars, _) => FutureLoadingScreen(
-          load: () async {
-            final events = await getEvents();
-            if (context.mounted) {
-              context.read<EventsBloc>().add(AddEvents(calendarEvents: events));
-              return events;
-            }
-          },
-          buildChild: (_, extra) => BlocBuilder<EventsBloc, EventsState>(
-            builder: (context, state) =>
-                EventsScreen(calendars: calendars, events: state.events, refresh: extra.refresh),
-          ),
-        ),
+        buildChild: (calendars, _) => EventsScreen(calendars: calendars),
       ),
     );
   }
 }
 
-class EventsScreen extends StatefulWidget {
-  final void Function() refresh;
+class EventsScreen extends StatelessWidget {
   final List<Calendar> calendars;
-  final List<CalendarEvent> events;
 
-  const EventsScreen({super.key, required this.calendars, required this.events, required this.refresh});
-
-  @override
-  State<EventsScreen> createState() => _EventsScreenState();
-}
-
-class _EventsScreenState extends State<EventsScreen> {
-  bool _isMapView = false;
-  String _query = '';
-  List<String> _selectedCategories = [];
-  Set<CalendarEventAttendanceStatus> _selectedAttendanceStatuses = {};
-  DateTimeRange? _dateRange;
-
-  @override
-  void initState() {
-    super.initState();
-    _dateRange = todayOrFuture();
-  }
+  const EventsScreen({super.key, required this.calendars});
 
   @override
   Widget build(BuildContext context) {
-    final events = widget.events.filter(_selectedAttendanceStatuses, _selectedCategories, _dateRange);
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 8,
+      children: [
+        Padding(padding: EdgeInsets.fromLTRB(16, 16, 16, 0), child: EventsFilterBar()),
+        Expanded(child: EventsContent(calendars: calendars)),
+      ],
+    );
+  }
+}
+
+class EventsContent extends StatefulWidget {
+  final List<Calendar> calendars;
+
+  const EventsContent({super.key, required this.calendars});
+
+  @override
+  State<EventsContent> createState() => _EventsContentState();
+}
+
+class _EventsContentState extends State<EventsContent> {
+  bool showMap = false;
+
+  @override
+  Widget build(BuildContext context) {
     final writableCalendar = widget.calendars.firstWhereOrNull((calendar) => !calendar.readOnly);
-
-    final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
-    final attendanceStatusFilter = FilterModel<Set<CalendarEventAttendanceStatus>>(
-      update: (attendanceStatuses) => setState(() => _selectedAttendanceStatuses = attendanceStatuses),
-      initial: {},
-      selected: _selectedAttendanceStatuses,
-    );
-    final categoryFilter = FilterModel<List<String>>(
-      update: (categories) => setState(() => _selectedCategories = categories),
-      initial: [],
-      selected: _selectedCategories,
-      values: eventCategories,
-    );
-    final dateRangeFilter = FilterModel(
-      update: (dateRange) => setState(() => _dateRange = dateRange),
-      initial: todayOrFuture(),
-      selected: _dateRange,
-    );
-
     return Stack(
       children: [
         Offstage(
-          offstage: !_isMapView,
-          child: EventsMap(events: events, calendars: widget.calendars),
+          offstage: !showMap,
+          child: EventsMap(calendars: widget.calendars),
         ),
         Offstage(
-          offstage: _isMapView,
-          child: Container(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: 8,
-              children: [
-                FilterBar(
-                  searchFilter: searchFilter,
-                  modified: [attendanceStatusFilter, categoryFilter, dateRangeFilter].modified(),
-                  filterDialog: EventsFilterDialog(
-                    attendanceStatusFilter: attendanceStatusFilter,
-                    categoryFilter: categoryFilter,
-                    dateRangeFilter: dateRangeFilter,
-                  ),
-                ),
-                Expanded(
-                  child: EventsList(
-                    events: events,
-                    calendars: widget.calendars,
-                    dateRange: _dateRange,
-                    refresh: widget.refresh,
-                  ),
-                ),
-              ],
+          offstage: showMap,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: EventsList(
+              calendars: widget.calendars,
+              refresh: () => context.read<EventsBloc>().add(LoadEvents(force: true)),
             ),
           ),
         ),
@@ -138,8 +89,8 @@ class _EventsScreenState extends State<EventsScreen> {
                 ButtonSegment(value: false, icon: const Icon(Icons.list), label: Text(t.events.list)),
                 ButtonSegment(value: true, icon: const Icon(Icons.map), label: Text(t.events.map)),
               ],
-              selected: {_isMapView},
-              onSelectionChanged: (newSelection) => setState(() => _isMapView = newSelection.first),
+              selected: {showMap},
+              onSelectionChanged: (newSelection) => setState(() => showMap = newSelection.first),
               showSelectedIcon: false,
             ),
           ),

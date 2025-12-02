@@ -10,6 +10,7 @@ class FilterBar extends StatelessWidget {
   final bool modified;
   final FilterModel<String> searchFilter;
   final FilterModel<bool>? bookmarkFilter;
+  final bool loading;
 
   const FilterBar({
     super.key,
@@ -17,6 +18,7 @@ class FilterBar extends StatelessWidget {
     required this.modified,
     required this.searchFilter,
     this.bookmarkFilter,
+    this.loading = false,
   });
 
   @override
@@ -40,7 +42,7 @@ class FilterBar extends StatelessWidget {
               selected: bookmarkFilter.selected,
               width: 40,
             ),
-          RoundedIconButton(
+          loading ? CircularProgressIndicator() : RoundedIconButton(
             icon: Icons.filter_list,
             iconColor: modified ? theme.colorScheme.secondary : ThemeColors.textDisabled,
             backgroundColor: theme.colorScheme.surface,

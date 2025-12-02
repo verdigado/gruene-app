@@ -15,7 +15,13 @@ class CustomSearchBar extends StatefulWidget {
 
 class _CustomSearchBarState extends State<CustomSearchBar> {
   final Debouncer _debouncer = Debouncer();
-  final _controller = TextEditingController();
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.searchFilter.selected);
+  }
 
   @override
   Widget build(BuildContext context) {
