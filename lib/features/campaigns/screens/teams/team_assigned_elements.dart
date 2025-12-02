@@ -249,7 +249,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       item = Stack(
         children: [
           item,
-          Positioned.fill(child: Container(color: ThemeColors.textLight.withAlpha(50))),
+          Positioned.fill(child: Container(color: ThemeColors.disabledShadow.withAlpha(170))),
         ],
       );
     }
