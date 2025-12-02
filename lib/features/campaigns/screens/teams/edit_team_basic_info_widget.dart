@@ -75,9 +75,10 @@ class _EditTeamBasicInfoWidgetState extends State<EditTeamBasicInfoWidget> {
     if (teamDescriptionTextController.text.isEmpty) return;
 
     // TODO 298 use updateTeamInfo functionality on API
-    await Future.delayed(Duration(milliseconds: 250));
+    await Future<void>.delayed(Duration(milliseconds: 250));
     // var teamsService = GetIt.I<GrueneApiTeamsService>();
     // await teamsService.updateTeamInfo(teamNameTextController.text, teamDescriptionTextController.text);
-    Navigator.pop(context, true);
+
+    if (mounted) Navigator.pop(context, true);
   }
 }
