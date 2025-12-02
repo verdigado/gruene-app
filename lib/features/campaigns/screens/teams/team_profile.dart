@@ -126,7 +126,26 @@ class TeamProfile extends StatelessWidget {
     }
   }
 
-  void _onEditTeamMembers() {
-    // TODO #299 edit Team and update view after
+  Future<void> _onEditTeamMembers(BuildContext context) async {
+    final theme = Theme.of(context);
+
+    var newTeamWidget = EditTeamMembersWidget(team: currentTeam);
+    var result =
+        await showModalBottomSheet<bool>(
+          context: context,
+          builder: (context) => newTeamWidget,
+          isScrollControlled: false,
+          isDismissible: true,
+          backgroundColor: theme.colorScheme.surface,
+        ) ??
+        false;
+
+    if (context.mounted) {
+      if (result) {
+        reloadTeam();
+      }
+    }
   }
 }
+
+class EditTeamMembersWidget extends Statefu {}
