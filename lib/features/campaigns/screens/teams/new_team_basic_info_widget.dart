@@ -89,8 +89,7 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
 
     if (!context.mounted) return;
     // analyzer seems to ignore the line
-    // ignore: use_build_context_synchronously
-    Navigator.pop(context, newTeamDetails);
+    if (mounted) Navigator.pop(context, newTeamDetails);
   }
 
   Future<PublicProfile> _getCreatingUser() async {

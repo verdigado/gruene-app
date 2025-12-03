@@ -127,7 +127,7 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
         children: [
           Expanded(child: Text(memberFullName, style: theme.textTheme.titleMedium)),
           GestureDetector(
-            onTap: () => onChangeTeamMember(member),
+            onTap: () => _onChangeTeamMember(member),
             child: Row(
               children: [
                 Align(
@@ -149,7 +149,7 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
     );
   }
 
-  Future<void> onChangeTeamMember(PublicProfile? member) async {
+  Future<void> _onChangeTeamMember(PublicProfile? member) async {
     var navState = Navigator.of(context, rootNavigator: true);
     final newTeamMember = await navState.push(
       AppRoute<PublicProfile?>(
