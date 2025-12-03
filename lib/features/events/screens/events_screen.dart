@@ -29,35 +29,16 @@ class EventsScreenContainer extends StatelessWidget {
   }
 }
 
-class EventsScreen extends StatelessWidget {
+class EventsScreen extends StatefulWidget {
   final List<Calendar> calendars;
 
   const EventsScreen({super.key, required this.calendars});
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 8,
-      children: [
-        Padding(padding: EdgeInsets.fromLTRB(16, 16, 16, 0), child: EventsFilterBar()),
-        Expanded(child: EventsContent(calendars: calendars)),
-      ],
-    );
-  }
+  State<EventsScreen> createState() => _EventsScreenState();
 }
 
-class EventsContent extends StatefulWidget {
-  final List<Calendar> calendars;
-
-  const EventsContent({super.key, required this.calendars});
-
-  @override
-  State<EventsContent> createState() => _EventsContentState();
-}
-
-class _EventsContentState extends State<EventsContent> {
+class _EventsScreenState extends State<EventsScreen> {
   bool showMap = false;
 
   @override
@@ -72,10 +53,20 @@ class _EventsContentState extends State<EventsContent> {
         Offstage(
           offstage: showMap,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: EventsList(
-              calendars: widget.calendars,
-              refresh: () => context.read<EventsBloc>().add(LoadEvents(force: true)),
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8,
+              children: [
+                EventsFilterBar(),
+                Expanded(
+                  child: EventsList(
+                    calendars: widget.calendars,
+                    refresh: () => context.read<EventsBloc>().add(LoadEvents(force: true)),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -98,7 +89,7 @@ class _EventsContentState extends State<EventsContent> {
         if (writableCalendar != null)
           Positioned(
             bottom: 8,
-            right: 16,
+            right: 24,
             child: FloatingActionButton.small(
               onPressed: () async {
                 final event = await showFullScreenDialog<CalendarEvent?>(

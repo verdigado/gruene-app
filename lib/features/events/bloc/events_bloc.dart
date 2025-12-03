@@ -24,13 +24,7 @@ final class LoadEvents extends EventsEvent {
 
   final bool force;
 
-  LoadEvents({
-    this.query,
-    this.attendanceStatuses,
-    this.categories,
-    this.dateRange,
-    this.force = false,
-  });
+  LoadEvents({this.query, this.attendanceStatuses, this.categories, this.dateRange, this.force = false});
 }
 
 final class AddOrUpdateEvent extends EventsEvent {
@@ -47,6 +41,7 @@ final class DeleteEvent extends EventsEvent {
 
 class EventsState extends Equatable {
   final List<CalendarEvent> events;
+  final List<CalendarEvent> allEventsInDateRange;
   final bool loading;
   final Object? error;
 
@@ -60,16 +55,18 @@ class EventsState extends Equatable {
     this.loading = false,
     this.error,
     this.query = '',
+    List<CalendarEvent>? allEventsInDateRange,
     Set<CalendarEventAttendanceStatus>? attendanceStatuses,
     List<String>? categories,
     DateTimeRange? dateRange,
-  })
-      : attendanceStatuses = attendanceStatuses ?? defaultAttendanceStatuses,
-        categories = categories ?? defaultCategories,
-        dateRange = dateRange ?? defaultDateRange;
+  }) : allEventsInDateRange = allEventsInDateRange ?? events,
+       attendanceStatuses = attendanceStatuses ?? defaultAttendanceStatuses,
+       categories = categories ?? defaultCategories,
+       dateRange = dateRange ?? defaultDateRange;
 
   EventsState copyWith({
     List<CalendarEvent>? events,
+    List<CalendarEvent>? allEventsInDateRange,
     bool? loading,
     Wrapped<Object?>? error,
     String? query,
@@ -79,6 +76,7 @@ class EventsState extends Equatable {
   }) {
     return EventsState(
       events: events ?? this.events,
+      allEventsInDateRange: allEventsInDateRange ?? this.allEventsInDateRange,
       loading: loading ?? this.loading,
       error: error == null ? this.error : error.value,
       query: query ?? this.query,
@@ -108,9 +106,16 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       );
 
       try {
-        final calendarEvents = reload ? await getEvents(state.dateRange) : state.events;
+        final calendarEvents = reload ? await getEvents(state.dateRange) : state.allEventsInDateRange;
         final events = calendarEvents.filter(state.query, state.attendanceStatuses, state.categories);
-        emit(state.copyWith(events: events, loading: false, error: Wrapped.value(null)));
+        emit(
+          state.copyWith(
+            events: events,
+            allEventsInDateRange: calendarEvents,
+            loading: false,
+            error: Wrapped.value(null),
+          ),
+        );
       } catch (error) {
         emit(state.copyWith(loading: false, error: Wrapped.value(error)));
       }

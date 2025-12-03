@@ -18,6 +18,7 @@ import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_card.dart';
 import 'package:gruene_app/features/events/widgets/event_detail.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
+import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -85,44 +86,46 @@ class _EventsMapState extends State<EventsMap> {
   Widget build(BuildContext context) {
     final appSettings = GetIt.I<AppSettings>();
 
-    // return FutureLoadingScreen(
-    //   load: () => determinePosition(
-    //     context,
-    //     requestIfNotGranted: true,
-    //     preferLastKnownPosition: true,
-    //   ).timeout(const Duration(milliseconds: 400), onTimeout: RequestedPosition.unknown),
-    //   buildChild: (RequestedPosition? requestedPosition, _) {
-    //     final position = requestedPosition?.toLatLng();
-    final LatLng? position = null;
-    final cameraPosition = position != null
-        ? CameraPosition(target: position, zoom: userZoom)
-        : CameraPosition(
-            target: appSettings.events?.lastPosition ?? Config.centerGermany,
-            zoom: appSettings.events?.lastZoomLevel ?? Config.germanyZoom,
-          );
-
-    return BlocListener<EventsBloc, EventsState>(
-      listener: (context, state) => _updateEventsLayer(state.events),
-      child: Stack(
-        children: [
-          MapLibreMap(
-            styleString: Config.maplibreUrl,
-            initialCameraPosition: cameraPosition,
-            onMapCreated: _onMapCreated,
-            onStyleLoadedCallback: _onStyleLoaded,
-            trackCameraPosition: true,
-            onCameraIdle: () {
-              appSettings.events = (
-                lastPosition: mapController!.cameraPosition!.target,
-                lastZoomLevel: mapController!.cameraPosition!.zoom,
+    return FutureLoadingScreen(
+      load: () => determinePosition(
+        context,
+        requestIfNotGranted: true,
+        preferLastKnownPosition: true,
+      ).timeout(const Duration(milliseconds: 400), onTimeout: RequestedPosition.unknown),
+      buildChild: (RequestedPosition? requestedPosition, _) {
+        final position = requestedPosition?.toLatLng();
+        final cameraPosition = position != null
+            ? CameraPosition(target: position, zoom: userZoom)
+            : CameraPosition(
+                target: appSettings.events?.lastPosition ?? Config.centerGermany,
+                zoom: appSettings.events?.lastZoomLevel ?? Config.germanyZoom,
               );
-            },
-            // Replace with custom map attribution
-            attributionButtonMargins: const math.Point(-100, -100),
+
+        return BlocListener<EventsBloc, EventsState>(
+          listener: (context, state) => _updateEventsLayer(state.events),
+          child: Stack(
+            children: [
+              MapLibreMap(
+                styleString: Config.maplibreUrl,
+                initialCameraPosition: cameraPosition,
+                onMapCreated: _onMapCreated,
+                onStyleLoadedCallback: _onStyleLoaded,
+                trackCameraPosition: true,
+                onCameraIdle: () {
+                  appSettings.events = (
+                    lastPosition: mapController!.cameraPosition!.target,
+                    lastZoomLevel: mapController!.cameraPosition!.zoom,
+                  );
+                },
+                // Replace with custom map attribution
+                attributionButtonMargins: const math.Point(-100, -100),
+              ),
+              Padding(padding: EdgeInsets.fromLTRB(16, 16, 16, 0), child: EventsFilterBar()),
+              MapAttribution(),
+            ],
           ),
-          MapAttribution(),
-        ],
-      ),
+        );
+      },
     );
   }
 }

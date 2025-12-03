@@ -63,14 +63,14 @@ extension CalendarEventListExtension on List<CalendarEvent> {
     List<String> categories,
   ) => where(
     (it) =>
+        (attendanceStatuses.isEmpty || attendanceStatuses.contains(it.attendanceStatus)) &&
+        (categories.isEmpty || it.categories.any((category) => categories.contains(category))) &&
         ([
           it.title,
           it.description,
           it.locationAddress,
           it.locationUrl,
-        ].any((value) => value?.toLowerCase().contains(query.toLowerCase()) ?? false)) &&
-        (attendanceStatuses.isEmpty || attendanceStatuses.contains(it.attendanceStatus)) &&
-        (categories.isEmpty || it.categories.any((category) => categories.contains(category))),
+        ].any((value) => value?.toLowerCase().contains(query.toLowerCase()) ?? false)),
   ).toList();
 
   FeatureCollection<Point> get featureCollection {

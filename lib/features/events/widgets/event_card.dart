@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
@@ -14,10 +15,10 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final image = event.image;
     final location = event.locationAddress != null && event.locationUrl != null
         ? '${event.locationAddress} | ${t.events.digital}'
         : (event.locationAddress ?? event.locationUrl);
-    final hasImage = event.image != null && event.image!.isNotEmpty;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -40,10 +41,12 @@ class EventCard extends StatelessWidget {
                       bottomLeft: Radius.circular(16),
                     ),
                     color: ThemeColors.textDisabled,
-                    image: hasImage ? DecorationImage(image: NetworkImage(event.image!), fit: BoxFit.cover) : null,
+                    image: image != null
+                        ? DecorationImage(image: CachedNetworkImageProvider(image), fit: BoxFit.cover)
+                        : null,
                   ),
-                  child: !hasImage
-                      ? const Center(child: Icon(Icons.calendar_today, size: 52, color: Colors.white))
+                  child: image == null
+                      ? const Center(child: Icon(Icons.calendar_today, size: 48, color: Colors.white))
                       : null,
                 ),
                 Expanded(

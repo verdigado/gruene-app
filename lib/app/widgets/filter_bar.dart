@@ -42,13 +42,15 @@ class FilterBar extends StatelessWidget {
               selected: bookmarkFilter.selected,
               width: 40,
             ),
-          loading ? CircularProgressIndicator() : RoundedIconButton(
-            icon: Icons.filter_list,
-            iconColor: modified ? theme.colorScheme.secondary : ThemeColors.textDisabled,
-            backgroundColor: theme.colorScheme.surface,
-            width: 40,
-            onPressed: () => showFullScreenDialog(context, (_) => filterDialog),
-          ),
+          loading
+              ? CircularProgressIndicator()
+              : RoundedIconButton(
+                  icon: Icons.filter_list,
+                  iconColor: modified ? theme.colorScheme.secondary : ThemeColors.textDisabled,
+                  backgroundColor: theme.colorScheme.surface,
+                  width: 40,
+                  onPressed: () => showFullScreenDialog(context, (_) => filterDialog),
+                ),
         ],
       ),
     );
