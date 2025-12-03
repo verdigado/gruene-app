@@ -37,12 +37,13 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     // TODO #733 remove mock data when getOwnTeam is working
     // var teamsService = GetIt.I<GrueneApiTeamsService>();
     // var team = await teamsService.getOwnTeam();
+    await Future<void>.delayed(Duration(milliseconds: 250));
     var team = Team(
       id: '1',
       userId: '123',
       divisionKey: '5936',
       createdAt: DateTime.now(),
-      name: 'Team Oktopus',
+      name: 'Team Oktopus ${DateTime.now().getAsTimeStamp()}',
       description: '''Bestes HTWK Team jenseits der Panke
 Chat: https://signal.group/#123456''',
       status: TeamStatus.active,
@@ -50,6 +51,33 @@ Chat: https://signal.group/#123456''',
         TeamMembership(
           id: 'id',
           userId: widget.currentUser.uidnumber,
+          createdAt: DateTime.now(),
+          start: DateTime.now(),
+          end: DateTime.now(),
+          type: TeamMembershipType.lead,
+          status: TeamMembershipStatus.accepted,
+        ),
+        TeamMembership(
+          id: 'id',
+          userId: '100001',
+          createdAt: DateTime.now(),
+          start: DateTime.now(),
+          end: DateTime.now(),
+          type: TeamMembershipType.member,
+          status: TeamMembershipStatus.accepted,
+        ),
+        TeamMembership(
+          id: 'id',
+          userId: '100003',
+          createdAt: DateTime.now(),
+          start: DateTime.now(),
+          end: DateTime.now(),
+          type: TeamMembershipType.member,
+          status: TeamMembershipStatus.pending,
+        ),
+        TeamMembership(
+          id: 'id',
+          userId: '100004',
           createdAt: DateTime.now(),
           start: DateTime.now(),
           end: DateTime.now(),
@@ -75,7 +103,7 @@ Chat: https://signal.group/#123456''',
     var theme = Theme.of(context);
     return Column(
       children: [
-        TeamProfile(currentTeam: _currentTeam!, currentUser: widget.currentUser),
+        TeamProfile(currentTeam: _currentTeam!, currentUser: widget.currentUser, reloadTeam: _loadData),
         TeamAssignedElements(currentTeam: _currentTeam!),
         TeamMemberStatistics(currentTeam: _currentTeam!),
 
@@ -129,8 +157,9 @@ Chat: https://signal.group/#123456''',
   }
 
   void _leaveTeam() {
-    void executeLeaveTeam() {
+    Future<void> executeLeaveTeam() async {
       // TODO #300 use leave functionality on API
+      await Future<void>.delayed(Duration(milliseconds: 250));
       // var teamsService = GetIt.I<GrueneApiTeamsService>();
       // teamsService.leaveTeam(_currentTeam.id);
     }
@@ -145,8 +174,9 @@ Chat: https://signal.group/#123456''',
   }
 
   void _archiveTeam() {
-    void executeArchiveTeam() {
+    Future<void> executeArchiveTeam() async {
       // TODO #735 use archive functionality on API
+      await Future<void>.delayed(Duration(milliseconds: 250));
       // var teamsService = GetIt.I<GrueneApiTeamsService>();
       // teamsService.deleteTeam(_currentTeam.id);
     }

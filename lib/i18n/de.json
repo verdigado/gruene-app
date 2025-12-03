@@ -35,6 +35,7 @@
     "map": {
       "mapData": "Kartendaten",
       "osmContributors": "OpenStreetMap Mitwirkende"
+      "remove": "Entfernen"
     }
   },
   "error": {
@@ -251,7 +252,12 @@
       "team_assigned_elements_route_info": "${distance} km Route",
       "team_assigned_elements_assignment_info": "zugewiesen am ${date} von ${assignee}",
       "member_statistics": "Mitglieder-Statistik",
-      "member_statistics_member_info": "${division}, Team-Mitglied seit ${date}"
+      "member_statistics_member_info": "${division}, Team-Mitglied seit ${date}",
+      "edit_team": "Team bearbeiten",
+      "edit_team_member_label": "Teammitglieder bearbeiten",
+      "appoint_as_team_lead": "Zum Team-Lead ernennen",
+      "cancel_invitation": "Einladung zurückziehen",
+      "add_team_member": "Teammitglied hinzufügen"
     },
     "statistic": {
       "label": "Statistik",

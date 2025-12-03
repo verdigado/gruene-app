@@ -5,14 +5,17 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/edit_team_basic_info_widget.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/edit_team_members_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class TeamProfile extends StatelessWidget {
   final Team currentTeam;
   final UserInfo currentUser;
+  final void Function() reloadTeam;
 
-  const TeamProfile({super.key, required this.currentTeam, required this.currentUser});
+  const TeamProfile({super.key, required this.currentTeam, required this.currentUser, required this.reloadTeam});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +44,14 @@ class TeamProfile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
-                        onTap: _onEditTeam,
-                        child: Text(t.common.actions.edit, style: theme.textTheme.titleSmall?.apply(color: Colors.red)),
+                        onTap: () => _onEditTeam(context),
+                        child: Text(
+                          t.common.actions.edit,
+                          style: theme.textTheme.labelMedium?.apply(
+                            color: ThemeColors.textDark,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
                       ),
                     ],
                   )
@@ -76,10 +85,13 @@ class TeamProfile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GestureDetector(
-                        onTap: _onEditTeamMembers,
+                        onTap: () => _onEditTeamMembers(context),
                         child: Text(
                           t.campaigns.team.edit_team_members,
-                          style: theme.textTheme.titleSmall?.apply(color: Colors.red),
+                          style: theme.textTheme.labelMedium?.apply(
+                            color: ThemeColors.textDark,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ],
@@ -97,11 +109,46 @@ class TeamProfile extends StatelessWidget {
     return division.shortDisplayName();
   }
 
-  void _onEditTeam() {
-    // TODO #298 edit Team and update view after
+  Future<void> _onEditTeam(BuildContext context) async {
+    final theme = Theme.of(context);
+
+    var newTeamWidget = EditTeamBasicInfoWidget(team: currentTeam);
+    var result =
+        await showModalBottomSheet<bool>(
+          context: context,
+          builder: (context) => newTeamWidget,
+          isScrollControlled: false,
+          isDismissible: true,
+          backgroundColor: theme.colorScheme.surface,
+        ) ??
+        false;
+
+    if (context.mounted) {
+      if (result) {
+        reloadTeam();
+      }
+    }
   }
 
-  void _onEditTeamMembers() {
-    // TODO #299 edit Team and update view after
+  Future<void> _onEditTeamMembers(BuildContext context) async {
+    final theme = Theme.of(context);
+
+    var editTeamMembersWidget = EditTeamMembersWidget(team: currentTeam, currentUser: currentUser);
+    var result =
+        await showModalBottomSheet<bool>(
+          context: context,
+          builder: (context) => editTeamMembersWidget,
+          isScrollControlled: false,
+          isDismissible: false,
+          enableDrag: false,
+          backgroundColor: theme.colorScheme.surface,
+        ) ??
+        false;
+
+    if (context.mounted) {
+      if (result) {
+        reloadTeam();
+      }
+    }
   }
 }
