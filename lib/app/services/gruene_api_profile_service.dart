@@ -8,4 +8,9 @@ class GrueneApiProfileService extends GrueneApiBaseService {
     apiRequest: (api) => api.v1ProfilesGet(search: searchText),
     map: (result) => result.data,
   );
+
+  Future<PublicProfile> getProfile(String profileId) async => getFromApi(
+    apiRequest: (api) => api.v1ProfilesProfileIdGet(profileId: profileId),
+    map: (result) => result,
+  );
 }
