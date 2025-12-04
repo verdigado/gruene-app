@@ -264,7 +264,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.1.0
+            xcode: 16.2.0
         steps:
             - checkout
             - prepare_workspace
@@ -359,7 +359,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.1.0
+            xcode: 16.2.0
         parameters:
             production_delivery:
                 description: Whether to deliver the build to production.
@@ -445,7 +445,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.1.0
+            xcode: 16.2.0
         steps:
             - checkout
             - install_fastlane:
