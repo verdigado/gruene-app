@@ -48,3 +48,7 @@ Future<bool> hasInternetAccess() async {
   final connection = InternetConnection.createInstance(customCheckOptions: customCheckOptions);
   return await connection.hasInternetAccess;
 }
+
+extension NullableStringExtension on String? {
+  bool get isNotEmpty => this?.isNotEmpty ?? false;
+}

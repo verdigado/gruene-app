@@ -81,6 +81,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                   FormBuilderTextField(
                     name: nameField,
                     initialValue: widget.event?.title,
+                    maxLength: 75,
                     decoration: InputDecoration(labelText: t.events.name),
                     validator: FormBuilderValidators.required(errorText: t.events.nameRequired),
                   ),

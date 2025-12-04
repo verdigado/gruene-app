@@ -17,7 +17,7 @@ class FullScreenDialog extends StatelessWidget {
         leading: IconButton(icon: Icon(Icons.close), onPressed: Navigator.of(context).pop),
         actions: appBarActions,
       ),
-      body: SafeArea(child: child),
+      body: SafeArea(child: SingleChildScrollView(child: child)),
     );
   }
 }

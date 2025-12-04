@@ -30,13 +30,14 @@ class EventDetail extends StatelessWidget {
     final accepted = groupedAttendees[CalendarEventAttendanceStatus.accepted]?.length ?? 0;
     final tentative = groupedAttendees[CalendarEventAttendanceStatus.tentative]?.length ?? 0;
     final declined = groupedAttendees[CalendarEventAttendanceStatus.declined]?.length ?? 0;
+    final categories = event.categories.where((category) => category.isNotEmpty);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
         Text(event.title, style: theme.textTheme.titleLarge),
-        if (event.categories.isNotEmpty) Text(event.categories.join(', ')),
+        if (categories.isNotEmpty) Text(event.categories.join(', ')),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

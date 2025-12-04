@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 
 class PageInfo extends StatelessWidget {
   final void Function()? onPress;
@@ -19,6 +20,7 @@ class PageInfo extends StatelessWidget {
     final onTap = onPress ?? (url != null ? () => openUrl(url, context) : null);
 
     final hostname = Uri.tryParse(url ?? '')?.host;
+    final urlText = hostname.isNotEmpty ? hostname : url;
 
     return InkWell(
       onTap: onTap,
@@ -30,7 +32,7 @@ class PageInfo extends StatelessWidget {
           Icon(icon),
           Flexible(
             child: Text(
-              text ?? hostname ?? url!,
+              text ?? urlText!,
               style: url != null
                   ? theme.textTheme.bodyMedium?.copyWith(
                       color: ThemeColors.primary,

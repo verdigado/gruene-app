@@ -389,7 +389,7 @@
     "digital": "digital",
     "createTitle": "Neues Event erstellen",
     "updateTitle": "Event bearbeiten",
-    "intro": "Erstelle ein Event im Kalender ${calendar}",
+    "intro": "Erstelle ein Event für deinen ${calendar}",
     "name": "Name",
     "nameRequired": "Gib einen Namen ein",
     "description": "Beschreibung",
