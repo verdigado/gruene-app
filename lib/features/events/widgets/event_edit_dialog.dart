@@ -35,9 +35,8 @@ const imageField = 'image';
 class EventEditDialog extends StatefulWidget {
   final Calendar calendar;
   final CalendarEvent? event;
-  final BuildContext context;
 
-  const EventEditDialog({super.key, required this.calendar, required this.event, required this.context});
+  const EventEditDialog({super.key, required this.calendar, required this.event});
 
   @override
   State<EventEditDialog> createState() => _EventEditDialogState();

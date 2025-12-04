@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/constants/map.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
-import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
+import 'package:gruene_app/app/widgets/location_button.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/app/widgets/modal_bottom_sheet.dart';
-import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
@@ -35,6 +36,14 @@ class EventsMap extends StatefulWidget {
 
 class _EventsMapState extends State<EventsMap> {
   MapLibreMapController? mapController;
+  bool followUserLocation = false;
+
+  @override
+  void dispose() {
+    mapController?.onFeatureTapped.clear();
+    mapController = null;
+    super.dispose();
+  }
 
   void _onMapCreated(MapLibreMapController controller) {
     mapController = controller;
@@ -72,60 +81,81 @@ class _EventsMapState extends State<EventsMap> {
   }
 
   Future<void> _updateEventsLayer(List<CalendarEvent> events) async {
-    await mapController?.setGeoJsonSource(eventsSourceName, events.featureCollection.toJson());
+    final featureCollection = events.featureCollection;
+    await mapController?.setGeoJsonSource(eventsSourceName, featureCollection.toJson());
+
+    final bounds = featureCollection.bounds;
+    if (bounds != null) {
+      if (bounds.northeast.latitude - bounds.southwest.latitude < 0.4 ||
+          bounds.northeast.longitude - bounds.southwest.longitude < 0.4) {
+        final center = LatLng(
+          (bounds.southwest.latitude + bounds.northeast.latitude) / 2,
+          (bounds.southwest.longitude + bounds.northeast.longitude) / 2,
+        );
+        await mapController?.animateCamera(
+          CameraUpdate.newCameraPosition(CameraPosition(target: center, bearing: 0, tilt: 0, zoom: userZoom)),
+        );
+      } else {
+        await mapController?.animateCamera(
+          CameraUpdate.newLatLngBounds(bounds, left: 20, top: 100, right: 20, bottom: 100),
+        );
+      }
+    }
   }
 
-  @override
-  void dispose() {
-    mapController?.onFeatureTapped.clear();
-    mapController = null;
-    super.dispose();
+  Future<void> _bringCameraToUser(RequestedPosition positionRequest) async {
+    final position = positionRequest.position;
+    if (position == null) return;
+
+    setState(() => followUserLocation = true);
+    final cameraUpdate = CameraUpdate.newCameraPosition(
+      CameraPosition(target: LatLng(position.latitude, position.longitude), bearing: 0, tilt: 0, zoom: userZoom),
+    );
+    await mapController?.animateCamera(cameraUpdate);
   }
 
   @override
   Widget build(BuildContext context) {
     final appSettings = GetIt.I<AppSettings>();
+    final cameraPosition = CameraPosition(
+      target: appSettings.events?.lastPosition ?? germanyCenter,
+      zoom: appSettings.events?.lastZoomLevel ?? germanyZoom,
+    );
 
-    return FutureLoadingScreen(
-      load: () => determinePosition(
-        context,
-        requestIfNotGranted: true,
-        preferLastKnownPosition: true,
-      ).timeout(const Duration(milliseconds: 400), onTimeout: RequestedPosition.unknown),
-      buildChild: (RequestedPosition? requestedPosition, _) {
-        final position = requestedPosition?.toLatLng();
-        final cameraPosition = position != null
-            ? CameraPosition(target: position, zoom: userZoom)
-            : CameraPosition(
-                target: appSettings.events?.lastPosition ?? Config.centerGermany,
-                zoom: appSettings.events?.lastZoomLevel ?? Config.germanyZoom,
+    return BlocListener<EventsBloc, EventsState>(
+      listener: (context, state) => _updateEventsLayer(state.events),
+      child: Stack(
+        children: [
+          MapLibreMap(
+            styleString: Config.maplibreUrl,
+            initialCameraPosition: cameraPosition,
+            onMapCreated: _onMapCreated,
+            onStyleLoadedCallback: _onStyleLoaded,
+            cameraTargetBounds: CameraTargetBounds(germanyBounds),
+            minMaxZoomPreference: zoomPreference,
+            compassEnabled: false,
+            trackCameraPosition: true,
+            myLocationEnabled: true,
+            myLocationTrackingMode: followUserLocation ? MyLocationTrackingMode.tracking : MyLocationTrackingMode.none,
+            onCameraTrackingDismissed: () => setState(() => followUserLocation = false),
+            onCameraIdle: () {
+              appSettings.events = (
+                lastPosition: mapController!.cameraPosition!.target,
+                lastZoomLevel: mapController!.cameraPosition!.zoom,
               );
-
-        return BlocListener<EventsBloc, EventsState>(
-          listener: (context, state) => _updateEventsLayer(state.events),
-          child: Stack(
-            children: [
-              MapLibreMap(
-                styleString: Config.maplibreUrl,
-                initialCameraPosition: cameraPosition,
-                onMapCreated: _onMapCreated,
-                onStyleLoadedCallback: _onStyleLoaded,
-                trackCameraPosition: true,
-                onCameraIdle: () {
-                  appSettings.events = (
-                    lastPosition: mapController!.cameraPosition!.target,
-                    lastZoomLevel: mapController!.cameraPosition!.zoom,
-                  );
-                },
-                // Replace with custom map attribution
-                attributionButtonMargins: const math.Point(-100, -100),
-              ),
-              Padding(padding: EdgeInsets.fromLTRB(16, 16, 16, 0), child: EventsFilterBar()),
-              MapAttribution(),
-            ],
+            },
+            // Replace with custom map attribution
+            attributionButtonMargins: const math.Point(-100, -100),
           ),
-        );
-      },
+          Padding(padding: EdgeInsets.fromLTRB(16, 16, 16, 0), child: EventsFilterBar()),
+          MapAttribution(),
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: LocationButton(bringCameraToUser: _bringCameraToUser, followUserLocation: followUserLocation),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -158,10 +188,9 @@ Future<void> _showBottomSheet({
                       right: 16,
                       child: SafeArea(
                         child: FloatingActionButton(
-                          onPressed: () => showFullScreenDialog(
-                            context,
-                            (_) => EventEditDialog(calendar: calendar, event: event, context: context),
-                          ),
+                          heroTag: 'edit event',
+                          onPressed: () =>
+                              showFullScreenDialog(context, (_) => EventEditDialog(calendar: calendar, event: event)),
                           child: Icon(Icons.edit),
                         ),
                       ),

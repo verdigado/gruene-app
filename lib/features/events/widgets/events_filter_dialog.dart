@@ -142,7 +142,7 @@ class EventsFilterBar extends StatelessWidget {
         return FilterBar(
           searchFilter: searchFilter,
           modified: [attendanceStatusFilter, categoryFilter, dateRangeFilter].modified(),
-          loading: state.loading,
+          loading: state.loading && state.events.isNotEmpty,
           filterDialog: EventsFilterDialog(
             attendanceStatusFilter: attendanceStatusFilter,
             categoryFilter: categoryFilter,

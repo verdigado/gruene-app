@@ -71,7 +71,7 @@ class _EventsScreenState extends State<EventsScreen> {
           ),
         ),
         Positioned(
-          bottom: 8,
+          bottom: 16,
           left: 0,
           right: 0,
           child: Center(
@@ -88,13 +88,14 @@ class _EventsScreenState extends State<EventsScreen> {
         ),
         if (writableCalendar != null)
           Positioned(
-            bottom: 8,
-            right: 24,
+            bottom: 16,
+            left: 16,
             child: FloatingActionButton.small(
+              heroTag: 'create event',
               onPressed: () async {
                 final event = await showFullScreenDialog<CalendarEvent?>(
                   context,
-                  (_) => EventEditDialog(calendar: writableCalendar, event: null, context: context),
+                  (_) => EventEditDialog(calendar: writableCalendar, event: null),
                 );
                 if (context.mounted && event != null) {
                   context.pushNested(

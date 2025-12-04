@@ -26,8 +26,8 @@ import 'package:gruene_app/app/services/push_notification_listener.dart';
 import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/services/secure_storage_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/widgets/clean_layout.dart';
-import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache_timer.dart';
 import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
@@ -108,7 +108,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthBloc(authRepository)..add(CheckTokenRequested())),
-        BlocProvider(create: (context) => EventsBloc()..add(LoadEvents())),
+        BlocProvider(create: (context) => EventsBloc()..add(LoadEvents(force: true))),
         BlocProvider(create: (context) => MfaBloc()..add(InitMfa())),
         BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadSettings())),
         BlocProvider<BookmarkBloc>(create: (context) => BookmarkBloc()..add(LoadBookmarks())),

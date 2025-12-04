@@ -1,5 +1,3 @@
-import 'package:maplibre_gl/maplibre_gl.dart';
-
 class CampaignConstants {
   static const dummyImageAssetName = 'assets/splash/logo_android12.png';
   static const doorAssetName = 'assets/symbols/doors/door.png';
@@ -59,9 +57,4 @@ class CampaignConstants {
 
   static const featurePropertyStatusType = 'status_type';
   static const featurePropertyIsVirtual = 'is_virtual';
-
-  static LatLngBounds viewBoxGermany = LatLngBounds(
-    southwest: LatLng(46.8, 5.6),
-    northeast: LatLng(55.1, 15.5),
-  ); //typically boundaries of Germany;
 }

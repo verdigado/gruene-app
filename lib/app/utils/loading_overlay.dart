@@ -30,16 +30,20 @@ Future<T?> tryAndNotify<T>({
   String? errorMessage,
   void Function(bool loading)? setLoading,
 }) async {
+  final rootContext = Navigator.of(context, rootNavigator: true).context;
   setLoading != null ? setLoading(true) : showLoadingOverlay(context);
   try {
     final value = await function();
-    if (context.mounted) {
-      showSnackBar(context, successMessage);
+    if (rootContext.mounted) {
+      showSnackBar(rootContext, successMessage);
     }
     return value;
   } catch (error) {
-    if (context.mounted) {
-      showSnackBar(context, errorMessage ?? (error is ClientException ? t.error.offlineError : t.error.unknownError));
+    if (rootContext.mounted) {
+      showSnackBar(
+        rootContext,
+        errorMessage ?? (error is ClientException ? t.error.offlineError : t.error.unknownError),
+      );
     }
   } finally {
     setLoading != null ? setLoading(false) : hideLoadingOverlay();

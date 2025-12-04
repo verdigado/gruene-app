@@ -10,8 +10,8 @@ class MapAttribution extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Positioned(
-      bottom: -8,
-      right: -8,
+      bottom: -12,
+      right: -12,
       child: IconButton(
         color: theme.disabledColor,
         iconSize: 20,

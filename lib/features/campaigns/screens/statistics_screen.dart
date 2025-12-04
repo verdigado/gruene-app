@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_set.dart';

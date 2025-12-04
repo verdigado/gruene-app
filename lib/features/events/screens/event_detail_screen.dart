@@ -87,10 +87,9 @@ class EventDetailScreen extends StatelessWidget {
                 bottom: 16,
                 right: 16,
                 child: FloatingActionButton(
-                  onPressed: () => showFullScreenDialog(
-                    context,
-                    (_) => EventEditDialog(calendar: calendar, event: event, context: context),
-                  ),
+                  heroTag: 'edit event',
+                  onPressed: () =>
+                      showFullScreenDialog(context, (_) => EventEditDialog(calendar: calendar, event: event)),
                   child: Icon(Icons.edit),
                 ),
               ),
@@ -131,5 +130,5 @@ class EventDeletionConfirmationDialog extends StatelessWidget {
 
 Future<bool?> showEventDeleteDialog(BuildContext context, CalendarEvent event) => showDialog<bool>(
   context: context,
-  builder: (BuildContext context) => EventDeletionConfirmationDialog(event: event),
+  builder: (_) => EventDeletionConfirmationDialog(event: event),
 );

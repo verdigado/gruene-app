@@ -99,8 +99,7 @@ Future<RequestedPosition> determinePosition(
       final settings = getAndroidSettings();
       position = await Geolocator.getCurrentPosition(locationSettings: settings);
     } on LocationServiceDisabledException {
-      final settings = getAndroidSettings(forceLocationManager: true);
-      position = await Geolocator.getCurrentPosition(locationSettings: settings);
+      position = null;
     }
   } on TimeoutException {
     logger.d('Timeout occured when acquiring geo location');

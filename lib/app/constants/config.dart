@@ -1,7 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:intl/intl.dart';
-import 'package:maplibre_gl_platform_interface/maplibre_gl_platform_interface.dart';
 
 class Config {
   static String get appId => 'de.gruene.wkapp';
@@ -34,7 +33,4 @@ class Config {
     final value = bool.tryParse(configValue, caseSensitive: false);
     return value ?? false;
   }
-
-  static LatLng centerGermany = LatLng(51.163361, 10.447683);
-  static double germanyZoom = 4.5;
 }

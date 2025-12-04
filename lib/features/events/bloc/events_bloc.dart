@@ -40,7 +40,6 @@ final class DeleteEvent extends EventsEvent {
 }
 
 class EventsState extends Equatable {
-  final List<CalendarEvent> events;
   final List<CalendarEvent> allEventsInDateRange;
   final bool loading;
   final Object? error;
@@ -50,22 +49,22 @@ class EventsState extends Equatable {
   final List<String> categories;
   final DateTimeRange dateRange;
 
+  List<CalendarEvent> get events => allEventsInDateRange.filter(query, attendanceStatuses, categories);
+
   EventsState({
-    required this.events,
+    List<CalendarEvent>? allEventsInDateRange,
     this.loading = false,
     this.error,
     this.query = '',
-    List<CalendarEvent>? allEventsInDateRange,
     Set<CalendarEventAttendanceStatus>? attendanceStatuses,
     List<String>? categories,
     DateTimeRange? dateRange,
-  }) : allEventsInDateRange = allEventsInDateRange ?? events,
+  }) : allEventsInDateRange = allEventsInDateRange ?? [],
        attendanceStatuses = attendanceStatuses ?? defaultAttendanceStatuses,
        categories = categories ?? defaultCategories,
        dateRange = dateRange ?? defaultDateRange;
 
   EventsState copyWith({
-    List<CalendarEvent>? events,
     List<CalendarEvent>? allEventsInDateRange,
     bool? loading,
     Wrapped<Object?>? error,
@@ -75,7 +74,6 @@ class EventsState extends Equatable {
     DateTimeRange? dateRange,
   }) {
     return EventsState(
-      events: events ?? this.events,
       allEventsInDateRange: allEventsInDateRange ?? this.allEventsInDateRange,
       loading: loading ?? this.loading,
       error: error == null ? this.error : error.value,
@@ -91,13 +89,13 @@ class EventsState extends Equatable {
 }
 
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
-  EventsBloc() : super(EventsState(events: [])) {
+  EventsBloc() : super(EventsState()) {
     on<LoadEvents>((event, emit) async {
       final reload = event.force || (event.dateRange != null && event.dateRange != state.dateRange);
 
       emit(
         state.copyWith(
-          loading: true,
+          loading: reload,
           query: event.query,
           attendanceStatuses: event.attendanceStatuses,
           categories: event.categories,
@@ -105,31 +103,27 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
         ),
       );
 
-      try {
-        final calendarEvents = reload ? await getEvents(state.dateRange) : state.allEventsInDateRange;
-        final events = calendarEvents.filter(state.query, state.attendanceStatuses, state.categories);
-        emit(
-          state.copyWith(
-            events: events,
-            allEventsInDateRange: calendarEvents,
-            loading: false,
-            error: Wrapped.value(null),
-          ),
-        );
-      } catch (error) {
-        emit(state.copyWith(loading: false, error: Wrapped.value(error)));
+      if (reload) {
+        try {
+          final allEventsInDateRange = await getEvents(state.dateRange);
+          emit(state.copyWith(allEventsInDateRange: allEventsInDateRange, loading: false, error: Wrapped.value(null)));
+        } catch (error) {
+          emit(state.copyWith(loading: false, error: Wrapped.value(error)));
+        }
       }
     });
 
     on<AddOrUpdateEvent>((event, emit) async {
       final newCalendarEvent = event.calendarEvent;
-      final calendarEvents = state.events.where((calendarEvent) => calendarEvent.id != newCalendarEvent.id);
-      emit(state.copyWith(events: [...calendarEvents, newCalendarEvent]));
+      final events = state.allEventsInDateRange.where((calendarEvent) => calendarEvent.id != newCalendarEvent.id);
+      emit(state.copyWith(allEventsInDateRange: [...events, newCalendarEvent]));
     });
 
     on<DeleteEvent>((event, emit) async {
-      final filteredEvents = state.events.where((calendarEvent) => calendarEvent.id != event.calendarEvent.id).toList();
-      emit(state.copyWith(events: filteredEvents));
+      final events = state.allEventsInDateRange
+          .where((calendarEvent) => calendarEvent.id != event.calendarEvent.id)
+          .toList();
+      emit(state.copyWith(allEventsInDateRange: events));
     });
   }
 }
