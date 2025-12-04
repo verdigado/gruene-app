@@ -134,11 +134,13 @@ class _EventEditDialogState extends State<EventEditDialog> {
 
               FormSection(
                 title: t.events.location,
+                spacing: 0,
                 children: [
                   FormBuilderRadioGroup(
                     name: locationTypeField,
                     initialValue: locationType,
                     onChanged: (locationType) => setState(() => this.locationType = locationType),
+                    wrapSpacing: 16,
                     options: [
                       FormBuilderFieldOption(
                         value: CalendarEventLocationType.physical,
@@ -154,6 +156,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 16),
                   Visibility(
                     visible: [
                       CalendarEventLocationType.physical,
@@ -166,6 +169,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                       decoration: InputDecoration(labelText: t.events.address),
                     ),
                   ),
+                  if (locationType == CalendarEventLocationType.hybrid) SizedBox(height: 16),
                   Visibility(
                     visible: [
                       CalendarEventLocationType.digital,

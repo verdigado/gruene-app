@@ -8,7 +8,6 @@ import 'package:gruene_app/app/constants/map.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/map.dart';
-import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/location_button.dart';
@@ -21,7 +20,6 @@ import 'package:gruene_app/features/events/widgets/event_card.dart';
 import 'package:gruene_app/features/events/widgets/event_detail.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -84,10 +82,6 @@ class _EventsMapState extends State<EventsMap> {
   }
 
   Future<void> _updateEventsLayer(List<CalendarEvent> events) async {
-    if (events.isEmpty) {
-      showSnackBar(context, t.events.noEvents);
-    }
-
     final featureCollection = events.featureCollection;
     await mapController?.setGeoJsonSource(eventsSourceName, featureCollection.toJson());
 
