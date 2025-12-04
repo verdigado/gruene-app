@@ -57,4 +57,23 @@ class CampaignConstants {
 
   static const featurePropertyStatusType = 'status_type';
   static const featurePropertyIsVirtual = 'is_virtual';
+
+  static String focusAreaMapIdProperty = 'id';
+  static String focusAreaMapScoreColorProperty = 'score_color';
+  static String focusAreaMapScoreOpacityProperty = 'score_opacity';
+  static String focusAreaMapInfoProperty = 'info';
+  static String focusAreaMapScoreInfoProperty = 'score_info';
+  static String focusAreaMapTypeProperty = 'type';
+
+  static String focusAreaAttributeLocationMunicipality = 'location_municipality';
+  static String focusAreaAttributeLocationKV = 'location_kv';
+  static String focusAreaAttributeActivityBase = 'activity';
+  static String focusAreaAttributeActivityRecommendation(int activityKey) =>
+      'activity_recommendation_${activityKey}_label';
+  static String focusAreaAttributeMilieuIndicator = 'milieu_indicator';
+  static String focusAreaAttributeMilieuShortDescription = 'milieu_short_description';
+  static String focusAreaAttributeMilieuLongDescription = 'milieu_long_description';
+  static String focusAreaAttributeMilieuAddOnAgeLabel = 'milieu_add_on_age_label';
+  static String focusAreaAttributeSpecialPoliticalSituationLabel(int index) =>
+      'special_political_situation_${index}_label';
 }
