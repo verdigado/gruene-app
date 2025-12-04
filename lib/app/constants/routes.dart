@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/utils/build_page_without_animation.dart';
 import 'package:gruene_app/features/campaigns/screens/campaigns_screen.dart';
+import 'package:gruene_app/features/events/screens/event_detail_screen.dart';
+import 'package:gruene_app/features/events/screens/events_screen.dart';
 import 'package:gruene_app/features/login/screens/login_screen.dart';
 import 'package:gruene_app/features/mfa/screens/mfa_screen.dart';
 import 'package:gruene_app/features/mfa/screens/token_input_screen.dart';
@@ -13,6 +15,7 @@ import 'package:gruene_app/features/profiles/screens/own_profile_screen.dart';
 import 'package:gruene_app/features/settings/screens/push_notifications_screen.dart';
 import 'package:gruene_app/features/settings/screens/settings_screen.dart';
 import 'package:gruene_app/features/tools/screens/tools_screen.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 GoRoute buildRoute(String path, Widget child, {List<RouteBase>? routes}) => GoRoute(
   path: path,
@@ -30,6 +33,22 @@ class Routes {
     ),
   );
   static GoRoute news = buildRoute('/news', NewsScreenContainer(), routes: [newsDetail]);
+  static GoRoute eventDetail = GoRoute(
+    path: ':eventId',
+    pageBuilder: (context, state) {
+      final extra = state.extra as ({DateTime recurrence, Calendar calendar});
+      return buildPageWithoutAnimation(
+        context: context,
+        state: state,
+        child: EventDetailScreenContainer(
+          eventId: state.pathParameters['eventId']!,
+          calendar: extra.calendar,
+          recurrence: extra.recurrence,
+        ),
+      );
+    },
+  );
+  static GoRoute events = buildRoute('/events', EventsScreenContainer(), routes: [eventDetail]);
   static GoRoute campaigns = buildRoute('/campaigns', CampaignsScreen());
   static GoRoute digitalMembershipCard = buildRoute('digital-membership-card', DigitalMembershipCardScreen());
   static GoRoute profiles = buildRoute('/profiles', OwnProfileScreen(), routes: [digitalMembershipCard]);

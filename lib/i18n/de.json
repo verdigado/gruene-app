@@ -1,12 +1,20 @@
 {
   "common": {
     "appName": "B90/DIE GRÜNEN",
+    "party": "Bündnis 90/DIE GRÜNEN",
     "error": "Fehler",
     "notImplementedYet": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
     "dateFrom": "von",
     "dateUntil": "bis",
     "search": "Suche",
     "multiSelect": "Mehrfachauswahl (${count})",
+    "optional": "optional",
+    "updatedAt": "Stand: ${date}",
+    "yes": "Ja",
+    "maybe": "Vielleicht",
+    "no": "Nein",
+    "saved": "Gespeichert",
+    "notAvailable": "N/A",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
@@ -17,7 +25,15 @@
       "settings": "Einstellungen",
       "openSettings": "Einstellungen öffnen",
       "close": "Schließen",
-      "reset": "Filter zurücksetzen"
+      "applyFilter": "Filter anwenden",
+      "resetFilter": "Filter zurücksetzen",
+      "change": "Ändern",
+      "loading": "Laden ...",
+      "crop": "Ausschnitt wählen"
+    },
+    "map": {
+      "mapData": "Kartendaten",
+      "osmContributors": "OpenStreetMap Mitwirkende"
     }
   },
   "error": {
@@ -31,7 +47,6 @@
     "label": "Artikel",
     "newsDetail": "Artikel",
     "writtenBy": "Von ${author}",
-    "updatedAt": "Stand: ${date}",
     "noResults": "Es wurden leider keine Artikel gefunden.",
     "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden.",
     "latest": "Aktuelles",
@@ -40,8 +55,7 @@
     "moreDivisions": "Weitere Verbände",
     "categories": "Schlagworte",
     "moreCategories": "Weitere Schlagworte",
-    "publicationDate": "Veröffentlichungsdatum",
-    "applyFilter": "Filter anwenden"
+    "publicationDate": "Veröffentlichungsdatum"
   },
   "campaigns": {
     "debug": {
@@ -49,8 +63,6 @@
       "storing_cache_success": "Die lokalen Änderungen wurden nun gespeichert. Bitte sende diese per E-Mail an beteiligung@gruene.de. Damit unterstützt Du uns bei der Problemlösung!"
     },
     "map": {
-      "mapData": "Kartendaten",
-      "osmContributors": "OpenStreetMap Mitwirkende",
       "noMapDataInfo": "Bitte zoome in die Karte, um mehr Informationen zu sehen.",
       "identicalPositions": "Identische Position"
     },
@@ -234,9 +246,8 @@
     "noResult": "Leider gab es einen Fehler beim Laden des Profils.",
     "profileImage": {
       "update": "Profilbild bearbeiten",
-      "crop": "Ausschnitt wählen",
-      "updateError": "Beim Hochladen des Profilbildes ist leider ein Fehler aufgetreten.",
       "delete": "Profilbild löschen",
+      "updated": "Profilbild gespeichert",
       "deleteError": "Beim Löschen des Profilbildes ist leider ein Fehler aufgetreten.",
       "confirmDelete": {
         "title": "Profilbild löschen",
@@ -267,7 +278,6 @@
       "title": "Meine Mitgliedskarte",
       "card": {
         "title": "Mitgliedskarte",
-        "party": "BÜNDNIS 90/DIE GRÜNEN",
         "membershipNumber": "Mitgliedernummer:"
       }
     }
@@ -366,5 +376,68 @@
     "termsOfUse": "Nutzungsbedingungen",
     "discover": "App erkunden",
     "discoverDescription": "Erfahre hier, was Dich erwartet."
+  },
+  "events": {
+    "events": "Events",
+    "label": "Events",
+    "calendars": "Kalender",
+    "dateRange": "Zeitraum",
+    "list": "Liste",
+    "noEvents": "Keine Events verfügbar",
+    "map": "Karte",
+    "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
+    "digital": "digital",
+    "createTitle": "Neues Event erstellen",
+    "updateTitle": "Event bearbeiten",
+    "intro": "Erstelle ein Event für deinen ${calendar}",
+    "name": "Name",
+    "nameRequired": "Gib einen Namen ein",
+    "description": "Beschreibung",
+    "dateAndTime": "Datum & Uhrzeit",
+    "start": "Beginn",
+    "dateRequired": "Gib ein gültiges Datum in der Zukunft ein",
+    "end": "Ende",
+    "endBeforeStart": "Das Ende muss nach dem Beginn liegen",
+    "nonRecurring": "Wiederholt sich nicht",
+    "recurEvent": "Event wiederholen",
+    "recurrenceFrequency": "Wiederhole jeden",
+    "positiveNumber": "Gib eine positive Zahl ein",
+    "never": "Niemals",
+    "day": "Tag",
+    "week":  "Woche",
+    "month": "Monat",
+    "year": "Jahr",
+    "recurrenceEnd": "Wiederholung beenden",
+    "atDate": "Am Datum",
+    "afterCount": "Nach x Terminen",
+    "lastDate": "Letztes Datum",
+    "count": "Anzahl",
+    "times": "Mal",
+    "location": "Veranstaltungsort",
+    "locationType": {
+      "physical": "Vor Ort",
+      "hybrid": "Hybrid",
+      "digital": "Digital"
+    },
+    "address": "Adresse",
+    "locationUrl": "Link zum digitalen Event",
+    "categories": "Kategorien",
+    "moreCategories": "Mehr Kategorien",
+    "other": "Sonstiges",
+    "image": "Bild",
+    "url": "Website",
+    "urlRequired": "Gib einen gültigen Link ein",
+    "urlHelp": "Link zu einer Website mit weiterführenden Informationen. Für digitale Events nutze bitte das Feld bei \"Veranstaltungsort\".",
+    "create": "Event erstellen",
+    "created": "Event erstellt",
+    "update": "Speichern",
+    "updated": "Event gespeichert",
+    "delete": "Event löschen",
+    "deleteDescription": "Bist du sicher, dass du das Event endgültig löschen willst?",
+    "deleted": "Event gelöscht",
+    "attendance": "Teilnahme",
+    "attend": "Teilnehmen?",
+    "accepted": "Zusagen",
+    "declined": "Absagen"
   }
 }

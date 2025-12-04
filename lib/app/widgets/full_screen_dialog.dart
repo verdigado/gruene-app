@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FullScreenDialog extends StatelessWidget {
-  final Widget? child;
+  final Widget child;
   final List<Widget>? appBarActions;
 
-  const FullScreenDialog({super.key, this.child, this.appBarActions});
+  const FullScreenDialog({super.key, required this.child, this.appBarActions});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,10 @@ class FullScreenDialog extends StatelessWidget {
         leading: IconButton(icon: Icon(Icons.close), onPressed: Navigator.of(context).pop),
         actions: appBarActions,
       ),
-      body: child,
+      body: SafeArea(child: SingleChildScrollView(child: child)),
     );
   }
 }
 
-void showFullScreenDialog(BuildContext context, WidgetBuilder builder) {
-  Navigator.of(context).push(MaterialPageRoute<void>(fullscreenDialog: true, builder: builder));
-}
+Future<T?> showFullScreenDialog<T extends Object?>(BuildContext context, WidgetBuilder builder) =>
+    Navigator.of(context).push(MaterialPageRoute<T>(fullscreenDialog: true, builder: builder));

@@ -1,5 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:gruene_app/app/utils/format_date.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:intl/intl.dart';
 
 class Config {

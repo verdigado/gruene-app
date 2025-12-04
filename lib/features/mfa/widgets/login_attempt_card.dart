@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/utils/format_date.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/features/mfa/dtos/login_attempt_dto.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
@@ -44,7 +44,7 @@ class LoginAttemptCard extends StatelessWidget {
                     ],
                   ),
                   TableRow(children: [Text(t.mfa.verify.device), Text('${loginAttempt.browser} ${loginAttempt.os}')]),
-                  TableRow(children: [Text(t.mfa.verify.date), Text(formatDate(loginAttempt.loggedInAt))]),
+                  TableRow(children: [Text(t.mfa.verify.date), Text(loginAttempt.loggedInAt.formattedDate)]),
                   TableRow(
                     children: [
                       Text(t.mfa.verify.time),

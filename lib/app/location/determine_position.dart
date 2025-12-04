@@ -70,8 +70,10 @@ class RequestedPosition {
   }
 
   LatLng? toLatLng() {
-    final currentPosition = position;
-    return currentPosition != null ? LatLng(currentPosition.latitude, currentPosition.longitude) : null;
+    // final currentPosition = position;
+    // return currentPosition != null ? LatLng(currentPosition.latitude, currentPosition.longitude) : null;
+    // return LatLng(52.1411211, 10.348218);
+    return null;
   }
 }
 
@@ -97,8 +99,7 @@ Future<RequestedPosition> determinePosition(
       final settings = getAndroidSettings();
       position = await Geolocator.getCurrentPosition(locationSettings: settings);
     } on LocationServiceDisabledException {
-      final settings = getAndroidSettings(forceLocationManager: true);
-      position = await Geolocator.getCurrentPosition(locationSettings: settings);
+      position = null;
     }
   } on TimeoutException {
     logger.d('Timeout occured when acquiring geo location');

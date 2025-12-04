@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/debouncer.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class CustomSearchBar extends StatefulWidget {
-  final void Function(String selected) setQuery;
-  final String query;
+  final FilterModel<String> searchFilter;
 
-  const CustomSearchBar({super.key, required this.setQuery, required this.query});
+  const CustomSearchBar({super.key, required this.searchFilter});
 
   @override
   State<CustomSearchBar> createState() => _CustomSearchBarState();
@@ -15,25 +15,22 @@ class CustomSearchBar extends StatefulWidget {
 
 class _CustomSearchBarState extends State<CustomSearchBar> {
   final Debouncer _debouncer = Debouncer();
-  final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SearchBar(
-      controller: _controller,
+      controller: TextEditingController(text: widget.searchFilter.selected)
+        ..selection = TextSelection.fromPosition(TextPosition(offset: widget.searchFilter.selected.length)),
       onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-      onChanged: (query) => _debouncer.run(() => widget.setQuery(query)),
+      onChanged: (query) => _debouncer.run(() => widget.searchFilter.update(query)),
       leading: Icon(Icons.search_outlined, color: ThemeColors.textDisabled),
       hintText: t.common.search,
       hintStyle: WidgetStatePropertyAll(const TextStyle(color: ThemeColors.textDisabled)),
-      trailing: widget.query.isNotEmpty
+      trailing: widget.searchFilter.selected.isNotEmpty
           ? [
               IconButton(
-                onPressed: () {
-                  _controller.clear();
-                  widget.setQuery('');
-                },
+                onPressed: () => widget.searchFilter.reset(),
                 icon: Icon(Icons.clear, color: ThemeColors.textDisabled),
               ),
             ]

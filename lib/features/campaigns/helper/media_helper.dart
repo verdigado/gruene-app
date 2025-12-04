@@ -6,7 +6,7 @@ import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/picture_gallery_view.dart';

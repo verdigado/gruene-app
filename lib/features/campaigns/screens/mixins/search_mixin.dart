@@ -150,10 +150,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
     var scaffoldMessenger = ScaffoldMessenger.of(context);
 
     var nominatimService = GetIt.I<NominatimService>();
-    var addressList = await nominatimService.findStreetOrCity(
-      _controller!.text.trim(),
-      CampaignConstants.viewBoxGermany,
-    );
+    var addressList = await nominatimService.findStreetOrCity(_controller!.text.trim(), germanyBounds);
     final added = <String>{};
 
     final distinctAddresses = addressList.where((item) => added.add(item.displayName)).toList();

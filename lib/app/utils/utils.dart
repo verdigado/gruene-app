@@ -12,6 +12,11 @@ extension IterableX<T> on Iterable<T> {
     }
     return null;
   }
+
+  Map<K, List<T>> groupBy<K>(K Function(T) keyFunction) => fold(
+    <K, List<T>>{},
+    (Map<K, List<T>> map, T element) => map..putIfAbsent(keyFunction(element), () => <T>[]).add(element),
+  );
 }
 
 extension IsBetween on DateTime {
@@ -32,9 +37,9 @@ extension WithDividers on Iterable<Widget> {
 }
 
 extension PushNested on BuildContext {
-  void pushNested(String nestedSlug, {Object? extra}) {
+  Future<Object?> pushNested(String nestedSlug, {Object? extra}) {
     final currentPath = GoRouterState.of(this).fullPath;
-    push('$currentPath/$nestedSlug', extra: extra);
+    return push('$currentPath/$nestedSlug', extra: extra);
   }
 }
 
@@ -42,4 +47,8 @@ Future<bool> hasInternetAccess() async {
   final customCheckOptions = [InternetCheckOption(uri: Uri.parse(Config.ipV4ServiceUrl))];
   final connection = InternetConnection.createInstance(customCheckOptions: customCheckOptions);
   return await connection.hasInternetAccess;
+}
+
+extension NullableStringExtension on String? {
+  bool get isNotEmpty => this?.isNotEmpty ?? false;
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/features/campaigns/location/determine_position.dart';
+import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
 
 class MapWithLocation extends StatelessWidget {

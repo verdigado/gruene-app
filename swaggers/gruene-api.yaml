@@ -1308,17 +1308,62 @@ paths:
               - FLYER_SPOT
               - POSTER
               - HOUSE
+        - name: campaignId
+          required: false
+          in: query
+          description: Filter by campaign ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: status
+          required: false
+          in: query
+          description: Filter by POI status
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - OK
+                - DAMAGED
+                - REMOVED
+                - MISSING
+                - TO_BE_MOVED
+                - OPENED_DOORS
+                - CLOSED_DOORS
+        - name: divisionKeys
+          required: false
+          in: query
+          description: Filter by division keys
+          schema:
+            type: array
+            items:
+              type: string
         - name: bbox
           required: false
           in: query
           schema:
             example: 52.521,13.411,52.537,13.449
             type: string
-        - name: campaignId
+        - name: sort
           required: false
           in: query
           schema:
+            example: addressCity,-updatedAt
             type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: number
       responses:
         '200':
           description: ''
@@ -1348,17 +1393,62 @@ paths:
               - FLYER_SPOT
               - POSTER
               - HOUSE
+        - name: campaignId
+          required: false
+          in: query
+          description: Filter by campaign ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: status
+          required: false
+          in: query
+          description: Filter by POI status
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - OK
+                - DAMAGED
+                - REMOVED
+                - MISSING
+                - TO_BE_MOVED
+                - OPENED_DOORS
+                - CLOSED_DOORS
+        - name: divisionKeys
+          required: false
+          in: query
+          description: Filter by division keys
+          schema:
+            type: array
+            items:
+              type: string
         - name: bbox
           required: false
           in: query
           schema:
             example: 52.521,13.411,52.537,13.449
             type: string
-        - name: campaignId
+        - name: sort
           required: false
           in: query
           schema:
+            example: addressCity,-updatedAt
             type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: number
       responses:
         '200':
           description: ''
@@ -2429,6 +2519,262 @@ paths:
       summary: Delete Green Directory Location
       tags:
         - green-directory
+  /v1/calendars:
+    get:
+      operationId: findCalendars
+      parameters:
+        - name: selection
+          required: false
+          in: query
+          description: use given rule to select calendars (enum or any string)
+          schema:
+            $ref: '#/components/schemas/CalendarSelection'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindCalendarsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find calendars
+      tags:
+        - calendars
+  /v1/calendars/events:
+    get:
+      operationId: findCalendarEvents
+      parameters:
+        - name: start
+          required: false
+          in: query
+          description: start date
+          schema:
+            example: '2025-01-01'
+            type: string
+        - name: end
+          required: false
+          in: query
+          description: end date
+          schema:
+            example: '2025-02-01'
+            type: string
+        - name: selection
+          required: false
+          in: query
+          description: use given rule to select calendars (enum or any string)
+          schema:
+            $ref: '#/components/schemas/CalendarSelection'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindCalendarEventsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find calendar events
+      tags:
+        - calendars
+  /v1/calendars/{calendarId}:
+    post:
+      operationId: createCalendarEvent
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCalendarEvent'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Create a new event in a calendar
+      tags:
+        - calendars
+  /v1/calendars/{calendarId}/{eventId}:
+    patch:
+      operationId: updateCalendarEvent
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarEvent'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update event of given calendar
+      tags:
+        - calendars
+    delete:
+      operationId: deleteCalendarEvent
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete calendar event
+      tags:
+        - calendars
+  /v1/calendars/{calendarId}/{eventId}/image:
+    put:
+      operationId: updateCalendarEventImage
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update calendar event image
+      tags:
+        - calendars
+    delete:
+      operationId: deleteCalendarEventImage
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '400':
+          description: No user provided by used authentication method
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete calendar event image
+      tags:
+        - calendars
+  /v1/calendars/{calendarId}/{eventId}/attendance:
+    put:
+      operationId: updateCalendarEventAttendance
+      parameters:
+        - name: calendarId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: eventId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarEventAttendance'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+        '400':
+          description: No user provided by used authentication method
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Set the user's attendance status for an event
+      tags:
+        - calendars
   /health:
     get:
       tags:
@@ -2471,8 +2817,6 @@ tags: []
 servers:
   - url: https://api.gruene.de
     description: Production
-  - url: http://192.168.178.35:5000
-    description: Development
 components:
   securitySchemes:
     basic:
@@ -4246,8 +4590,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Poi'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
       required:
         - data
+        - total
+        - offset
+        - limit
     LineString:
       type: object
       properties:
@@ -5135,6 +5488,378 @@ components:
       required:
         - country
         - level
+    CalendarSelection:
+      type: string
+      enum:
+        - CENTRAL
+    Calendar:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the calendar
+          example: a1b2c3d4e5f6
+        displayName:
+          type: string
+          description: Title of the calendar
+          example: Kreisverband Salzgitter
+        calendarColor:
+          type: string
+          description: Hex color code for calendar display
+          example: '#00AA44'
+        division:
+          nullable: true
+          description: Associated division
+          allOf:
+            - $ref: '#/components/schemas/Division'
+        url:
+          type: string
+          description: URL to access the calendar
+          example: >-
+            https://wolke.netzbegruenung.de/remote.php/dav/calendars/doejohn/10903700_central-public/
+        readOnly:
+          type: boolean
+          description: Tells if the user has write access to calendar and events or not.
+      required:
+        - id
+        - displayName
+        - division
+        - readOnly
+    FindCalendarsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Calendar'
+      required:
+        - data
+    CalendarEventLocationType:
+      type: string
+      enum:
+        - PHYSICAL
+        - DIGITAL
+        - HYBRID
+      description: Type of location
+    CalendarEventAttendanceStatus:
+      type: string
+      enum:
+        - ACCEPTED
+        - DECLINED
+        - TENTATIVE
+      description: Attendance status of the authenticated user
+    CalendarEventAttendee:
+      type: object
+      properties:
+        status:
+          description: Attendance status of attende
+          example: ACCEPTED
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventAttendanceStatus'
+        name:
+          type: string
+          description: Name of the attendee
+          example: John Doe
+        email:
+          type: string
+          description: Email of the attendee
+          example: johndoe@example.com
+      required:
+        - name
+    CalendarEvent:
+      type: object
+      properties:
+        locationType:
+          description: Type of location
+          example: PHYSICAL
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventLocationType'
+        attendanceStatus:
+          description: Attendance status of the authenticated user
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventAttendanceStatus'
+        coords:
+          description: Coordinates represented in GeoJSON [longitude, latitude]
+          example:
+            - 120.123
+            - -35.456
+          minItems: 2
+          maxItems: 2
+          type: array
+          items:
+            type: number
+        id:
+          type: string
+          description: Unique identifier for the event
+          example: '23456789'
+        revisionNumber:
+          type: number
+        updatedAt:
+          format: date-time
+          type: string
+        calendarId:
+          type: string
+          description: Unique identifier of the calendar this event belongs to
+          example: '987654321'
+        title:
+          type: string
+          description: Title of the event
+          example: Mitgliederversammlung
+        description:
+          type: string
+          description: Description of the event
+          example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
+        start:
+          format: date-time
+          type: string
+          description: Start date and time of the event
+          example: '2025-10-15T19:00:00.000Z'
+        end:
+          format: date-time
+          type: string
+          description: End date and time of the event
+          example: '2025-10-15T21:00:00.000Z'
+        locationAddress:
+          type: string
+          description: The location address where the event takes place
+          example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
+        locationUrl:
+          type: string
+          description: The URL for the location or online meeting
+          example: https://example.com
+        url:
+          type: string
+          description: The URL with the event info
+          example: https://example.com
+        image:
+          type: string
+          description: URL to event image
+          example: https://example.com/images/event.jpg
+        availableSlots:
+          type: number
+          description: Number of available slots for registration
+          example: 50
+        registrationRequired:
+          type: boolean
+          description: Whether registration is required for the event
+          example: true
+        registrationDeadline:
+          format: date-time
+          type: string
+          description: Deadline for registration
+          example: '2025-10-14T23:59:59.000Z'
+        attendees:
+          description: List of event attendees
+          type: array
+          items:
+            $ref: '#/components/schemas/CalendarEventAttendee'
+        categories:
+          description: Event categories/tags
+          example:
+            - Politik
+            - Umwelt
+            - Verkehr
+          type: array
+          items:
+            type: string
+        recurring:
+          type: string
+          description: Recurrence rule in iCalendar format
+          example: RRULE:BYDAY=TH,MO,TU,WE;FREQ=WEEKLY;UNTIL=20251217T230000Z
+      required:
+        - id
+        - updatedAt
+        - calendarId
+        - title
+        - start
+        - attendees
+        - categories
+    FindCalendarEventsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/CalendarEvent'
+            calendars:
+              type: array
+              items:
+                $ref: '#/components/schemas/Calendar'
+          required:
+            - events
+            - calendars
+      required:
+        - data
+    CreateCalendarEvent:
+      type: object
+      properties:
+        locationType:
+          nullable: true
+          description: Type of location
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventLocationType'
+        title:
+          type: string
+          description: Title of the event
+          example: Mitgliederversammlung
+        description:
+          type: string
+          nullable: true
+          description: Description of the event
+          example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
+        start:
+          format: date-time
+          type: string
+          description: Start date and time of the event
+          example: '2025-10-15T19:00:00.000Z'
+        end:
+          format: date-time
+          type: string
+          nullable: true
+          description: End date and time of the event
+          example: '2025-10-15T21:00:00.000Z'
+        url:
+          type: string
+          nullable: true
+          description: The URL with the event info
+          example: https://example.com
+          format: uri
+        locationAddress:
+          type: string
+          nullable: true
+          description: The location address where the event takes place
+          example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
+        locationUrl:
+          type: string
+          nullable: true
+          description: The URL for the location or online meeting
+          example: https://example.com
+          format: uri
+        availableSlots:
+          type: number
+          nullable: true
+          description: Number of available slots for registration
+          example: 50
+          minimum: 1
+        registrationRequired:
+          type: boolean
+          nullable: true
+          description: Whether registration is required for the event
+          example: true
+        registrationDeadline:
+          format: date-time
+          type: string
+          nullable: true
+          description: Deadline for registration
+          example: '2025-10-14T23:59:59.000Z'
+        categories:
+          nullable: true
+          description: Event categories/tags
+          example:
+            - Politik
+            - Umwelt
+            - Verkehr
+          type: array
+          items:
+            type: string
+        recurring:
+          type: string
+          nullable: true
+          description: Recurrence rule in iCalendar format
+          example: RRULE:BYDAY=TH,MO,TU,WE;FREQ=WEEKLY;UNTIL=20251217T230000Z
+      required:
+        - title
+        - start
+    UpdateCalendarEvent:
+      type: object
+      properties:
+        locationType:
+          nullable: true
+          description: Type of location
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventLocationType'
+        title:
+          type: string
+          description: Title of the event
+          example: Mitgliederversammlung
+        description:
+          type: string
+          nullable: true
+          description: Description of the event
+          example: Jährliche Mitgliederversammlung mit anschließender Diskussion.
+        start:
+          format: date-time
+          type: string
+          description: Start date and time of the event
+          example: '2025-10-15T19:00:00.000Z'
+        end:
+          format: date-time
+          type: string
+          nullable: true
+          description: End date and time of the event
+          example: '2025-10-15T21:00:00.000Z'
+        url:
+          type: string
+          nullable: true
+          description: The URL with the event info
+          example: https://example.com
+          format: uri
+        locationAddress:
+          type: string
+          nullable: true
+          description: The location address where the event takes place
+          example: Bürgerhaus Mitte, Hauptstraße 123, 12345 Salzgitter
+        locationUrl:
+          type: string
+          nullable: true
+          description: The URL for the location or online meeting
+          example: https://example.com
+          format: uri
+        availableSlots:
+          type: number
+          nullable: true
+          description: Number of available slots for registration
+          example: 50
+          minimum: 1
+        registrationRequired:
+          type: boolean
+          nullable: true
+          description: Whether registration is required for the event
+          example: true
+        registrationDeadline:
+          format: date-time
+          type: string
+          nullable: true
+          description: Deadline for registration
+          example: '2025-10-14T23:59:59.000Z'
+        categories:
+          nullable: true
+          description: Event categories/tags
+          example:
+            - Politik
+            - Umwelt
+            - Verkehr
+          type: array
+          items:
+            type: string
+        recurring:
+          type: string
+          nullable: true
+          description: Recurrence rule in iCalendar format
+          example: RRULE:BYDAY=TH,MO,TU,WE;FREQ=WEEKLY;UNTIL=20251217T230000Z
+    UpdateCalendarEventAttendance:
+      type: object
+      properties:
+        status:
+          nullable: true
+          description: Attendance status of the authenticated user
+          allOf:
+            - $ref: '#/components/schemas/CalendarEventAttendanceStatus'
+      required:
+        - status
     HealthCheckResponse:
       type: object
       properties:
@@ -5202,3 +5927,4 @@ components:
             keycloak:
               status: down
               example: client not authenticated
+

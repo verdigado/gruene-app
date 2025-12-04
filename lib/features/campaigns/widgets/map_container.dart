@@ -6,20 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/constants/map.dart';
+import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/logger.dart';
-import 'package:gruene_app/features/campaigns/helper/app_settings.dart';
+import 'package:gruene_app/app/utils/map.dart';
+import 'package:gruene_app/app/widgets/location_button.dart';
+import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
-import 'package:gruene_app/features/campaigns/helper/util.dart';
-import 'package:gruene_app/features/campaigns/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
-import 'package:gruene_app/features/campaigns/widgets/attribution_dialog.dart';
-import 'package:gruene_app/features/campaigns/widgets/location_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
 import 'package:gruene_app/features/campaigns/widgets/mixins.dart';
@@ -94,7 +95,7 @@ class _MapContainerState extends State<MapContainer>
 
   bool _isMapInitialized = false;
   bool _permissionGiven = false;
-  final defaultStartLocation = CampaignConstants.centerGermany;
+  final defaultStartLocation = germanyCenter;
 
   static const minZoomMarkerItems = 11.5;
   static const double zoomLevelUserLocation = 16;
@@ -105,7 +106,7 @@ class _MapContainerState extends State<MapContainer>
   List<Widget> popups = [];
   List<Widget> infos = [];
 
-  final _cameraTargetBounds = CampaignConstants.viewBoxGermany;
+  final _cameraTargetBounds = germanyBounds;
 
   var followUserLocation = true;
 
@@ -121,8 +122,6 @@ class _MapContainerState extends State<MapContainer>
 
   @override
   Widget build(BuildContext context) {
-    const mapLibreColor = Color(0xFF979897);
-
     final userLocation = appSettings.campaign.lastPosition ?? widget.userLocation;
     final cameraPosition = userLocation != null
         ? CameraPosition(target: userLocation, zoom: (appSettings.campaign.lastZoomLevel ?? zoomLevelUserLocation))
@@ -160,22 +159,11 @@ class _MapContainerState extends State<MapContainer>
           ),
           addMarker,
           Positioned(
-            bottom: 12,
-            right: 12,
+            bottom: 16,
+            right: 16,
             child: LocationButton(bringCameraToUser: bringCameraToUser, followUserLocation: followUserLocation),
           ),
-          Positioned(
-            bottom: -8,
-            right: -8,
-            child: IconButton(
-              color: mapLibreColor,
-              iconSize: 20,
-              icon: const Icon(Icons.info_outlined),
-              onPressed: () {
-                showDialog<void>(context: context, builder: (context) => const AttributionDialog());
-              },
-            ),
-          ),
+          MapAttribution(),
           ...popups,
           ...infos,
         ],
@@ -745,9 +733,9 @@ class _MapContainerState extends State<MapContainer>
     if (!mounted) return;
     _mapFeatureManager.resetAllLayers();
     _loadDataOnMap(init: true);
-    /* 
+    /*
     * WORKAROUND: With some actions the map items won't appear on the map, even they've been loaded.
-    * Though not a big issue the map needs to be touched to be drawn again and instead of wiggling around, 
+    * Though not a big issue the map needs to be touched to be drawn again and instead of wiggling around,
     * we set a small timer an reload the data. This will result in some blinking on the map, but else should
     * not be detectable by the user
     */
