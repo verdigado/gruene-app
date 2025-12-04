@@ -22,7 +22,6 @@ import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/features/campaigns/widgets/focus_area_gen2_info_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:turf/turf.dart' as turf;
