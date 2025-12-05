@@ -133,8 +133,6 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
           ],
         ),
       ]);
-
-      // );
     }
 
     return Container(
