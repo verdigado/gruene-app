@@ -178,14 +178,34 @@ commands:
             - run:
                 command: fvm dart run build_runner build
                 name: Generate Swagger API
-            - run:
-                command: |
-                    echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json
-                name: Restore google-services.json
-            - run:
-                command: |
-                    echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > ios/Runner/GoogleService-Info.plist
-                name: Restore GoogleService-Info.plist
+            - when:
+                condition:
+                    equal:
+                        - << parameters.environment >>
+                        - production
+                steps:
+                    - run:
+                        command: |
+                            echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json
+                        name: Restore google-services.json
+                    - run:
+                        command: |
+                            echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > ios/Runner/GoogleService-Info.plist
+                        name: Restore GoogleService-Info.plist
+            - when:
+                condition:
+                    equal:
+                        - << parameters.environment >>
+                        - staging
+                steps:
+                    - run:
+                        command: |
+                            echo $GOOGLE_SERVICES_JSON_STAGING | base64 -d > android/app/google-services.json
+                        name: Restore staging google-services.json
+                    - run:
+                        command: |
+                            echo $GOOGLE_SERVICE_INFO_PLIST_STAGING | base64 -d > ios/Runner/GoogleService-Info.plist
+                        name: Restore staging GoogleService-Info.plist
     prepare_workspace:
         description: Attach the workspace at ~/attached_workspace and list its contents
         steps:
