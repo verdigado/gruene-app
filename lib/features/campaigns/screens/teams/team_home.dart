@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_member_statistics.dart';
@@ -39,10 +41,13 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     var teamsService = GetIt.I<GrueneApiTeamsService>();
     var team = preloadedTeam ?? await teamsService.getOwnTeam();
 
-    setState(() {
-      _loading = false;
-      _currentTeam = team;
-    });
+      setState(() {
+        _loading = false;
+        _currentTeam = team;
+      });
+    } on ApiException catch (e) {
+      logger.e(e.message);
+    }
   }
 
   @override
