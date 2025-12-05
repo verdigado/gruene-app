@@ -6,7 +6,6 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_visibility_hint.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
