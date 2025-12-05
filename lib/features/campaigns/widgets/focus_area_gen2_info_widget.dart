@@ -431,6 +431,6 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
 
   Future<Campaign> _getCampaignData() async {
     var campaignService = GetIt.I<GrueneApiCampaignService>();
-    return (await campaignService.findCampaigns()).singleWhere((x) => x.id == focusArea.campaignId);
+    return await campaignService.getCampaign(focusArea.campaignId);
   }
 }

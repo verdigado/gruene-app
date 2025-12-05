@@ -6,4 +6,9 @@ class GrueneApiCampaignService extends GrueneApiBaseService {
 
   Future<List<Campaign>> findCampaigns() async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsCampaignsGet(), map: (result) => result.data);
+
+  Future<Campaign> getCampaign(String campaignId) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsCampaignsCampaignIdGet(campaignId: campaignId),
+    map: (result) => result,
+  );
 }

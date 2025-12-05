@@ -1104,6 +1104,30 @@ paths:
       tags:
         - campaigns
   /v1/campaigns/campaigns/{campaignId}:
+    get:
+      operationId: getCampaign
+      parameters:
+        - name: campaignId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get a Campaign
+      tags:
+        - campaigns
     put:
       operationId: updateCampaign
       parameters:
@@ -2817,6 +2841,8 @@ tags: []
 servers:
   - url: https://api.gruene.de
     description: Production
+  - url: http://192.168.178.35:5000
+    description: Development
 components:
   securitySchemes:
     basic:
@@ -5618,7 +5644,7 @@ components:
       type: object
       properties:
         status:
-          description: Attendance status of attende
+          description: Attendance status of attendee
           example: ACCEPTED
           allOf:
             - $ref: '#/components/schemas/CalendarEventAttendanceStatus'
@@ -5831,6 +5857,7 @@ components:
           type: array
           items:
             type: string
+            minLength: 1
         recurring:
           type: string
           nullable: true
@@ -5911,6 +5938,7 @@ components:
           type: array
           items:
             type: string
+            minLength: 1
         recurring:
           type: string
           nullable: true
@@ -5993,4 +6021,3 @@ components:
             keycloak:
               status: down
               example: client not authenticated
-
