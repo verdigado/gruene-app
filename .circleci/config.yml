@@ -285,6 +285,13 @@ jobs:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
             xcode: 16.2.0
+        parameters:
+            environment:
+                default: production
+                enum:
+                    - production
+                    - staging
+                type: enum
         steps:
             - checkout
             - prepare_workspace
@@ -294,7 +301,8 @@ jobs:
             - restore_environment_variables
             - install_flutter:
                 precache: ios
-            - prepare_project
+            - prepare_project:
+                environment: << parameters.environment >>
             - install_fastlane:
                 directory: ios
             - install_cocoapods
@@ -485,6 +493,7 @@ parameters:
             - beta_delivery
             - production_delivery
             - promotion
+            - ios_staging_delivery
             - none
         type: enum
 version: 2.1
@@ -562,6 +571,36 @@ workflows:
                     - main
                     - << pipeline.git.branch >>
                 - not: << pipeline.parameters.api_triggered >>
+    ios_staging_delivery:
+        jobs:
+            - bump_version:
+                context:
+                    - github
+                prepare_delivery: true
+            - build_android:
+                context:
+                    - app_signing_android
+                environment: staging
+                requires:
+                    - bump_version
+            - build_ios:
+                context:
+                    - app_signing_ios
+                environment: staging
+                requires:
+                    - bump_version
+            - deliver_ios:
+                context:
+                    - gruene_apple_appstore
+                production_delivery: false
+                requires:
+                    - build_ios
+        when:
+            and:
+                - << pipeline.parameters.api_triggered >>
+                - equal:
+                    - << pipeline.parameters.workflow_type >>
+                    - ios_staging_delivery
     production_delivery:
         jobs:
             - bump_version:
