@@ -1,3 +1,8 @@
+parameters:
+  environment:
+    type: enum
+    default: production
+    enum: [production, staging]
 macos:
   xcode: 16.2.0
 environment:
@@ -11,7 +16,8 @@ steps:
   - restore_environment_variables
   - install_flutter:
       precache: ios
-  - prepare_project
+  - prepare_project:
+      environment: << parameters.environment >>
   - install_fastlane:
       directory: ios
   - install_cocoapods

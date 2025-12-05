@@ -178,14 +178,34 @@ commands:
             - run:
                 command: fvm dart run build_runner build
                 name: Generate Swagger API
-            - run:
-                command: |
-                    echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json
-                name: Restore google-services.json
-            - run:
-                command: |
-                    echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > ios/Runner/GoogleService-Info.plist
-                name: Restore GoogleService-Info.plist
+            - when:
+                condition:
+                    equal:
+                        - << parameters.environment >>
+                        - production
+                steps:
+                    - run:
+                        command: |
+                            echo $GOOGLE_SERVICES_JSON | base64 -d > android/app/google-services.json
+                        name: Restore google-services.json
+                    - run:
+                        command: |
+                            echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > ios/Runner/GoogleService-Info.plist
+                        name: Restore GoogleService-Info.plist
+            - when:
+                condition:
+                    equal:
+                        - << parameters.environment >>
+                        - staging
+                steps:
+                    - run:
+                        command: |
+                            echo $GOOGLE_SERVICES_JSON_STAGING | base64 -d > android/app/google-services.json
+                        name: Restore staging google-services.json
+                    - run:
+                        command: |
+                            echo $GOOGLE_SERVICE_INFO_PLIST_STAGING | base64 -d > ios/Runner/GoogleService-Info.plist
+                        name: Restore staging GoogleService-Info.plist
     prepare_workspace:
         description: Attach the workspace at ~/attached_workspace and list its contents
         steps:
@@ -265,6 +285,13 @@ jobs:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
             xcode: 16.2.0
+        parameters:
+            environment:
+                default: production
+                enum:
+                    - production
+                    - staging
+                type: enum
         steps:
             - checkout
             - prepare_workspace
@@ -274,7 +301,8 @@ jobs:
             - restore_environment_variables
             - install_flutter:
                 precache: ios
-            - prepare_project
+            - prepare_project:
+                environment: << parameters.environment >>
             - install_fastlane:
                 directory: ios
             - install_cocoapods
@@ -465,6 +493,7 @@ parameters:
             - beta_delivery
             - production_delivery
             - promotion
+            - ios_staging_delivery
             - none
         type: enum
 version: 2.1
@@ -542,6 +571,36 @@ workflows:
                     - main
                     - << pipeline.git.branch >>
                 - not: << pipeline.parameters.api_triggered >>
+    ios_staging_delivery:
+        jobs:
+            - bump_version:
+                context:
+                    - github
+                prepare_delivery: true
+            - build_android:
+                context:
+                    - app_signing_android
+                environment: staging
+                requires:
+                    - bump_version
+            - build_ios:
+                context:
+                    - app_signing_ios
+                environment: staging
+                requires:
+                    - bump_version
+            - deliver_ios:
+                context:
+                    - gruene_apple_appstore
+                production_delivery: false
+                requires:
+                    - build_ios
+        when:
+            and:
+                - << pipeline.parameters.api_triggered >>
+                - equal:
+                    - << pipeline.parameters.workflow_type >>
+                    - ios_staging_delivery
     production_delivery:
         jobs:
             - bump_version:

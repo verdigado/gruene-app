@@ -12,6 +12,7 @@ parameters:
         beta_delivery,
         production_delivery,
         promotion,
+        ios_staging_delivery,
         none,
       ]
     default: none
