@@ -48,7 +48,10 @@ class NewsCard extends StatelessWidget {
                     children: [
                       Text(
                         news.title,
-                        style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneTypeNeue'),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontFamily: 'GrueneTypeNeue',
+                          fontWeight: FontWeight.w400,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
