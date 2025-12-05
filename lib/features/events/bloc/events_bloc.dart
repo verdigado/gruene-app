@@ -18,13 +18,21 @@ sealed class EventsEvent extends Equatable {
 
 final class LoadEvents extends EventsEvent {
   final String? query;
+  final List<Calendar>? calendars;
   final Set<CalendarEventAttendanceStatus>? attendanceStatuses;
   final List<String>? categories;
   final DateTimeRange? dateRange;
 
   final bool force;
 
-  LoadEvents({this.query, this.attendanceStatuses, this.categories, this.dateRange, this.force = false});
+  LoadEvents({
+    this.query,
+    this.calendars,
+    this.attendanceStatuses,
+    this.categories,
+    this.dateRange,
+    this.force = false,
+  });
 }
 
 final class AddOrUpdateEvent extends EventsEvent {
@@ -45,21 +53,29 @@ class EventsState extends Equatable {
   final Object? error;
 
   final String query;
+  final List<Calendar> calendars;
   final Set<CalendarEventAttendanceStatus> attendanceStatuses;
   final List<String> categories;
   final DateTimeRange dateRange;
 
-  List<CalendarEvent> get events => allEventsInDateRange.filter(query, attendanceStatuses, categories);
+  List<CalendarEvent> get events => allEventsInDateRange.filter(
+    query: query,
+    calendars: calendars,
+    attendanceStatuses: attendanceStatuses,
+    categories: categories,
+  );
 
   EventsState({
     List<CalendarEvent>? allEventsInDateRange,
     this.loading = false,
     this.error,
     this.query = '',
+    List<Calendar>? calendars,
     Set<CalendarEventAttendanceStatus>? attendanceStatuses,
     List<String>? categories,
     DateTimeRange? dateRange,
   }) : allEventsInDateRange = allEventsInDateRange ?? [],
+       calendars = calendars ?? [],
        attendanceStatuses = attendanceStatuses ?? defaultAttendanceStatuses,
        categories = categories ?? defaultCategories,
        dateRange = dateRange ?? defaultDateRange;
@@ -69,6 +85,7 @@ class EventsState extends Equatable {
     bool? loading,
     Wrapped<Object?>? error,
     String? query,
+    List<Calendar>? calendars,
     Set<CalendarEventAttendanceStatus>? attendanceStatuses,
     List<String>? categories,
     DateTimeRange? dateRange,
@@ -78,6 +95,7 @@ class EventsState extends Equatable {
       loading: loading ?? this.loading,
       error: error == null ? this.error : error.value,
       query: query ?? this.query,
+      calendars: calendars ?? this.calendars,
       attendanceStatuses: attendanceStatuses ?? this.attendanceStatuses,
       categories: categories ?? this.categories,
       dateRange: dateRange ?? this.dateRange,
@@ -85,7 +103,7 @@ class EventsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [events, loading, error, query, attendanceStatuses, categories, dateRange];
+  List<Object?> get props => [events, loading, error, query, calendars, attendanceStatuses, categories, dateRange];
 }
 
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
@@ -97,6 +115,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
         state.copyWith(
           loading: reload,
           query: event.query,
+          calendars: event.calendars,
           attendanceStatuses: event.attendanceStatuses,
           categories: event.categories,
           dateRange: event.dateRange,

@@ -150,7 +150,10 @@ class _EventsMapState extends State<EventsMap> {
             // Replace with custom map attribution
             attributionButtonMargins: const math.Point(-100, -100),
           ),
-          Padding(padding: EdgeInsets.fromLTRB(16, 16, 16, 0), child: EventsFilterBar()),
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: EventsFilterBar(calendars: widget.calendars),
+          ),
           MapAttribution(),
           Positioned(
             bottom: 16,
@@ -192,8 +195,10 @@ Future<void> _showBottomSheet({
                       child: SafeArea(
                         child: FloatingActionButton(
                           heroTag: 'edit event',
-                          onPressed: () =>
-                              showFullScreenDialog(context, (_) => EventEditDialog(calendar: calendar, event: event)),
+                          onPressed: () => showFullScreenDialog(
+                            context,
+                            (_) => EventEditDialog.edit(event: event, calendar: calendar),
+                          ),
                           child: Icon(Icons.edit),
                         ),
                       ),
