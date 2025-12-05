@@ -56,7 +56,16 @@ class TeamProfile extends StatelessWidget {
                     ],
                   )
                 : SizedBox.shrink(),
-            Row(children: [Text(currentTeam.name, style: theme.textTheme.displayLarge)]),
+            Row(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(currentTeam.name, style: theme.textTheme.displayLarge),
+                  ),
+                ),
+              ],
+            ),
             FutureBuilder(
               future: _getDivisionName(currentTeam.divisionKey),
               builder: (context, snapshot) {
