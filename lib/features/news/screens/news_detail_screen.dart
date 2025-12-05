@@ -48,7 +48,13 @@ class NewsDetailScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             division != null ? Text(division.shortDisplayName()) : Container(),
-                            Text(news.title, style: theme.textTheme.titleLarge?.apply(fontFamily: 'GrueneTypeNeue')),
+                            Text(
+                              news.title,
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontFamily: 'GrueneTypeNeue',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
                             SizedBox(height: 16),
                             Text(
                               t.common.updatedAt(date: news.createdAt.formattedDate),
