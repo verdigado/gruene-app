@@ -38,17 +38,13 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
   void _loadData() async {
     setState(() => _loading = true);
 
-    try {
-      var teamsService = GetIt.I<GrueneApiTeamsService>();
-      var team = await teamsService.getOwnTeam();
+    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var team = await teamsService.getOwnTeam();
 
-      setState(() {
-        _loading = false;
-        _currentTeam = team;
-      });
-    } on ApiException catch (e) {
-      logger.e(e.message);
-    }
+    setState(() {
+      _loading = false;
+      _currentTeam = team;
+    });
   }
 
   @override
