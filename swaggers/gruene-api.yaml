@@ -4776,6 +4776,13 @@ components:
     UpdateFocusArea:
       type: object
       properties:
+        attributes:
+          type: object
+          nullable: true
+          additionalProperties: true
+          example:
+            score: 3
+            locationZip: '12345'
         key:
           type: string
         description:
@@ -4803,6 +4810,7 @@ components:
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
+        - attributes
         - key
         - description
         - score
@@ -4813,6 +4821,13 @@ components:
     CreateFocusArea:
       type: object
       properties:
+        attributes:
+          type: object
+          nullable: true
+          additionalProperties: true
+          example:
+            score: 3
+            locationZip: '12345'
         key:
           type: string
         campaignId:
@@ -4843,6 +4858,7 @@ components:
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
+        - attributes
         - key
         - description
         - score
@@ -4866,6 +4882,8 @@ components:
         description:
           type: string
           nullable: true
+        attributes:
+          type: object
         score:
           type: number
         scoreProgressiveConservative:
@@ -4885,6 +4903,7 @@ components:
         - campaignId
         - createdAt
         - description
+        - attributes
         - score
         - scoreProgressiveConservative
         - scoreDominantParty
@@ -4899,6 +4918,48 @@ components:
             $ref: '#/components/schemas/FocusArea'
       required:
         - data
+    PoiStatisticsByStatus:
+      type: object
+      properties:
+        status:
+          enum:
+            - OK
+            - DAMAGED
+            - REMOVED
+            - MISSING
+            - TO_BE_MOVED
+            - OPENED_DOORS
+            - CLOSED_DOORS
+          type: string
+        own:
+          type: number
+          description: Total number of POIs created or owned by the current user.
+        subDivision:
+          type: number
+          nullable: true
+          description: >-
+            Total number of POIs within the user's local subdivision (division
+            with level OV), or null if not applicable.
+        division:
+          type: number
+          description: >-
+            Total number of POIs within the user's district (division with level
+            KV).
+        state:
+          type: number
+          description: >-
+            Total number of POIs within the user's state (division with level
+            LV).
+        germany:
+          type: number
+          description: Total number of POIs within the entire country.
+      required:
+        - status
+        - own
+        - subDivision
+        - division
+        - state
+        - germany
     PoiStatistics:
       type: object
       properties:
@@ -4924,12 +4985,17 @@ components:
         germany:
           type: number
           description: Total number of POIs within the entire country.
+        byStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoiStatisticsByStatus'
       required:
         - own
         - subDivision
         - division
         - state
         - germany
+        - byStatus
     CampaignStatistics:
       type: object
       properties:

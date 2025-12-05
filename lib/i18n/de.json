@@ -115,6 +115,21 @@
       "supplied_by": "Bereitgestellt von:",
       "general_supplier": "nutzer*innengeneriert"
     },
+    "focus_area": {
+      "location_kv": "KV ${name}",
+      "intensity_recommendation": "Intensitätsempfehlung",
+      "activity1_label": "Haustür-Wahlkampf",
+      "activity2_label": "Plakatieren",
+      "activity3_label": "Flyer",
+      "activity1_recommendation_label": "Empfehlungen für den Haustürwahlkampf",
+      "activity2_recommendation_label": "Empfehlungen für die Plakatauswahl",
+      "activity3_recommendation_label": "Empfehlungen fürs Flyern",
+      "milieu": "Wählerschaft",
+      "progressive": "progressiv",
+      "conservative": "konservativ",
+      "special_competition": "Besondere Wettbewerbssituation",
+      "meta_info": "Kampagne ${campaign}. Zuletzt aktualisiert: ${updatedAt} (ID: ${focusAreaId})"
+    },
     "poster": {
       "label": "Plakat",
       "addPoster": "Plakat eintragen",

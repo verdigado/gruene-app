@@ -78,6 +78,8 @@ dependencies:
   flutter_form_builder: ^10.1.0
   form_builder_validators: ^11.2.0
   form_builder_image_picker: ^4.3.1
+  step_progress_indicator: ^1.0.2
+  flutter_xlider: ^3.5.0
 
 dev_dependencies:
 
@@ -113,6 +115,7 @@ flutter:
     - assets/symbols/flyer/
     - assets/symbols/polling_stations/
     - assets/symbols/events/
+    - assets/symbols/focus_areas/
     - assets/maps/
     - assets/maps/layer_styles/
     - .env

@@ -19,6 +19,7 @@ import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
+import 'package:gruene_app/features/campaigns/widgets/focus_area_gen2_info_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -224,26 +225,50 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     if (!focusAreasVisible) return;
     var features = await mapController.getFeaturesInScreen(point, [CampaignConstants.focusAreaFillLayerId]);
     if (features.isNotEmpty) {
-      final feature = features.first;
-      if (feature['properties'] == null) return;
-      final properties = feature['properties'] as Map<String, dynamic>;
+      final feature = turf.Feature.fromJson(features.first as Map<String, dynamic>);
+      if (feature.properties == null) return;
+      final properties = feature.properties!;
       var infoText = <String>[];
 
-      String? currentFocusAreaId;
-      if (properties['id'] != null) {
-        currentFocusAreaId = properties['id'].toString();
-        if (_lastFocusAreaId != null && _lastFocusAreaId == currentFocusAreaId) {
-          hideCurrentSnackBar();
-          return;
+      var currentFocusAreaId = feature.id.toString();
+
+      if (_lastFocusAreaId != null && _lastFocusAreaId == currentFocusAreaId) {
+        hideCurrentSnackBar();
+        return;
+      }
+      var focusAreaType = FocusAreaType.values.byName(properties[CampaignConstants.focusAreaMapTypeProperty] as String);
+
+      if (focusAreaType == FocusAreaType.gen2) {
+        hideCurrentSnackBar();
+        showFocusAreaGen2(currentFocusAreaId);
+      } else {
+        if (properties[CampaignConstants.focusAreaMapInfoProperty] != null) {
+          infoText.add(properties[CampaignConstants.focusAreaMapInfoProperty] as String);
+        }
+        if (properties[CampaignConstants.focusAreaMapScoreInfoProperty] != null) {
+          infoText.add(properties[CampaignConstants.focusAreaMapScoreInfoProperty] as String);
+        }
+
+        if (infoText.isNotEmpty) {
+          _lastFocusAreaId = currentFocusAreaId;
+          _showInfo(infoText.join('\n'));
         }
       }
-      if (properties['info'] != null) infoText.add(properties['info'] as String);
-      if (properties['score_info'] != null) infoText.add(properties['score_info'] as String);
+    }
+  }
 
-      if (infoText.isNotEmpty) {
-        _lastFocusAreaId = currentFocusAreaId;
-        _showInfo(infoText.join('\n'));
-      }
+  Future<void> showFocusAreaGen2(String currentFocusAreaId) async {
+    var focusArea = await campaignService.loadFocusArea(currentFocusAreaId);
+
+    if (mounted) {
+      var theme = Theme.of(context);
+      await showModalBottomSheet<void>(
+        context: context,
+        builder: (_) => FocusAreaGen2InfoWidget(focusArea: focusArea, poiType: poiType),
+        isScrollControlled: false,
+        isDismissible: true,
+        backgroundColor: theme.colorScheme.surface,
+      );
     }
   }
 

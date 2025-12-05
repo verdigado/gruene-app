@@ -12,4 +12,10 @@ extension StringExtension on String {
   }
 
   bool isNetworkImageUrl() => Uri.parse(this).hasScheme;
+
+  bool isNullOrEmpty() => isEmpty;
+}
+
+extension NullableStringExtension on String? {
+  bool isNullOrEmpty() => this == null || this!.isEmpty;
 }
