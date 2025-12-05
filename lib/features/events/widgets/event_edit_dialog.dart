@@ -33,10 +33,12 @@ const categoriesField = 'categories';
 const imageField = 'image';
 
 class EventEditDialog extends StatefulWidget {
-  final Calendar calendar;
+  final List<Calendar> calendars;
   final CalendarEvent? event;
 
-  const EventEditDialog({super.key, required this.calendar, required this.event});
+  const EventEditDialog.create({super.key, required this.calendars}) : event = null;
+
+  EventEditDialog.edit({super.key, required this.event, required Calendar calendar}) : calendars = [calendar];
 
   @override
   State<EventEditDialog> createState() => _EventEditDialogState();
@@ -44,12 +46,14 @@ class EventEditDialog extends StatefulWidget {
 
 class _EventEditDialogState extends State<EventEditDialog> {
   final formKey = GlobalKey<FormBuilderState>();
+  late Calendar calendar;
   late DateTime start;
   late CalendarEventLocationType? locationType;
 
   @override
   void initState() {
     super.initState();
+    calendar = widget.calendars[0];
     start = widget.event?.start ?? DateTime.now().startOfHour.add(Duration(hours: 2));
     locationType = widget.event?.locationType ?? CalendarEventLocationType.physical;
   }
@@ -65,6 +69,23 @@ class _EventEditDialogState extends State<EventEditDialog> {
       autovalidateMode: AutovalidateMode.onUnfocus,
       clearValueOnUnregister: true,
       child: FullScreenDialog(
+        appBarAction: widget.calendars.length > 1
+            ? Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: DropdownMenu(
+                  initialSelection: calendar,
+                  onSelected: (calendar) => setState(() => this.calendar = calendar ?? this.calendar),
+                  inputDecorationTheme: InputDecorationTheme(
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                  ),
+                  dropdownMenuEntries: widget.calendars
+                      .map((calendar) => DropdownMenuEntry(value: calendar, label: calendar.displayName))
+                      .toList(),
+                ),
+              )
+            : null,
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
           child: Column(
@@ -77,7 +98,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                     widget.event == null ? t.events.createTitle : t.events.updateTitle,
                     style: theme.textTheme.titleLarge,
                   ),
-                  if (widget.event == null) Text(t.events.intro(calendar: widget.calendar.displayName)),
+                  if (widget.event == null) Text(t.events.intro(calendar: calendar.displayName)),
                   FormBuilderTextField(
                     name: nameField,
                     initialValue: widget.event?.title,
@@ -250,7 +271,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                           if (formKey.currentState?.saveAndValidate() == true) {
                             final newEvent = await save(
                               formKey: formKey,
-                              calendar: widget.calendar,
+                              calendar: calendar,
                               previousEvent: widget.event,
                               context: context,
                             );

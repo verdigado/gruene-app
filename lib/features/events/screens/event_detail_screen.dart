@@ -89,7 +89,7 @@ class EventDetailScreen extends StatelessWidget {
                 child: FloatingActionButton(
                   heroTag: 'edit event',
                   onPressed: () =>
-                      showFullScreenDialog(context, (_) => EventEditDialog(calendar: calendar, event: event)),
+                      showFullScreenDialog(context, (_) => EventEditDialog.edit(event: event, calendar: calendar)),
                   child: Icon(Icons.edit),
                 ),
               ),

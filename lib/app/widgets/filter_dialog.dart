@@ -13,14 +13,12 @@ class FilterDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return FullScreenDialog(
-      appBarActions: modified
-          ? [
-              TextButton(
-                onPressed: resetFilters,
-                child: Text(t.common.actions.resetFilter, style: theme.textTheme.bodyLarge),
-              ),
-            ]
-          : [],
+      appBarAction: modified
+          ? TextButton(
+              onPressed: resetFilters,
+              child: Text(t.common.actions.resetFilter, style: theme.textTheme.bodyLarge),
+            )
+          : null,
       child: Column(
         spacing: 16,
         children: [

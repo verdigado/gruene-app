@@ -44,7 +44,7 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final writableCalendar = widget.calendars.firstWhereOrNull((calendar) => !calendar.readOnly);
+    final writableCalendars = widget.calendars.where((calendar) => !calendar.readOnly).toList();
     return BlocListener<EventsBloc, EventsState>(
       listener: (context, state) => showMap && state.events.isEmpty ? showSnackBar(context, t.events.noEvents) : null,
       child: Stack(
@@ -62,7 +62,7 @@ class _EventsScreenState extends State<EventsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 8,
                 children: [
-                  EventsFilterBar(),
+                  EventsFilterBar(calendars: writableCalendars),
                   Expanded(
                     child: EventsList(
                       calendars: widget.calendars,
@@ -89,7 +89,7 @@ class _EventsScreenState extends State<EventsScreen> {
               ),
             ),
           ),
-          if (writableCalendar != null)
+          if (writableCalendars.isNotEmpty)
             Positioned(
               bottom: 16,
               left: 16,
@@ -98,7 +98,7 @@ class _EventsScreenState extends State<EventsScreen> {
                 onPressed: () async {
                   final event = await showFullScreenDialog<CalendarEvent?>(
                     context,
-                    (_) => EventEditDialog(calendar: writableCalendar, event: null),
+                    (_) => EventEditDialog.create(calendars: writableCalendars),
                   );
                   if (context.mounted && event != null) {
                     context.pushNested(

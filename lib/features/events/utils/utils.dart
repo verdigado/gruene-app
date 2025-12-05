@@ -57,12 +57,14 @@ extension CalendarEventExtension on CalendarEvent {
 }
 
 extension CalendarEventListExtension on List<CalendarEvent> {
-  List<CalendarEvent> filter(
-    String query,
-    Set<CalendarEventAttendanceStatus> attendanceStatuses,
-    List<String> categories,
-  ) => where(
+  List<CalendarEvent> filter({
+    required String query,
+    required List<Calendar> calendars,
+    required Set<CalendarEventAttendanceStatus> attendanceStatuses,
+    required List<String> categories,
+  }) => where(
     (it) =>
+        (calendars.isEmpty || calendars.any((calendar) => it.calendarId == calendar.id)) &&
         (attendanceStatuses.isEmpty || attendanceStatuses.contains(it.attendanceStatus)) &&
         (categories.isEmpty || it.categories.any((category) => categories.contains(category))) &&
         ([
