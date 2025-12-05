@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/user_info.dart';
@@ -5,6 +6,7 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/edit_team_basic_info_widget.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/edit_team_members_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -13,7 +15,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class TeamProfile extends StatelessWidget {
   final Team currentTeam;
   final UserInfo currentUser;
-  final void Function() reloadTeam;
+  final void Function({Team? preloadedTeam}) reloadTeam;
 
   const TeamProfile({super.key, required this.currentTeam, required this.currentUser, required this.reloadTeam});
 
@@ -82,9 +84,15 @@ class TeamProfile extends StatelessWidget {
             Row(
               children: [
                 currentTeam.description != null
-                    ? Container(
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: Text(currentTeam.description!, style: theme.textTheme.bodyMedium),
+                    ? Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text.rich(
+                            _getRichText(currentTeam.description!, context),
+                            style: theme.textTheme.bodyMedium,
+                            softWrap: true,
+                          ),
+                        ),
                       )
                     : SizedBox.shrink(),
               ],
@@ -122,18 +130,16 @@ class TeamProfile extends StatelessWidget {
     final theme = Theme.of(context);
 
     var newTeamWidget = EditTeamBasicInfoWidget(team: currentTeam);
-    var result =
-        await showModalBottomSheet<bool>(
-          context: context,
-          builder: (context) => newTeamWidget,
-          isScrollControlled: false,
-          isDismissible: true,
-          backgroundColor: theme.colorScheme.surface,
-        ) ??
-        false;
+    var result = await showModalBottomSheet<Team>(
+      context: context,
+      builder: (context) => newTeamWidget,
+      isScrollControlled: false,
+      isDismissible: true,
+      backgroundColor: theme.colorScheme.surface,
+    );
 
     if (context.mounted) {
-      if (result) {
+      if (result != null) {
         reloadTeam();
       }
     }
@@ -159,5 +165,31 @@ class TeamProfile extends StatelessWidget {
         reloadTeam();
       }
     }
+  }
+
+  InlineSpan _getRichText(String originalText, BuildContext context) {
+    var spans = <TextSpan>[];
+
+    var regex = RegExp(
+      r'(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)',
+    );
+
+    var currentText = originalText;
+    var match = regex.firstMatch(currentText);
+    while (match != null) {
+      spans.add(TextSpan(text: currentText.substring(0, match.start)));
+      var link = currentText.substring(match.start, match.end);
+      spans.add(
+        TextSpan(
+          text: link,
+          style: TextStyle(color: ThemeColors.textCancel, decoration: TextDecoration.underline),
+          recognizer: TapGestureRecognizer()..onTap = () => openUrl(link, context),
+        ),
+      );
+      currentText = currentText.substring(match.end);
+      match = regex.firstMatch(currentText);
+    }
+    spans.add(TextSpan(text: currentText));
+    return TextSpan(children: spans);
   }
 }
