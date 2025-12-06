@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
@@ -31,61 +33,11 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     });
   }
 
-  void _loadData() async {
+  void _loadData({Team? preloadedTeam}) async {
     setState(() => _loading = true);
 
-    // TODO #733 remove mock data when getOwnTeam is working
-    // var teamsService = GetIt.I<GrueneApiTeamsService>();
-    // var team = await teamsService.getOwnTeam();
-    await Future<void>.delayed(Duration(milliseconds: 250));
-    var team = Team(
-      id: '1',
-      userId: '123',
-      divisionKey: '5936',
-      createdAt: DateTime.now(),
-      name: 'Team Oktopus ${DateTime.now().getAsTimeStamp()}',
-      description: '''Bestes HTWK Team jenseits der Panke
-Chat: https://signal.group/#123456''',
-      status: TeamStatus.active,
-      memberships: [
-        TeamMembership(
-          id: 'id',
-          userId: widget.currentUser.uidnumber,
-          createdAt: DateTime.now(),
-          start: DateTime.now(),
-          end: DateTime.now(),
-          type: TeamMembershipType.lead,
-          status: TeamMembershipStatus.accepted,
-        ),
-        TeamMembership(
-          id: 'id',
-          userId: '100001',
-          createdAt: DateTime.now(),
-          start: DateTime.now(),
-          end: DateTime.now(),
-          type: TeamMembershipType.member,
-          status: TeamMembershipStatus.accepted,
-        ),
-        TeamMembership(
-          id: 'id',
-          userId: '100003',
-          createdAt: DateTime.now(),
-          start: DateTime.now(),
-          end: DateTime.now(),
-          type: TeamMembershipType.member,
-          status: TeamMembershipStatus.pending,
-        ),
-        TeamMembership(
-          id: 'id',
-          userId: '100004',
-          createdAt: DateTime.now(),
-          start: DateTime.now(),
-          end: DateTime.now(),
-          type: TeamMembershipType.lead,
-          status: TeamMembershipStatus.accepted,
-        ),
-      ],
-    );
+    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var team = preloadedTeam ?? await teamsService.getOwnTeam();
 
     setState(() {
       _loading = false;

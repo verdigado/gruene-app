@@ -22,11 +22,13 @@ abstract class GrueneApiBaseService {
   }
 
   Response<T> handleApiError<T>(Response<T> response) {
-    if (!response.isSuccessful || response.body == null) {
+    if (!response.isSuccessful || (!_isNullable<T>() && response.body == null)) {
       throw ApiException(statusCode: response.statusCode, message: response.error.toString());
     }
     return response;
   }
+
+  bool _isNullable<T>() => null is T;
 }
 
 class ApiException implements Exception {
