@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/multiline_text_input_field.dart';
 import 'package:gruene_app/features/campaigns/widgets/text_input_field.dart';
@@ -67,18 +69,20 @@ class _EditTeamBasicInfoWidgetState extends State<EditTeamBasicInfoWidget> {
   }
 
   void onClose() {
-    Navigator.pop(context, false);
+    Navigator.pop(context);
   }
 
   Future<void> onSave() async {
     if (teamNameTextController.text.isEmpty) return;
     if (teamDescriptionTextController.text.isEmpty) return;
 
-    // TODO #298 use updateTeamInfo functionality on API
-    await Future<void>.delayed(Duration(milliseconds: 250));
-    // var teamsService = GetIt.I<GrueneApiTeamsService>();
-    // await teamsService.updateTeamInfo(teamNameTextController.text, teamDescriptionTextController.text);
+    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var updatedTeam = await teamsService.updateTeam(
+      teamId: widget.team.id,
+      teamName: teamNameTextController.text,
+      teamDescription: teamDescriptionTextController.text,
+    );
 
-    if (mounted) Navigator.pop(context, true);
+    if (mounted) Navigator.pop(context, updatedTeam);
   }
 }

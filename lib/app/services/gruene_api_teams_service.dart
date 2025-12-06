@@ -7,6 +7,15 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
   Future<Team?> getOwnTeam() async =>
       getFromApi<Team?, Team?>(apiRequest: (api) => api.v1CampaignsTeamsSelfGet(), map: (result) => result);
 
+  Future<Team> updateTeam({required String teamId, required String teamName, String? teamDescription}) async =>
+      getFromApi<Team, Team>(
+        apiRequest: (api) => api.v1CampaignsTeamsTeamIdPut(
+          teamId: teamId,
+          body: UpdateTeam(name: teamName, description: teamDescription),
+        ),
+        map: (result) => result,
+      );
+
   Future<Team> createNewTeam(NewTeamDetails newTeamDetails) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsTeamsPost(body: newTeamDetails.asCreateTeam()),
     map: (result) => result,
