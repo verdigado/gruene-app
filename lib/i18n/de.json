@@ -48,6 +48,18 @@
     "publicationDate": "Veröffentlichungsdatum",
     "applyFilter": "Filter anwenden"
   },
+  "profile": {
+    "visibility_setting": {
+      "visibility_setting_action": "Sichtbarkeitseinstellungen",
+      "title": "Mein Profil ist einsehbar für Mitglieder*innen ...",
+      "visibility_public": "... für alle",
+      "visibility_BV": "... im Bundesverband",
+      "visibility_LV": "... im Landesverband",
+      "visibility_KV": "... im Kreisverband",
+      "visibility_OV": "... im Ortsverband",
+      "visibility_private": "... keine (privat)"
+    }
+  },
   "campaigns": {
     "debug": {
       "confirm_storing_cache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
@@ -233,7 +245,8 @@
       "edit_team_member_label": "Teammitglieder bearbeiten",
       "appoint_as_team_lead": "Zum Team-Lead ernennen",
       "cancel_invitation": "Einladung zurückziehen",
-      "add_team_member": "Teammitglied hinzufügen"
+      "add_team_member": "Teammitglied hinzufügen",
+      "profile_visibility_hint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Der Team Modus erfordert, dass dein Profil mindestens im Kreisverband [KV] auffindbar sein muss, damit du zu Teams hinzugefügt werden kannst.\nBitte setze entsprechende Sichtbarkeitseinstellung."
     },
     "statistic": {
       "label": "Statistik",

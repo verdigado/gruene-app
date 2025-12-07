@@ -11,14 +11,14 @@ abstract class GrueneApiBaseService {
 
   Future<T> getFromApi<S, T>({
     required Future<Response<S>> Function(GrueneApi api) apiRequest,
-    required T Function(S data) map,
+    T Function(S data)? map,
   }) async {
     final response = await apiRequest(grueneApi);
 
     handleApiError(response);
 
     final body = response.body as S;
-    return map(body);
+    return map == null ? body as T : map(body);
   }
 
   Response<T> handleApiError<T>(Response<T> response) {

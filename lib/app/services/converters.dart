@@ -78,3 +78,4 @@ part 'converters/public_profile_parsing.dart';
 part 'converters/new_team_details_parsing.dart';
 part 'converters/user_info_extensions.dart';
 part 'converters/team_extension.dart';
+part 'converters/profile_extension.dart';

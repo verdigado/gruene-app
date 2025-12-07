@@ -9,4 +9,7 @@ class SecureStorageKeys {
   static const String pushNotificationsFcmTopics = 'push_notifications.subscribed_fcm_topics';
 
   static const String newsDivisionFilters = 'news.division_filters';
+
+  // profile
+  static const String profileCheck = 'profile.check';
 }

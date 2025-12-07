@@ -15,7 +15,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class TeamProfile extends StatelessWidget {
   final Team currentTeam;
   final UserInfo currentUser;
-  final void Function({Team? preloadedTeam}) reloadTeam;
+  final void Function(Team? preloadedTeam) reloadTeam;
 
   const TeamProfile({super.key, required this.currentTeam, required this.currentUser, required this.reloadTeam});
 
@@ -140,7 +140,7 @@ class TeamProfile extends StatelessWidget {
 
     if (context.mounted) {
       if (result != null) {
-        reloadTeam();
+        reloadTeam(result);
       }
     }
   }
@@ -162,7 +162,7 @@ class TeamProfile extends StatelessWidget {
 
     if (context.mounted) {
       if (result) {
-        reloadTeam();
+        reloadTeam(null);
       }
     }
   }

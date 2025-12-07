@@ -6,10 +6,8 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class GrueneApiActionAreaService extends GrueneApiBaseService {
   GrueneApiActionAreaService() : super();
 
-  Future<Area> getActionArea(String actionAreaId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsAreasAreaIdGet(areaId: actionAreaId),
-    map: (result) => result,
-  );
+  Future<Area> getActionArea(String actionAreaId) async =>
+      getFromApi(apiRequest: (api) => api.v1CampaignsAreasAreaIdGet(areaId: actionAreaId));
 
   Future<void> updateActionArea(ActionAreaUpdateModel actionArea) => getFromApi(
     apiRequest: (api) => api.v1CampaignsAreasAreaIdPut(
@@ -21,6 +19,5 @@ class GrueneApiActionAreaService extends GrueneApiBaseService {
         polygon: actionArea.actionAreaDetail.polygon,
       ),
     ),
-    map: (result) => result,
   );
 }
