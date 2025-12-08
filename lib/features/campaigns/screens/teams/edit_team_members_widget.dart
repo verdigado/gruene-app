@@ -220,6 +220,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
               end: DateTime.now(),
               type: TeamMembershipType.member,
               status: TeamMembershipStatus.pending,
+              invitingUserId: '100005',
             ),
           );
         });

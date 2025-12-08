@@ -41,7 +41,7 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
         ],
       ),
     ],
-    redirect: (context, state) async {
+    redirect: (context, state) {
       final currentPath = state.uri.toString();
       final isLoginOpen = currentPath.startsWith(Routes.login.path);
       final isMfaOpen = currentPath.startsWith(Routes.mfa.path);

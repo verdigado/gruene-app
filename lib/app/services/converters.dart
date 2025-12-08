@@ -1,11 +1,14 @@
 import 'dart:convert';
 
 // import 'package:geotypes/geotypes.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart' hide Route;
 import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/geocode/nominatim.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';

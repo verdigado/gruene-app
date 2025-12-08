@@ -2102,6 +2102,26 @@ paths:
       summary: Find own team
       tags:
         - campaigns
+  /v1/campaigns/teams/pendingInvitations:
+    get:
+      operationId: pendingInvitations
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamInvitation'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find own pending team invitations
+      tags:
+        - campaigns
   /v1/campaigns/teams/{teamId}/memberships:
     post:
       operationId: addTeamMembership
@@ -5203,6 +5223,8 @@ components:
           example: '1'
         userId:
           type: string
+        invitingUserId:
+          type: string
         createdAt:
           format: date-time
           type: string
@@ -5226,6 +5248,7 @@ components:
       required:
         - id
         - userId
+        - invitingUserId
         - createdAt
         - type
         - status
@@ -5265,6 +5288,41 @@ components:
         - name
         - status
         - memberships
+    TeamInvitation:
+      type: object
+      properties:
+        membershipId:
+          type: string
+          example: '1'
+        teamId:
+          type: string
+        invitingUser:
+          type: string
+        invitationDate:
+          format: date-time
+          type: string
+        teamName:
+          type: string
+        teamDescription:
+          type: string
+          nullable: true
+        teamDivision:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Division'
+        type:
+          type: string
+          enum:
+            - LEAD
+            - MEMBER
+      required:
+        - membershipId
+        - teamId
+        - invitingUser
+        - invitationDate
+        - teamName
+        - teamDivision
+        - type
     UpdateTeamMembership:
       type: object
       properties:

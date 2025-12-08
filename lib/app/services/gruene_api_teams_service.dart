@@ -18,4 +18,21 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
 
   Future<Team> createNewTeam(NewTeamDetails newTeamDetails) async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPost(body: newTeamDetails.asCreateTeam()));
+
+  Future<List<TeamInvitation>> getOpenInvitations() async =>
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPendingInvitationsGet());
+
+  Future<Team> acceptTeamMembership(String teamId) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsPut(
+      teamId: teamId,
+      body: UpdateTeamMembership(type: UpdateTeamMembershipType.accept),
+    ),
+  );
+
+  Future<Team> rejectTeamMembership(String teamId) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsPut(
+      teamId: teamId,
+      body: UpdateTeamMembership(type: UpdateTeamMembershipType.reject),
+    ),
+  );
 }
