@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
