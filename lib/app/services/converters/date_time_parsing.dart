@@ -16,6 +16,13 @@ extension DateTimeParsing on DateTime {
     return dateString;
   }
 
+  String getAsLocalTimeString() {
+    DateTime utcDateTime = this;
+    DateTime localDateTime = utcDateTime.toLocal();
+    final timeString = DateFormat(t.campaigns.poster.time_format).format(localDateTime);
+    return timeString;
+  }
+
   String getAsTimeStamp() {
     DateTime utcDateTime = this;
     DateTime localDateTime = utcDateTime.toLocal();
