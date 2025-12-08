@@ -4,12 +4,15 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/features/campaigns/helper/team_helper.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class OpenInvitationList extends StatefulWidget {
   final void Function() reload;
-  const OpenInvitationList({super.key, required this.reload});
+  final Team? currentTeam;
+
+  const OpenInvitationList({super.key, required this.reload, required this.currentTeam});
 
   @override
   State<OpenInvitationList> createState() => _OpenInvitationListState();
@@ -159,6 +162,14 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
   }
 
   Future<void> _acceptInvitation(TeamInvitation invitation) async {
+    if (widget.currentTeam != null) {
+      var confirmed = await TeamHelper.getConfirmationJoiningNewTeam(
+        context: context,
+        currentTeamName: widget.currentTeam!.name,
+        newTeamName: invitation.teamName,
+      );
+      if (!confirmed) return;
+    }
     var teamService = GetIt.I<GrueneApiTeamsService>();
     await teamService.acceptTeamMembership(invitation.teamId);
     widget.reload();

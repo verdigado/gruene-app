@@ -72,7 +72,12 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
       ),
     );
 
-    subItems.add(OpenInvitationList(reload: () => _loadData(preloadedProfile: _currentProfile)));
+    subItems.add(
+      OpenInvitationList(
+        reload: () => _loadData(preloadedProfile: _currentProfile),
+        currentTeam: _currentTeam,
+      ),
+    );
 
     if (_currentTeam != null) {
       var theme = Theme.of(context);

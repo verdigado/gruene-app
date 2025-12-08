@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/features/campaigns/helper/team_helper.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/new_team_basic_info_widget.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/new_team_select_division_widget.dart';
@@ -112,6 +114,22 @@ mixin NewTeamMixin {
 
       if (newDetails != null) {
         var teamService = GetIt.I<GrueneApiTeamsService>();
+
+        var isCreatingUserInNewTeam = newDetails.getAllMemberships().any(
+          (m) => m.userId == newDetails.creatingUser.userId,
+        );
+        var currentTeamOfCreatingUser = await GetIt.I<GrueneApiTeamsService>().getOwnTeam();
+
+        // check whether current user is joining the new team and is already in a team
+        if (isCreatingUserInNewTeam && currentTeamOfCreatingUser != null) {
+          if (!context.mounted) return;
+          var confirmed = await TeamHelper.getConfirmationJoiningNewTeam(
+            context: context,
+            currentTeamName: currentTeamOfCreatingUser.name,
+            newTeamName: newDetails.name,
+          );
+          if (!confirmed) return;
+        }
 
         try {
           await teamService.createNewTeam(newDetails);
