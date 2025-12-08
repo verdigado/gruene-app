@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/profile_visibility_hint.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_member_statistics.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
@@ -24,6 +26,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
   bool _loading = true;
 
   late Team? _currentTeam;
+  late Profile? _currentProfile;
 
   @override
   void initState() {
@@ -33,8 +36,16 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     });
   }
 
-  void _loadData({Team? preloadedTeam}) async {
+  void _loadData({Team? preloadedTeam, Profile? preloadedProfile}) async {
     setState(() => _loading = true);
+
+    Profile? profile;
+    try {
+      var profileService = GetIt.I<GrueneApiProfileService>();
+      profile = preloadedProfile ?? await profileService.getSelf();
+    } catch (e) {
+      profile = null;
+    }
 
     var teamsService = GetIt.I<GrueneApiTeamsService>();
     var team = preloadedTeam ?? await teamsService.getOwnTeam();
@@ -42,6 +53,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     setState(() {
       _loading = false;
       _currentTeam = team;
+      _currentProfile = profile;
     });
   }
 
@@ -50,15 +62,26 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     if (_loading) {
       return Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator());
     }
-    if (_currentTeam == null) return SizedBox.shrink();
+    var subItems = <Widget>[];
+    subItems.add(
+      ProfileVisibilityHint(
+        currentProfile: _currentProfile,
+        reloadProfile: (profile) => _loadData(preloadedTeam: _currentTeam, preloadedProfile: profile),
+      ),
+    );
 
-    var theme = Theme.of(context);
-    return Column(
-      children: [
-        TeamProfile(currentTeam: _currentTeam!, currentUser: widget.currentUser, reloadTeam: _loadData),
-        TeamAssignedElements(currentTeam: _currentTeam!),
-        TeamMemberStatistics(currentTeam: _currentTeam!),
-
+    if (_currentTeam != null) {
+      var theme = Theme.of(context);
+      subItems.add(
+        TeamProfile(
+          currentTeam: _currentTeam!,
+          currentUser: widget.currentUser,
+          reloadTeam: (team) => _loadData(preloadedProfile: _currentProfile, preloadedTeam: team),
+        ),
+      );
+      subItems.add(TeamAssignedElements(currentTeam: _currentTeam!));
+      subItems.add(TeamMemberStatistics(currentTeam: _currentTeam!));
+      subItems.add(
         GestureDetector(
           onTap: _leaveTeam,
           child: Container(
@@ -80,6 +103,8 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
             ),
           ),
         ),
+      );
+      subItems.add(
         _currentTeam!.isTeamLead(widget.currentUser)
             ? GestureDetector(
                 onTap: _archiveTeam,
@@ -103,9 +128,11 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
                 ),
               )
             : SizedBox.shrink(),
-        SizedBox(height: 24),
-      ],
-    );
+      );
+      subItems.add(SizedBox(height: 24));
+    }
+
+    return Column(children: [...subItems]);
   }
 
   void _leaveTeam() {
