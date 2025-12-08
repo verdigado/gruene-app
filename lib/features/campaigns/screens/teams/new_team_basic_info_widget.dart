@@ -77,7 +77,6 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
 
   Future<void> onSave() async {
     if (teamNameTextController.text.isEmpty) return;
-    if (teamDescriptionTextController.text.isEmpty) return;
 
     var creatingUser = await _getCreatingUser();
     var newTeamDetails = NewTeamDetails(
