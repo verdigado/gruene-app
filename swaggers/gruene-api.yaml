@@ -2094,7 +2094,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Team'
         '401':
           description: ''
       security:
@@ -2123,7 +2123,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Team'
         '401':
           description: ''
       security:
@@ -2151,12 +2151,41 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/Team'
         '401':
           description: ''
       security:
         - bearer: []
       summary: Update own team membership
+      tags:
+        - campaigns
+  /v1/campaigns/teams/{teamId}:
+    put:
+      operationId: updateTeamInfo
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeam'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update own team information
       tags:
         - campaigns
   /v1/news:
@@ -5134,17 +5163,6 @@ components:
         - poster
         - flyer
         - house
-    UpdateTeam:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-          nullable: true
-      required:
-        - name
-        - description
     CreateTeamMembership:
       type: object
       properties:
@@ -5165,6 +5183,7 @@ components:
           type: string
         name:
           type: string
+          minLength: 1
         description:
           type: string
           nullable: true
@@ -5175,7 +5194,6 @@ components:
       required:
         - divisionKey
         - name
-        - description
         - memberships
     TeamMembership:
       type: object
@@ -5209,8 +5227,6 @@ components:
         - id
         - userId
         - createdAt
-        - start
-        - end
         - type
         - status
     Team:
@@ -5232,11 +5248,11 @@ components:
           type: string
           nullable: true
         status:
-          type: string
           enum:
             - PENDING
             - ACTIVE
             - ARCHIVED
+          type: string
         memberships:
           type: array
           items:
@@ -5247,7 +5263,6 @@ components:
         - divisionKey
         - createdAt
         - name
-        - description
         - status
         - memberships
     UpdateTeamMembership:
@@ -5261,6 +5276,17 @@ components:
             - RESIGN
       required:
         - type
+    UpdateTeam:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          nullable: true
+      required:
+        - name
     NewsCategory:
       type: object
       properties:
