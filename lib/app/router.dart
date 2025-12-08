@@ -1,8 +1,12 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
+import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/bottom_navigation.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -18,6 +22,10 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
       StatefulShellRoute.indexedStack(
         builder: (context, _, navigationShell) {
           final theme = Theme.of(context);
+          Future.delayed(Duration.zero, () {
+            if (context.mounted) GetIt.I<ProfileFeatureChecker>().check(context);
+          });
+
           return Scaffold(
             appBar: AppBar(backgroundColor: theme.colorScheme.primary, toolbarHeight: 0),
             body: SafeArea(child: navigationShell),
@@ -34,7 +42,7 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
         ],
       ),
     ],
-    redirect: (context, state) {
+    redirect: (context, state) async {
       final currentPath = state.uri.toString();
       final isLoginOpen = currentPath.startsWith(Routes.login.path);
       final isMfaOpen = currentPath.startsWith(Routes.mfa.path);
@@ -50,7 +58,6 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
       if (isLoggedIn && isLoginOpen) {
         return Routes.news.path;
       }
-
       return null;
     },
   );
