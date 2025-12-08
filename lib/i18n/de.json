@@ -246,7 +246,14 @@
       "appoint_as_team_lead": "Zum Team-Lead ernennen",
       "cancel_invitation": "Einladung zurückziehen",
       "add_team_member": "Teammitglied hinzufügen",
-      "profile_visibility_hint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Der Team Modus erfordert, dass dein Profil mindestens im Kreisverband [KV] auffindbar sein muss, damit du zu Teams hinzugefügt werden kannst.\nBitte setze eine entsprechende Sichtbarkeitseinstellung."
+      "profile_visibility_hint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Der Team Modus erfordert, dass dein Profil mindestens im Kreisverband [KV] auffindbar sein muss, damit du zu Teams hinzugefügt werden kannst.\nBitte setze eine entsprechende Sichtbarkeitseinstellung.",
+      "invitations": {
+        "open_invitations_label": "Offene Einladungen",
+        "open_invitations_description": "Du hast ${count} Team-Einladungen! Wichtig: Du kannst immer nur in einem Team Mitglied sein!",
+        "invitation_meta": "Eingeladen von: ${inviting_user} am ${invitation_date} um ${invitation_time}",
+        "accept": "Einladung annehmen",
+        "reject": "Ablehnen"
+      }
     },
     "statistic": {
       "label": "Statistik",

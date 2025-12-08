@@ -1,0 +1,172 @@
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+
+class OpenInvitationList extends StatefulWidget {
+  final void Function() reload;
+  const OpenInvitationList({super.key, required this.reload});
+
+  @override
+  State<OpenInvitationList> createState() => _OpenInvitationListState();
+}
+
+class _OpenInvitationListState extends State<OpenInvitationList> {
+  bool _loading = true;
+  late List<TeamInvitation> _openInvitations = [];
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+    super.initState();
+  }
+
+  void _loadData() async {
+    setState(() => _loading = true);
+
+    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var openInvitations = await teamsService.getOpenInvitations();
+
+    setState(() {
+      _loading = false;
+      _openInvitations = openInvitations;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator());
+    }
+    if (_openInvitations.isEmpty) return SizedBox.shrink();
+
+    // sort by invite date in descending order
+    _openInvitations.sort((inviteA, inviteB) => inviteB.invitationDate.compareTo(inviteA.invitationDate));
+
+    var theme = Theme.of(context);
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      child: Column(
+        children: [
+          Row(
+            children: [Text(t.campaigns.team.invitations.open_invitations_label, style: theme.textTheme.titleMedium)],
+          ),
+          SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  t.campaigns.team.invitations.open_invitations_description(count: _openInvitations.length),
+                  softWrap: true,
+                  style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
+                ),
+              ),
+            ],
+          ),
+          ..._openInvitations.map(_getInvitationRow),
+        ],
+      ),
+    );
+  }
+
+  Widget _getInvitationRow(TeamInvitation invitation) {
+    var theme = Theme.of(context);
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+          color: ThemeColors.background,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Row(children: [Text(invitation.teamName, style: theme.textTheme.titleSmall)]),
+            Row(children: [Text(invitation.teamDivision?.shortDisplayName() ?? '', style: theme.textTheme.labelSmall)]),
+            SizedBox(height: 4),
+            Row(
+              children: [
+                Expanded(
+                  child: Text.rich(
+                    (invitation.teamDescription ?? '').asRichText(context),
+                    style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
+                    softWrap: true,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    t.campaigns.team.invitations.invitation_meta(
+                      inviting_user: invitation.invitingUser,
+                      invitation_date: invitation.invitationDate.getAsLocalDateString(),
+                      invitation_time: invitation.invitationDate.getAsLocalTimeString(),
+                    ),
+                    style: theme.textTheme.labelSmall,
+                    softWrap: true,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () => _rejectInvitation(invitation),
+                  child: Text(
+                    t.campaigns.team.invitations.reject,
+                    style: theme.textTheme.labelMedium?.apply(
+                      color: ThemeColors.textDark,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                GestureDetector(
+                  onTap: () => _acceptInvitation(invitation),
+                  child: Text(
+                    t.campaigns.team.invitations.accept,
+                    style: theme.textTheme.labelMedium?.apply(
+                      color: ThemeColors.textDark,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _acceptInvitation(TeamInvitation invitation) async {
+    var teamService = GetIt.I<GrueneApiTeamsService>();
+    await teamService.acceptTeamMembership(invitation.teamId);
+    widget.reload();
+  }
+
+  Future<void> _rejectInvitation(TeamInvitation invitation) async {
+    var teamService = GetIt.I<GrueneApiTeamsService>();
+    await teamService.rejectTeamMembership(invitation.teamId);
+    widget.reload();
+  }
+}

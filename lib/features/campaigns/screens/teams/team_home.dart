@@ -7,6 +7,7 @@ import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/open_invitation_list.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_visibility_hint.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_member_statistics.dart';
@@ -64,12 +65,15 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
       return Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator());
     }
     var subItems = <Widget>[];
+
     subItems.add(
       ProfileVisibilityHint(
         currentProfile: _currentProfile,
         reloadProfile: (profile) => _loadData(preloadedTeam: _currentTeam, preloadedProfile: profile),
       ),
     );
+
+    subItems.add(OpenInvitationList(reload: () => _loadData(preloadedProfile: _currentProfile)));
 
     if (_currentTeam != null) {
       var theme = Theme.of(context);

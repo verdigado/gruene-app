@@ -13,6 +13,8 @@ class GrueneApiProfileService extends GrueneApiBaseService {
   Future<PublicProfile> getProfile(String profileId) async =>
       getFromApi(apiRequest: (api) => api.v1ProfilesProfileIdGet(profileId: profileId));
 
+  Future<Profile> getOwnProfile() async => getFromApi(apiRequest: (api) => api.v1ProfilesSelfGet());
+
   Future<Profile> updateProfile(Profile profile) async => getFromApi(
     apiRequest: (api) =>
         api.v1ProfilesProfileIdPut(profileId: profile.id, body: UpdateProfile.fromJson(profile.toJson())),
