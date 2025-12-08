@@ -62,7 +62,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
             children: [
               Expanded(
                 child: Text(
-                  t.campaigns.team.invitations.open_invitations_description(count: _openInvitations.length),
+                  t.campaigns.team.invitations.open_invitations_description(n: _openInvitations.length),
                   softWrap: true,
                   style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
                 ),
