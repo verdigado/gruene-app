@@ -137,7 +137,7 @@ mixin NewTeamMixin {
           await teamService.createNewTeam(newDetails);
           if (isCreatingUserInNewTeam) reload();
           canceledOrSaved = true;
-        } on ApiException catch (e) {
+        } on ApiException {
           if (context.mounted) showSnackBar(context, t.error.unknownError);
           newTeamDetails = newDetails;
         }

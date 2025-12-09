@@ -13,7 +13,6 @@ extension StringExtension on String {
 
   bool isNetworkImageUrl() => Uri.parse(this).hasScheme;
 
-  
   InlineSpan asRichText(BuildContext context) {
     var spans = <TextSpan>[];
 
@@ -45,8 +44,5 @@ extension StringExtension on String {
 
 extension NullableStringExtension on String? {
   bool isNullOrEmpty() => this == null || this!.isEmpty;
-}
-
-extension NullableStringExtension on String? {
   String safe() => this ?? '';
 }

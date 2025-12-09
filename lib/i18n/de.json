@@ -30,12 +30,12 @@
       "resetFilter": "Filter zurücksetzen",
       "change": "Ändern",
       "loading": "Laden ...",
-      "crop": "Ausschnitt wählen"
+      "crop": "Ausschnitt wählen",
+      "remove": "Entfernen"
     },
     "map": {
       "mapData": "Kartendaten",
       "osmContributors": "OpenStreetMap Mitwirkende"
-      "remove": "Entfernen"
     }
   },
   "error": {
@@ -481,7 +481,7 @@
     "positiveNumber": "Gib eine positive Zahl ein",
     "never": "Niemals",
     "day": "Tag",
-    "week":  "Woche",
+    "week": "Woche",
     "month": "Monat",
     "year": "Jahr",
     "recurrenceEnd": "Wiederholung beenden",
