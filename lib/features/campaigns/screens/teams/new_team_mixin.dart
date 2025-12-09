@@ -14,6 +14,8 @@ import 'package:gruene_app/features/campaigns/screens/teams/new_team_select_team
 import 'package:gruene_app/i18n/translations.g.dart';
 
 mixin NewTeamMixin {
+  void reload();
+
   GestureDetector getNewTeamButton(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
@@ -133,6 +135,7 @@ mixin NewTeamMixin {
 
         try {
           await teamService.createNewTeam(newDetails);
+          if (isCreatingUserInNewTeam) reload();
           canceledOrSaved = true;
         } on ApiException catch (e) {
           if (context.mounted) showSnackBar(context, e.message);
