@@ -138,7 +138,7 @@ mixin NewTeamMixin {
           if (isCreatingUserInNewTeam) reload();
           canceledOrSaved = true;
         } on ApiException catch (e) {
-          if (context.mounted) showSnackBar(context, e.message);
+          if (context.mounted) showSnackBar(context, t.error.unknownError);
           newTeamDetails = newDetails;
         }
       } else {
