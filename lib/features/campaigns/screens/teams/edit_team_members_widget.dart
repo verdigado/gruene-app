@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -13,7 +12,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EditTeamMembersWidget extends StatefulWidget {
   final Team team;
-  final UserInfo currentUser;
+  final UserRbacStructure currentUser;
 
   const EditTeamMembersWidget({super.key, required this.team, required this.currentUser});
 
@@ -118,7 +117,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     var theme = Theme.of(context);
 
     var actions = <Widget>[];
-    if (teamMembership.userId != widget.currentUser.uidnumber) {
+    if (teamMembership.userId != widget.currentUser.userId) {
       if (teamMembership.status == TeamMembershipStatus.accepted) {
         if (teamMembership.type == TeamMembershipType.member) {
           actions.add(_getActionLink(t.campaigns.team.appoint_as_team_lead, () => _appointAsTeamLead(teamMembership)));

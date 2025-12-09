@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/auth/repository/auth_repository.dart';
-import 'package:gruene_app/app/auth/repository/user_info.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/new_team_mixin.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_home.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class TeamsScreen extends StatefulWidget {
   const TeamsScreen({super.key});
@@ -14,7 +15,7 @@ class TeamsScreen extends StatefulWidget {
 
 class _TeamsScreenState extends State<TeamsScreen> with NewTeamMixin {
   bool _loading = true;
-  late UserInfo _currentUserInfo;
+  late UserRbacStructure _currentUserInfo;
 
   @override
   void initState() {
@@ -27,7 +28,7 @@ class _TeamsScreenState extends State<TeamsScreen> with NewTeamMixin {
   void _loadData() async {
     setState(() => _loading = true);
 
-    var userInfo = await AuthRepository().getUserInfo();
+    var userInfo = await GetIt.I<GrueneApiUserService>().getOwnRbac();
 
     setState(() {
       _loading = false;
