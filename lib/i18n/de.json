@@ -255,7 +255,8 @@
         },
         "invitation_meta": "Eingeladen von: ${inviting_user} am ${invitation_date} um ${invitation_time}",
         "accept": "Einladung annehmen",
-        "reject": "Ablehnen"
+        "reject": "Ablehnen",
+        "warning_user_already_in_team": "Du kannst nur in einem Team Mitglied sein. Wenn du dem Team '${inviting_team}' beitrittst, verlässt du automatisch dein bisheriges Team '${current_team}'."
       }
     },
     "statistic": {
