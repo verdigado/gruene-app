@@ -98,7 +98,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
               final address = snapshot.data;
               return ContentPage(
-                title: getCurrentRoute().name ?? '',
+                title: getCurrentRoute().name.safe(),
                 child: getAddScreen(location, address, additionalData),
               );
             },

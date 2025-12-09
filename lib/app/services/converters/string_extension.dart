@@ -46,3 +46,7 @@ extension StringExtension on String {
 extension NullableStringExtension on String? {
   bool isNullOrEmpty() => this == null || this!.isEmpty;
 }
+
+extension NullableStringExtension on String? {
+  String safe() => this ?? '';
+}
