@@ -47,4 +47,9 @@ class _TeamsScreenState extends State<TeamsScreen> with NewTeamMixin {
 
     return SingleChildScrollView(child: Column(children: rows));
   }
+
+  @override
+  void reload() {
+    _loadData();
+  }
 }
