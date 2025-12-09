@@ -40,7 +40,9 @@ class _TeamsScreenState extends State<TeamsScreen> with NewTeamMixin {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return Container(alignment: Alignment.center, child: CircularProgressIndicator());
+      return Center(
+        child: Container(alignment: Alignment.center, child: CircularProgressIndicator()),
+      );
     }
     var rows = <Widget>[];
     rows.add(TeamHome(currentUser: _currentUserInfo));

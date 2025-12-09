@@ -33,4 +33,29 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
       body: UpdateTeamMembershipStatus(type: UpdateTeamMembershipStatusType.reject),
     ),
   );
+
+  Future<Team> addTeamMembership({required String teamId, required String userId}) => getFromApi(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsPost(
+      teamId: teamId,
+      body: CreateTeamMembership(type: CreateTeamMembershipType.member, userId: userId),
+    ),
+  );
+
+  Future<Team> removeTeamMembership({required String teamId, required String userId}) => getFromApi(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsDelete(
+      teamId: teamId,
+      body: DeleteTeamMembership(userId: userId),
+    ),
+  );
+
+  Future<Team> updateTeamMembership({
+    required String teamId,
+    required String userId,
+    required TeamMembershipType membershipType,
+  }) => getFromApi(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsPut(
+      teamId: teamId,
+      body: UpdateTeamMembership(userId: userId, type: membershipType.asUpdateTeamMembershipType()),
+    ),
+  );
 }

@@ -60,7 +60,9 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator());
+      return Center(
+        child: Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator()),
+      );
     }
     var subItems = <Widget>[];
 

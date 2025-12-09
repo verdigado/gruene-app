@@ -2173,6 +2173,62 @@ paths:
       summary: Add a new team membership to a team, i.e. invite user to team
       tags:
         - campaigns
+    delete:
+      operationId: removeTeamMembership
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTeamMembership'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Removes a team membership, i.e. removes user from team
+      tags:
+        - campaigns
+    put:
+      operationId: updateTeamMembership
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeamMembership'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update a team membership, i.e. changing type
+      tags:
+        - campaigns
   /v1/campaigns/teams/{teamId}/memberships/status:
     put:
       operationId: updateTeamMembershipStatus
@@ -5246,6 +5302,9 @@ components:
           example: '1'
         userId:
           type: string
+        userName:
+          type: string
+          nullable: true
         invitingUserId:
           type: string
         createdAt:
@@ -5283,8 +5342,10 @@ components:
           example: '1'
         userId:
           type: string
-        divisionKey:
-          type: string
+        division:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Division'
         createdAt:
           format: date-time
           type: string
@@ -5306,7 +5367,6 @@ components:
       required:
         - id
         - userId
-        - divisionKey
         - createdAt
         - name
         - status
@@ -5344,6 +5404,26 @@ components:
         - teamId
         - invitationDate
         - teamName
+        - type
+    DeleteTeamMembership:
+      type: object
+      properties:
+        userId:
+          type: string
+      required:
+        - userId
+    UpdateTeamMembership:
+      type: object
+      properties:
+        userId:
+          type: object
+        type:
+          type: string
+          enum:
+            - LEAD
+            - MEMBER
+      required:
+        - userId
         - type
     UpdateTeamMembershipStatus:
       type: object
