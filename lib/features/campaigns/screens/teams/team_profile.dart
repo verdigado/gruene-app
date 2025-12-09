@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -12,7 +11,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class TeamProfile extends StatelessWidget {
   final Team currentTeam;
-  final UserInfo currentUser;
+  final UserRbacStructure currentUser;
   final void Function(Team? preloadedTeam) reloadTeam;
 
   const TeamProfile({super.key, required this.currentTeam, required this.currentUser, required this.reloadTeam});
@@ -86,7 +85,7 @@ class TeamProfile extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 8),
                           child: Text.rich(
-                            currentTeam.description!.asRichText(context),
+                            currentTeam.description.safe().asRichText(context),
                             style: theme.textTheme.bodyMedium,
                             softWrap: true,
                           ),

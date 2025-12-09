@@ -38,7 +38,7 @@ extension PoiParsing on Poi {
       address: poi.address.transformToAddressModel(),
       status: poi.poster!.status.transformToModelPosterStatus(),
       location: coords.transformToLatLng(),
-      comment: poi.poster!.comment ?? '',
+      comment: poi.poster!.comment.safe(),
       createdAt: poi.createdAt.getAsLocalDateTimeString(),
     );
   }

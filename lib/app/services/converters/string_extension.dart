@@ -39,3 +39,7 @@ extension StringExtension on String {
     return TextSpan(children: spans);
   }
 }
+
+extension NullableStringExtension on String? {
+  String safe() => this ?? '';
+}

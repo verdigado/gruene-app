@@ -71,6 +71,28 @@ paths:
       summary: Get the authenticated user
       tags:
         - users
+  /v1/users/self/rbac-structure:
+    get:
+      operationId: getOwnRbacStructure
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRbacStructure'
+        '400':
+          description: No user provided by used authentication method
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Get the authenticated user's rbac-structure
+      tags:
+        - users
   /v1/users/{userId}:
     get:
       operationId: getUser
@@ -2151,8 +2173,9 @@ paths:
       summary: Add a new team membership to a team, i.e. invite user to team
       tags:
         - campaigns
+  /v1/campaigns/teams/{teamId}/memberships/status:
     put:
-      operationId: updateTeamMembership
+      operationId: updateTeamMembershipStatus
       parameters:
         - name: teamId
           required: true
@@ -2164,7 +2187,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateTeamMembership'
+              $ref: '#/components/schemas/UpdateTeamMembershipStatus'
       responses:
         '200':
           description: ''
@@ -2176,7 +2199,7 @@ paths:
           description: ''
       security:
         - bearer: []
-      summary: Update own team membership
+      summary: Update own team membership status
       tags:
         - campaigns
   /v1/campaigns/teams/{teamId}:
@@ -2973,7 +2996,7 @@ info:
 
     ### Offboarding
 
-    Every service conntected to Grünes Netz needs to remove users when they are
+    Every service connected to Grünes Netz needs to remove users when they are
     removed from `saml.gruene.de`.
 
     Connected services need to pull a list of users waiting for removal at least
@@ -5298,6 +5321,7 @@ components:
           type: string
         invitingUser:
           type: string
+          nullable: true
         invitationDate:
           format: date-time
           type: string
@@ -5318,12 +5342,10 @@ components:
       required:
         - membershipId
         - teamId
-        - invitingUser
         - invitationDate
         - teamName
-        - teamDivision
         - type
-    UpdateTeamMembership:
+    UpdateTeamMembershipStatus:
       type: object
       properties:
         type:

@@ -106,7 +106,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
               children: [
                 Expanded(
                   child: Text.rich(
-                    (invitation.teamDescription ?? '').asRichText(context),
+                    invitation.teamDescription.safe().asRichText(context),
                     style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
                     softWrap: true,
                   ),
@@ -119,7 +119,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
                 Expanded(
                   child: Text(
                     t.campaigns.team.invitations.invitation_meta(
-                      inviting_user: invitation.invitingUser,
+                      inviting_user: invitation.invitingUser.safe(),
                       invitation_date: invitation.invitationDate.getAsLocalDateString(),
                       invitation_time: invitation.invitationDate.getAsLocalTimeString(),
                     ),

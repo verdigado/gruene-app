@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/auth/repository/user_info.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
@@ -15,7 +14,7 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class TeamHome extends StatefulWidget {
-  final UserInfo currentUser;
+  final UserRbacStructure currentUser;
 
   const TeamHome({super.key, required this.currentUser});
 
@@ -80,68 +79,66 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     );
 
     if (_currentTeam != null) {
-      var theme = Theme.of(context);
-      subItems.add(
-        TeamProfile(
-          currentTeam: _currentTeam!,
-          currentUser: widget.currentUser,
-          reloadTeam: (team) => _loadData(preloadedProfile: _currentProfile, preloadedTeam: team),
-        ),
-      );
-      subItems.add(TeamAssignedElements(currentTeam: _currentTeam!));
-      subItems.add(TeamMemberStatistics(currentTeam: _currentTeam!));
-      subItems.add(
-        GestureDetector(
-          onTap: _leaveTeam,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
-            ),
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(t.campaigns.team.leave_team, style: theme.textTheme.bodyLarge),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Icon(Icons.chevron_right, color: theme.textTheme.bodyLarge?.color),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-      subItems.add(
-        _currentTeam!.isTeamLead(widget.currentUser)
-            ? GestureDetector(
-                onTap: _archiveTeam,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
-                  ),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(t.campaigns.team.archive_team, style: theme.textTheme.bodyLarge),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.chevron_right, color: theme.textTheme.bodyLarge?.color),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : SizedBox.shrink(),
-      );
-      subItems.add(SizedBox(height: 24));
+      subItems.addAll(_getTeamWidgets(context));
     }
 
     return Column(children: [...subItems]);
+  }
+
+  Iterable<Widget> _getTeamWidgets(BuildContext context) sync* {
+    var theme = Theme.of(context);
+    yield TeamProfile(
+      currentTeam: _currentTeam!,
+      currentUser: widget.currentUser,
+      reloadTeam: (team) => _loadData(preloadedProfile: _currentProfile, preloadedTeam: team),
+    );
+    yield TeamAssignedElements(currentTeam: _currentTeam!);
+    yield TeamMemberStatistics(currentTeam: _currentTeam!);
+    yield GestureDetector(
+      onTap: _leaveTeam,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+        ),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(t.campaigns.team.leave_team, style: theme.textTheme.bodyLarge),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Icon(Icons.chevron_right, color: theme.textTheme.bodyLarge?.color),
+            ),
+          ],
+        ),
+      ),
+    );
+    yield _currentTeam!.isTeamLead(widget.currentUser)
+        ? GestureDetector(
+            onTap: _archiveTeam,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+              ),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(t.campaigns.team.archive_team, style: theme.textTheme.bodyLarge),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.chevron_right, color: theme.textTheme.bodyLarge?.color),
+                  ),
+                ],
+              ),
+            ),
+          )
+        : SizedBox.shrink();
+    yield SizedBox(height: 24);
   }
 
   void _leaveTeam() {
