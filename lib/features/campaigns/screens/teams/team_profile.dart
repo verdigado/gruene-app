@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/edit_team_basic_info_widget.dart';
@@ -65,18 +63,13 @@ class TeamProfile extends StatelessWidget {
                 ),
               ],
             ),
-            FutureBuilder(
-              future: _getDivisionName(currentTeam.divisionKey),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Row(
-                    children: [
-                      Text(snapshot.data!, style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled)),
-                    ],
-                  );
-                }
-                return SizedBox.shrink();
-              },
+            Row(
+              children: [
+                Text(
+                  (currentTeam.division?.shortDisplayName()).safe(),
+                  style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
+                ),
+              ],
             ),
             Row(
               children: [
@@ -115,12 +108,6 @@ class TeamProfile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<String> _getDivisionName(String divisionKey) async {
-    var divisionService = GetIt.I<GrueneApiDivisionsService>();
-    var division = await divisionService.getDivision(divisionKey);
-    return division.shortDisplayName();
   }
 
   Future<void> _onEditTeam(BuildContext context) async {

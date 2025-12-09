@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
@@ -22,7 +22,6 @@ class EditTeamMembersWidget extends StatefulWidget {
 
 class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
   late List<TeamMembership> _activeMemberships;
-  final List<PublicProfile> _allProfiles = <PublicProfile>[];
 
   @override
   void initState() {
@@ -51,16 +50,8 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
 
                 SizedBox(
                   height: 200,
-                  child: FutureBuilder(
-                    future: _acquireAllUserProfiles(),
-                    builder: (snapshot, data) {
-                      if (data.connectionState != ConnectionState.done || data.error != null) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      return SingleChildScrollView(
-                        child: Column(children: [..._getMembersWidget(), _getAddTeamMemberAction()]),
-                      );
-                    },
+                  child: SingleChildScrollView(
+                    child: Column(children: [..._getMembersWidget(), _getAddTeamMemberAction()]),
                   ),
                 ),
               ],
@@ -76,37 +67,6 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     var oldData = _getActiveMemberships(widget.team.memberships).map((m) => m.toJson().toString()).join(',');
     var dataChanged = currentData != oldData;
     Navigator.pop(context, dataChanged);
-  }
-
-  Future<bool> _acquireAllUserProfiles() async {
-    Future<void>.delayed(Duration(milliseconds: 250));
-    //get all activeMemberships which profile hasn't been resolved yet
-    var unresolvedProfiles = _activeMemberships.where((m) => !_allProfiles.any((p) => p.id == m.userId));
-    var profileService = GetIt.I<GrueneApiProfileService>();
-    for (var unresolvedProfile in unresolvedProfiles) {
-      try {
-        _allProfiles.add(await profileService.getProfile(unresolvedProfile.userId));
-      } on Exception {
-        // TODO #299 remove method to get user name via profile method and use username on membership instead
-        _allProfiles.add(
-          PublicProfile(
-            id: 'id',
-            userId: unresolvedProfile.userId,
-            personalId: 'personalId',
-            username: 'username',
-            firstName: '${unresolvedProfile.userId} firstName',
-            lastName: 'lastName',
-            phoneNumbers: [],
-            messengers: [],
-            socialMedia: [],
-            tags: [],
-            roles: [],
-            achievements: [],
-          ),
-        );
-      }
-    }
-    return true;
   }
 
   List<Widget> _getMembersWidget() {
@@ -131,7 +91,6 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     for (var i = actions.length - 1; i > 0; i--) {
       actions.insert(i, SizedBox(width: 8));
     }
-    var userName = _allProfiles.firstWhere((p) => p.userId == teamMembership.userId).fullName();
 
     return Container(
       padding: EdgeInsets.all(8),
@@ -142,7 +101,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            userName,
+            teamMembership.userName.safe(),
             style: theme.textTheme.bodyLarge?.apply(
               color: teamMembership.status != TeamMembershipStatus.pending
                   ? ThemeColors.textDark
@@ -172,23 +131,26 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     );
   }
 
-  void _appointAsTeamLead(TeamMembership teamMembership) {
-    // TODO #301 appoint as team lead
-    // var teamsService = GetIt.I<GrueneApiTeamsService>();
-    // teamsService.updateMembership(teamMembership.id, TeamMembershipType.lead);
-    var newItem = teamMembership.copyWith(type: TeamMembershipType.lead);
-    var index = _activeMemberships.indexOf(teamMembership);
-    _activeMemberships.removeAt(index);
-    _activeMemberships.insert(index, newItem);
-    setState(() {});
+  Future<void> _appointAsTeamLead(TeamMembership teamMembership) async {
+    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var updatedTeam = await teamsService.updateTeamMembership(
+      teamId: widget.team.id,
+      userId: teamMembership.userId,
+      membershipType: TeamMembershipType.lead,
+    );
+
+    setState(() {
+      _activeMemberships = _getActiveMemberships(updatedTeam.memberships);
+    });
   }
 
-  void _removeFromTeam(TeamMembership teamMembership) {
-    // TODO #302 #303 remove from team
-    // var teamsService = GetIt.I<GrueneApiTeamsService>();
-    // teamsService.removeMembership(teamMembership.id);
-    _activeMemberships.remove(teamMembership);
-    setState(() {});
+  Future<void> _removeFromTeam(TeamMembership teamMembership) async {
+    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var updatedTeam = await teamsService.removeTeamMembership(teamId: widget.team.id, userId: teamMembership.userId);
+
+    setState(() {
+      _activeMemberships = _getActiveMemberships(updatedTeam.memberships);
+    });
   }
 
   Future<void> _addNewTeamMember() async {
@@ -208,20 +170,10 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     );
     if (newTeamMember != null) {
       if (!_activeMemberships.map((m) => m.userId).contains(newTeamMember.userId)) {
+        var teamService = GetIt.I<GrueneApiTeamsService>();
+        var newTeam = await teamService.addTeamMembership(teamId: widget.team.id, userId: newTeamMember.userId);
         setState(() {
-          // TODO #181 add team member to existing team
-          _activeMemberships.add(
-            TeamMembership(
-              id: 'id',
-              userId: newTeamMember.userId,
-              createdAt: DateTime.now(),
-              start: DateTime.now(),
-              end: DateTime.now(),
-              type: TeamMembershipType.member,
-              status: TeamMembershipStatus.pending,
-              invitingUserId: '100005',
-            ),
-          );
+          _activeMemberships = _getActiveMemberships(newTeam.memberships);
         });
       }
     }
