@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/multiline_text_input_field.dart';
@@ -32,7 +33,7 @@ class _EditTeamBasicInfoWidgetState extends State<EditTeamBasicInfoWidget> {
   @override
   void initState() {
     teamNameTextController.text = widget.team.name;
-    teamDescriptionTextController.text = widget.team.description ?? '';
+    teamDescriptionTextController.text = widget.team.description.safe();
 
     super.initState();
   }

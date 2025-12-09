@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 
 typedef OnExecuteSearchCallback = void Function(String searchText);
@@ -30,7 +31,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
 
   @override
   void initState() {
-    _controller.text = widget.initialSearchText ?? '';
+    _controller.text = widget.initialSearchText.safe();
     super.initState();
   }
 
