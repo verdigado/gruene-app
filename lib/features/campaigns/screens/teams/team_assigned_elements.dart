@@ -34,7 +34,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
 
     // await Future.delayed(Duration(seconds: 1));
 
-    // TODO #736 remove mock data when getOwnTeam is working
+    // TODO #736 remove mock data when getOwnTeam and getAssignedData is working
     await Future<void>.delayed(Duration(milliseconds: 250));
     // var teamsService = GetIt.I<GrueneApiTeamsService>();
     // var team = await teamsService.getAssignedElements(widget.currentTeam.id);

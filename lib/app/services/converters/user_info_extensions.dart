@@ -6,8 +6,6 @@ extension UserInfoExtension on UserRbacStructure {
   static const campaignManagerBV = '7555236'; // Grünes Netz - Wahlatlas BV - Wahlkampfkoordinatorin
 
   bool isCampaignManager() {
-    return roles
-        .map((r) => r.groupId)
-        .any((r) => [campaignManagerBV, campaignManagerKV, campaignManagerLV].contains(r));
+    return roles.map((r) => r.id).any((r) => [campaignManagerBV, campaignManagerKV, campaignManagerLV].contains(r));
   }
 }

@@ -145,10 +145,9 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
 
   void _leaveTeam() {
     Future<void> executeLeaveTeam() async {
-      // TODO #300 use leave functionality on API
-      await Future<void>.delayed(Duration(milliseconds: 250));
-      // var teamsService = GetIt.I<GrueneApiTeamsService>();
-      // teamsService.leaveTeam(_currentTeam.id);
+      var teamsService = GetIt.I<GrueneApiTeamsService>();
+      teamsService.leaveTeam(_currentTeam!.id);
+      _loadData(preloadedProfile: _currentProfile);
     }
 
     confirmDelete(
@@ -162,10 +161,9 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
 
   void _archiveTeam() {
     Future<void> executeArchiveTeam() async {
-      // TODO #735 use archive functionality on API
-      await Future<void>.delayed(Duration(milliseconds: 250));
-      // var teamsService = GetIt.I<GrueneApiTeamsService>();
-      // teamsService.deleteTeam(_currentTeam.id);
+      var teamsService = GetIt.I<GrueneApiTeamsService>();
+      teamsService.archiveTeam(_currentTeam!.id);
+      _loadData(preloadedProfile: _currentProfile);
     }
 
     confirmDelete(

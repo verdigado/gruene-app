@@ -2258,6 +2258,25 @@ paths:
       summary: Update own team membership status
       tags:
         - campaigns
+  /v1/campaigns/teams/{teamId}/archive:
+    put:
+      operationId: archiveTeam
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Archive own team
+      tags:
+        - campaigns
   /v1/campaigns/teams/{teamId}:
     put:
       operationId: updateTeamInfo
@@ -3052,7 +3071,7 @@ info:
 
     ### Offboarding
 
-    Every service connected to Grünes Netz needs to remove users when they are
+    Every service conntected to Grünes Netz needs to remove users when they are
     removed from `saml.gruene.de`.
 
     Connected services need to pull a list of users waiting for removal at least
