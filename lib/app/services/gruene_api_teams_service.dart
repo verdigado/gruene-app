@@ -21,38 +21,38 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
       getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPendingInvitationsGet());
 
   Future<Team> acceptTeamMembership(String teamId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsStatusPut(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
       body: UpdateTeamMembershipStatus(type: UpdateTeamMembershipStatusType.accept),
     ),
   );
 
   Future<Team> rejectTeamMembership(String teamId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsStatusPut(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
       body: UpdateTeamMembershipStatus(type: UpdateTeamMembershipStatusType.reject),
     ),
   );
 
   Future<Team> leaveTeam(String teamId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsStatusPut(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
       body: UpdateTeamMembershipStatus(type: UpdateTeamMembershipStatusType.resign),
     ),
   );
 
   Future<void> archiveTeam(String teamId) async =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsTeamIdArchivePut(teamId: teamId));
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsTeamIdActionArchivePut(teamId: teamId));
 
   Future<Team> addTeamMembership({required String teamId, required String userId}) => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsPost(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipPost(
       teamId: teamId,
       body: CreateTeamMembership(type: CreateTeamMembershipType.member, userId: userId),
     ),
   );
 
   Future<Team> removeTeamMembership({required String teamId, required String userId}) => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsDelete(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipDelete(
       teamId: teamId,
       body: DeleteTeamMembership(userId: userId),
     ),
@@ -63,7 +63,7 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
     required String userId,
     required TeamMembershipType membershipType,
   }) => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsPut(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipPut(
       teamId: teamId,
       body: UpdateTeamMembership(userId: userId, type: membershipType.asUpdateTeamMembershipType()),
     ),

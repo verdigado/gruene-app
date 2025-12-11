@@ -6,7 +6,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class GrueneApiRouteService extends GrueneApiBaseService {
   GrueneApiRouteService() : super();
 
-  Future<Route> getRoute(String routeId) async =>
+  Future<TeamRoute> getRoute(String routeId) async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsRoutesRouteIdGet(routeId: routeId));
 
   Future<void> updateRoute(RouteUpdateModel route) => getFromApi(
