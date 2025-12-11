@@ -1,16 +1,32 @@
 part of '../converters.dart';
 
 extension RouteStatusParsing on RouteStatus {
-  UpdateRouteStatus asUpdateRouteStatus() {
+  TeamRouteStatus asTeamRouteStatus() {
     switch (this) {
       case RouteStatus.open:
-        return UpdateRouteStatus.open;
+        return TeamRouteStatus.open;
       case RouteStatus.assigned:
-        return UpdateRouteStatus.assigned;
+        return TeamRouteStatus.assigned;
       case RouteStatus.closed:
-        return UpdateRouteStatus.closed;
+        return TeamRouteStatus.closed;
 
       case RouteStatus.swaggerGeneratedUnknown:
+        throw UnimplementedError();
+    }
+  }
+}
+
+extension TeamRouteStatusParsing on TeamRouteStatus {
+  UpdateRouteStatus asUpdateRouteStatus() {
+    switch (this) {
+      case TeamRouteStatus.open:
+        return UpdateRouteStatus.open;
+      case TeamRouteStatus.assigned:
+        return UpdateRouteStatus.assigned;
+      case TeamRouteStatus.closed:
+        return UpdateRouteStatus.closed;
+
+      case TeamRouteStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }

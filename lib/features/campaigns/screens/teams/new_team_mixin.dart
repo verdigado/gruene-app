@@ -12,9 +12,11 @@ import 'package:gruene_app/features/campaigns/screens/teams/new_team_select_divi
 import 'package:gruene_app/features/campaigns/screens/teams/new_team_select_team_lead_widget.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/new_team_select_team_member_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 mixin NewTeamMixin {
   void reload();
+  UserRbacStructure getCurrentUserInfo();
 
   GestureDetector getNewTeamButton(BuildContext context) {
     final theme = Theme.of(context);
@@ -63,7 +65,10 @@ mixin NewTeamMixin {
   void _showStepDivisionSelect(NewTeamDetails newTeamDetails, BuildContext context) async {
     final theme = Theme.of(context);
 
-    var newTeamWidget = NewTeamSelectDivisionWidget(newTeamDetails: newTeamDetails);
+    var newTeamWidget = NewTeamSelectDivisionWidget(
+      newTeamDetails: newTeamDetails,
+      currentUserInfo: getCurrentUserInfo(),
+    );
     var newDetails = await showModalBottomSheet<NewTeamDetails>(
       context: context,
       builder: (context) => newTeamWidget,

@@ -63,4 +63,9 @@ class _TeamsScreenState extends State<TeamsScreen> with NewTeamMixin {
   void reload() {
     _loadData();
   }
+
+  @override
+  UserRbacStructure getCurrentUserInfo() {
+    return _currentUserInfo;
+  }
 }

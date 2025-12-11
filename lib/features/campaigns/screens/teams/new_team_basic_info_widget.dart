@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/multiline_text_input_field.dart';
@@ -76,7 +77,10 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
   }
 
   Future<void> onSave() async {
-    if (teamNameTextController.text.isEmpty) return;
+    if (teamNameTextController.text.isEmpty) {
+      showSnackBar(context, t.campaigns.team.errors.no_name);
+      return;
+    }
 
     var creatingUser = await _getCreatingUser();
     var newTeamDetails = NewTeamDetails(

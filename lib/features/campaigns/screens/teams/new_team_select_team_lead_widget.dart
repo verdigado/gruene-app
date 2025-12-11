@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
@@ -90,7 +91,10 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
   }
 
   void onSave() {
-    if (currentTeamLeadProfile == null) return;
+    if (currentTeamLeadProfile == null) {
+      showSnackBar(context, t.campaigns.team.errors.no_team_lead);
+      return;
+    }
     Navigator.pop(context, widget.newTeamDetails.copyWith(assignedTeamLead: currentTeamLeadProfile));
   }
 

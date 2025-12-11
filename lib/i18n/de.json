@@ -235,6 +235,12 @@
       "confirmation_dialog": "Möchtest Du diesen Eintrag wirklich löschen? Dies kann nicht rückgängig gemacht werden."
     },
     "team": {
+      "errors": {
+        "no_name": "Team-Name darf nicht leer sein",
+        "no_division": "Eine Gliederung muss gewählt werden",
+        "no_access_on_division": "Du darfst diese Gliederung nicht wählen",
+        "no_team_lead": "Ein Team-Lead muss gewählt werden"
+      },
       "label": "Team",
       "create_team": "Team erstellen",
       "create_new_team": "Neues Team erstellen",

@@ -1,26 +1,26 @@
 part of '../converters.dart';
 
-extension RouteTypeParsing on RouteType {
+extension TeamRouteTypeParsing on TeamRouteType {
   String getAsLabel() {
     var typeLabel = switch (this) {
-      RouteType.flyerSpot => t.campaigns.flyer.label,
-      RouteType.poster => t.campaigns.poster.label,
-      RouteType.house => t.campaigns.door.label,
-      RouteType.swaggerGeneratedUnknown => throw UnimplementedError(),
+      TeamRouteType.flyerSpot => t.campaigns.flyer.label,
+      TeamRouteType.poster => t.campaigns.poster.label,
+      TeamRouteType.house => t.campaigns.door.label,
+      TeamRouteType.swaggerGeneratedUnknown => throw UnimplementedError(),
     };
     return '$typeLabel-${t.campaigns.route.label}';
   }
 
   UpdateRouteType asUpdateRouteType() {
     switch (this) {
-      case RouteType.flyerSpot:
+      case TeamRouteType.flyerSpot:
         return UpdateRouteType.flyerSpot;
-      case RouteType.poster:
+      case TeamRouteType.poster:
         return UpdateRouteType.poster;
-      case RouteType.house:
+      case TeamRouteType.house:
         return UpdateRouteType.house;
 
-      case RouteType.swaggerGeneratedUnknown:
+      case TeamRouteType.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }

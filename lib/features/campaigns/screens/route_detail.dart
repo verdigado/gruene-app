@@ -32,7 +32,7 @@ class _RouteDetailState extends State<RouteDetail> {
     super.initState();
   }
 
-  Future<RouteStatus> _getLatestStatus() async {
+  Future<TeamRouteStatus> _getLatestStatus() async {
     var poiId = widget.routeDetail.id;
 
     return await _campaignActionCache.isCached(poiId, PoiCacheType.route)
@@ -135,7 +135,7 @@ class _RouteDetailState extends State<RouteDetail> {
   }
 
   Future<void> _changeRouteStatus(RouteDetailModel route, bool state) async {
-    var newStatus = state ? RouteStatus.closed : RouteStatus.open;
+    var newStatus = state ? TeamRouteStatus.closed : TeamRouteStatus.open;
     var routeUpdate = route.asRouteUpdate().copyWith(status: newStatus);
 
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);

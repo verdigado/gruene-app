@@ -8,4 +8,10 @@ extension UserInfoExtension on UserRbacStructure {
   bool isCampaignManager() {
     return roles.map((r) => r.id).any((r) => [campaignManagerBV, campaignManagerKV, campaignManagerLV].contains(r));
   }
+
+  bool isCampaignManagerInDivision(String division) {
+    return roles
+        .where((r) => [campaignManagerBV, campaignManagerKV, campaignManagerLV].contains(r.id))
+        .any((r) => division.startsWith(r.divisionKey));
+  }
 }

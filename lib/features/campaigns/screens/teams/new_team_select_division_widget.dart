@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/division_search_screen.dart';
@@ -16,7 +18,8 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class NewTeamSelectDivisionWidget extends StatefulWidget {
   final NewTeamDetails newTeamDetails;
-  const NewTeamSelectDivisionWidget({super.key, required this.newTeamDetails});
+  final UserRbacStructure currentUserInfo;
+  const NewTeamSelectDivisionWidget({super.key, required this.newTeamDetails, required this.currentUserInfo});
 
   @override
   State<NewTeamSelectDivisionWidget> createState() => _NewTeamSelectDivisionWidgetState();
@@ -97,7 +100,15 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
   }
 
   void onSave() {
-    if (currentDivision == null) return;
+    if (currentDivision == null) {
+      showSnackBar(context, t.campaigns.team.errors.no_division);
+      return;
+    }
+    if (!widget.currentUserInfo.isCampaignManagerInDivision(currentDivision!.divisionKey)) {
+      showSnackBar(context, t.campaigns.team.errors.no_access_on_division);
+      return;
+    }
+
     Navigator.pop(context, widget.newTeamDetails.copyWith(assignedDivision: currentDivision));
   }
 
