@@ -34,6 +34,16 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
     ),
   );
 
+  Future<Team> leaveTeam(String teamId) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsStatusPut(
+      teamId: teamId,
+      body: UpdateTeamMembershipStatus(type: UpdateTeamMembershipStatusType.resign),
+    ),
+  );
+
+  Future<void> archiveTeam(String teamId) async =>
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsTeamIdArchivePut(teamId: teamId));
+
   Future<Team> addTeamMembership({required String teamId, required String userId}) => getFromApi(
     apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipsPost(
       teamId: teamId,
