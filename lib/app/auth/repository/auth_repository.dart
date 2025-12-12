@@ -44,7 +44,7 @@ class AuthRepository {
     } on FlutterAppAuthUserCancelledException catch (e) {
       logger.d('Login cancelled: $e');
     } catch (e) {
-      logger.w('SLogin failed: $e');
+      logger.w('Login failed: $e');
     } finally {
       stopPolling(pollingTimer);
     }

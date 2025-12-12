@@ -11,25 +11,28 @@ abstract class GrueneApiBaseService {
 
   Future<T> getFromApi<S, T>({
     required Future<Response<S>> Function(GrueneApi api) apiRequest,
-    required T Function(S data) map,
+    T Function(S data)? map,
   }) async {
     final response = await apiRequest(grueneApi);
 
     handleApiError(response);
 
     final body = response.body as S;
-    return map(body);
+    return map == null ? body as T : map(body);
   }
 
   Response<T> handleApiError<T>(Response<T> response) {
-    if (!response.isSuccessful || response.body == null) {
-      throw ApiException(statusCode: response.statusCode);
+    if (!response.isSuccessful || (!_isNullable<T>() && response.body == null)) {
+      throw ApiException(statusCode: response.statusCode, message: response.error.toString());
     }
     return response;
   }
+
+  bool _isNullable<T>() => null is T;
 }
 
 class ApiException implements Exception {
   int statusCode;
-  ApiException({required this.statusCode});
+  String message;
+  ApiException({required this.statusCode, this.message = ''});
 }

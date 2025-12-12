@@ -71,6 +71,28 @@ paths:
       summary: Get the authenticated user
       tags:
         - users
+  /v1/users/self/rbac-structure:
+    get:
+      operationId: getOwnRbacStructure
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRbacStructure'
+        '400':
+          description: No user provided by used authentication method
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Get the authenticated user's rbac-structure
+      tags:
+        - users
   /v1/users/{userId}:
     get:
       operationId: getUser
@@ -1712,7 +1734,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Route'
+                $ref: '#/components/schemas/TeamRoute'
         '401':
           description: ''
         '404':
@@ -1777,6 +1799,38 @@ paths:
         - bearer: []
         - oauth2: []
       summary: Delete a Route
+      tags:
+        - campaigns
+  /v1/campaigns/routes/{routeId}/team:
+    put:
+      operationId: assignRouteToTeam
+      parameters:
+        - name: routeId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouteAssignTeam'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamRoute'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - oauth2: []
+      summary: Assign Route to Team
       tags:
         - campaigns
   /v1/campaigns/experience-areas:
@@ -2058,6 +2112,230 @@ paths:
         - bearer: []
         - oauth2: []
       summary: Get campaign statistics
+      tags:
+        - campaigns
+  /v1/campaigns/teams:
+    post:
+      operationId: createTeam
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTeam'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Create a new team
+      tags:
+        - campaigns
+  /v1/campaigns/teams/self:
+    get:
+      operationId: findOwnTeam
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find own team
+      tags:
+        - campaigns
+  /v1/campaigns/teams/pendingInvitations:
+    get:
+      operationId: pendingInvitations
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamInvitation'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find own pending team invitations
+      tags:
+        - campaigns
+  /v1/campaigns/teams/{teamId}/membership:
+    post:
+      operationId: addTeamMembership
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTeamMembership'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Add a new team membership to a team, i.e. invite user to team
+      tags:
+        - campaigns
+    delete:
+      operationId: removeTeamMembership
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTeamMembership'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Removes a team membership, i.e. removes user from team
+      tags:
+        - campaigns
+    put:
+      operationId: updateTeamMembership
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeamMembership'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update a team membership, i.e. changing type
+      tags:
+        - campaigns
+  /v1/campaigns/teams/{teamId}/membership/status:
+    put:
+      operationId: updateTeamMembershipStatus
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeamMembershipStatus'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update own team membership status
+      tags:
+        - campaigns
+  /v1/campaigns/teams/{teamId}/action/archive:
+    put:
+      operationId: archiveTeam
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Archive own team
+      tags:
+        - campaigns
+  /v1/campaigns/teams/{teamId}:
+    put:
+      operationId: updateTeamInfo
+      parameters:
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeam'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update own team information
       tags:
         - campaigns
   /v1/news:
@@ -2825,7 +3103,7 @@ info:
 
     ### Offboarding
 
-    Every service conntected to Grünes Netz needs to remove users when they are
+    Every service connected to Grünes Netz needs to remove users when they are
     removed from `saml.gruene.de`.
 
     Connected services need to pull a list of users waiting for removal at least
@@ -4726,6 +5004,13 @@ components:
           nullable: true
         lineString:
           $ref: '#/components/schemas/LineString'
+        assignedBy:
+          type: string
+          nullable: true
+        assignedAt:
+          format: date-time
+          type: string
+          nullable: true
       required:
         - id
         - type
@@ -4743,6 +5028,77 @@ components:
             $ref: '#/components/schemas/Route'
       required:
         - data
+    RouteTeam:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        divisionKey:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+      required:
+        - id
+        - divisionKey
+        - name
+    TeamRoute:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        type:
+          enum:
+            - FLYER_SPOT
+            - POSTER
+            - HOUSE
+          type: string
+        campaignId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        status:
+          enum:
+            - OPEN
+            - ASSIGNED
+            - CLOSED
+          type: string
+        name:
+          type: string
+          nullable: true
+        lineString:
+          $ref: '#/components/schemas/LineString'
+        assignedBy:
+          type: string
+          nullable: true
+        assignedAt:
+          format: date-time
+          type: string
+          nullable: true
+        team:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/RouteTeam'
+      required:
+        - id
+        - type
+        - campaignId
+        - createdAt
+        - status
+        - name
+        - lineString
+    RouteAssignTeam:
+      type: object
+      properties:
+        teamId:
+          type: string
+          nullable: true
+          description: If null => unassign, if string => assign.
     UpdateExperienceArea:
       type: object
       properties:
@@ -5035,6 +5391,184 @@ components:
         - poster
         - flyer
         - house
+    CreateTeamMembership:
+      type: object
+      properties:
+        userId:
+          type: string
+        type:
+          enum:
+            - LEAD
+            - MEMBER
+          type: string
+      required:
+        - userId
+        - type
+    CreateTeam:
+      type: object
+      properties:
+        divisionKey:
+          type: string
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          nullable: true
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateTeamMembership'
+      required:
+        - divisionKey
+        - name
+        - memberships
+    TeamMembership:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        userId:
+          type: string
+        userName:
+          type: string
+          nullable: true
+        invitingUserId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        start:
+          format: date-time
+          type: string
+        end:
+          format: date-time
+          type: string
+        type:
+          type: string
+          enum:
+            - LEAD
+            - MEMBER
+        status:
+          type: string
+          enum:
+            - PENDING
+            - ACCEPTED
+            - RESIGNED
+      required:
+        - id
+        - userId
+        - invitingUserId
+        - createdAt
+        - type
+        - status
+    Team:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        userId:
+          type: string
+        division:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Division'
+        createdAt:
+          format: date-time
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMembership'
+      required:
+        - id
+        - userId
+        - createdAt
+        - name
+        - memberships
+    TeamInvitation:
+      type: object
+      properties:
+        membershipId:
+          type: string
+          example: '1'
+        teamId:
+          type: string
+        invitingUser:
+          type: string
+          nullable: true
+        invitationDate:
+          format: date-time
+          type: string
+        teamName:
+          type: string
+        teamDescription:
+          type: string
+          nullable: true
+        teamDivision:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/Division'
+        type:
+          type: string
+          enum:
+            - LEAD
+            - MEMBER
+      required:
+        - membershipId
+        - teamId
+        - invitationDate
+        - teamName
+        - type
+    DeleteTeamMembership:
+      type: object
+      properties:
+        userId:
+          type: string
+      required:
+        - userId
+    UpdateTeamMembership:
+      type: object
+      properties:
+        userId:
+          type: object
+        type:
+          type: string
+          enum:
+            - LEAD
+            - MEMBER
+      required:
+        - userId
+        - type
+    UpdateTeamMembershipStatus:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - ACCEPT
+            - REJECT
+            - RESIGN
+      required:
+        - type
+    UpdateTeam:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          nullable: true
+      required:
+        - name
     NewsCategory:
       type: object
       properties:

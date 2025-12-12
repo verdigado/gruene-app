@@ -6,6 +6,5 @@ class GrueneApiExperienceAreaService extends GrueneApiBaseService {
 
   Future<ExperienceArea> getExperienceArea(String experienceAreaId) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsExperienceAreasExperienceAreaIdGet(experienceAreaId: experienceAreaId),
-    map: (result) => result,
   );
 }

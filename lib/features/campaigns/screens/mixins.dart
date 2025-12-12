@@ -11,6 +11,7 @@ import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info.dart';
 import 'package:gruene_app/features/campaigns/screens/map_consumer.dart';
+import 'package:gruene_app/features/campaigns/widgets/search_bar_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:motion_toast/motion_toast.dart';

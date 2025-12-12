@@ -22,6 +22,7 @@
       "edit": "Bearbeiten",
       "undo": "Rückgängig",
       "consent": "Verstanden",
+      "confirm": "Bestätigen",
       "settings": "Einstellungen",
       "openSettings": "Einstellungen öffnen",
       "close": "Schließen",
@@ -29,7 +30,8 @@
       "resetFilter": "Filter zurücksetzen",
       "change": "Ändern",
       "loading": "Laden ...",
-      "crop": "Ausschnitt wählen"
+      "crop": "Ausschnitt wählen",
+      "remove": "Entfernen"
     },
     "map": {
       "mapData": "Kartendaten",
@@ -57,6 +59,18 @@
     "moreCategories": "Weitere Schlagworte",
     "publicationDate": "Veröffentlichungsdatum"
   },
+  "profile": {
+    "visibility_setting": {
+      "visibility_setting_action": "Sichtbarkeitseinstellungen",
+      "title": "Mein Profil ist einsehbar für Mitglieder*innen ...",
+      "visibility_public": "... für alle",
+      "visibility_BV": "... im Bundesverband",
+      "visibility_LV": "... im Landesverband",
+      "visibility_KV": "... im Kreisverband",
+      "visibility_OV": "... im Ortsverband",
+      "visibility_private": "... keine (privat)"
+    }
+  },
   "campaigns": {
     "debug": {
       "confirm_storing_cache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
@@ -72,7 +86,9 @@
       "createdAt": "Erstellt"
     },
     "search": {
-      "hintText": "Ort oder Straße finden",
+      "hintTextAddress": "Ort oder Straße finden",
+      "hintTextDivision": "Gliederung finden",
+      "hintTextProfile": "Nutzerprofil finden",
       "no_entries_found": "Leider nichts gefunden",
       "country_code": "de-de"
     },
@@ -219,7 +235,59 @@
       "confirmation_dialog": "Möchtest Du diesen Eintrag wirklich löschen? Dies kann nicht rückgängig gemacht werden."
     },
     "team": {
-      "label": "Team"
+      "errors": {
+        "no_name": "Team-Name darf nicht leer sein",
+        "no_division": "Eine Gliederung muss gewählt werden",
+        "no_access_on_division": "Du darfst diese Gliederung nicht wählen",
+        "no_team_lead": "Ein Team-Lead muss gewählt werden"
+      },
+      "label": "Team",
+      "create_team": "Team erstellen",
+      "create_new_team": "Neues Team erstellen",
+      "leave_team": "Team verlassen",
+      "leave_team_confirmation_dialog": "Möchtest Du dein Team wirklich verlassen? Du kannst nur mit einer erneuten Einladung wieder beitreten.",
+      "archive_team": "Team archivieren",
+      "archive_team_confirmation_dialog": "Bist du sicher, dass du das Team archivieren möchtest? Dieser Schritt kann nicht rückgängig gemacht werden.",
+      "team_name_label": "Team Name",
+      "team_description_label": "Beschreibung (nur für Mitglieder sichtbar)",
+      "team_self_join": "Selber beitreten",
+      "next_step": "Weiter",
+      "select_division_label": "Gliederung auswählen",
+      "select_division_hint": "Zu welcher Gliederung gehört dieses Team? In der Regel ist das dein Kreis- oder Ortsverband.",
+      "select_as_division": "Als Gliederung wählen",
+      "team_lead_label": "Team-Lead",
+      "select_team_lead_label": "Team-Lead benennen",
+      "select_team_lead_hint": "Wenn du nicht selbst beitrittst, benenne zunächst die Team-Lead-Rolle. Team-Leads können das Team bearbeiten, Mitglieder einladen, etc.",
+      "select_as_team_lead": "Als Teamlead einladen",
+      "select_team_member_label": "Team-Mitglieder einladen",
+      "select_team_member_hint": "Lade jetzt weitere Team-Mitglieder ein. Teams können maximal 10 Mitglieder haben.",
+      "select_as_team_member": "Ins Team einladen",
+      "edit_team_members": "Teammitglieder bearbeiten",
+      "team_assigned_elements": "Uns zugewiesen (${count})",
+      "team_assigned_elements_hide_closed": "Erledigte ausblenden",
+      "team_assigned_elements_show_closed": "Erledigte einblenden",
+      "team_assigned_elements_area_info": "${area} km² Gebiet",
+      "team_assigned_elements_route_info": "${distance} km Route",
+      "team_assigned_elements_assignment_info": "zugewiesen am ${date} von ${assignee}",
+      "member_statistics": "Mitglieder-Statistik",
+      "member_statistics_member_info": "${division}, Team-Mitglied seit ${date}",
+      "edit_team": "Team bearbeiten",
+      "edit_team_member_label": "Teammitglieder bearbeiten",
+      "appoint_as_team_lead": "Zum Team-Lead ernennen",
+      "cancel_invitation": "Einladung zurückziehen",
+      "add_team_member": "Teammitglied hinzufügen",
+      "profile_visibility_hint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Der Team Modus erfordert, dass dein Profil mindestens im Kreisverband [KV] auffindbar sein muss, damit du zu Teams hinzugefügt werden kannst.\nBitte setze eine entsprechende Sichtbarkeitseinstellung.",
+      "invitations": {
+        "open_invitations_label": "Offene Einladungen",
+        "open_invitations_description": {
+          "one": "Du hast $n Team-Einladung! Wichtig: Du kannst immer nur in einem Team Mitglied sein!",
+          "other": "Du hast $n Team-Einladungen! Wichtig: Du kannst immer nur in einem Team Mitglied sein!"
+        },
+        "invitation_meta": "Eingeladen von: ${inviting_user} am ${invitation_date} um ${invitation_time}",
+        "accept": "Einladung annehmen",
+        "reject": "Ablehnen",
+        "warning_user_already_in_team": "Du kannst nur in einem Team Mitglied sein. Wenn du dem Team '${inviting_team}' beitrittst, verlässt du automatisch dein bisheriges Team '${current_team}'."
+      }
     },
     "statistic": {
       "label": "Statistik",
@@ -419,7 +487,7 @@
     "positiveNumber": "Gib eine positive Zahl ein",
     "never": "Niemals",
     "day": "Tag",
-    "week":  "Woche",
+    "week": "Woche",
     "month": "Monat",
     "year": "Jahr",
     "recurrenceEnd": "Wiederholung beenden",

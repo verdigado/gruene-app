@@ -215,7 +215,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
         builder: (context) {
           return ContentPage(
             contentBackgroundColor: theme.colorScheme.surfaceDim,
-            title: getCurrentRoute().name ?? '',
+            title: getCurrentRoute().name.safe(),
             alignment: Alignment.topCenter,
             child: MyPosterListScreen(
               myPosters: myPosters,

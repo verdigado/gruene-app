@@ -1,7 +1,13 @@
 part of '../mixins.dart';
 
 mixin ConfirmDelete {
-  void confirmDelete(BuildContext context, void Function() onDeletePressed) async {
+  void confirmDelete(
+    BuildContext context, {
+    required void Function() onDeletePressed,
+    String? title,
+    String? confirmationDialogText,
+    String? actionTitle,
+  }) async {
     final theme = Theme.of(context);
     final shouldDelete = await showDialog<bool>(
       context: context,
@@ -11,12 +17,12 @@ mixin ConfirmDelete {
           backgroundColor: ThemeColors.alertBackground,
           title: Center(
             child: Text(
-              '${t.campaigns.deleteEntry.label}?',
+              '${title ?? t.campaigns.deleteEntry.label}?',
               style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
             ),
           ),
           content: Text(
-            t.campaigns.deleteEntry.confirmation_dialog,
+            confirmationDialogText ?? t.campaigns.deleteEntry.confirmation_dialog,
             textAlign: TextAlign.center,
             style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
           ),
@@ -32,7 +38,7 @@ mixin ConfirmDelete {
             TextButton(
               onPressed: () => Navigator.maybePop(context, true),
               child: Text(
-                t.common.actions.delete,
+                actionTitle ?? t.common.actions.delete,
                 style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning, fontWeightDelta: 2),
               ),
             ),

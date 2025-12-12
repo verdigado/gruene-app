@@ -2,13 +2,10 @@ part of '../mixins.dart';
 
 mixin SearchMixin<T extends StatefulWidget> on State<T> {
   var _showSearchBar = false;
-  var _showClearSearch = false;
   final _campaignSettings = GetIt.I<AppSettings>().campaign;
-  TextEditingController? _controller;
   List<SearchResultItem>? _searchResult;
 
   List<Widget> getSearchWidgets(BuildContext context) {
-    _controller ??= TextEditingController(text: _campaignSettings.searchString);
     _searchResult ??= _campaignSettings.searchResult;
     var theme = Theme.of(context);
     var widgets = <Widget>[];
@@ -51,61 +48,26 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
       );
       widgets.add(searchButton);
     } else {
-      _showClearSearch = _controller!.text.isNotEmpty;
-      var foregroundColor = _controller!.text.isEmpty ? ThemeColors.textDisabled : ThemeColors.secondary;
+      var foregroundColor = _campaignSettings.searchString!.isEmpty ? ThemeColors.textDisabled : ThemeColors.secondary;
       var searchBar = Positioned(
         top: 6,
         left: 6,
         right: 52,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 6),
-          decoration: BoxDecoration(
-            color: ThemeColors.background,
-            borderRadius: BorderRadius.all(Radius.circular(18)),
-            border: Border.all(color: foregroundColor, width: 1),
-          ),
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: _searchAddress,
-                icon: Icon(Icons.search_outlined, color: foregroundColor),
-              ),
-              Expanded(
-                child: TextFormField(
-                  controller: _controller,
-                  textInputAction: TextInputAction.search,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: t.campaigns.search.hintText,
-                    hintStyle: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
-                    alignLabelWithHint: false,
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                  ),
-                  style: theme.textTheme.labelMedium?.apply(color: foregroundColor, fontSizeDelta: 2),
-                  onChanged: (value) {
-                    setState(() {
-                      _campaignSettings.searchString = value;
-                    });
-                  },
-                  onFieldSubmitted: (value) => _searchAddress(),
-                ),
-              ),
-              _showClearSearch
-                  ? IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _controller!.text = '';
-                          _campaignSettings.searchString = '';
-                          _searchResult!.clear();
-                        });
-                      },
-                      icon: Icon(Icons.close_outlined, color: foregroundColor),
-                    )
-                  : SizedBox(width: 24),
-            ],
-          ),
+        child: SearchBarWidget(
+          initialSearchText: _campaignSettings.searchString,
+          onExecuteSearch: _searchAddress,
+          onSearchFieldChanged: (value) {
+            setState(() {
+              _campaignSettings.searchString = value;
+            });
+          },
+          onSearchCleared: () {
+            setState(() {
+              _campaignSettings.searchString = '';
+              _searchResult!.clear();
+            });
+          },
+          hintText: t.campaigns.search.hintTextAddress,
         ),
       );
       widgets.add(searchBar);
@@ -145,12 +107,12 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
     return widgets;
   }
 
-  void _searchAddress() async {
+  void _searchAddress(String searchText) async {
     FocusManager.instance.primaryFocus?.unfocus();
     var scaffoldMessenger = ScaffoldMessenger.of(context);
 
     var nominatimService = GetIt.I<NominatimService>();
-    var addressList = await nominatimService.findStreetOrCity(_controller!.text.trim(), germanyBounds);
+    var addressList = await nominatimService.findStreetOrCity(searchText.trim(), germanyBounds);
     final added = <String>{};
 
     final distinctAddresses = addressList.where((item) => added.add(item.displayName)).toList();

@@ -104,7 +104,7 @@ mixin MapContainerExperienceAreaMixin {
                   Row(
                     children: [
                       Text(
-                        experienceArea.description ?? '',
+                        experienceArea.description.safe(),
                         style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
                       ),
                     ],
