@@ -48,7 +48,9 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
       );
       widgets.add(searchButton);
     } else {
-      var foregroundColor = _campaignSettings.searchString!.isEmpty ? ThemeColors.textDisabled : ThemeColors.secondary;
+      var foregroundColor = _campaignSettings.searchString.isNullOrEmpty()
+          ? ThemeColors.textDisabled
+          : ThemeColors.secondary;
       var searchBar = Positioned(
         top: 6,
         left: 6,
