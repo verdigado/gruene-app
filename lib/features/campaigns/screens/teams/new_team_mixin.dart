@@ -108,10 +108,11 @@ mixin NewTeamMixin {
   Future<void> _showStepTeamMemberSelect(NewTeamDetails newTeamDetails, BuildContext context) async {
     final theme = Theme.of(context);
     var canceledOrSaved = false;
+    NewTeamDetails? newDetails = newTeamDetails;
     while (!canceledOrSaved) {
-      var newTeamWidget = NewTeamSelectTeamMemberWidget(newTeamDetails: newTeamDetails);
+      var newTeamWidget = NewTeamSelectTeamMemberWidget(newTeamDetails: newDetails!);
       if (!context.mounted) return;
-      var newDetails = await showModalBottomSheet<NewTeamDetails>(
+      newDetails = await showModalBottomSheet<NewTeamDetails>(
         context: context,
         builder: (context) => newTeamWidget,
         isScrollControlled: false,
@@ -123,7 +124,7 @@ mixin NewTeamMixin {
         var teamService = GetIt.I<GrueneApiTeamsService>();
 
         var isCreatingUserInNewTeam = newDetails.getAllMemberships().any(
-          (m) => m.userId == newDetails.creatingUser.userId,
+          (m) => m.userId == newDetails?.creatingUser.userId,
         );
         var currentTeamOfCreatingUser = await GetIt.I<GrueneApiTeamsService>().getOwnTeam();
 
@@ -144,7 +145,6 @@ mixin NewTeamMixin {
           canceledOrSaved = true;
         } on ApiException {
           if (context.mounted) showSnackBar(context, t.error.unknownError);
-          newTeamDetails = newDetails;
         }
       } else {
         canceledOrSaved = true;

@@ -40,6 +40,14 @@ extension StringExtension on String {
   }
 
   bool isNullOrEmpty() => isEmpty;
+
+  String stripRight(String stripChar) {
+    var resultString = this;
+    while (resultString.endsWith(stripChar)) {
+      resultString = resultString.substring(0, resultString.length - stripChar.length);
+    }
+    return resultString;
+  }
 }
 
 extension NullableStringExtension on String? {

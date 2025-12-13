@@ -12,6 +12,6 @@ extension UserInfoExtension on UserRbacStructure {
   bool isCampaignManagerInDivision(String division) {
     return roles
         .where((r) => [campaignManagerBV, campaignManagerKV, campaignManagerLV].contains(r.id))
-        .any((r) => division.startsWith(r.divisionKey));
+        .any((r) => division.startsWith(r.divisionKey.stripRight('0')));
   }
 }

@@ -19,7 +19,13 @@ class NewTeamSelectTeamMemberWidget extends StatefulWidget {
 }
 
 class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberWidget> {
-  final teamMembers = <PublicProfile>[];
+  late List<PublicProfile> teamMembers;
+
+  @override
+  void initState() {
+    teamMembers = widget.newTeamDetails.teamMembers ?? <PublicProfile>[];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
