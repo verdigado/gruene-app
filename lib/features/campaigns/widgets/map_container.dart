@@ -13,7 +13,6 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/app/utils/map.dart';
-import 'package:gruene_app/app/widgets/location_button.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
@@ -21,6 +20,7 @@ import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
+import 'package:gruene_app/features/campaigns/widgets/campaign_location_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
 import 'package:gruene_app/features/campaigns/widgets/mixins.dart';
@@ -161,7 +161,7 @@ class _MapContainerState extends State<MapContainer>
           Positioned(
             bottom: 16,
             right: 16,
-            child: LocationButton(bringCameraToUser: bringCameraToUser, followUserLocation: followUserLocation),
+            child: CampaignLocationButton(bringCameraToUser: bringCameraToUser, followUserLocation: followUserLocation),
           ),
           MapAttribution(),
           ...popups,
