@@ -105,13 +105,13 @@ class _RouteDetailState extends State<RouteDetail> {
             child: FutureBuilder(
               future: _getLatestStatus(),
               builder: (context, snapshot) {
-                var currentState = snapshot.hasData ? snapshot.data : RouteStatus.open;
+                var currentState = snapshot.hasData ? snapshot.data : TeamRouteStatus.open;
                 var currentOnChanged = snapshot.hasData
                     ? (bool state) => _changeRouteStatus(widget.routeDetail, state)
                     : null;
                 var content = Row(
                   children: [
-                    Switch(value: currentState == RouteStatus.closed, onChanged: currentOnChanged),
+                    Switch(value: currentState == TeamRouteStatus.closed, onChanged: currentOnChanged),
                     SizedBox(width: 12),
                     Text(t.campaigns.route.quick_action_label, style: theme.textTheme.bodyLarge),
                   ],
