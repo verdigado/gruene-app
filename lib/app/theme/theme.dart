@@ -87,6 +87,7 @@ class _ThemeTextStyles {
   );
 
   static TextStyle bodyLarge = bodyMedium.copyWith(fontSize: 18, height: 1);
+  static TextStyle bodySmall = bodyMedium.copyWith(fontSize: 12, height: 1);
 
   static TextStyle labelSmall = GoogleFonts.ptSans(
     textStyle: TextStyle(
@@ -156,6 +157,7 @@ final ThemeData appTheme =
         titleSmall: _ThemeTextStyles.titleSmall,
         bodyLarge: _ThemeTextStyles.bodyLarge,
         bodyMedium: _ThemeTextStyles.bodyMedium,
+        bodySmall: _ThemeTextStyles.bodySmall,
         labelLarge: _ThemeTextStyles.labelLarge,
         labelMedium: _ThemeTextStyles.labelMedium,
         labelSmall: _ThemeTextStyles.labelSmall,
