@@ -44,4 +44,23 @@ class TeamHelper {
     );
     return dialogResult ?? false;
   }
+
+  static void validateTeamName(String name) {
+    if (name.isEmpty) {
+      throw ValidationError(getMessage: () => t.campaigns.team.errors.no_name);
+    }
+    const minLength = 5;
+    const maxLength = 45;
+    if (name.length < minLength) {
+      throw ValidationError(getMessage: () => t.campaigns.team.errors.team_name_short(count: minLength));
+    }
+    if (name.length > maxLength) {
+      throw ValidationError(getMessage: () => t.campaigns.team.errors.team_name_long(count: maxLength));
+    }
+  }
+}
+
+class ValidationError implements Exception {
+  String Function() getMessage;
+  ValidationError({required this.getMessage});
 }

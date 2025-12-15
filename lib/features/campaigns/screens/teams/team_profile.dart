@@ -54,14 +54,7 @@ class TeamProfile extends StatelessWidget {
                   )
                 : SizedBox.shrink(),
             Row(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(currentTeam.name, style: theme.textTheme.displayLarge),
-                  ),
-                ),
-              ],
+              children: [Expanded(child: Text(currentTeam.name, style: theme.textTheme.displayLarge, softWrap: true))],
             ),
             Row(
               children: [

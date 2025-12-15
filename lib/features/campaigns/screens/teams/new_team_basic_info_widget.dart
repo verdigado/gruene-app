@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/features/campaigns/helper/team_helper.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/multiline_text_input_field.dart';
@@ -77,8 +78,10 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
   }
 
   Future<void> onSave() async {
-    if (teamNameTextController.text.isEmpty) {
-      showSnackBar(context, t.campaigns.team.errors.no_name);
+    try {
+      TeamHelper.validateTeamName(teamNameTextController.text);
+    } on ValidationError catch (e) {
+      showSnackBar(context, e.getMessage());
       return;
     }
 
@@ -118,7 +121,7 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
       var user = await userService.getSelf();
       return PublicProfile(
         id: user.id,
-        userId: '0',
+        userId: user.id,
         personalId: '0',
         username: 'username',
         firstName: user.firstName,
