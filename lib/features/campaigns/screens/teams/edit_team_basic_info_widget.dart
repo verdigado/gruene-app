@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/features/campaigns/helper/team_helper.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/multiline_text_input_field.dart';
 import 'package:gruene_app/features/campaigns/widgets/text_input_field.dart';
@@ -74,7 +76,12 @@ class _EditTeamBasicInfoWidgetState extends State<EditTeamBasicInfoWidget> {
   }
 
   Future<void> onSave() async {
-    if (teamNameTextController.text.isEmpty) return;
+    try {
+      TeamHelper.validateTeamName(teamNameTextController.text);
+    } on ValidationError catch (e) {
+      showSnackBar(context, e.getMessage());
+      return;
+    }
 
     var teamsService = GetIt.I<GrueneApiTeamsService>();
     var updatedTeam = await teamsService.updateTeam(

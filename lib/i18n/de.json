@@ -237,6 +237,8 @@
     "team": {
       "errors": {
         "no_name": "Team-Name darf nicht leer sein",
+        "team_name_short": "Team-Name darf nicht kürzer als ${count} Zeichen sein",
+        "team_name_long": "Team-Name darf nicht länger als ${count} Zeichen sein",
         "no_division": "Eine Gliederung muss gewählt werden",
         "no_access_on_division": "Du darfst diese Gliederung nicht wählen",
         "no_team_lead": "Ein Team-Lead muss gewählt werden"
