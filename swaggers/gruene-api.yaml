@@ -2138,6 +2138,53 @@ paths:
       summary: Create a new team
       tags:
         - campaigns
+    get:
+      operationId: findTeams
+      parameters:
+        - name: campaignId
+          required: false
+          in: query
+          description: Filter by campaign ids
+          schema:
+            type: string
+        - name: divisionKey
+          required: false
+          in: query
+          description: Filter by division keys
+          schema:
+            type: string
+        - name: sort
+          required: false
+          in: query
+          schema:
+            example: addressCity,-updatedAt
+            type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindTeamsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find Teams
+      tags:
+        - campaigns
   /v1/campaigns/teams/self:
     get:
       operationId: findOwnTeam
@@ -5569,6 +5616,24 @@ components:
           nullable: true
       required:
         - name
+    FindTeamsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+      required:
+        - data
+        - total
+        - offset
+        - limit
     NewsCategory:
       type: object
       properties:

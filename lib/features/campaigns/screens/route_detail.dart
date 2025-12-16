@@ -40,6 +40,14 @@ class _RouteDetailState extends State<RouteDetail> {
         : widget.routeDetail.status;
   }
 
+  Future<RouteTeam?> _getLatestTeamAssignment() async {
+    var poiId = widget.routeDetail.id;
+
+    return await _campaignActionCache.isCached(poiId, PoiCacheType.routeAssignment)
+        ? (await _campaignActionCache.getPoiAsRouteAssignment(poiId)).
+        : widget.routeDetail.team;
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -47,7 +55,7 @@ class _RouteDetailState extends State<RouteDetail> {
     onClose() => Navigator.maybePop(context);
 
     return SizedBox(
-      height: 163,
+      height: 175,
       child: Column(
         children: [
           Container(
@@ -56,7 +64,10 @@ class _RouteDetailState extends State<RouteDetail> {
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 27),
+              padding: EdgeInsets.symmetric(horizontal: 27, vertical: 6),
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+              ),
               child: Column(
                 children: [
                   Row(
@@ -99,7 +110,13 @@ class _RouteDetailState extends State<RouteDetail> {
               ),
             ),
           ),
-          Container(height: 1, color: ThemeColors.grey100),
+
+          Container(
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+            ),
+          ),
+
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: FutureBuilder(

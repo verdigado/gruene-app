@@ -68,4 +68,7 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
       body: UpdateTeamMembership(userId: userId, type: membershipType.asUpdateTeamMembershipType()),
     ),
   );
+
+  Future<List<Team>> findTeams() =>
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsGet(), map: (data) => data.data);
 }

@@ -9,6 +9,7 @@ extension RouteParsing on Route {
       status: status.asTeamRouteStatus(),
       lineString: lineString,
       createdAt: createdAt.getAsLocalDateString(),
+      team: null,
     );
   }
 }
@@ -22,6 +23,7 @@ extension TeamRouteParsing on TeamRoute {
       status: status,
       lineString: lineString,
       createdAt: createdAt.getAsLocalDateString(),
+      team: team,
     );
   }
 }
