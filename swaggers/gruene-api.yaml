@@ -2144,11 +2144,11 @@ paths:
         - name: campaignId
           required: false
           in: query
-          description: Filter by campaign ids
+          description: Filter data output by campaign ids
           schema:
             type: string
         - name: divisionKey
-          required: false
+          required: true
           in: query
           description: Filter by division keys
           schema:
@@ -2157,7 +2157,7 @@ paths:
           required: false
           in: query
           schema:
-            example: addressCity,-updatedAt
+            example: name,-createdAt
             type: string
         - name: offset
           required: false
