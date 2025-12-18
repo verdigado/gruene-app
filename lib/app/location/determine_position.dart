@@ -70,10 +70,8 @@ class RequestedPosition {
   }
 
   LatLng? toLatLng() {
-    // final currentPosition = position;
-    // return currentPosition != null ? LatLng(currentPosition.latitude, currentPosition.longitude) : null;
-    // return LatLng(52.1411211, 10.348218);
-    return null;
+    final currentPosition = position;
+    return currentPosition != null ? LatLng(currentPosition.latitude, currentPosition.longitude) : null;
   }
 }
 
