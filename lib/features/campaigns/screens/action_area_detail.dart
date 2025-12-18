@@ -104,7 +104,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
                   children: [
                     Switch(value: currentState == AreaStatus.closed, onChanged: currentOnChanged),
                     SizedBox(width: 12),
-                    Text(t.campaigns.action_area.quick_action_label, style: theme.textTheme.bodyLarge),
+                    Text(t.campaigns.action_area.quick_action_status, style: theme.textTheme.bodyLarge),
                   ],
                 );
                 if (snapshot.hasData) {

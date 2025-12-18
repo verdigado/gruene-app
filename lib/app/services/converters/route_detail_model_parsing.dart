@@ -5,6 +5,10 @@ extension RouteDetailModelParsing on RouteDetailModel {
     return RouteUpdateModel(id: id, status: status, routeDetail: this);
   }
 
+  RouteAssignmentUpdateModel asRouteAssignmentUpdate() {
+    return RouteAssignmentUpdateModel(id: id, team: team, routeDetail: this);
+  }
+
   turf.Feature<turf.LineString> transformToFeatureItem() {
     return turf.Feature<turf.LineString>(
       id: id,

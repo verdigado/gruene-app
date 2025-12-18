@@ -2138,6 +2138,53 @@ paths:
       summary: Create a new team
       tags:
         - campaigns
+    get:
+      operationId: findTeams
+      parameters:
+        - name: campaignId
+          required: false
+          in: query
+          description: Filter data output by campaign ids
+          schema:
+            type: string
+        - name: divisionKey
+          required: true
+          in: query
+          description: Filter by division keys
+          schema:
+            type: string
+        - name: sort
+          required: false
+          in: query
+          schema:
+            example: name,-createdAt
+            type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindTeamsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find Teams
+      tags:
+        - campaigns
   /v1/campaigns/teams/self:
     get:
       operationId: findOwnTeam
@@ -4714,7 +4761,7 @@ components:
           minimum: 0
         countClosedDoors:
           type: number
-          description: Number of appartment doors that remained closed.
+          description: Number of apartment doors that remained closed.
           minimum: 0
       required:
         - countOpenedDoors
@@ -5569,6 +5616,51 @@ components:
           nullable: true
       required:
         - name
+    FindTeamsItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        name:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+          minimum: 0
+        membershipCount:
+          type: number
+          minimum: 0
+        assignedOpenRoutes:
+          type: number
+          minimum: 0
+        division:
+          type: string
+      required:
+        - id
+        - name
+        - createdAt
+        - membershipCount
+        - assignedOpenRoutes
+        - division
+    FindTeamsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FindTeamsItem'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+      required:
+        - data
+        - total
+        - offset
+        - limit
     NewsCategory:
       type: object
       properties:
