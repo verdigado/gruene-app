@@ -6,3 +6,10 @@ extension RouteUpdateModelParsing on RouteUpdateModel {
     return newRouteDetail;
   }
 }
+
+extension RouteAssignmentUpdateModelParsing on RouteAssignmentUpdateModel {
+  RouteDetailModel transformToVirtualRouteDetailModel() {
+    var newRouteDetail = routeDetail.copyWith(team: team, isVirtual: true);
+    return newRouteDetail;
+  }
+}

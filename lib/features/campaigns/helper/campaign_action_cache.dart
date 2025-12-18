@@ -91,8 +91,6 @@ class CampaignActionCache extends ChangeNotifier {
         throw UnimplementedError();
       case PoiCacheType.actionArea:
         throw UnimplementedError();
-      case PoiCacheType.routeAssignment:
-        throw UnimplementedError();
     }
   }
 
@@ -154,14 +152,29 @@ class CampaignActionCache extends ChangeNotifier {
           getMarker: (poi) => poi.transformToVirtualPoiDetailModel().transformToFeatureItem(),
         );
       case PoiCacheType.route:
-        return await _addUpdateAction<RouteUpdateModel>(
-          poiType: poiType,
-          poi: poi as RouteUpdateModel,
-          getId: (poi) => poi.id,
-          getJson: (poi) => poi.toJson(),
-          mergeUpdates: (action, poiUpdate) => poiUpdate,
-          getMarker: (poi) => poi.transformToVirtualRouteDetailModel().transformToFeatureItem(),
-        );
+        if (poi.runtimeType == RouteUpdateModel) {
+          return await _addUpdateAction<RouteUpdateModel>(
+            poiType: poiType,
+            poi: poi as RouteUpdateModel,
+            getId: (poi) => poi.id,
+            getJson: (poi) => poi.toJson(),
+            mergeUpdates: (action, poiUpdate) => poiUpdate,
+            getMarker: (poi) => poi.transformToVirtualRouteDetailModel().transformToFeatureItem(),
+            getActionType: () => CampaignActionType.editRoute,
+          );
+        } else if (poi.runtimeType == RouteAssignmentUpdateModel) {
+          return await _addUpdateAction<RouteAssignmentUpdateModel>(
+            poiType: poiType,
+            poi: poi as RouteAssignmentUpdateModel,
+            getId: (poi) => poi.id,
+            getJson: (poi) => poi.toJson(),
+            mergeUpdates: (action, poiUpdate) => poiUpdate,
+            getMarker: (poi) => poi.transformToVirtualRouteDetailModel().transformToFeatureItem(),
+            getActionType: () => CampaignActionType.editRouteAssignment,
+          );
+        } else {
+          throw ArgumentError('Unknown route update type');
+        }
       case PoiCacheType.actionArea:
         return await _addUpdateAction<ActionAreaUpdateModel>(
           poiType: poiType,
@@ -171,17 +184,6 @@ class CampaignActionCache extends ChangeNotifier {
           mergeUpdates: (action, poiUpdate) => poiUpdate,
           getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
         );
-
-      case PoiCacheType.routeAssignment:
-        throw UnimplementedError();
-      // return await _addUpdateAction<ActionAreaUpdateModel>(
-      //   poiType: poiType,
-      //   poi: poi as ActionAreaUpdateModel,
-      //   getId: (poi) => poi.id,
-      //   getJson: (poi) => poi.toJson(),
-      //   mergeUpdates: (action, poiUpdate) => poiUpdate,
-      //   getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
-      // );
     }
   }
 
@@ -192,13 +194,15 @@ class CampaignActionCache extends ChangeNotifier {
     required Map<String, dynamic> Function(T) getJson,
     required T Function(CampaignAction, T) mergeUpdates,
     required turf.Feature Function(T) getMarker,
+    CampaignActionType Function()? getActionType,
   }) async {
-    var actions = (await _findActionsByPoiId(getId(poi))).where((x) => x.actionType == poiType.getCacheEditAction());
+    var actionType = getActionType != null ? getActionType() : poiType.getCacheEditAction();
+    var actions = (await _findActionsByPoiId(getId(poi))).where((x) => x.actionType == actionType);
     var action = actions.singleOrNull;
     if (action == null) {
       action = CampaignAction(
         poiId: int.parse(getId(poi)),
-        actionType: poiType.getCacheEditAction(),
+        actionType: actionType,
         serialized: jsonEncode(getJson(poi)),
       );
       await _appendActionToCache(action);
@@ -214,6 +218,15 @@ class CampaignActionCache extends ChangeNotifier {
 
   PoiDetailModel _getDeleteMarker(PoiCacheType poiType, int id) {
     return PoiDetailModel.virtual(id: id, status: '${poiType.name}_deleted', location: LatLng(0, 0));
+  }
+
+  Future<CampaignAction?> getLatest(PoiCacheType poiType, String poiId) async {
+    final poiCacheList = await campaignActionDatabase.readAllByActionTypeWithPoiId(
+      poiId,
+      _getActionsForCacheType(poiType),
+    );
+    poiCacheList.sort((a, b) => b.poiTempId.compareTo(a.poiTempId)); //reverse sort list by tempId (timestamped ID)
+    return poiCacheList.firstOrNull;
   }
 
   Future<List<turf.Feature>> getLayerItems(PoiCacheType poiType) async {
@@ -263,8 +276,8 @@ class CampaignActionCache extends ChangeNotifier {
           markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
 
         case CampaignActionType.editRouteAssignment:
-          // TODO: Handle this case.
-          throw UnimplementedError();
+          var model = action.getAsRouteAssignmentUpdate();
+          markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
 
         case CampaignActionType.unknown:
         case null:
@@ -283,11 +296,21 @@ class CampaignActionCache extends ChangeNotifier {
       }
     }
 
-    return [
-      getValueSafe(() => poiType.getCacheAddAction()),
-      getValueSafe(() => poiType.getCacheEditAction()),
-      getValueSafe(() => poiType.getCacheDeleteAction()),
-    ].where((x) => x != null).cast<int>().toList();
+    switch (poiType) {
+      case PoiCacheType.poster:
+      case PoiCacheType.door:
+      case PoiCacheType.flyer:
+      case PoiCacheType.actionArea:
+        {
+          return [
+            getValueSafe(() => poiType.getCacheAddAction()),
+            getValueSafe(() => poiType.getCacheEditAction()),
+            getValueSafe(() => poiType.getCacheDeleteAction()),
+          ].where((x) => x != null).cast<int>().toList();
+        }
+      case PoiCacheType.route:
+        return [CampaignActionType.editRoute, CampaignActionType.editRouteAssignment].map((a) => a.index).toList();
+    }
   }
 
   Future<PosterDetailModel> getPoiAsPosterDetail(String poiId) async {
@@ -339,8 +362,8 @@ class CampaignActionCache extends ChangeNotifier {
       poiId: poiId,
       addActionFilter: CampaignActionType.editRouteAssignment,
       editActionFilter: CampaignActionType.editRouteAssignment,
-      transformEditAction: (action) => action.getAsRouteUpdate(),
-      transformAddAction: (action) => action.getAsRouteUpdate(),
+      transformEditAction: (action) => action.getAsRouteAssignmentUpdate(),
+      transformAddAction: (action) => action.getAsRouteAssignmentUpdate(),
     );
     return detailModel;
   }
@@ -464,8 +487,9 @@ class CampaignActionCache extends ChangeNotifier {
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editRouteAssignment:
-              // TODO: Handle this case.
-              throw UnimplementedError();
+              var model = action.getAsRouteAssignmentUpdate();
+              await routeApiService.updateRouteAssignemnt(model);
+              campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.unknown:
             case null:

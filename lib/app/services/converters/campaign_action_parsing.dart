@@ -83,6 +83,13 @@ extension CampaignActionParsing on CampaignAction {
     return model;
   }
 
+  RouteAssignmentUpdateModel getAsRouteAssignmentUpdate() {
+    var data = jsonDecode(serialized!) as Map<String, dynamic>;
+    var model = RouteAssignmentUpdateModel.fromJson(data.updateIdField(poiId!));
+
+    return model;
+  }
+
   ActionAreaUpdateModel getAsActionAreaUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = ActionAreaUpdateModel.fromJson(data.updateIdField(poiId!));

@@ -4761,7 +4761,7 @@ components:
           minimum: 0
         countClosedDoors:
           type: number
-          description: Number of appartment doors that remained closed.
+          description: Number of apartment doors that remained closed.
           minimum: 0
       required:
         - countOpenedDoors
@@ -5616,13 +5616,40 @@ components:
           nullable: true
       required:
         - name
+    FindTeamsItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        name:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+          minimum: 0
+        membershipCount:
+          type: number
+          minimum: 0
+        assignedOpenRoutes:
+          type: number
+          minimum: 0
+        division:
+          type: string
+      required:
+        - id
+        - name
+        - createdAt
+        - membershipCount
+        - assignedOpenRoutes
+        - division
     FindTeamsResponse:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Team'
+            $ref: '#/components/schemas/FindTeamsItem'
         total:
           type: number
         offset:

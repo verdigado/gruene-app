@@ -11,7 +11,6 @@ extension PoiCacheTypeParsing on PoiCacheType {
         return CampaignActionType.addFlyer;
       case PoiCacheType.route:
       case PoiCacheType.actionArea:
-      case PoiCacheType.routeAssignment:
         throw UnimplementedError();
     }
   }
@@ -26,7 +25,6 @@ extension PoiCacheTypeParsing on PoiCacheType {
         return CampaignActionType.deleteFlyer;
       case PoiCacheType.route:
       case PoiCacheType.actionArea:
-      case PoiCacheType.routeAssignment:
         throw UnimplementedError();
     }
   }
@@ -39,12 +37,10 @@ extension PoiCacheTypeParsing on PoiCacheType {
         return CampaignActionType.editDoor;
       case PoiCacheType.flyer:
         return CampaignActionType.editFlyer;
-      case PoiCacheType.route:
-        return CampaignActionType.editRoute;
       case PoiCacheType.actionArea:
         return CampaignActionType.editActionArea;
-      case PoiCacheType.routeAssignment:
-        return CampaignActionType.editRouteAssignment;
+      case PoiCacheType.route:
+        throw UnimplementedError();
     }
   }
 }

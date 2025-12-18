@@ -56,6 +56,19 @@ class CampaignActionDatabase {
     return result.map((json) => CampaignAction.fromMap(json)).toList();
   }
 
+  Future<List<CampaignAction>> readAllByActionTypeWithPoiId(String poiId, List<int> actionTypes) async {
+    final db = await instance.database;
+    const orderBy = '${CampaignActionFields.poiTempId} ASC, ${CampaignActionFields.id} ASC';
+    final result = await db.query(
+      CampaignActionFields.tableName,
+      orderBy: orderBy,
+      where:
+          '${CampaignActionFields.actionType} IN (${List.filled(actionTypes.length, '?').join(',')}) AND (${CampaignActionFields.poiId} = ? OR ${CampaignActionFields.poiTempId} = ?)',
+      whereArgs: [actionTypes, poiId, poiId],
+    );
+    return result.map((json) => CampaignAction.fromMap(json)).toList();
+  }
+
   Future<List<CampaignAction>> getActionsWithPoiId(String poiId) async {
     final db = await instance.database;
     const orderBy = '${CampaignActionFields.poiTempId} ASC, ${CampaignActionFields.id} ASC';
