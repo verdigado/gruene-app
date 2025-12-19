@@ -72,16 +72,20 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    var routeDetail = await _getLatestActionAreaDetail();
-    var userInfo = await GetIt.I<GrueneApiUserService>().getOwnRbac();
+    var userService = GetIt.I<GrueneApiUserService>();
     var profileService = GetIt.I<GrueneApiProfileService>();
-    var currentUserKV = (await profileService.getSelf()).getOwnKV();
+
+    final (areaDetail, userInfo, currentUser) = await (
+      _getLatestActionAreaDetail(),
+      userService.getOwnRbac(),
+      profileService.getSelf(),
+    ).wait;
 
     setState(() {
       _loading = false;
-      _currentActionAreaDetail = routeDetail;
+      _currentActionAreaDetail = areaDetail;
       _currentUserInfo = userInfo;
-      _currentUserKV = currentUserKV;
+      _currentUserKV = currentUser.getOwnKV();
     });
   }
 

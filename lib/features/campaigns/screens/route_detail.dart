@@ -72,17 +72,20 @@ class _RouteDetailState extends State<RouteDetail> {
 
   void _loadData() async {
     setState(() => _loading = true);
-
-    var routeDetail = await _getLatestRouteDetail();
-    var userInfo = await GetIt.I<GrueneApiUserService>().getOwnRbac();
     var profileService = GetIt.I<GrueneApiProfileService>();
-    var currentUserKV = (await profileService.getSelf()).getOwnKV();
+    var userService = GetIt.I<GrueneApiUserService>();
+
+    final (routeDetail, userInfo, currentUser) = await (
+      _getLatestRouteDetail(),
+      userService.getOwnRbac(),
+      profileService.getSelf(),
+    ).wait;
 
     setState(() {
       _loading = false;
       _currentRouteDetail = routeDetail;
       _currentUserInfo = userInfo;
-      _currentUserKV = currentUserKV;
+      _currentUserKV = currentUser.getOwnKV();
     });
   }
 
