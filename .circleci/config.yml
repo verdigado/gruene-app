@@ -91,7 +91,7 @@ commands:
                     - v1-fvm-{{ arch }}-{{ checksum ".fvmrc" }}-{{ checksum "pubspec.yaml" }}-{{ checksum "pubspec.lock"  }}
                     - v1-fvm-{{ arch }}-
             - run:
-                command: fvm install
+                command: ls -lisaR
                 name: Install Flutter
             - run:
                 command: fvm flutter config --no-analytics
