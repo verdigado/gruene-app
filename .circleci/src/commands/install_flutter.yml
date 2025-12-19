@@ -16,7 +16,7 @@ steps:
         - v1-fvm-{{ arch }}-
   - run:
       name: Install Flutter
-      command: fvm install
+      command: ls -lisaR
   - run:
       name: Configure Flutter
       command: fvm flutter config --no-analytics
