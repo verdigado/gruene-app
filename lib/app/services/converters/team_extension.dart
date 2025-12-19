@@ -7,13 +7,13 @@ extension TeamExtension on Team {
         .any((m) => m.userId == user.userId);
   }
 
-  RouteTeam asRouteTeam() {
-    return RouteTeam(id: id, divisionKey: division?.divisionKey ?? '', name: name);
+  TeamInfo asRouteTeam() {
+    return TeamInfo(id: id, divisionKey: division?.divisionKey ?? '', name: name);
   }
 }
 
 extension FindTeamsItemExtension on FindTeamsItem {
-  RouteTeam asRouteTeam() {
-    return RouteTeam(id: id, divisionKey: '', name: name);
+  TeamInfo asRouteTeam() {
+    return TeamInfo(id: id, divisionKey: '', name: name);
   }
 }

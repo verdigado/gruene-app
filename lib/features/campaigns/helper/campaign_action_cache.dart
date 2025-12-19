@@ -15,6 +15,7 @@ import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
+import 'package:gruene_app/features/campaigns/models/action_area/action_area_assignment_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
@@ -176,14 +177,29 @@ class CampaignActionCache extends ChangeNotifier {
           throw ArgumentError('Unknown route update type');
         }
       case PoiCacheType.actionArea:
-        return await _addUpdateAction<ActionAreaUpdateModel>(
-          poiType: poiType,
-          poi: poi as ActionAreaUpdateModel,
-          getId: (poi) => poi.id,
-          getJson: (poi) => poi.toJson(),
-          mergeUpdates: (action, poiUpdate) => poiUpdate,
-          getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
-        );
+        if (poi.runtimeType == ActionAreaUpdateModel) {
+          return await _addUpdateAction<ActionAreaUpdateModel>(
+            poiType: poiType,
+            poi: poi as ActionAreaUpdateModel,
+            getId: (poi) => poi.id,
+            getJson: (poi) => poi.toJson(),
+            mergeUpdates: (action, poiUpdate) => poiUpdate,
+            getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
+            getActionType: () => CampaignActionType.editActionArea,
+          );
+        } else if (poi.runtimeType == ActionAreaAssignmentUpdateModel) {
+          return await _addUpdateAction<ActionAreaAssignmentUpdateModel>(
+            poiType: poiType,
+            poi: poi as ActionAreaAssignmentUpdateModel,
+            getId: (poi) => poi.id,
+            getJson: (poi) => poi.toJson(),
+            mergeUpdates: (action, poiUpdate) => poiUpdate,
+            getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
+            getActionType: () => CampaignActionType.editActionAreaAssignment,
+          );
+        } else {
+          throw ArgumentError('Unknown route update type');
+        }
     }
   }
 
@@ -271,13 +287,17 @@ class CampaignActionCache extends ChangeNotifier {
           var model = action.getAsRouteUpdate();
           markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
 
+        case CampaignActionType.editRouteAssignment:
+          var model = action.getAsRouteAssignmentUpdate();
+          markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
+
         case CampaignActionType.editActionArea:
           var model = action.getAsActionAreaUpdate();
           markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
 
-        case CampaignActionType.editRouteAssignment:
-          var model = action.getAsRouteAssignmentUpdate();
-          markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
+        case CampaignActionType.editActionAreaAssignment:
+          var model = action.getAsActionAreaAssignmentUpdate();
+          markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
 
         case CampaignActionType.unknown:
         case null:
@@ -300,7 +320,6 @@ class CampaignActionCache extends ChangeNotifier {
       case PoiCacheType.poster:
       case PoiCacheType.door:
       case PoiCacheType.flyer:
-      case PoiCacheType.actionArea:
         {
           return [
             getValueSafe(() => poiType.getCacheAddAction()),
@@ -308,6 +327,11 @@ class CampaignActionCache extends ChangeNotifier {
             getValueSafe(() => poiType.getCacheDeleteAction()),
           ].where((x) => x != null).cast<int>().toList();
         }
+      case PoiCacheType.actionArea:
+        return [
+          CampaignActionType.editActionArea,
+          CampaignActionType.editActionAreaAssignment,
+        ].map((a) => a.index).toList();
       case PoiCacheType.route:
         return [CampaignActionType.editRoute, CampaignActionType.editRouteAssignment].map((a) => a.index).toList();
     }
@@ -481,14 +505,19 @@ class CampaignActionCache extends ChangeNotifier {
               await routeApiService.updateRoute(model);
               campaignActionDatabase.delete(action.id!);
 
+            case CampaignActionType.editRouteAssignment:
+              var model = action.getAsRouteAssignmentUpdate();
+              await routeApiService.updateRouteAssignemnt(model);
+              campaignActionDatabase.delete(action.id!);
+
             case CampaignActionType.editActionArea:
               var model = action.getAsActionAreaUpdate();
               await areaApiService.updateActionArea(model);
               campaignActionDatabase.delete(action.id!);
 
-            case CampaignActionType.editRouteAssignment:
-              var model = action.getAsRouteAssignmentUpdate();
-              await routeApiService.updateRouteAssignemnt(model);
+            case CampaignActionType.editActionAreaAssignment:
+              var model = action.getAsActionAreaAssignmentUpdate();
+              await areaApiService.updateActionAreaAssignemnt(model);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.unknown:

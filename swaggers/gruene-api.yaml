@@ -946,6 +946,7 @@ paths:
             type: string
             enum:
               - FLYER_SPOT
+              - POSTER
               - HOUSE
         - name: campaignId
           required: false
@@ -985,6 +986,7 @@ paths:
             type: string
             enum:
               - FLYER_SPOT
+              - POSTER
               - HOUSE
         - name: campaignId
           required: false
@@ -1082,6 +1084,37 @@ paths:
       security:
         - bearer: []
       summary: Delete an Area
+      tags:
+        - campaigns
+  /v1/campaigns/areas/{areaId}/team:
+    put:
+      operationId: assignAreaToTeam
+      parameters:
+        - name: areaId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaAssignTeam'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Area'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+      summary: Assign Area to Team
       tags:
         - campaigns
   /v1/campaigns/campaigns:
@@ -1734,7 +1767,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TeamRoute'
+                $ref: '#/components/schemas/Route'
         '401':
           description: ''
         '404':
@@ -1822,7 +1855,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TeamRoute'
+                $ref: '#/components/schemas/Route'
         '401':
           description: ''
         '404':
@@ -2147,12 +2180,15 @@ paths:
           description: Filter data output by campaign ids
           schema:
             type: string
-        - name: divisionKey
+        - name: divisionKeys
           required: true
           in: query
           description: Filter by division keys
           schema:
-            type: string
+            minItems: 1
+            type: array
+            items:
+              type: string
         - name: sort
           required: false
           in: query
@@ -4444,6 +4480,7 @@ components:
         type:
           enum:
             - FLYER_SPOT
+            - POSTER
             - HOUSE
           type: string
         campaignId:
@@ -4470,6 +4507,23 @@ components:
         - comment
         - name
         - polygon
+    TeamInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        divisionKey:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+      required:
+        - id
+        - divisionKey
+        - name
     Area:
       type: object
       properties:
@@ -4479,6 +4533,7 @@ components:
         type:
           enum:
             - FLYER_SPOT
+            - POSTER
             - HOUSE
           type: string
         status:
@@ -4504,6 +4559,10 @@ components:
           $ref: '#/components/schemas/AreaHouse'
         polygon:
           $ref: '#/components/schemas/Polygon'
+        team:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/TeamInfo'
       required:
         - id
         - type
@@ -4522,6 +4581,13 @@ components:
             $ref: '#/components/schemas/Area'
       required:
         - data
+    AreaAssignTeam:
+      type: object
+      properties:
+        teamId:
+          type: string
+          nullable: true
+          description: If null => unassign, if string => assign.
     UpdateCampaign:
       type: object
       properties:
@@ -5058,6 +5124,10 @@ components:
           format: date-time
           type: string
           nullable: true
+        team:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/TeamInfo'
       required:
         - id
         - type
@@ -5075,70 +5145,6 @@ components:
             $ref: '#/components/schemas/Route'
       required:
         - data
-    RouteTeam:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '1'
-        divisionKey:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-          nullable: true
-      required:
-        - id
-        - divisionKey
-        - name
-    TeamRoute:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
-        campaignId:
-          type: string
-        createdAt:
-          format: date-time
-          type: string
-        status:
-          enum:
-            - OPEN
-            - ASSIGNED
-            - CLOSED
-          type: string
-        name:
-          type: string
-          nullable: true
-        lineString:
-          $ref: '#/components/schemas/LineString'
-        assignedBy:
-          type: string
-          nullable: true
-        assignedAt:
-          format: date-time
-          type: string
-          nullable: true
-        team:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/RouteTeam'
-      required:
-        - id
-        - type
-        - campaignId
-        - createdAt
-        - status
-        - name
-        - lineString
     RouteAssignTeam:
       type: object
       properties:
@@ -5627,11 +5633,13 @@ components:
         createdAt:
           format: date-time
           type: string
-          minimum: 0
         membershipCount:
           type: number
           minimum: 0
         assignedOpenRoutes:
+          type: number
+          minimum: 0
+        assignedOpenAreas:
           type: number
           minimum: 0
         division:
@@ -5642,6 +5650,7 @@ components:
         - createdAt
         - membershipCount
         - assignedOpenRoutes
+        - assignedOpenAreas
         - division
     FindTeamsResponse:
       type: object

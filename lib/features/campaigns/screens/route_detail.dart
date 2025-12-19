@@ -64,6 +64,7 @@ class _RouteDetailState extends State<RouteDetail> {
       case CampaignActionType.editFlyer:
       case CampaignActionType.deleteFlyer:
       case CampaignActionType.editActionArea:
+      case CampaignActionType.editActionAreaAssignment:
       case null:
         throw UnimplementedError();
     }
@@ -71,17 +72,20 @@ class _RouteDetailState extends State<RouteDetail> {
 
   void _loadData() async {
     setState(() => _loading = true);
-
-    var routeDetail = await _getLatestRouteDetail();
-    var userInfo = await GetIt.I<GrueneApiUserService>().getOwnRbac();
     var profileService = GetIt.I<GrueneApiProfileService>();
-    var currentUserKV = (await profileService.getSelf()).getOwnKV();
+    var userService = GetIt.I<GrueneApiUserService>();
+
+    final (routeDetail, userInfo, currentUser) = await (
+      _getLatestRouteDetail(),
+      userService.getOwnRbac(),
+      profileService.getSelf(),
+    ).wait;
 
     setState(() {
       _loading = false;
       _currentRouteDetail = routeDetail;
       _currentUserInfo = userInfo;
-      _currentUserKV = currentUserKV;
+      _currentUserKV = currentUser.getOwnKV();
     });
   }
 
@@ -187,7 +191,7 @@ class _RouteDetailState extends State<RouteDetail> {
             child: Row(
               children: [
                 Switch(
-                  value: _currentRouteDetail.status == TeamRouteStatus.closed,
+                  value: _currentRouteDetail.status == RouteStatus.closed,
                   onChanged: (bool state) => _changeRouteStatus(_currentRouteDetail, state),
                 ),
                 SizedBox(width: 12),
@@ -201,7 +205,7 @@ class _RouteDetailState extends State<RouteDetail> {
   }
 
   Future<void> _changeRouteStatus(RouteDetailModel route, bool state) async {
-    var newStatus = state ? TeamRouteStatus.closed : TeamRouteStatus.open;
+    var newStatus = state ? RouteStatus.closed : RouteStatus.open;
     var routeUpdate = route.asRouteUpdate().copyWith(status: newStatus);
 
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);
@@ -219,7 +223,7 @@ class _RouteDetailState extends State<RouteDetail> {
     if (!mounted) return;
     var selectedTeam = await showModalBottomSheet<FindTeamsItem>(
       context: context,
-      builder: (context) => SelectTeamWidget(teams: userTeams),
+      builder: (context) => SelectTeamWidget(teams: userTeams, routeOrArea: TeamAssignmentType.route),
     );
 
     if (selectedTeam != null) {

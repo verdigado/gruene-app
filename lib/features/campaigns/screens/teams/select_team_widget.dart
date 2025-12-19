@@ -6,7 +6,9 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class SelectTeamWidget extends StatelessWidget {
   final List<FindTeamsItem> teams;
-  const SelectTeamWidget({super.key, required this.teams});
+  final TeamAssignmentType routeOrArea;
+
+  const SelectTeamWidget({super.key, required this.teams, required this.routeOrArea});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,10 @@ class SelectTeamWidget extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsetsGeometry.symmetric(vertical: 4),
-              child: Text(t.campaigns.team.select_team_hint_route),
+              child: Text(switch (routeOrArea) {
+                TeamAssignmentType.route => t.campaigns.team.select_team_hint_route,
+                TeamAssignmentType.area => t.campaigns.team.select_team_hint_area,
+              }),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -47,23 +52,13 @@ class SelectTeamWidget extends StatelessWidget {
 
   Widget _getTeamSelectItem(FindTeamsItem team, BuildContext context) {
     var theme = Theme.of(context);
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
         alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          color: ThemeColors.background,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
+        decoration: boxShadowDecoration,
         child: Row(
           children: [
             Expanded(
@@ -80,7 +75,11 @@ class SelectTeamWidget extends StatelessWidget {
                   CircleAvatar(
                     backgroundColor: ThemeColors.primary,
                     foregroundColor: ThemeColors.background,
-                    child: Text(team.assignedOpenRoutes.toInt().toString()),
+
+                    child: Text(switch (routeOrArea) {
+                      TeamAssignmentType.route => team.assignedOpenRoutes.toInt().toString(),
+                      TeamAssignmentType.area => team.assignedOpenAreas.toInt().toString(),
+                    }),
                   ),
                   GestureDetector(
                     onTap: () => _selectTeam(team, context),
@@ -105,3 +104,5 @@ class SelectTeamWidget extends StatelessWidget {
     Navigator.pop(context, team);
   }
 }
+
+enum TeamAssignmentType { route, area }

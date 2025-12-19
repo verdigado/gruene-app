@@ -10,6 +10,9 @@ steps:
   - run:
       name: FVM Install Script Checksum
       command: curl -sL https://raw.githubusercontent.com/leoafarias/fvm/refs/heads/main/scripts/install.sh | shasum -a 256
+  - run:
+      name: Add FVM to PATH
+      command: echo 'export PATH="$HOME/fvm/bin:$PATH"' >> $BASH_ENV
   - restore_cache:
       keys:
         - v1-fvm-{{ arch }}-{{ checksum ".fvmrc" }}-{{ checksum "pubspec.yaml" }}-{{ checksum "pubspec.lock"  }}
