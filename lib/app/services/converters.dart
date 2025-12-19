@@ -11,6 +11,7 @@ import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/models/action_area/action_area_assignment_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';

@@ -15,6 +15,7 @@ class ActionAreaDetailModel {
   final Polygon polygon;
   final String createdAt;
   final bool isVirtual;
+  final TeamInfo? team;
 
   const ActionAreaDetailModel({
     required this.id,
@@ -24,6 +25,7 @@ class ActionAreaDetailModel {
     required this.status,
     required this.polygon,
     required this.createdAt,
+    required this.team,
   }) : isVirtual = false;
 
   ActionAreaDetailModel.virtual({
@@ -34,6 +36,7 @@ class ActionAreaDetailModel {
     required this.status,
     required this.polygon,
     required this.createdAt,
+    required this.team,
   }) : isVirtual = true;
 
   factory ActionAreaDetailModel.fromJson(Map<String, dynamic> json) => _$ActionAreaDetailModelFromJson(json);
@@ -49,6 +52,7 @@ class ActionAreaDetailModel {
     Polygon? polygon,
     String? createdAt,
     bool? isVirtual,
+    TeamInfo? team,
   }) {
     if (isVirtual ?? this.isVirtual) {
       return ActionAreaDetailModel.virtual(
@@ -59,6 +63,7 @@ class ActionAreaDetailModel {
         status: status ?? this.status,
         polygon: polygon ?? this.polygon,
         createdAt: createdAt ?? this.createdAt,
+        team: team ?? this.team,
       );
     } else {
       return ActionAreaDetailModel.virtual(
@@ -69,6 +74,7 @@ class ActionAreaDetailModel {
         status: status ?? this.status,
         polygon: polygon ?? this.polygon,
         createdAt: createdAt ?? this.createdAt,
+        team: team ?? this.team,
       );
     }
   }

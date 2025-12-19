@@ -14,7 +14,7 @@ class RouteDetailModel {
   final LineString lineString;
   final String createdAt;
   final bool isVirtual;
-  final RouteTeam? team;
+  final TeamInfo? team;
 
   const RouteDetailModel({
     required this.id,
@@ -48,7 +48,7 @@ class RouteDetailModel {
     LineString? lineString,
     String? createdAt,
     bool? isVirtual,
-    RouteTeam? team,
+    TeamInfo? team,
   }) {
     if (isVirtual ?? this.isVirtual) {
       return RouteDetailModel.virtual(

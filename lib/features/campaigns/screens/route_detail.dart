@@ -64,6 +64,7 @@ class _RouteDetailState extends State<RouteDetail> {
       case CampaignActionType.editFlyer:
       case CampaignActionType.deleteFlyer:
       case CampaignActionType.editActionArea:
+      case CampaignActionType.editActionAreaAssignment:
       case null:
         throw UnimplementedError();
     }

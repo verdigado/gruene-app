@@ -946,6 +946,7 @@ paths:
             type: string
             enum:
               - FLYER_SPOT
+              - POSTER
               - HOUSE
         - name: campaignId
           required: false
@@ -985,6 +986,7 @@ paths:
             type: string
             enum:
               - FLYER_SPOT
+              - POSTER
               - HOUSE
         - name: campaignId
           required: false
@@ -1082,6 +1084,37 @@ paths:
       security:
         - bearer: []
       summary: Delete an Area
+      tags:
+        - campaigns
+  /v1/campaigns/areas/{areaId}/team:
+    put:
+      operationId: assignAreaToTeam
+      parameters:
+        - name: areaId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaAssignTeam'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Area'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+      summary: Assign Area to Team
       tags:
         - campaigns
   /v1/campaigns/campaigns:
@@ -4444,6 +4477,7 @@ components:
         type:
           enum:
             - FLYER_SPOT
+            - POSTER
             - HOUSE
           type: string
         campaignId:
@@ -4470,6 +4504,23 @@ components:
         - comment
         - name
         - polygon
+    TeamInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        divisionKey:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+      required:
+        - id
+        - divisionKey
+        - name
     Area:
       type: object
       properties:
@@ -4479,6 +4530,7 @@ components:
         type:
           enum:
             - FLYER_SPOT
+            - POSTER
             - HOUSE
           type: string
         status:
@@ -4504,6 +4556,10 @@ components:
           $ref: '#/components/schemas/AreaHouse'
         polygon:
           $ref: '#/components/schemas/Polygon'
+        team:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/TeamInfo'
       required:
         - id
         - type
@@ -4522,6 +4578,13 @@ components:
             $ref: '#/components/schemas/Area'
       required:
         - data
+    AreaAssignTeam:
+      type: object
+      properties:
+        teamId:
+          type: string
+          nullable: true
+          description: If null => unassign, if string => assign.
     UpdateCampaign:
       type: object
       properties:
@@ -5075,23 +5138,6 @@ components:
             $ref: '#/components/schemas/Route'
       required:
         - data
-    RouteTeam:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '1'
-        divisionKey:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-          nullable: true
-      required:
-        - id
-        - divisionKey
-        - name
     TeamRoute:
       type: object
       properties:
@@ -5130,7 +5176,7 @@ components:
         team:
           nullable: true
           allOf:
-            - $ref: '#/components/schemas/RouteTeam'
+            - $ref: '#/components/schemas/TeamInfo'
       required:
         - id
         - type
