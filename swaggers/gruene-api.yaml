@@ -1767,7 +1767,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TeamRoute'
+                $ref: '#/components/schemas/Route'
         '401':
           description: ''
         '404':
@@ -1855,7 +1855,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TeamRoute'
+                $ref: '#/components/schemas/Route'
         '401':
           description: ''
         '404':
@@ -5124,6 +5124,10 @@ components:
           format: date-time
           type: string
           nullable: true
+        team:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/TeamInfo'
       required:
         - id
         - type
@@ -5141,53 +5145,6 @@ components:
             $ref: '#/components/schemas/Route'
       required:
         - data
-    TeamRoute:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
-        campaignId:
-          type: string
-        createdAt:
-          format: date-time
-          type: string
-        status:
-          enum:
-            - OPEN
-            - ASSIGNED
-            - CLOSED
-          type: string
-        name:
-          type: string
-          nullable: true
-        lineString:
-          $ref: '#/components/schemas/LineString'
-        assignedBy:
-          type: string
-          nullable: true
-        assignedAt:
-          format: date-time
-          type: string
-          nullable: true
-        team:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/TeamInfo'
-      required:
-        - id
-        - type
-        - campaignId
-        - createdAt
-        - status
-        - name
-        - lineString
     RouteAssignTeam:
       type: object
       properties:
@@ -5676,7 +5633,6 @@ components:
         createdAt:
           format: date-time
           type: string
-          minimum: 0
         membershipCount:
           type: number
           minimum: 0

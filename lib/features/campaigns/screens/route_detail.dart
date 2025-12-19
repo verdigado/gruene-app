@@ -191,7 +191,7 @@ class _RouteDetailState extends State<RouteDetail> {
             child: Row(
               children: [
                 Switch(
-                  value: _currentRouteDetail.status == TeamRouteStatus.closed,
+                  value: _currentRouteDetail.status == RouteStatus.closed,
                   onChanged: (bool state) => _changeRouteStatus(_currentRouteDetail, state),
                 ),
                 SizedBox(width: 12),
@@ -205,7 +205,7 @@ class _RouteDetailState extends State<RouteDetail> {
   }
 
   Future<void> _changeRouteStatus(RouteDetailModel route, bool state) async {
-    var newStatus = state ? TeamRouteStatus.closed : TeamRouteStatus.open;
+    var newStatus = state ? RouteStatus.closed : RouteStatus.open;
     var routeUpdate = route.asRouteUpdate().copyWith(status: newStatus);
 
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);

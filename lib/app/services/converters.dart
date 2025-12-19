@@ -69,7 +69,6 @@ part 'converters/string_extension.dart';
 part 'converters/experience_area_parsing.dart';
 part 'converters/action_area_parsing.dart';
 part 'converters/route_type_parsing.dart';
-part 'converters/route_status_parsing.dart';
 part 'converters/route_detail_model_parsing.dart';
 part 'converters/route_update_model_parsing.dart';
 part 'converters/action_area_type_parsing.dart';

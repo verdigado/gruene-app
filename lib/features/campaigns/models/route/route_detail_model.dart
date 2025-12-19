@@ -8,9 +8,9 @@ part 'route_detail_model.g.dart';
 @JsonSerializable()
 class RouteDetailModel {
   final String id;
-  final TeamRouteType type;
+  final RouteType type;
   final String? name;
-  final TeamRouteStatus status;
+  final RouteStatus status;
   final LineString lineString;
   final String createdAt;
   final bool isVirtual;
@@ -42,9 +42,9 @@ class RouteDetailModel {
 
   RouteDetailModel copyWith({
     String? id,
-    TeamRouteType? type,
+    RouteType? type,
     String? name,
-    TeamRouteStatus? status,
+    RouteStatus? status,
     LineString? lineString,
     String? createdAt,
     bool? isVirtual,
