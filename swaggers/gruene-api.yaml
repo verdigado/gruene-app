@@ -2180,12 +2180,15 @@ paths:
           description: Filter data output by campaign ids
           schema:
             type: string
-        - name: divisionKey
+        - name: divisionKeys
           required: true
           in: query
           description: Filter by division keys
           schema:
-            type: string
+            minItems: 1
+            type: array
+            items:
+              type: string
         - name: sort
           required: false
           in: query
@@ -5680,6 +5683,9 @@ components:
         assignedOpenRoutes:
           type: number
           minimum: 0
+        assignedOpenAreas:
+          type: number
+          minimum: 0
         division:
           type: string
       required:
@@ -5688,6 +5694,7 @@ components:
         - createdAt
         - membershipCount
         - assignedOpenRoutes
+        - assignedOpenAreas
         - division
     FindTeamsResponse:
       type: object

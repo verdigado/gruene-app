@@ -220,7 +220,7 @@ class _RouteDetailState extends State<RouteDetail> {
     if (!mounted) return;
     var selectedTeam = await showModalBottomSheet<FindTeamsItem>(
       context: context,
-      builder: (context) => SelectTeamWidget(teams: userTeams),
+      builder: (context) => SelectTeamWidget(teams: userTeams, routeOrArea: TeamAssignmentType.route),
     );
 
     if (selectedTeam != null) {

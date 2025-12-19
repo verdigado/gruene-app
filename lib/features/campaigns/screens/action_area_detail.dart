@@ -209,7 +209,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     if (!mounted) return;
     var selectedTeam = await showModalBottomSheet<FindTeamsItem>(
       context: context,
-      builder: (context) => SelectTeamWidget(teams: userTeams),
+      builder: (context) => SelectTeamWidget(teams: userTeams, routeOrArea: TeamAssignmentType.area),
     );
 
     if (selectedTeam != null) {
