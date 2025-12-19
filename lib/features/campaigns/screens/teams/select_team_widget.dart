@@ -52,23 +52,13 @@ class SelectTeamWidget extends StatelessWidget {
 
   Widget _getTeamSelectItem(FindTeamsItem team, BuildContext context) {
     var theme = Theme.of(context);
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
         alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          color: ThemeColors.background,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
+        decoration: boxShadowDecoration,
         child: Row(
           children: [
             Expanded(

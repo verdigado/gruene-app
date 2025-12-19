@@ -161,18 +161,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          color: ThemeColors.background,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
+        decoration: boxShadowDecoration,
         child: Column(
           children: [
             Row(
