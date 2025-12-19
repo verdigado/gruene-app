@@ -42,6 +42,44 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       minzoom: mapInfo.minZoom,
     );
 
+    addImageFromAsset(
+      mapLibreController,
+      CampaignConstants.actionAreaSourceName,
+      CampaignConstants.actionAreaAssetName,
+    );
+    await mapLibreController.addSymbolLayer(
+      CampaignConstants.actionAreaSourceName,
+      CampaignConstants.actionAreaSymbolLayerId,
+      SymbolLayerProperties(
+        iconImage: CampaignConstants.actionAreaSourceName,
+        iconKeepUpright: true,
+        // symbolPlacement: 'center',
+        iconPitchAlignment: 'viewport',
+        // iconSize: [
+        //   Expressions.interpolate,
+        //   ['linear'],
+        //   [Expressions.zoom],
+        //   11,
+        //   1,
+        //   16,
+        //   2,
+        // ],
+        iconAllowOverlap: true,
+        // fillPattern: [Expressions.image, CampaignConstants.actionAreaSourceName],
+        // fillOpacity: [
+        //   Expressions.match,
+        //   [Expressions.get, 'status'],
+        //   'open',
+        //   1,
+        //   'closed',
+        //   0.3,
+        //   1,
+        // ],
+      ),
+      enableInteraction: false,
+      minzoom: mapInfo.minZoom,
+    );
+
     // set layer properties for selected layer
     mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSelectedSourceName, data);
 
