@@ -10,7 +10,7 @@ class CampaignConstants {
   static const addMarkerAssetName = 'assets/symbols/add_marker.svg';
 
   static const pollingStationAssetName = 'assets/symbols/polling_stations/pollingstation.png';
-  static const actionAreaAssetName = 'assets/symbols/action_areas/assigned-marker_24x24.png';
+  static const actionAreaAssignemntAssetName = 'assets/symbols/action_areas/assigned-marker_24x24.png';
 
   static const experienceAreaFillPatternAssetName = 'assets/maps/layer_styles/experience_area_16x16.png';
   static const actionAreaFillPatternAssetName = 'assets/maps/layer_styles/action_area_16x16.png';
@@ -32,7 +32,9 @@ class CampaignConstants {
   static const routesSourceName = 'routes';
   static const routesSelectedSourceName = 'routes_selected';
   static const routesLineLayerId = 'routes_layer';
+  static const routesSymbolLayerId = 'routes_symbol_layer';
   static const routesLineSelectedLayerId = 'routes_layer_selected';
+  static const routeAssignmentAssetId = 'routes_assignment';
 
   static const experienceAreaSourceName = 'experience_areas';
   static const experienceAreaSelectedSourceName = 'experience_areas_selected';
@@ -42,6 +44,8 @@ class CampaignConstants {
   static const experienceAreaSelectedOutlineLayerId = '${experienceAreaSelectedLayerId}_line';
 
   static const actionAreaSourceName = 'action_areas';
+  static const actionAreaFillAssetId = 'action_areas_fill';
+  static const actionAreaAssignmentAssetId = 'action_areas_assignment';
   static const actionAreaSelectedSourceName = 'action_areas_selected';
   static const actionAreaLayerId = 'action_areas_layer';
   static const actionAreaOutlineLayerId = '${actionAreaLayerId}_line';
@@ -59,6 +63,8 @@ class CampaignConstants {
 
   static const featurePropertyStatusType = 'status_type';
   static const featurePropertyIsVirtual = 'is_virtual';
+  static const featurePropertyStatus = 'status';
+  static const featurePropertyIsAssigned = 'is_assigned';
 
   static String focusAreaMapIdProperty = 'id';
   static String focusAreaMapScoreColorProperty = 'score_color';

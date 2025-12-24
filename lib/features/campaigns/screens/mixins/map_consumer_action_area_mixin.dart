@@ -9,7 +9,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
 
     addImageFromAsset(
       mapLibreController,
-      CampaignConstants.actionAreaSourceName,
+      CampaignConstants.actionAreaFillAssetId,
       CampaignConstants.actionAreaFillPatternAssetName,
     );
 
@@ -19,10 +19,10 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       CampaignConstants.actionAreaSourceName,
       CampaignConstants.actionAreaLayerId,
       FillLayerProperties(
-        fillPattern: [Expressions.image, CampaignConstants.actionAreaSourceName],
+        fillPattern: [Expressions.image, CampaignConstants.actionAreaFillAssetId],
         fillOpacity: [
           Expressions.match,
-          [Expressions.get, 'status'],
+          [Expressions.get, CampaignConstants.featurePropertyStatus],
           'open',
           1,
           'closed',
@@ -42,42 +42,30 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       minzoom: mapInfo.minZoom,
     );
 
+    // assignment symbols
     addImageFromAsset(
       mapLibreController,
-      CampaignConstants.actionAreaSourceName,
-      CampaignConstants.actionAreaAssetName,
+      CampaignConstants.actionAreaAssignmentAssetId,
+      CampaignConstants.actionAreaAssignemntAssetName,
     );
     await mapLibreController.addSymbolLayer(
       CampaignConstants.actionAreaSourceName,
       CampaignConstants.actionAreaSymbolLayerId,
       SymbolLayerProperties(
-        iconImage: CampaignConstants.actionAreaSourceName,
-        iconKeepUpright: true,
-        // symbolPlacement: 'center',
-        iconPitchAlignment: 'viewport',
-        // iconSize: [
-        //   Expressions.interpolate,
-        //   ['linear'],
-        //   [Expressions.zoom],
-        //   11,
-        //   1,
-        //   16,
-        //   2,
-        // ],
-        iconAllowOverlap: true,
-        // fillPattern: [Expressions.image, CampaignConstants.actionAreaSourceName],
-        // fillOpacity: [
-        //   Expressions.match,
-        //   [Expressions.get, 'status'],
-        //   'open',
-        //   1,
-        //   'closed',
-        //   0.3,
-        //   1,
-        // ],
+        iconImage: CampaignConstants.actionAreaAssignmentAssetId,
+        iconSize: [
+          Expressions.interpolate,
+          ['linear'],
+          [Expressions.zoom],
+          12,
+          1,
+          14,
+          2.5,
+        ],
       ),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
+      filter: ['==', CampaignConstants.featurePropertyIsAssigned, true],
     );
 
     // set layer properties for selected layer

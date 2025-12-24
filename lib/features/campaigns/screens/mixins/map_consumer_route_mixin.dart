@@ -19,6 +19,33 @@ mixin MapConsumerRouteMixin on InfoBox {
       minzoom: mapInfo.minZoom,
     );
 
+    // assignment symbols
+    addImageFromAsset(
+      mapLibreController,
+      CampaignConstants.routeAssignmentAssetId,
+      CampaignConstants.actionAreaAssignemntAssetName,
+    );
+    await mapLibreController.addSymbolLayer(
+      CampaignConstants.routesSourceName,
+      CampaignConstants.routesSymbolLayerId,
+      SymbolLayerProperties(
+        iconImage: CampaignConstants.routeAssignmentAssetId,
+        symbolPlacement: 'line-center',
+        iconSize: [
+          Expressions.interpolate,
+          ['linear'],
+          [Expressions.zoom],
+          12,
+          1,
+          14,
+          2.5,
+        ],
+      ),
+      enableInteraction: false,
+      minzoom: mapInfo.minZoom,
+      filter: ['==', CampaignConstants.featurePropertyIsAssigned, true],
+    );
+
     // add selected map layers
     mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSelectedSourceName, data);
 
