@@ -9,7 +9,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
 
     addImageFromAsset(
       mapLibreController,
-      CampaignConstants.actionAreaSourceName,
+      CampaignConstants.actionAreaFillAssetId,
       CampaignConstants.actionAreaFillPatternAssetName,
     );
 
@@ -19,10 +19,10 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       CampaignConstants.actionAreaSourceName,
       CampaignConstants.actionAreaLayerId,
       FillLayerProperties(
-        fillPattern: [Expressions.image, CampaignConstants.actionAreaSourceName],
+        fillPattern: [Expressions.image, CampaignConstants.actionAreaFillAssetId],
         fillOpacity: [
           Expressions.match,
-          [Expressions.get, 'status'],
+          [Expressions.get, CampaignConstants.featurePropertyStatus],
           'open',
           1,
           'closed',
@@ -40,6 +40,32 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       LineLayerProperties(lineColor: 'white', lineWidth: 0.5, lineOpacity: 0.8),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
+    );
+
+    // assignment symbols
+    addImageFromAsset(
+      mapLibreController,
+      CampaignConstants.actionAreaAssignmentAssetId,
+      CampaignConstants.actionAreaAssignemntAssetName,
+    );
+    await mapLibreController.addSymbolLayer(
+      CampaignConstants.actionAreaSourceName,
+      CampaignConstants.actionAreaSymbolLayerId,
+      SymbolLayerProperties(
+        iconImage: CampaignConstants.actionAreaAssignmentAssetId,
+        iconSize: [
+          Expressions.interpolate,
+          ['linear'],
+          [Expressions.zoom],
+          12,
+          1,
+          14,
+          2.5,
+        ],
+      ),
+      enableInteraction: false,
+      minzoom: mapInfo.minZoom,
+      filter: ['==', CampaignConstants.featurePropertyIsAssigned, true],
     );
 
     // set layer properties for selected layer

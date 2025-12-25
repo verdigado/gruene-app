@@ -12,7 +12,11 @@ extension RouteDetailModelParsing on RouteDetailModel {
   turf.Feature<turf.LineString> transformToFeatureItem() {
     return turf.Feature<turf.LineString>(
       id: id,
-      properties: {'status': status.toString()},
+      properties: {
+        CampaignConstants.featurePropertyStatus: status.toString(),
+        CampaignConstants.featurePropertyIsVirtual: isVirtual,
+        CampaignConstants.featurePropertyIsAssigned: team != null,
+      },
       geometry: lineString.asTurfLine(),
     );
   }
