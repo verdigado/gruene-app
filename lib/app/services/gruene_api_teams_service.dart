@@ -6,6 +6,9 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class GrueneApiTeamsService extends GrueneApiBaseService {
   Future<Team?> getOwnTeam() async => getFromApi<Team?, Team?>(apiRequest: (api) => api.v1CampaignsTeamsSelfGet());
 
+  Future<TeamAssignmentResponse> getTeamAssignments({required String teamId}) =>
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsTeamIdAssignmentsGet(teamId: teamId));
+
   Future<Team> updateTeam({required String teamId, required String teamName, String? teamDescription}) async =>
       getFromApi<Team, Team>(
         apiRequest: (api) => api.v1CampaignsTeamsTeamIdPut(

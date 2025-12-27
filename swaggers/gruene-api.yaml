@@ -2421,6 +2421,35 @@ paths:
       summary: Update own team information
       tags:
         - campaigns
+  /v1/campaigns/teams/{teamId}/assignments:
+    get:
+      operationId: getTeamAssignments
+      parameters:
+        - name: campaignId
+          required: false
+          in: query
+          description: Filter data output by campaign ids
+          schema:
+            type: string
+        - name: teamId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamAssignmentResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get Team assignments
+      tags:
+        - campaigns
   /v1/news:
     get:
       operationId: findNews
@@ -4559,6 +4588,13 @@ components:
           $ref: '#/components/schemas/AreaHouse'
         polygon:
           $ref: '#/components/schemas/Polygon'
+        assignedBy:
+          type: string
+          nullable: true
+        assignedAt:
+          format: date-time
+          type: string
+          nullable: true
         team:
           nullable: true
           allOf:
@@ -5670,6 +5706,113 @@ components:
         - total
         - offset
         - limit
+    AreaAssignment:
+      type: object
+      properties:
+        assigningUser:
+          type: string
+        id:
+          type: string
+          example: '1'
+        type:
+          type: string
+          enum:
+            - FLYER_SPOT
+            - POSTER
+            - HOUSE
+        status:
+          type: string
+          enum:
+            - OPEN
+            - ASSIGNED
+            - CLOSED
+        campaignId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        comment:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        polygon:
+          $ref: '#/components/schemas/Polygon'
+        assignedBy:
+          type: string
+          nullable: true
+        assignedAt:
+          format: date-time
+          type: string
+          nullable: true
+      required:
+        - assigningUser
+        - id
+        - type
+        - status
+        - campaignId
+        - createdAt
+        - comment
+        - name
+        - polygon
+    RouteAssignment:
+      type: object
+      properties:
+        assigningUser:
+          type: string
+        id:
+          type: string
+          example: '1'
+        type:
+          type: string
+          enum:
+            - FLYER_SPOT
+            - POSTER
+            - HOUSE
+        campaignId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        status:
+          type: string
+          enum:
+            - OPEN
+            - ASSIGNED
+            - CLOSED
+        name:
+          type: string
+          nullable: true
+        lineString:
+          $ref: '#/components/schemas/LineString'
+        assignedAt:
+          format: date-time
+          type: string
+          nullable: true
+      required:
+        - assigningUser
+        - id
+        - type
+        - campaignId
+        - createdAt
+        - status
+        - name
+        - lineString
+    TeamAssignmentResponse:
+      type: object
+      properties:
+        areas:
+          type: array
+          items:
+            $ref: '#/components/schemas/AreaAssignment'
+        routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RouteAssignment'
+      required:
+        - areas
+        - routes
     NewsCategory:
       type: object
       properties:

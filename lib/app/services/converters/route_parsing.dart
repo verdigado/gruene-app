@@ -20,16 +20,46 @@ extension RouteListParsing on List<Route> {
   }
 }
 
-extension RouteTypeParsing on RouteType {
-  RouteType asTeamRouteType() {
+extension RouteAssignmentParsing on RouteAssignment {
+  AssignedElement asAssignedElement() {
+    return AssignedElement(
+      status: status.asTeamAsssignmentStatus(),
+      name: name ?? '',
+      type: type.asTeamAssignmentType(),
+      elementType: AssignedElementType.route,
+      assignmentDate: assignedAt ?? DateTime.now(),
+      assignee: assigningUser,
+      coords: lineString.asTurfLine(),
+    );
+  }
+}
+
+extension on RouteAssignmentType {
+  TeamAssignmentType asTeamAssignmentType() {
     switch (this) {
-      case RouteType.flyerSpot:
-        return RouteType.flyerSpot;
-      case RouteType.poster:
-        return RouteType.poster;
-      case RouteType.house:
-        return RouteType.house;
-      case RouteType.swaggerGeneratedUnknown:
+      case RouteAssignmentType.flyerSpot:
+        return TeamAssignmentType.flyer;
+      case RouteAssignmentType.poster:
+        return TeamAssignmentType.poster;
+      case RouteAssignmentType.house:
+        return TeamAssignmentType.door;
+
+      case RouteAssignmentType.swaggerGeneratedUnknown:
+        throw UnimplementedError();
+    }
+  }
+}
+
+extension on RouteAssignmentStatus {
+  TeamAssignmentStatus asTeamAsssignmentStatus() {
+    switch (this) {
+      case RouteAssignmentStatus.open:
+        return TeamAssignmentStatus.open;
+      case RouteAssignmentStatus.closed:
+        return TeamAssignmentStatus.closed;
+
+      case RouteAssignmentStatus.assigned:
+      case RouteAssignmentStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }
