@@ -86,7 +86,7 @@ extension PoiServiceTypeParsing on PoiServiceType {
       case PoiServiceType.flyer:
         return V1CampaignsAreasGetType.flyerSpot;
       case PoiServiceType.poster:
-        throw UnimplementedError();
+        return V1CampaignsAreasGetType.poster;
     }
   }
 

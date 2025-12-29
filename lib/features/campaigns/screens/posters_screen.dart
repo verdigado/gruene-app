@@ -68,8 +68,13 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
         isEnabled: true,
         stateChanged: (state) => onExperienceAreaLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),
+      FilterChipModel(
+        text: t.campaigns.filters.action_areas,
+        isEnabled: true,
+        isActive: true,
+        stateChanged: (state) => onActionAreaLayerStateChanged(state, getMapInfo(MapInfoType.actionArea)),
+      ),
     ];
-    actionAreasVisible = false;
     super.initState();
   }
 
