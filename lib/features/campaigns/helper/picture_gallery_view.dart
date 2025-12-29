@@ -258,7 +258,6 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: ThemeColors.backgroundSecondary,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [Text(optionSet.title, style: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark))],

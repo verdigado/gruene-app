@@ -70,11 +70,10 @@ class ProfileFeatureChecker {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: ThemeColors.alertBackground,
           content: Text(
             t.campaigns.team.profile_visibility_hint,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
+            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
           actions: [
             TextButton(
