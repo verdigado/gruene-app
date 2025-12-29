@@ -46,6 +46,12 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
         stateChanged: (state) => onRouteLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),
       FilterChipModel(
+        text: t.campaigns.filters.action_areas,
+        isEnabled: true,
+        isActive: true,
+        stateChanged: (state) => onActionAreaLayerStateChanged(state, getMapInfo(MapInfoType.actionArea)),
+      ),
+      FilterChipModel(
         text: t.campaigns.filters.focusAreas,
         isEnabled: true,
         stateChanged: (state) => onFocusAreaLayerStateChanged(state, getMapInfo(MapInfoType.focusArea)),
@@ -54,12 +60,6 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
         text: t.campaigns.filters.experience_areas,
         isEnabled: true,
         stateChanged: (state) => onExperienceAreaLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.action_areas,
-        isEnabled: true,
-        isActive: true,
-        stateChanged: (state) => onActionAreaLayerStateChanged(state, getMapInfo(MapInfoType.actionArea)),
       ),
     ];
     super.initState();

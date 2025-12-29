@@ -52,7 +52,7 @@ mixin MapConsumerPollingStationMixin {
     );
   }
 
-  void onPollinStationLayerStateChanged(bool state, MapInfo mapInfo) async {
+  void onPollingStationLayerStateChanged(bool state, MapInfo mapInfo) async {
     pollingStationVisible = state;
     if (pollingStationVisible) {
       loadPollingStationLayer(mapInfo);

@@ -54,14 +54,14 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
         stateChanged: (state) => onRouteLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),
       FilterChipModel(
+        text: t.campaigns.filters.polling_stations,
+        isEnabled: true,
+        stateChanged: (state) => onPollingStationLayerStateChanged(state, getMapInfo(MapInfoType.pollingStation)),
+      ),
+      FilterChipModel(
         text: t.campaigns.filters.focusAreas,
         isEnabled: true,
         stateChanged: (state) => onFocusAreaLayerStateChanged(state, getMapInfo(MapInfoType.focusArea)),
-      ),
-      FilterChipModel(
-        text: t.campaigns.filters.polling_stations,
-        isEnabled: true,
-        stateChanged: (state) => onPollinStationLayerStateChanged(state, getMapInfo(MapInfoType.pollingStation)),
       ),
       FilterChipModel(
         text: t.campaigns.filters.experience_areas,

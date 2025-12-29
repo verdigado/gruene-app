@@ -51,10 +51,14 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.only(left: 12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[Wrap(spacing: 15.0, children: widget.filterOptions.map(getFilterChipItem).toList())],
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 16,
+            children: [SizedBox.shrink(), ...widget.filterOptions.map(getFilterChipItem).toList(), SizedBox.shrink()],
+          ),
         ),
       ),
     );
