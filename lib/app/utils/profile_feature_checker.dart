@@ -16,7 +16,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 class ProfileFeatureChecker {
   ProfileCheckSettings? latestProfileCheckSettings;
 
-  void _loadProfileCheckSettings(
+  Future<void> _loadProfileCheckSettings(
     FlutterSecureStorage secureStorage,
     ProfileCheckSettings defaultProfileCheckSetting,
   ) async {
@@ -39,7 +39,7 @@ class ProfileFeatureChecker {
     final FlutterSecureStorage secureStorage = GetIt.instance<FlutterSecureStorage>();
     var currentUserId = await _getCurrentUserId(await secureStorage.read(key: SecureStorageKeys.accessToken));
     if (latestProfileCheckSettings == null) {
-      _loadProfileCheckSettings(secureStorage, ProfileCheckSettings(userId: currentUserId!));
+      await _loadProfileCheckSettings(secureStorage, ProfileCheckSettings(userId: currentUserId!));
     }
 
     if (!latestProfileCheckSettings!.hasProfilePrivacyCheckCompleted) {
