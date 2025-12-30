@@ -7,7 +7,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/open_invitation_list.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_visibility_hint.dart';
-// import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
 // import 'package:gruene_app/features/campaigns/screens/teams/team_member_statistics.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -94,8 +94,8 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
       currentUser: widget.currentUser,
       reloadTeam: (team) => _loadData(preloadedProfile: _currentProfile, preloadedTeam: team),
     );
+    yield TeamAssignedElements(currentTeam: _currentTeam!);
     // TODO features not ready yet - disable them for now
-    // yield TeamAssignedElements(currentTeam: _currentTeam!);
     // yield TeamMemberStatistics(currentTeam: _currentTeam!);
     yield GestureDetector(
       onTap: _leaveTeam,
