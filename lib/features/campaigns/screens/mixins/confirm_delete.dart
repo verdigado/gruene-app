@@ -14,17 +14,11 @@ mixin ConfirmDelete {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: ThemeColors.alertBackground,
-          title: Center(
-            child: Text(
-              '${title ?? t.campaigns.deleteEntry.label}?',
-              style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
-            ),
-          ),
+          title: Center(child: Text('${title ?? t.campaigns.deleteEntry.label}?', style: theme.textTheme.titleMedium)),
           content: Text(
             confirmationDialogText ?? t.campaigns.deleteEntry.confirmation_dialog,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
+            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [

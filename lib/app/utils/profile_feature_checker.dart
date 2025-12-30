@@ -8,7 +8,6 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
-import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/profile/profile_visibility_setting.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -70,11 +69,10 @@ class ProfileFeatureChecker {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: ThemeColors.alertBackground,
           content: Text(
             t.campaigns.team.profile_visibility_hint,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
+            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
           actions: [
             TextButton(

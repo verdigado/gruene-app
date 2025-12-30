@@ -8,7 +8,6 @@ mixin InfoBox {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: ThemeColors.backgroundSecondary,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -154,7 +154,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     confirmDelete(
       context,
       onDeletePressed: executeLeaveTeam,
-      title: '${t.campaigns.team.leave_team}?',
+      title: t.campaigns.team.leave_team,
       confirmationDialogText: t.campaigns.team.leave_team_confirmation_dialog,
       actionTitle: t.common.actions.confirm,
     );
@@ -170,7 +170,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     confirmDelete(
       context,
       onDeletePressed: executeArchiveTeam,
-      title: '${t.campaigns.team.archive_team}?',
+      title: t.campaigns.team.archive_team,
       confirmationDialogText: t.campaigns.team.archive_team_confirmation_dialog,
       actionTitle: t.common.actions.confirm,
     );

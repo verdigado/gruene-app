@@ -94,11 +94,10 @@ class _RefreshButtonState extends State<RefreshButton> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: ThemeColors.alertBackground,
           content: Text(
             t.campaigns.debug.confirm_storing_cache,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
+            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
@@ -130,11 +129,10 @@ class _RefreshButtonState extends State<RefreshButton> {
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: ThemeColors.alertBackground,
           content: Text(
             t.campaigns.debug.storing_cache_success,
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
+            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [

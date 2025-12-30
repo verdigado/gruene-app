@@ -14,14 +14,13 @@ class TeamHelper {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: ThemeColors.alertBackground,
           content: Text(
             t.campaigns.team.invitations.warning_user_already_in_team(
               current_team: currentTeamName,
               inviting_team: newTeamName,
             ),
             textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface, fontSizeDelta: 1),
+            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
           actions: [
             TextButton(
