@@ -1,19 +1,6 @@
 part of '../converters.dart';
 
-extension RouteParsing on Route {
-  RouteDetailModel asRouteDetail() {
-    return RouteDetailModel(
-      id: id,
-      type: type.asTeamRouteType(),
-      name: name,
-      status: status.asTeamRouteStatus(),
-      lineString: lineString,
-      createdAt: createdAt.getAsLocalDateString(),
-    );
-  }
-}
-
-extension TeamRouteParsing on TeamRoute {
+extension TeamRouteParsing on Route {
   RouteDetailModel asRouteDetail() {
     return RouteDetailModel(
       id: id,
@@ -22,6 +9,7 @@ extension TeamRouteParsing on TeamRoute {
       status: status,
       lineString: lineString,
       createdAt: createdAt.getAsLocalDateString(),
+      team: team,
     );
   }
 }
@@ -33,14 +21,14 @@ extension RouteListParsing on List<Route> {
 }
 
 extension RouteTypeParsing on RouteType {
-  TeamRouteType asTeamRouteType() {
+  RouteType asTeamRouteType() {
     switch (this) {
       case RouteType.flyerSpot:
-        return TeamRouteType.flyerSpot;
+        return RouteType.flyerSpot;
       case RouteType.poster:
-        return TeamRouteType.poster;
+        return RouteType.poster;
       case RouteType.house:
-        return TeamRouteType.house;
+        return RouteType.house;
       case RouteType.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }

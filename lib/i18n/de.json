@@ -31,7 +31,8 @@
       "change": "Ändern",
       "loading": "Laden ...",
       "crop": "Ausschnitt wählen",
-      "remove": "Entfernen"
+      "remove": "Entfernen",
+      "select": "auswählen"
     },
     "map": {
       "mapData": "Kartendaten",
@@ -63,7 +64,7 @@
     "visibility_setting": {
       "visibility_setting_action": "Sichtbarkeitseinstellungen",
       "title": "Mein Profil ist einsehbar für Mitglieder*innen ...",
-      "visibility_public": "... für alle",
+      "visibility_public": "... für alle (ganze Partei)",
       "visibility_BV": "... im Bundesverband",
       "visibility_LV": "... im Landesverband",
       "visibility_KV": "... im Kreisverband",
@@ -119,12 +120,13 @@
       "label": "Route",
       "length_label": "Länge",
       "routeType_label": "Typ",
-      "quick_action_label": "Route abgearbeitet"
+      "quick_action_status": "Route abgearbeitet",
+      "quick_action_assign_team": "Einem Team zuweisen"
     },
     "action_area": {
       "label": "Einsatzgebiet",
       "area_label": "Fläche",
-      "quick_action_label": "Gebiet abgearbeitet"
+      "quick_action_status": "Gebiet abgearbeitet"
     },
     "experience_areas": {
       "label": "Erfahrungsgebiet",
@@ -289,7 +291,10 @@
         "accept": "Einladung annehmen",
         "reject": "Ablehnen",
         "warning_user_already_in_team": "Du kannst nur in einem Team Mitglied sein. Wenn du dem Team '${inviting_team}' beitrittst, verlässt du automatisch dein bisheriges Team '${current_team}'."
-      }
+      },
+      "select_team": "Team auswählen",
+      "select_team_hint_route": "Wähle das Team aus, dem du diese Route zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
+      "select_team_hint_area": "Wähle das Team aus, dem du dieses Einsatzgebiet zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen"
     },
     "statistic": {
       "label": "Statistik",

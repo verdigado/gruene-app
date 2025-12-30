@@ -116,6 +116,7 @@ flutter:
     - assets/symbols/polling_stations/
     - assets/symbols/events/
     - assets/symbols/focus_areas/
+    - assets/symbols/action_areas/
     - assets/maps/
     - assets/maps/layer_styles/
     - .env

@@ -15,4 +15,8 @@ extension ProfileExtension on Profile {
         throw UnimplementedError();
     }
   }
+
+  Division? getOwnKV() {
+    return memberships?.firstWhereOrNull((d) => d.division.level == DivisionLevel.kv)?.division;
+  }
 }

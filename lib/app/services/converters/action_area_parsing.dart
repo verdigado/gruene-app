@@ -10,6 +10,7 @@ extension ActionAreaParsing on Area {
       status: status,
       polygon: polygon,
       createdAt: createdAt.getAsLocalDateString(),
+      team: team,
     );
   }
 }

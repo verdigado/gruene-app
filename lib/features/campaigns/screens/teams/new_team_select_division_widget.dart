@@ -7,7 +7,6 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
-import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/division_search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
@@ -121,9 +120,7 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
 
     var profileService = GetIt.I<GrueneApiProfileService>();
     try {
-      var currentProfile = await profileService.getSelf();
-      var memberships = currentProfile.memberships!;
-      currentDivision = memberships.firstWhereOrNull((d) => d.division.level == DivisionLevel.kv)?.division;
+      var currentDivision = (await profileService.getSelf()).getOwnKV();
       return currentDivision;
     } catch (e) {
       return null;

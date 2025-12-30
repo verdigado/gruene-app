@@ -5,10 +5,18 @@ extension ActionAreaDetailModelParsing on ActionAreaDetailModel {
     return ActionAreaUpdateModel(id: id, status: status, actionAreaDetail: this);
   }
 
+  ActionAreaAssignmentUpdateModel asActionAreaAssignmentUpdate() {
+    return ActionAreaAssignmentUpdateModel(id: id, team: team, actionAreaDetail: this);
+  }
+
   turf.Feature<turf.Polygon> transformToFeatureItem() {
     return turf.Feature<turf.Polygon>(
       id: id,
-      properties: {'status': status.value!.toLowerCase(), CampaignConstants.featurePropertyIsVirtual: isVirtual},
+      properties: {
+        CampaignConstants.featurePropertyStatus: status.value!.toLowerCase(),
+        CampaignConstants.featurePropertyIsVirtual: isVirtual,
+        CampaignConstants.featurePropertyIsAssigned: team != null,
+      },
       geometry: polygon.asTurfPolygon(),
     );
   }

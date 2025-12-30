@@ -8,7 +8,7 @@ part 'route_update_model.g.dart';
 @JsonSerializable()
 class RouteUpdateModel {
   final String id;
-  final TeamRouteStatus status;
+  final RouteStatus status;
   final RouteDetailModel routeDetail;
 
   RouteUpdateModel({required this.id, required this.status, required this.routeDetail});
@@ -17,7 +17,7 @@ class RouteUpdateModel {
 
   Map<String, dynamic> toJson() => _$RouteUpdateModelToJson(this);
 
-  RouteUpdateModel copyWith({String? id, TeamRouteStatus? status, RouteDetailModel? routeDetail}) {
+  RouteUpdateModel copyWith({String? id, RouteStatus? status, RouteDetailModel? routeDetail}) {
     return RouteUpdateModel(
       id: id ?? this.id,
       status: status ?? this.status,
