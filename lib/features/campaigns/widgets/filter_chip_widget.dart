@@ -57,7 +57,7 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 16,
-            children: [SizedBox.shrink(), ...widget.filterOptions.map(getFilterChipItem).toList(), SizedBox.shrink()],
+            children: [SizedBox.shrink(), ...widget.filterOptions.map(getFilterChipItem), SizedBox.shrink()],
           ),
         ),
       ),
