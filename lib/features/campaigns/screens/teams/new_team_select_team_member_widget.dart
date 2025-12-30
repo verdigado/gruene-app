@@ -162,7 +162,6 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
         builder: (context) {
           return ContentPage(
             title: t.campaigns.label,
-            showBackButton: false,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
             child: ProfileSearchScreen(actionText: t.campaigns.team.select_as_team_member),
