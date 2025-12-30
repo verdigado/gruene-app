@@ -109,7 +109,6 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
         builder: (context) {
           return ContentPage(
             title: t.campaigns.label,
-            showBackButton: false,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
             child: ProfileSearchScreen(actionText: t.campaigns.team.select_as_team_lead),
