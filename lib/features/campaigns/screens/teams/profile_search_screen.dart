@@ -11,12 +11,20 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileSearchScreen extends StatefulWidget {
-  final String actionText;
+  final SearchActionState Function(String userId) getActionText;
 
-  const ProfileSearchScreen({super.key, required this.actionText});
+  const ProfileSearchScreen({super.key, required this.getActionText});
 
   @override
   State<ProfileSearchScreen> createState() => _ProfileSearchScreenState();
+}
+
+class SearchActionState {
+  final bool isEnabled;
+  final String actionText;
+
+  SearchActionState.enabled({required this.actionText}) : isEnabled = true;
+  SearchActionState.disabled({required this.actionText}) : isEnabled = false;
 }
 
 class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
@@ -45,6 +53,7 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
   }
 
   Widget _getSearchResultWidget(PublicProfile profile) {
+    var actionState = widget.getActionText(profile.userId);
     var theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(8),
@@ -88,11 +97,14 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
                           side: BorderSide(color: ThemeColors.primary),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pop(context, profile);
-                      },
+                      onPressed: !actionState.isEnabled
+                          ? null
+                          : () {
+                              Navigator.pop(context, profile);
+                            },
+
                       child: Text(
-                        widget.actionText,
+                        actionState.actionText,
                         style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background),
                       ),
                     ),

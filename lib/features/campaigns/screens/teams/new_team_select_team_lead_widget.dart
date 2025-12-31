@@ -111,7 +111,9 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
             title: t.campaigns.label,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
-            child: ProfileSearchScreen(actionText: t.campaigns.team.select_as_team_lead),
+            child: ProfileSearchScreen(
+              getActionText: (userId) => SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_lead),
+            ),
           );
         },
       ),
