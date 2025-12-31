@@ -120,8 +120,8 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
 
   void onSearchProfile(String searchText) async {
     var scaffoldMessenger = ScaffoldMessenger.of(context);
-    var divisionService = GetIt.I<GrueneApiProfileService>();
-    var searchResult = await divisionService.searchProfile(searchText);
+    var profileService = GetIt.I<GrueneApiProfileService>();
+    var searchResult = await profileService.searchProfile(searchText);
 
     if (searchResult.isEmpty) {
       scaffoldMessenger.removeCurrentSnackBar();
