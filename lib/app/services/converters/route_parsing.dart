@@ -58,7 +58,6 @@ extension on RouteAssignmentStatus {
       case RouteAssignmentStatus.closed:
         return TeamAssignmentStatus.closed;
 
-      case RouteAssignmentStatus.assigned:
       case RouteAssignmentStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }

@@ -5,8 +5,6 @@ extension AreaStatusParsing on AreaStatus {
     switch (this) {
       case AreaStatus.open:
         return UpdateAreaStatus.open;
-      case AreaStatus.assigned:
-        return UpdateAreaStatus.assigned;
       case AreaStatus.closed:
         return UpdateAreaStatus.closed;
       case AreaStatus.swaggerGeneratedUnknown:

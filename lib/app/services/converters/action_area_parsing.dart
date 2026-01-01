@@ -43,7 +43,6 @@ extension on AreaAssignmentStatus {
       case AreaAssignmentStatus.closed:
         return TeamAssignmentStatus.closed;
 
-      case AreaAssignmentStatus.assigned:
       case AreaAssignmentStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
