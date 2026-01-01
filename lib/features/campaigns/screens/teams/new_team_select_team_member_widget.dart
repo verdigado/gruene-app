@@ -157,6 +157,7 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
 
   Future<void> _onChangeTeamMember(PublicProfile? member) async {
     var navState = Navigator.of(context, rootNavigator: true);
+    var allCurrentMembersAndLeads = [...teamMembers.map((x) => x.userId), (await _getCurrentTeamLeadProfile()).userId];
     final newTeamMember = await navState.push(
       AppRoute<PublicProfile?>(
         builder: (context) {
@@ -164,7 +165,9 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
             title: t.campaigns.label,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
-            child: ProfileSearchScreen(actionText: t.campaigns.team.select_as_team_member),
+            child: ProfileSearchScreen(
+              getActionText: (userId) => _getActionStateAndText(allCurrentMembersAndLeads, userId),
+            ),
           );
         },
       ),
@@ -178,5 +181,18 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
         });
       }
     }
+  }
+
+  SearchActionState _getActionStateAndText(List<String> currentTeamMembers, String userId) {
+    var userMemberships = currentTeamMembers.where((m) => m == userId);
+    if (userMemberships.length == 1) {
+      var userMembership = userMemberships.single;
+      if (userMembership == widget.newTeamDetails.creatingUser.userId) {
+        return SearchActionState.disabled(actionText: t.campaigns.team.team_member);
+      } else {
+        return SearchActionState.disabled(actionText: t.campaigns.team.invitation_pending);
+      }
+    }
+    return SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_member);
   }
 }

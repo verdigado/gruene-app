@@ -162,7 +162,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
             title: t.campaigns.label,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
-            child: ProfileSearchScreen(actionText: t.campaigns.team.select_as_team_member),
+            child: ProfileSearchScreen(getActionText: _getActionStateAndText),
           );
         },
       ),
@@ -205,5 +205,18 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     } else {
       return SizedBox.shrink();
     }
+  }
+
+  SearchActionState _getActionStateAndText(String userId) {
+    var activeUserMemberships = _activeMemberships.where((m) => m.userId == userId);
+    if (activeUserMemberships.length == 1) {
+      var activeUserMembership = activeUserMemberships.single;
+      if (activeUserMembership.status == TeamMembershipStatus.accepted) {
+        return SearchActionState.disabled(actionText: t.campaigns.team.team_member);
+      } else if (activeUserMembership.status == TeamMembershipStatus.pending) {
+        return SearchActionState.disabled(actionText: t.campaigns.team.invitation_pending);
+      }
+    }
+    return SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_member);
   }
 }

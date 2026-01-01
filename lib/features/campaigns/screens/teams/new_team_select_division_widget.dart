@@ -26,11 +26,26 @@ class NewTeamSelectDivisionWidget extends StatefulWidget {
 
 class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidget> {
   late Division? currentDivision;
+  bool _loading = true;
 
   @override
   void initState() {
     currentDivision = widget.newTeamDetails.assignedDivision;
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  void _loadData() async {
+    setState(() => _loading = true);
+
+    var division = await _getCurrentDivision();
+
+    setState(() {
+      _loading = false;
+      currentDivision = division;
+    });
   }
 
   @override
@@ -57,14 +72,16 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
                   ),
                 ),
                 SizedBox(height: 16),
-                FutureBuilder(
-                  future: _getCurrentDivision(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      var divisionName = snapshot.data?.shortDisplayName() ?? t.common.notAvailable;
-                      return Row(
+                _loading
+                    ? Row(children: [Text(t.common.actions.loading)])
+                    : Row(
                         children: [
-                          Expanded(child: Text(divisionName, style: theme.textTheme.titleMedium)),
+                          Expanded(
+                            child: Text(
+                              currentDivision?.shortDisplayName() ?? t.common.notAvailable,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                          ),
                           GestureDetector(
                             onTap: onChangeDivision,
                             child: Row(
@@ -84,12 +101,7 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
                             ),
                           ),
                         ],
-                      );
-                    } else {
-                      return Row(children: [Text(t.common.actions.loading)]);
-                    }
-                  },
-                ),
+                      ),
               ],
             ),
           ],
