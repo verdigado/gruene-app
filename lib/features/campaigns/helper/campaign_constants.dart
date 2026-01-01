@@ -34,6 +34,7 @@ class CampaignConstants {
   static const routesLineLayerId = 'routes_layer';
   static const routesSymbolLayerId = 'routes_symbol_layer';
   static const routesLineSelectedLayerId = 'routes_layer_selected';
+  static const routesLineSelectedOutlineLayerId = 'routes_layer_focus_selected';
   static const routeAssignmentAssetId = 'routes_assignment';
 
   static const experienceAreaSourceName = 'experience_areas';

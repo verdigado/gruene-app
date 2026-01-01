@@ -13,7 +13,7 @@ extension RouteDetailModelParsing on RouteDetailModel {
     return turf.Feature<turf.LineString>(
       id: id,
       properties: {
-        CampaignConstants.featurePropertyStatus: status.toString(),
+        CampaignConstants.featurePropertyStatus: status.value?.toLowerCase(),
         CampaignConstants.featurePropertyIsVirtual: isVirtual,
         CampaignConstants.featurePropertyIsAssigned: team != null,
       },
