@@ -162,7 +162,6 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
             title: t.campaigns.label,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
-            // child: ProfileSearchScreen(actionText: t.campaigns.team.select_as_team_member),
             child: ProfileSearchScreen(getActionText: _getActionStateAndText),
           );
         },
