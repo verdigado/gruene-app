@@ -6,7 +6,6 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
@@ -44,46 +43,16 @@ class _RouteDetailState extends State<RouteDetail> {
     });
   }
 
-  Future<RouteDetailModel> _getLatestRouteDetail() async {
-    var poiId = widget.routeDetail.id;
-    var action = await _campaignActionCache.getLatest(PoiCacheType.route, poiId);
-    if (action == null) return widget.routeDetail;
-    switch (action.actionType) {
-      case CampaignActionType.editRouteAssignment:
-        return action.getAsRouteAssignmentUpdate().transformToVirtualRouteDetailModel();
-      case CampaignActionType.editRoute:
-        return action.getAsRouteUpdate().transformToVirtualRouteDetailModel();
-      case CampaignActionType.unknown:
-      case CampaignActionType.addPoster:
-      case CampaignActionType.editPoster:
-      case CampaignActionType.deletePoster:
-      case CampaignActionType.addDoor:
-      case CampaignActionType.editDoor:
-      case CampaignActionType.deleteDoor:
-      case CampaignActionType.addFlyer:
-      case CampaignActionType.editFlyer:
-      case CampaignActionType.deleteFlyer:
-      case CampaignActionType.editActionArea:
-      case CampaignActionType.editActionAreaAssignment:
-      case null:
-        throw UnimplementedError();
-    }
-  }
-
   void _loadData() async {
     setState(() => _loading = true);
     var profileService = GetIt.I<GrueneApiProfileService>();
     var userService = GetIt.I<GrueneApiUserService>();
 
-    final (routeDetail, userInfo, currentUser) = await (
-      _getLatestRouteDetail(),
-      userService.getOwnRbac(),
-      profileService.getSelf(),
-    ).wait;
+    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
 
     setState(() {
       _loading = false;
-      _currentRouteDetail = routeDetail;
+      _currentRouteDetail = widget.routeDetail;
       _currentUserInfo = userInfo;
       _currentUserKV = currentUser.getOwnKV();
     });

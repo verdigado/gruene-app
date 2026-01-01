@@ -6,7 +6,6 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
@@ -43,47 +42,17 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     });
   }
 
-  Future<ActionAreaDetailModel> _getLatestActionAreaDetail() async {
-    var poiId = widget.actionAreaDetail.id;
-    var action = await _campaignActionCache.getLatest(PoiCacheType.actionArea, poiId);
-    if (action == null) return widget.actionAreaDetail;
-    switch (action.actionType) {
-      case CampaignActionType.editActionAreaAssignment:
-        return action.getAsActionAreaAssignmentUpdate().transformToVirtualActionAreaDetailModel();
-      case CampaignActionType.editActionArea:
-        return action.getAsActionAreaUpdate().transformToVirtualActionAreaDetailModel();
-      case CampaignActionType.unknown:
-      case CampaignActionType.addPoster:
-      case CampaignActionType.editPoster:
-      case CampaignActionType.deletePoster:
-      case CampaignActionType.addDoor:
-      case CampaignActionType.editDoor:
-      case CampaignActionType.deleteDoor:
-      case CampaignActionType.addFlyer:
-      case CampaignActionType.editFlyer:
-      case CampaignActionType.deleteFlyer:
-      case CampaignActionType.editRoute:
-      case CampaignActionType.editRouteAssignment:
-      case null:
-        throw UnimplementedError();
-    }
-  }
-
   void _loadData() async {
     setState(() => _loading = true);
 
     var userService = GetIt.I<GrueneApiUserService>();
     var profileService = GetIt.I<GrueneApiProfileService>();
 
-    final (areaDetail, userInfo, currentUser) = await (
-      _getLatestActionAreaDetail(),
-      userService.getOwnRbac(),
-      profileService.getSelf(),
-    ).wait;
+    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
 
     setState(() {
       _loading = false;
-      _currentActionAreaDetail = areaDetail;
+      _currentActionAreaDetail = widget.actionAreaDetail;
       _currentUserInfo = userInfo;
       _currentUserKV = currentUser.getOwnKV();
     });

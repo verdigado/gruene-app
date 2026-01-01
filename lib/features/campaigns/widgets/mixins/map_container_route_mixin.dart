@@ -55,9 +55,18 @@ mixin MapContainerRouteMixin {
   }
 
   Future<Widget> getRouteDetailWidget(turf.Feature routeFeature, MapController mapController) async {
-    var routeService = GetIt.I<GrueneApiRouteService>();
-    var route = await routeService.getRoute(routeFeature.id.toString());
+    final isCached = MapHelper.extractIsCachedFromFeature(routeFeature.toJson());
+    var getFromCacheOrApi = isCached ? _getCachedRoute : _getRoute;
 
-    return RouteDetail(routeDetail: route.asRouteDetail(), mapController: mapController);
+    return RouteDetail(routeDetail: await getFromCacheOrApi(routeFeature.id.toString()), mapController: mapController);
+  }
+
+  Future<RouteDetailModel> _getRoute(String routeId) async {
+    var routeService = GetIt.I<GrueneApiRouteService>();
+    return (await routeService.getRoute(routeId)).asRouteDetail();
+  }
+
+  Future<RouteDetailModel> _getCachedRoute(String routeId) {
+    return GetIt.I<CampaignActionCache>().getLatestRouteDetail(routeId);
   }
 }

@@ -30,6 +30,7 @@ import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model
 import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_assignment_update_model.dart';
+import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_update_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -286,7 +287,6 @@ class CampaignActionCache extends ChangeNotifier {
         case CampaignActionType.editRoute:
           var model = action.getAsRouteUpdate();
           markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
-
         case CampaignActionType.editRouteAssignment:
           var model = action.getAsRouteAssignmentUpdate();
           markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
@@ -294,7 +294,6 @@ class CampaignActionCache extends ChangeNotifier {
         case CampaignActionType.editActionArea:
           var model = action.getAsActionAreaUpdate();
           markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
-
         case CampaignActionType.editActionAreaAssignment:
           var model = action.getAsActionAreaAssignmentUpdate();
           markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
@@ -390,6 +389,56 @@ class CampaignActionCache extends ChangeNotifier {
       transformAddAction: (action) => action.getAsRouteAssignmentUpdate(),
     );
     return detailModel;
+  }
+
+  Future<RouteDetailModel> getLatestRouteDetail(String poiId) async {
+    var action = await getLatest(PoiCacheType.route, poiId);
+    if (action == null) throw Exception('Route not found in Cache');
+    switch (action.actionType) {
+      case CampaignActionType.editRouteAssignment:
+        return action.getAsRouteAssignmentUpdate().transformToVirtualRouteDetailModel();
+      case CampaignActionType.editRoute:
+        return action.getAsRouteUpdate().transformToVirtualRouteDetailModel();
+      case CampaignActionType.unknown:
+      case CampaignActionType.addPoster:
+      case CampaignActionType.editPoster:
+      case CampaignActionType.deletePoster:
+      case CampaignActionType.addDoor:
+      case CampaignActionType.editDoor:
+      case CampaignActionType.deleteDoor:
+      case CampaignActionType.addFlyer:
+      case CampaignActionType.editFlyer:
+      case CampaignActionType.deleteFlyer:
+      case CampaignActionType.editActionArea:
+      case CampaignActionType.editActionAreaAssignment:
+      case null:
+        throw UnimplementedError();
+    }
+  }
+
+  Future<ActionAreaDetailModel> getLatestActionAreaDetail(String poiId) async {
+    var action = await getLatest(PoiCacheType.actionArea, poiId);
+    if (action == null) throw Exception('Area not found in Cache');
+    switch (action.actionType) {
+      case CampaignActionType.editActionAreaAssignment:
+        return action.getAsActionAreaAssignmentUpdate().transformToVirtualActionAreaDetailModel();
+      case CampaignActionType.editActionArea:
+        return action.getAsActionAreaUpdate().transformToVirtualActionAreaDetailModel();
+      case CampaignActionType.unknown:
+      case CampaignActionType.addPoster:
+      case CampaignActionType.editPoster:
+      case CampaignActionType.deletePoster:
+      case CampaignActionType.addDoor:
+      case CampaignActionType.editDoor:
+      case CampaignActionType.deleteDoor:
+      case CampaignActionType.addFlyer:
+      case CampaignActionType.editFlyer:
+      case CampaignActionType.deleteFlyer:
+      case CampaignActionType.editRoute:
+      case CampaignActionType.editRouteAssignment:
+      case null:
+        throw UnimplementedError();
+    }
   }
 
   Future<ActionAreaDetailModel> getPoiAsActionAreaDetail(String poiId) async {

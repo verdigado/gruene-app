@@ -46,9 +46,21 @@ mixin MapContainerActionAreaMixin {
   }
 
   Future<Widget> getActionAreaDetailWidget(turf.Feature actionAreaFeature, MapController mapController) async {
-    var actionAreaService = GetIt.I<GrueneApiActionAreaService>();
-    var actionArea = await actionAreaService.getActionArea(actionAreaFeature.id.toString());
+    final isCached = MapHelper.extractIsCachedFromFeature(actionAreaFeature.toJson());
+    var getFromCacheOrApi = isCached ? _getCachedActionArea : _getActionArea;
 
-    return ActionAreaDetail(actionAreaDetail: actionArea.asActionAreaDetail(), mapController: mapController);
+    return ActionAreaDetail(
+      actionAreaDetail: await getFromCacheOrApi(actionAreaFeature.id.toString()),
+      mapController: mapController,
+    );
+  }
+
+  Future<ActionAreaDetailModel> _getActionArea(String actionAreaId) async {
+    var actionAreaService = GetIt.I<GrueneApiActionAreaService>();
+    return (await actionAreaService.getActionArea(actionAreaId)).asActionAreaDetail();
+  }
+
+  Future<ActionAreaDetailModel> _getCachedActionArea(String actionAreaId) {
+    return GetIt.I<CampaignActionCache>().getLatestActionAreaDetail(actionAreaId);
   }
 }

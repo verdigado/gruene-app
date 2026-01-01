@@ -64,7 +64,7 @@ class CampaignActionDatabase {
       orderBy: orderBy,
       where:
           '${CampaignActionFields.actionType} IN (${List.filled(actionTypes.length, '?').join(',')}) AND (${CampaignActionFields.poiId} = ? OR ${CampaignActionFields.poiTempId} = ?)',
-      whereArgs: [actionTypes, poiId, poiId],
+      whereArgs: [...actionTypes, poiId, poiId],
     );
     return result.map((json) => CampaignAction.fromMap(json)).toList();
   }
