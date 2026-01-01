@@ -55,6 +55,10 @@ class MapFeatureManager {
   void resetAllLayers() {
     _allFeatureLayers.clear();
   }
+
+  void resetLayer(String sourceId) {
+    _allFeatureLayers.remove(sourceId);
+  }
 }
 
 class MapFeatureLayer {

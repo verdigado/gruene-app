@@ -31,9 +31,20 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
     await mapLibreController.addLineLayer(
       CampaignConstants.focusAreaSourceName,
       CampaignConstants.focusAreaBorderLayerId,
-      LineLayerProperties(lineColor: ThemeColors.background.toHexStringRGB(), lineWidth: 1),
+      LineLayerProperties(lineColor: ThemeColors.background.toHexStringRGB(), lineWidth: 0.5, lineOpacity: 0.8),
       minzoom: mapInfo.minZoom,
       enableInteraction: false,
+    );
+
+    // add selected map layers
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSelectedSourceName, data);
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.focusAreaSelectedSourceName,
+      CampaignConstants.focusAreaLineSelectedLayerId,
+      LineLayerProperties(lineColor: 'white', lineWidth: 2),
+      enableInteraction: false,
+      minzoom: mapInfo.minZoom,
     );
   }
 
@@ -51,6 +62,7 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
       );
     } else {
       mapInfo.mapController.removeLayerSource(CampaignConstants.focusAreaSourceName);
+      mapInfo.mapController.removeLayerSource(CampaignConstants.focusAreaSelectedSourceName);
       hideCurrentSnackBar();
       showInfoToast(t.campaigns.infoToast.focusAreas_deactivated);
     }

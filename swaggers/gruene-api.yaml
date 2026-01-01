@@ -1247,6 +1247,30 @@ paths:
           schema:
             example: 47.695103,7.659684,53.670793, 14.229507
             type: string
+        - name: createdAfter
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: createdBefore
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: updatedAfter
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: updatedBefore
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
         - name: campaignId
           required: false
           in: query
@@ -1431,6 +1455,30 @@ paths:
           schema:
             example: addressCity,-updatedAt
             type: string
+        - name: createdAfter
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: createdBefore
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: updatedAfter
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: updatedBefore
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
         - name: offset
           required: false
           in: query
@@ -1443,6 +1491,12 @@ paths:
           schema:
             minimum: 1
             type: number
+        - name: addressZip
+          required: false
+          in: query
+          schema:
+            minLength: 2
+            type: string
       responses:
         '200':
           description: ''
@@ -1516,6 +1570,30 @@ paths:
           schema:
             example: addressCity,-updatedAt
             type: string
+        - name: createdAfter
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: createdBefore
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: updatedAfter
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
+        - name: updatedBefore
+          required: false
+          in: query
+          schema:
+            format: date-time
+            type: string
         - name: offset
           required: false
           in: query
@@ -1528,6 +1606,12 @@ paths:
           schema:
             minimum: 1
             type: number
+        - name: addressZip
+          required: false
+          in: query
+          schema:
+            minLength: 2
+            type: string
       responses:
         '200':
           description: ''
@@ -2131,7 +2215,12 @@ paths:
   /v1/campaigns/statistics:
     get:
       operationId: getCampaignStatistics
-      parameters: []
+      parameters:
+        - name: campaignId
+          required: false
+          in: query
+          schema:
+            type: string
       responses:
         '200':
           description: ''
@@ -4479,7 +4568,6 @@ components:
         status:
           enum:
             - OPEN
-            - ASSIGNED
             - CLOSED
           type: string
         comment:
@@ -4568,7 +4656,6 @@ components:
         status:
           enum:
             - OPEN
-            - ASSIGNED
             - CLOSED
           type: string
         campaignId:
@@ -5085,7 +5172,6 @@ components:
         status:
           enum:
             - OPEN
-            - ASSIGNED
             - CLOSED
           type: string
         type:
@@ -5145,7 +5231,6 @@ components:
         status:
           enum:
             - OPEN
-            - ASSIGNED
             - CLOSED
           type: string
         name:
@@ -5724,7 +5809,6 @@ components:
           type: string
           enum:
             - OPEN
-            - ASSIGNED
             - CLOSED
         campaignId:
           type: string
@@ -5779,7 +5863,6 @@ components:
           type: string
           enum:
             - OPEN
-            - ASSIGNED
             - CLOSED
         name:
           type: string

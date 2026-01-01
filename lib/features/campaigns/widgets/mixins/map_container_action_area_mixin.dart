@@ -11,13 +11,13 @@ mixin MapContainerActionAreaMixin {
     MapController Function() getMapController,
   ) async {
     var actionAreaFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    await setFocusToActionArea(actionAreaFeature.toJson(), setFocusMode, getMapLibreMapController);
-    var actionAreaDetail = await getActionAreaDetailWidget(actionAreaFeature, getMapController());
+    await _setFocusToActionArea(actionAreaFeature.toJson(), setFocusMode, getMapLibreMapController);
+    var actionAreaDetail = await _getActionAreaDetailWidget(actionAreaFeature, getMapController());
     await showBottomDetailSheet<bool>(actionAreaDetail);
-    await unsetFocusToActionArea(setFocusMode, getMapLibreMapController);
+    await _unsetFocusToActionArea(setFocusMode, getMapLibreMapController);
   }
 
-  Future<void> setFocusToActionArea(
+  Future<void> _setFocusToActionArea(
     Map<String, dynamic> feature,
     void Function(bool) setFocusMode,
     MapLibreMapController? Function() getMapController,
@@ -36,7 +36,7 @@ mixin MapContainerActionAreaMixin {
     await getMapController()!.setGeoJsonSource(CampaignConstants.actionAreaSelectedSourceName, collection.toJson());
   }
 
-  Future<void> unsetFocusToActionArea(
+  Future<void> _unsetFocusToActionArea(
     void Function(bool) setFocusMode,
     MapLibreMapController? Function() getMapController,
   ) async {
@@ -45,10 +45,22 @@ mixin MapContainerActionAreaMixin {
     removeLayerSource(CampaignConstants.actionAreaSelectedSourceName);
   }
 
-  Future<Widget> getActionAreaDetailWidget(turf.Feature actionAreaFeature, MapController mapController) async {
-    var actionAreaService = GetIt.I<GrueneApiActionAreaService>();
-    var actionArea = await actionAreaService.getActionArea(actionAreaFeature.id.toString());
+  Future<Widget> _getActionAreaDetailWidget(turf.Feature actionAreaFeature, MapController mapController) async {
+    final isCached = MapHelper.extractIsCachedFromFeature(actionAreaFeature.toJson());
+    var getFromCacheOrApi = isCached ? _getCachedActionArea : _getActionArea;
 
-    return ActionAreaDetail(actionAreaDetail: actionArea.asActionAreaDetail(), mapController: mapController);
+    return ActionAreaDetail(
+      actionAreaDetail: await getFromCacheOrApi(actionAreaFeature.id.toString()),
+      mapController: mapController,
+    );
+  }
+
+  Future<ActionAreaDetailModel> _getActionArea(String actionAreaId) async {
+    var actionAreaService = GetIt.I<GrueneApiActionAreaService>();
+    return (await actionAreaService.getActionArea(actionAreaId)).asActionAreaDetail();
+  }
+
+  Future<ActionAreaDetailModel> _getCachedActionArea(String actionAreaId) {
+    return GetIt.I<CampaignActionCache>().getLatestActionAreaDetail(actionAreaId);
   }
 }

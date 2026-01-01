@@ -31,8 +31,6 @@ extension TeamRouteStatusParsing on RouteStatus {
     switch (this) {
       case RouteStatus.open:
         return UpdateRouteStatus.open;
-      case RouteStatus.assigned:
-        return UpdateRouteStatus.assigned;
       case RouteStatus.closed:
         return UpdateRouteStatus.closed;
 

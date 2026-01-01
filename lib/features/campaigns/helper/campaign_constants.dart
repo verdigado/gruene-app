@@ -21,8 +21,10 @@ class CampaignConstants {
   static const markerSelectedLayerId = '${markerLayerId}_selected';
 
   static const focusAreaSourceName = 'focusArea';
+  static const focusAreaSelectedSourceName = 'focusArea_selected';
   static const focusAreaBorderLayerId = 'focusArea_border';
   static const focusAreaFillLayerId = 'focusArea_layer';
+  static const focusAreaLineSelectedLayerId = 'focusArea_layer_selected';
 
   static const pollingStationSourceName = 'pollingStation';
   static const pollingStationSelectedSourceName = 'pollingStation_selected';

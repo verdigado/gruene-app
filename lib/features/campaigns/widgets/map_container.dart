@@ -423,6 +423,7 @@ class _MapContainerState extends State<MapContainer>
     * Therefore we set it as empty datasource. Once the issue has been corrected we can use the designated method.
     */
     // await _controller!.removeSource(sourceId);
+    _mapFeatureManager.resetLayer(layerSourceId);
     await _controller!.setGeoJsonSource(layerSourceId, turf.FeatureCollection().toJson());
   }
 
