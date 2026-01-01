@@ -12,13 +12,13 @@ mixin MapContainerPollingStationMixin {
     MapLibreMapController? Function() getMapController,
   ) async {
     var pollingStationFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    setFocusToPollingStation(pollingStationFeature.toJson(), setFocusMode, getMapController);
-    var pollingStationDetail = getPollingStationDetailWidget(pollingStationFeature, getContext());
+    _setFocusToPollingStation(pollingStationFeature.toJson(), setFocusMode, getMapController);
+    var pollingStationDetail = _getPollingStationDetailWidget(pollingStationFeature, getContext());
     await showBottomDetailSheet<bool>(pollingStationDetail);
-    await unsetFocusToPollingStation(setFocusMode, getMapController);
+    await _unsetFocusToPollingStation(setFocusMode, getMapController);
   }
 
-  Future<void> setFocusToPollingStation(
+  Future<void> _setFocusToPollingStation(
     Map<String, dynamic> feature,
     void Function(bool) setFocusMode,
     MapLibreMapController? Function() getMapController,
@@ -39,7 +39,7 @@ mixin MapContainerPollingStationMixin {
     await getMapController()!.setGeoJsonSource(CampaignConstants.pollingStationSelectedSourceName, collection.toJson());
   }
 
-  Future<void> unsetFocusToPollingStation(
+  Future<void> _unsetFocusToPollingStation(
     void Function(bool) setFocusMode,
     MapLibreMapController? Function() getMapController,
   ) async {
@@ -52,7 +52,7 @@ mixin MapContainerPollingStationMixin {
     removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
   }
 
-  SizedBox getPollingStationDetailWidget(turf.Feature pollingStationFeature, BuildContext context) {
+  SizedBox _getPollingStationDetailWidget(turf.Feature pollingStationFeature, BuildContext context) {
     onClose() => Navigator.maybePop(context);
     var theme = Theme.of(context);
 

@@ -11,13 +11,13 @@ mixin MapContainerRouteMixin {
     MapController Function() getMapController,
   ) async {
     var routeFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    await setFocusToRoute(routeFeature.toJson(), setFocusMode, getMapLibreMapController);
-    var routeDetail = await getRouteDetailWidget(routeFeature, getMapController());
+    await _setFocusToRoute(routeFeature.toJson(), setFocusMode, getMapLibreMapController);
+    var routeDetail = await _getRouteDetailWidget(routeFeature, getMapController());
     await showBottomDetailSheet<bool>(routeDetail);
-    await unsetFocusToRoute(setFocusMode, getMapLibreMapController);
+    await _unsetFocusToRoute(setFocusMode, getMapLibreMapController);
   }
 
-  Future<void> setFocusToRoute(
+  Future<void> _setFocusToRoute(
     Map<String, dynamic> feature,
     void Function(bool) setFocusMode,
     MapLibreMapController? Function() getMapController,
@@ -41,7 +41,7 @@ mixin MapContainerRouteMixin {
     await getMapController()!.setGeoJsonSource(CampaignConstants.routesSelectedSourceName, collection.toJson());
   }
 
-  Future<void> unsetFocusToRoute(
+  Future<void> _unsetFocusToRoute(
     void Function(bool) setFocusMode,
     MapLibreMapController? Function() getMapController,
   ) async {
@@ -54,7 +54,7 @@ mixin MapContainerRouteMixin {
     removeLayerSource(CampaignConstants.routesSelectedSourceName);
   }
 
-  Future<Widget> getRouteDetailWidget(turf.Feature routeFeature, MapController mapController) async {
+  Future<Widget> _getRouteDetailWidget(turf.Feature routeFeature, MapController mapController) async {
     final isCached = MapHelper.extractIsCachedFromFeature(routeFeature.toJson());
     var getFromCacheOrApi = isCached ? _getCachedRoute : _getRoute;
 

@@ -11,17 +11,17 @@ mixin MapContainerExperienceAreaMixin {
     MapLibreMapController? Function() getMapController,
   ) async {
     var experienceAreaFeature = turf.Feature.fromJson(feature as Map<String, dynamic>);
-    var experienceAreaDetail = await getExperienceAreaDetailWidget(experienceAreaFeature, getContext());
+    var experienceAreaDetail = await _getExperienceAreaDetailWidget(experienceAreaFeature, getContext());
     // set data for '_selected layer'
     // var collection = turf.FeatureCollection(features: [experienceAreaFeature]);
     // await _controller!.setGeoJsonSource(CampaignConstants.experienceAreaSelectedSourceName, collection.toJson());
-    await setFocusToExperienceArea(feature, setFocusMode, getMapController);
+    await _setFocusToExperienceArea(feature, setFocusMode, getMapController);
 
     await showBottomDetailSheet<bool>(experienceAreaDetail);
-    await unsetFocusToExperienceArea(feature, setFocusMode, getMapController);
+    await _unsetFocusToExperienceArea(feature, setFocusMode, getMapController);
   }
 
-  Future<void> setFocusToExperienceArea(
+  Future<void> _setFocusToExperienceArea(
     Map<String, dynamic> feature,
     void Function(bool) setFocusMode,
     MapLibreMapController? Function() getMapController,
@@ -49,7 +49,7 @@ mixin MapContainerExperienceAreaMixin {
     await getMapController()!.setGeoJsonSource(CampaignConstants.experienceAreaSelectedSourceName, collection.toJson());
   }
 
-  Future<void> unsetFocusToExperienceArea(
+  Future<void> _unsetFocusToExperienceArea(
     Map<String, dynamic> feature,
     void Function(bool) setFocusMode,
     MapLibreMapController? Function() getMapController,
@@ -67,7 +67,7 @@ mixin MapContainerExperienceAreaMixin {
     removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
   }
 
-  Future<Widget> getExperienceAreaDetailWidget(turf.Feature experienceAreaFeature, BuildContext context) async {
+  Future<Widget> _getExperienceAreaDetailWidget(turf.Feature experienceAreaFeature, BuildContext context) async {
     var theme = Theme.of(context);
     var experienceAreaService = GetIt.I<GrueneApiExperienceAreaService>();
     var experienceArea = await experienceAreaService.getExperienceArea(experienceAreaFeature.id.toString());
