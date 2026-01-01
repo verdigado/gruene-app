@@ -237,6 +237,9 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       }
       var focusAreaType = FocusAreaType.values.byName(properties[CampaignConstants.focusAreaMapTypeProperty] as String);
 
+      mapController.removeLayerSource(CampaignConstants.focusAreaSelectedSourceName);
+      mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSelectedSourceName, [feature]);
+
       if (focusAreaType == FocusAreaType.gen2) {
         hideCurrentSnackBar();
         showFocusAreaGen2(currentFocusAreaId);
