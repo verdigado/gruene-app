@@ -30,11 +30,6 @@ mixin MapContainerRouteMixin {
     // final coord = MapHelper.extractLatLngFromFeature(feature);
     // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
 
-    // set opacity of marker layer
-    await getMapController()!.setLayerProperties(
-      CampaignConstants.routesLineLayerId,
-      LineLayerProperties(lineOpacity: 0.3),
-    );
     // set data for '_selected layer'
     var featureObject = turf.Feature<turf.LineString>.fromJson(feature);
     turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
@@ -47,10 +42,6 @@ mixin MapContainerRouteMixin {
   ) async {
     setFocusMode(false);
 
-    await getMapController()!.setLayerProperties(
-      CampaignConstants.routesLineLayerId,
-      LineLayerProperties(lineOpacity: 0.7),
-    );
     removeLayerSource(CampaignConstants.routesSelectedSourceName);
   }
 

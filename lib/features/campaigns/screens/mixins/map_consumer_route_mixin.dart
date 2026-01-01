@@ -14,7 +14,21 @@ mixin MapConsumerRouteMixin on InfoBox {
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSourceName,
       CampaignConstants.routesLineLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#008939', lineWidth: 7, lineOpacity: 0.7),
+      LineLayerProperties(
+        lineJoin: 'round',
+        lineCap: 'round',
+        lineColor: '#008939',
+        lineWidth: 7,
+        lineOpacity: [
+          Expressions.match,
+          [Expressions.get, CampaignConstants.featurePropertyStatus],
+          'open',
+          0.7,
+          'closed',
+          0.3,
+          0.7,
+        ],
+      ),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );
@@ -51,8 +65,15 @@ mixin MapConsumerRouteMixin on InfoBox {
 
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSelectedSourceName,
+      CampaignConstants.routesLineSelectedOutlineLayerId,
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FFFFFF', lineWidth: 11),
+      enableInteraction: false,
+      minzoom: mapInfo.minZoom,
+    );
+    await mapLibreController.addLineLayer(
+      CampaignConstants.routesSelectedSourceName,
       CampaignConstants.routesLineSelectedLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#008939', lineWidth: 7, lineOpacity: 1),
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#008939', lineWidth: 7, lineOpacity: 0.9),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );

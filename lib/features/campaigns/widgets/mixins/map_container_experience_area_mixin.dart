@@ -33,7 +33,7 @@ mixin MapContainerExperienceAreaMixin {
     // final coord = MapHelper.extractLatLngFromFeature(feature);
     // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
 
-    // set opacity of marker layer
+    // set visibility of marker layer
     await getMapController()!.setLayerProperties(
       CampaignConstants.experienceAreaLayerId,
       FillLayerProperties(visibility: 'none'),
