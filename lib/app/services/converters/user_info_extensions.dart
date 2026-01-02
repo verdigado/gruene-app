@@ -1,7 +1,6 @@
 part of '../converters.dart';
 
 extension UserInfoExtension on UserRbacStructure {
-
   static const campaignManagerRoles = [
     // Wahlatlas
     '7555238', // Grünes Netz - Wahlatlas KV - Wahlkampfkoordinatorin
