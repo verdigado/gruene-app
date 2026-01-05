@@ -76,10 +76,7 @@ class SelectTeamWidget extends StatelessWidget {
                     backgroundColor: ThemeColors.primary,
                     foregroundColor: ThemeColors.background,
 
-                    child: Text(switch (routeOrArea) {
-                      TeamAssignmentType.route => team.assignedOpenRoutes.toInt().toString(),
-                      TeamAssignmentType.area => team.assignedOpenAreas.toInt().toString(),
-                    }),
+                    child: Text((team.assignedOpenRoutes + team.assignedOpenAreas).toInt().toString()),
                   ),
                   GestureDetector(
                     onTap: () => _selectTeam(team, context),
