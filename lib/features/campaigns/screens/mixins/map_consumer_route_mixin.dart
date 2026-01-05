@@ -33,7 +33,25 @@ mixin MapConsumerRouteMixin on InfoBox {
       minzoom: mapInfo.minZoom,
     );
 
-    // assignment symbols
+    // add selected map layers
+    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSelectedSourceName, data);
+
+    await mapLibreController.addLineLayer(
+      CampaignConstants.routesSelectedSourceName,
+      CampaignConstants.routesLineSelectedOutlineLayerId,
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FFFFFF', lineWidth: 11),
+      enableInteraction: false,
+      minzoom: mapInfo.minZoom,
+    );
+    await mapLibreController.addLineLayer(
+      CampaignConstants.routesSelectedSourceName,
+      CampaignConstants.routesLineSelectedLayerId,
+      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#008939', lineWidth: 7, lineOpacity: 0.9),
+      enableInteraction: false,
+      minzoom: mapInfo.minZoom,
+    );
+
+    // assignment symbols (on top of all other route layers)
     addImageFromAsset(
       mapLibreController,
       CampaignConstants.routeAssignmentAssetId,
@@ -58,24 +76,6 @@ mixin MapConsumerRouteMixin on InfoBox {
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
       filter: ['==', CampaignConstants.featurePropertyIsAssigned, true],
-    );
-
-    // add selected map layers
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSelectedSourceName, data);
-
-    await mapLibreController.addLineLayer(
-      CampaignConstants.routesSelectedSourceName,
-      CampaignConstants.routesLineSelectedOutlineLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#FFFFFF', lineWidth: 11),
-      enableInteraction: false,
-      minzoom: mapInfo.minZoom,
-    );
-    await mapLibreController.addLineLayer(
-      CampaignConstants.routesSelectedSourceName,
-      CampaignConstants.routesLineSelectedLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#008939', lineWidth: 7, lineOpacity: 0.9),
-      enableInteraction: false,
-      minzoom: mapInfo.minZoom,
     );
   }
 
