@@ -54,6 +54,12 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
     }
     if (_assignedElements.isEmpty) return SizedBox.shrink();
 
+    var assignedElementDisplayList =
+        (!_showClosedElements
+                ? _assignedElements.where((el) => el.status == TeamAssignmentStatus.open)
+                : _assignedElements)
+            .toList();
+
     var theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -67,9 +73,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  t.campaigns.team.team_assigned_elements(
-                    count: _assignedElements.where((el) => el.status == TeamAssignmentStatus.open).length,
-                  ),
+                  t.campaigns.team.team_assigned_elements(count: assignedElementDisplayList.length),
                   style: theme.textTheme.titleMedium,
                 ),
                 GestureDetector(
@@ -88,19 +92,15 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
                 ),
               ],
             ),
-            ..._getAssignedElementRows(),
+            ..._getAssignedElementRows(assignedElementDisplayList),
           ],
         ),
       ),
     );
   }
 
-  Iterable<Widget> _getAssignedElementRows() {
-    var elementsForDisplay = !_showClosedElements
-        ? _assignedElements.where((el) => el.status == TeamAssignmentStatus.open)
-        : _assignedElements;
-
-    var elementsForDisplayList = elementsForDisplay.toList();
+  Iterable<Widget> _getAssignedElementRows(List<AssignedElement> assignedElementDisplayList) {
+    var elementsForDisplayList = assignedElementDisplayList.toList();
     elementsForDisplayList.sort(compareAssignedElements);
     return elementsForDisplayList.map(_getAssignedElementRow);
   }
@@ -177,8 +177,6 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
     if (a.status != b.status) {
       return a.status == TeamAssignmentStatus.open ? -1 : 1;
     }
-    return a.status == TeamAssignmentStatus.open
-        ? a.assignmentDate.compareTo(b.assignmentDate) * -1
-        : a.closedDate!.compareTo(b.closedDate!) * -1;
+    return a.assignmentDate.compareTo(b.assignmentDate) * -1;
   }
 }
