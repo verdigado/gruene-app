@@ -1,7 +1,3 @@
-parameters:
-  production_delivery:
-    description: Whether to deliver the build to production.
-    type: boolean
 docker:
   - image: cimg/android:2024.08.1-node
 resource_class: small
