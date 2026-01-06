@@ -418,10 +418,6 @@ jobs:
     notify_promotion:
         docker:
             - image: cimg/android:2024.08.1-node
-        parameters:
-            production_delivery:
-                description: Whether to deliver the build to production.
-                type: boolean
         resource_class: small
         shell: /bin/bash -eo pipefail
         steps:
