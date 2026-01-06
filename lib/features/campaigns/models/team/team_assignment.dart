@@ -7,7 +7,6 @@ class AssignedElement {
   final AssignedElementType elementType;
   final DateTime assignmentDate;
   final String assignee;
-  final DateTime? closedDate;
   final GeometryObject coords;
 
   AssignedElement({
@@ -18,7 +17,6 @@ class AssignedElement {
     required this.assignmentDate,
     required this.assignee,
     required this.coords,
-    this.closedDate,
   });
 }
 
