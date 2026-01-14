@@ -1,7 +1,7 @@
 part of '../mixins.dart';
 
 mixin MapContainerExperienceAreaMixin {
-  void removeLayerSource(String layerSourceId);
+  Future<void> removeLayerSource(String layerSourceId);
 
   Future<void> onExperienceAreaClick(
     dynamic feature,
@@ -64,7 +64,7 @@ mixin MapContainerExperienceAreaMixin {
       CampaignConstants.experienceAreaOutlineLayerId,
       LineLayerProperties(visibility: 'visible'),
     );
-    removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
+    await removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
   }
 
   Future<Widget> _getExperienceAreaDetailWidget(turf.Feature experienceAreaFeature, BuildContext context) async {

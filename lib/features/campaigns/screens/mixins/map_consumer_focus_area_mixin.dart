@@ -8,7 +8,7 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
 
   Future<void> addFocusAreaLayers(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
     final data = <turf.Feature>{}.toList();
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSourceName, data);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.focusAreaSourceName,
@@ -37,7 +37,7 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
     );
 
     // add selected map layers
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSelectedSourceName, data);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSelectedSourceName, data);
 
     await mapLibreController.addLineLayer(
       CampaignConstants.focusAreaSelectedSourceName,
@@ -61,8 +61,8 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
         ),
       );
     } else {
-      mapInfo.mapController.removeLayerSource(CampaignConstants.focusAreaSourceName);
-      mapInfo.mapController.removeLayerSource(CampaignConstants.focusAreaSelectedSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.focusAreaSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.focusAreaSelectedSourceName);
       hideCurrentSnackBar();
       showInfoToast(t.campaigns.infoToast.focusAreas_deactivated);
     }
@@ -73,7 +73,7 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final focusAreas = await campaignService.loadFocusAreasInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureList(
+      await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.focusAreaSourceName,
         focusAreas.transformToFeatureList(),
       );

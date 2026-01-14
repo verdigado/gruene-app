@@ -1,7 +1,7 @@
 part of '../mixins.dart';
 
 mixin MapContainerActionAreaMixin {
-  void removeLayerSource(String layerSourceId);
+  Future<void> removeLayerSource(String layerSourceId);
 
   Future<void> onActionAreaClick(
     dynamic feature,
@@ -42,7 +42,7 @@ mixin MapContainerActionAreaMixin {
   ) async {
     setFocusMode(false);
 
-    removeLayerSource(CampaignConstants.actionAreaSelectedSourceName);
+    await removeLayerSource(CampaignConstants.actionAreaSelectedSourceName);
   }
 
   Future<Widget> _getActionAreaDetailWidget(turf.Feature actionAreaFeature, MapController mapController) async {

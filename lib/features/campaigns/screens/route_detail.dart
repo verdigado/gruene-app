@@ -178,7 +178,7 @@ class _RouteDetailState extends State<RouteDetail> {
     var routeUpdate = route.asRouteUpdate().copyWith(status: newStatus);
 
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);
-    widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
+    await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
     setState(() {
       _currentRouteDetail = routeUpdate.transformToVirtualRouteDetailModel();
     });
@@ -198,7 +198,7 @@ class _RouteDetailState extends State<RouteDetail> {
     if (selectedTeam != null) {
       var routeAssignmentUpdate = route.asRouteAssignmentUpdate().copyWith(team: selectedTeam.asRouteTeam());
       var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeAssignmentUpdate);
-      widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
+      await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
       setState(() {
         _currentRouteDetail = routeAssignmentUpdate.transformToVirtualRouteDetailModel();
       });

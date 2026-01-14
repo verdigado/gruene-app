@@ -1,7 +1,7 @@
 part of '../mixins.dart';
 
 mixin MapContainerRouteMixin {
-  void removeLayerSource(String layerSourceId);
+  Future<void> removeLayerSource(String layerSourceId);
 
   Future<void> onRouteClick(
     dynamic feature,
@@ -42,7 +42,7 @@ mixin MapContainerRouteMixin {
   ) async {
     setFocusMode(false);
 
-    removeLayerSource(CampaignConstants.routesSelectedSourceName);
+    await removeLayerSource(CampaignConstants.routesSelectedSourceName);
   }
 
   Future<Widget> _getRouteDetailWidget(turf.Feature routeFeature, MapController mapController) async {

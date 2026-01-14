@@ -18,9 +18,9 @@ abstract class MapController {
 
   void showMapPopover(LatLng coord, Widget widget, OnEditItemClickedCallback? onEditItemClicked, Size desiredSize);
 
-  void setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData);
+  Future<void> setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData);
 
-  void removeLayerSource(String layerSourceId);
+  Future<void> removeLayerSource(String layerSourceId);
 
   Future<BoundingBox> getCurrentBoundingBox();
   double getCurrentZoomLevel();
