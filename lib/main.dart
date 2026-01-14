@@ -69,6 +69,9 @@ Future<void> main() async {
 
   final navigatorKey = GlobalKey<NavigatorState>();
 
+  GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
+  GetIt.I.registerSingleton<IpService>(IpService());
+
   final pushNotificationService = PushNotificationService();
   await pushNotificationService.initialize();
   GetIt.I.registerSingleton<PushNotificationService>(pushNotificationService);
@@ -78,8 +81,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<PushNotificationListener>(pushNotificationListener);
 
   GetIt.I.registerSingleton<AppSettings>(AppSettings());
-  GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
-  GetIt.I.registerSingleton<IpService>(IpService());
+
   // Warning: The gruene api singleton depends on the auth repository which depends on the authenticator singleton
   // Therefore this should be last
   GetIt.I.registerSingleton<GrueneApi>(await createGrueneApiClient());

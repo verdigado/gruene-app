@@ -4,15 +4,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/enums/push_notification_topic_enum.dart';
 import 'package:gruene_app/app/models/push_notification_settings_model.dart';
+import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class PushNotificationService {
   PushNotificationSettingsModel _settings = PushNotificationSettingsModel(enabled: true, topics: {});
-  final FlutterSecureStorage _secureStorage = GetIt.instance<FlutterSecureStorage>();
+  final FlutterSecureStorage _secureStorage = GetIt.I<FlutterSecureStorage>();
+  final _authRepo = AuthRepository();
+
   var _firebaseInitialized = false;
 
   Future<void> initialize() async {
@@ -90,21 +94,24 @@ class PushNotificationService {
     if (!_firebaseInitialized) {
       return;
     }
-    String? accessToken = await _secureStorage.read(key: SecureStorageKeys.accessToken);
-    if (accessToken == null) {
+
+    if (!(await _authRepo.isTokenValid())) {
       await _unsubscribeAll();
       return;
     }
-    final token = JwtDecoder.decode(accessToken);
-
-    List<String> groups = [];
-    if (token['groups'] != null) {
-      groups = (token['groups'] as List<dynamic>).map((v) => v.toString()).toList();
-    }
-    final newTopics = _getFcmTopics(groups);
-    final currentTopics = (await _loadSubscribedFcmTopics()).toSet();
 
     final firebase = FirebaseMessaging.instance;
+    var fbToken = await firebase.getToken();
+    logger.d('Firebase token: $fbToken');
+
+    if (fbToken != null) {
+      // register device on api for api controlled events
+      var userService = GetIt.I<GrueneApiUserService>();
+      userService.addDeviceToken(fbToken);
+    }
+
+    final newTopics = await _getFcmTopics();
+    final currentTopics = (await _loadSubscribedFcmTopics()).toSet();
 
     // Subscribe to new topics not currently subscribed
     final topicsToSubscribe = newTopics.difference(currentTopics);
@@ -128,16 +135,15 @@ class PushNotificationService {
       }
     }
 
+    var subscribedTopics = newTopics.toList();
+
     // Save the updated topics to secure storage
-    await _secureStorage.write(
-      key: SecureStorageKeys.pushNotificationsFcmTopics,
-      value: jsonEncode(newTopics.toList()),
-    );
+    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsFcmTopics, value: jsonEncode(subscribedTopics));
   }
 
   /// Calculate the new list of all topics the user should be subscribed to
   /// based on the users oidc groups and user settings
-  Set<String> _getFcmTopics(List<String> groups) {
+  Future<Set<String>> _getFcmTopics() async {
     final Set<String> topics = {};
 
     if (!_settings.enabled) {
@@ -146,6 +152,23 @@ class PushNotificationService {
 
     topicEnabled(PushNotificationTopic topic) => _settings.topics[topic] ?? true;
 
+    topics.addAll(await _getNewsTopics(topicEnabled));
+    topics.addAll(await _getApiTopics(topicEnabled));
+
+    return topics;
+  }
+
+  Future<Iterable<String>> _getNewsTopics(bool Function(PushNotificationTopic topic) topicEnabled) async {
+    String? accessToken = await _authRepo.getAccessToken();
+    if (accessToken == null) {
+      return [];
+    }
+    final token = JwtDecoder.decode(accessToken);
+    List<String> groups = [];
+    if (token['groups'] != null) {
+      groups = (token['groups'] as List<dynamic>).map((v) => v.toString()).toList();
+    }
+    final topics = <String>[];
     // Any user that is able to authenticate is allowed to receive
     // news on level Bundesverband
     if (topicEnabled(PushNotificationTopic.newsBv)) {
@@ -176,7 +199,6 @@ class PushNotificationService {
         topics.add('news.$divisionKey');
       }
     }
-
     return topics;
   }
 
@@ -196,5 +218,12 @@ class PushNotificationService {
     }
 
     await _secureStorage.write(key: SecureStorageKeys.pushNotificationsFcmTopics, value: jsonEncode([]));
+  }
+
+  Future<Iterable<String>> _getApiTopics(bool Function(PushNotificationTopic topic) topicEnabled) async {
+    final topics = <String>[];
+    // Add API-specific topics here
+
+    return topics;
   }
 }

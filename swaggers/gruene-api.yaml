@@ -147,6 +147,98 @@ paths:
       summary: Get user RBAC structure
       tags:
         - users
+  /v1/users/self/settings/device-tokens:
+    post:
+      operationId: addDeviceToken
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddDeviceToken'
+      responses:
+        '201':
+          description: ''
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Add device token for push notifications
+      tags:
+        - users
+  /v1/users/self/settings/notifications:
+    get:
+      operationId: getNotificationSettings
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Get notification settings
+      tags:
+        - users
+    put:
+      operationId: updateNotificationSettings
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationSettings'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Update notification settings
+      tags:
+        - users
+    delete:
+      operationId: deleteNotificationSettings
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationSettings'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Deletes the users notification setttings to restore the default
+      tags:
+        - users
   /v1/party/organizations:
     get:
       operationId: findOrganizations
@@ -252,6 +344,103 @@ paths:
       summary: Get regional chapter by division key
       tags:
         - nb-api
+  /v1/divisions:
+    get:
+      operationId: findDivisions
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            default: 20
+            type: number
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: hierarchy
+          required: false
+          in: query
+          description: Filter by hierarchy
+          schema:
+            example: GR
+            type: string
+            enum:
+              - GR
+              - GJ
+              - KPV
+        - name: level
+          required: false
+          in: query
+          description: Filter by hierarchy level
+          schema:
+            example: BV
+            type: string
+            enum:
+              - BV
+              - LV
+              - KV
+              - OV
+        - name: division_key
+          required: false
+          in: query
+          description: Filter by division keys
+          schema:
+            type: array
+            items:
+              type: string
+        - name: search
+          required: false
+          in: query
+          description: Search name attributes for substring
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindDivisionsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Find divisions
+      tags:
+        - divisions
+  /v1/divisions/{divisionId}:
+    get:
+      operationId: getDivision
+      parameters:
+        - name: divisionId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Division'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Get division by id
+      tags:
+        - divisions
   /v1/profiles:
     get:
       operationId: findProfiles
@@ -605,103 +794,6 @@ paths:
       summary: Batch update offboarding users for the authenticated service.
       tags:
         - offboarding
-  /v1/divisions:
-    get:
-      operationId: findDivisions
-      parameters:
-        - name: limit
-          required: false
-          in: query
-          schema:
-            minimum: 1
-            default: 20
-            type: number
-        - name: offset
-          required: false
-          in: query
-          schema:
-            minimum: 0
-            type: number
-        - name: hierarchy
-          required: false
-          in: query
-          description: Filter by hierarchy
-          schema:
-            example: GR
-            type: string
-            enum:
-              - GR
-              - GJ
-              - KPV
-        - name: level
-          required: false
-          in: query
-          description: Filter by hierarchy level
-          schema:
-            example: BV
-            type: string
-            enum:
-              - BV
-              - LV
-              - KV
-              - OV
-        - name: division_key
-          required: false
-          in: query
-          description: Filter by division keys
-          schema:
-            type: array
-            items:
-              type: string
-        - name: search
-          required: false
-          in: query
-          description: Search name attributes for substring
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FindDivisionsResponse'
-        '401':
-          description: ''
-      security:
-        - bearer: []
-        - basic: []
-        - api_key: []
-      summary: Find divisions
-      tags:
-        - divisions
-  /v1/divisions/{divisionId}:
-    get:
-      operationId: getDivision
-      parameters:
-        - name: divisionId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Division'
-        '401':
-          description: ''
-        '404':
-          description: ''
-      security:
-        - bearer: []
-        - basic: []
-        - api_key: []
-      summary: Get division by id
-      tags:
-        - divisions
   /v1/roles:
     get:
       operationId: findRoles
@@ -3495,6 +3587,62 @@ components:
         - userId
         - groups
         - roles
+    AddDeviceToken:
+      type: object
+      properties:
+        platform:
+          type: string
+          enum:
+            - ios
+            - android
+          description: Device platform
+          example: ios
+        deviceToken:
+          type: string
+          description: FCM device token for push notifications
+          example: dA1B2c3D4e5F6g7H8i9J0k1L2m3N4o5P6q7R8s9T0u1V2w3X4y5Z
+      required:
+        - platform
+        - deviceToken
+    NotificationChannelSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+      required:
+        - enabled
+    NotificationGlobalSettings:
+      type: object
+      properties:
+        inApp:
+          $ref: '#/components/schemas/NotificationChannelSettings'
+      required:
+        - inApp
+    NotificationDeliveryRule:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - campaigns.teamMembership.updated
+            - news.published
+        inApp:
+          $ref: '#/components/schemas/NotificationChannelSettings'
+      required:
+        - type
+        - inApp
+    NotificationSettings:
+      type: object
+      properties:
+        global:
+          $ref: '#/components/schemas/NotificationGlobalSettings'
+        deliveryRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationDeliveryRule'
+      required:
+        - global
+        - deliveryRules
     NbOrganization:
       type: object
       properties:
@@ -3676,6 +3824,150 @@ components:
       required:
         - count
         - items
+    Address:
+      type: object
+      properties:
+        city:
+          type: string
+          description: Location city
+          example: Berlin
+        zip:
+          type: string
+          description: Location zip code
+          example: '10176'
+        line1:
+          type: string
+          description: First address line for street and house number
+          example: Bahnhofstr. 5
+      required:
+        - city
+        - zip
+        - line1
+    DivisionEmail:
+      type: object
+      properties:
+        tags:
+          description: Tags associated with email as string values
+          example:
+            - BV-GRÜNE-Info
+          type: array
+          items:
+            type: string
+        purposes:
+          description: |-
+            Purposes associated with email
+            Occuring values:
+             - privat
+             - grüne
+             - dienstlich
+             - Postanschrift
+             - Rechnungsanschrift
+             - Lieferanschrift
+          example:
+            - privat
+          type: array
+          items:
+            type: string
+        address:
+          type: string
+          description: Email address
+          example: john.doe@example.com
+        isFavorite:
+          type: boolean
+          description: Indicate if this email is preferred for general inquiries
+          example: false
+      required:
+        - tags
+        - purposes
+        - address
+        - isFavorite
+    Division:
+      type: object
+      properties:
+        urls:
+          description: List of internet presences
+          example:
+            - https://example.com
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+          description: The division id
+          example: '123'
+        divisionKey:
+          type: string
+          description: The division key
+          example: '10000000'
+        name1:
+          type: string
+          example: Landesverband
+        name2:
+          type: string
+          example: Baden-Württemberg
+        shortName:
+          type: string
+          description: Descriptive name of the division.
+          example: Baden-Württemberg LV
+        hierarchy:
+          type: object
+          description: The root hierarchy the division belongs to
+          example: GR
+        level:
+          description: Level in the hierarchy
+          example: BV
+          enum:
+            - BV
+            - LV
+            - KV
+            - OV
+          type: string
+        officeAddress:
+          nullable: true
+          description: Office address
+          allOf:
+            - $ref: '#/components/schemas/Address'
+        emails:
+          description: Email Addresses
+          type: array
+          items:
+            $ref: '#/components/schemas/DivisionEmail'
+      required:
+        - urls
+        - id
+        - divisionKey
+        - name1
+        - name2
+        - shortName
+        - hierarchy
+        - level
+        - officeAddress
+        - emails
+    OffsetPaginationMeta:
+      type: object
+      properties:
+        count:
+          type: number
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+        hasNext:
+          type: boolean
+    FindDivisionsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Division'
+        meta:
+          $ref: '#/components/schemas/OffsetPaginationMeta'
+      required:
+        - data
+        - meta
     ImageLink:
       type: object
       properties:
@@ -3799,125 +4091,6 @@ components:
         - id
         - type
         - label
-    Address:
-      type: object
-      properties:
-        city:
-          type: string
-          description: Location city
-          example: Berlin
-        zip:
-          type: string
-          description: Location zip code
-          example: '10176'
-        line1:
-          type: string
-          description: First address line for street and house number
-          example: Bahnhofstr. 5
-      required:
-        - city
-        - zip
-        - line1
-    DivisionEmail:
-      type: object
-      properties:
-        tags:
-          description: Tags associated with email as string values
-          example:
-            - BV-GRÜNE-Info
-          type: array
-          items:
-            type: string
-        purposes:
-          description: |-
-            Purposes associated with email
-            Occuring values:
-             - privat
-             - grüne
-             - dienstlich
-             - Postanschrift
-             - Rechnungsanschrift
-             - Lieferanschrift
-          example:
-            - privat
-          type: array
-          items:
-            type: string
-        address:
-          type: string
-          description: Email address
-          example: john.doe@example.com
-        isFavorite:
-          type: boolean
-          description: Indicate if this email is preferred for general inquiries
-          example: false
-      required:
-        - tags
-        - purposes
-        - address
-        - isFavorite
-    Division:
-      type: object
-      properties:
-        urls:
-          description: List of internet presences
-          example:
-            - https://example.com
-          type: array
-          items:
-            type: string
-        id:
-          type: string
-          description: The division id
-          example: '123'
-        divisionKey:
-          type: string
-          description: The division key
-          example: '10000000'
-        name1:
-          type: string
-          example: Landesverband
-        name2:
-          type: string
-          example: Baden-Württemberg
-        shortName:
-          type: string
-          description: Descriptive name of the division.
-          example: Baden-Württemberg LV
-        hierarchy:
-          type: object
-          description: The root hierarchy the division belongs to
-          example: GR
-        level:
-          description: Level in the hierarchy
-          example: BV
-          enum:
-            - BV
-            - LV
-            - KV
-            - OV
-          type: string
-        officeAddress:
-          nullable: true
-          description: Office address
-          allOf:
-            - $ref: '#/components/schemas/Address'
-        emails:
-          description: Email Addresses
-          type: array
-          items:
-            $ref: '#/components/schemas/DivisionEmail'
-      required:
-        - urls
-        - id
-        - divisionKey
-        - name1
-        - name2
-        - shortName
-        - hierarchy
-        - level
-        - officeAddress
-        - emails
     DivisionMembership:
       type: object
       properties:
@@ -4028,19 +4201,6 @@ components:
         - tags
         - roles
         - achievements
-    OffsetPaginationMeta:
-      type: object
-      properties:
-        count:
-          type: number
-        total:
-          type: number
-        offset:
-          type: number
-        limit:
-          type: number
-        hasNext:
-          type: boolean
     FindProfilesResponse:
       type: object
       properties:
@@ -4339,18 +4499,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UpsertOffboardingServiceUser'
-    FindDivisionsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Division'
-        meta:
-          $ref: '#/components/schemas/OffsetPaginationMeta'
-      required:
-        - data
-        - meta
     RoleAlias:
       type: object
       properties:
