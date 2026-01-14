@@ -404,7 +404,7 @@ class _MapContainerState extends State<MapContainer>
   @override
   Future<void> setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData) async {
     // prevents concurrent addSource call on initialization
-    _lock.synchronized(() async {
+    await _lock.synchronized(() async {
       _mapFeatureManager.addMarkers(sourceId, layerData);
       var newLayerData = _mapFeatureManager.getMarkers(sourceId).asFeatureCollection().toJson();
       final sourceIds = await _controller!.getSourceIds();
