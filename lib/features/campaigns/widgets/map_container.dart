@@ -399,16 +399,21 @@ class _MapContainerState extends State<MapContainer>
     await setLayerSourceWithFeatureList(CampaignConstants.poiMarkerSourceId, poiList);
   }
 
+  final _lock = Lock();
+
   @override
   Future<void> setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData) async {
-    final sourceIds = await _controller!.getSourceIds();
-    _mapFeatureManager.addMarkers(sourceId, layerData);
-    var newLayerData = _mapFeatureManager.getMarkers(sourceId).asFeatureCollection().toJson();
-    if (sourceIds.contains(sourceId)) {
-      await _controller!.setGeoJsonSource(sourceId, newLayerData);
-    } else {
-      await _controller!.addGeoJsonSource(sourceId, newLayerData);
-    }
+    // prevents concurrent addSource call on initialization
+    _lock.synchronized(() async {
+      _mapFeatureManager.addMarkers(sourceId, layerData);
+      var newLayerData = _mapFeatureManager.getMarkers(sourceId).asFeatureCollection().toJson();
+      final sourceIds = await _controller!.getSourceIds();
+      if (sourceIds.contains(sourceId)) {
+        await _controller!.setGeoJsonSource(sourceId, newLayerData);
+      } else {
+        await _controller!.addGeoJsonSource(sourceId, newLayerData);
+      }
+    });
   }
 
   @override
