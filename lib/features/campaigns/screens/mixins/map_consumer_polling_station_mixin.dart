@@ -14,7 +14,7 @@ mixin MapConsumerPollingStationMixin {
       CampaignConstants.pollingStationAssetName,
     );
 
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.pollingStationSourceName, initData);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.pollingStationSourceName, initData);
 
     await mapLibreController.addSymbolLayer(
       CampaignConstants.pollingStationSourceName,
@@ -37,7 +37,10 @@ mixin MapConsumerPollingStationMixin {
     );
 
     // add selected map layers
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.pollingStationSelectedSourceName, initData);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(
+      CampaignConstants.pollingStationSelectedSourceName,
+      initData,
+    );
 
     await mapLibreController.addSymbolLayer(
       CampaignConstants.pollingStationSelectedSourceName,
@@ -57,8 +60,8 @@ mixin MapConsumerPollingStationMixin {
     if (pollingStationVisible) {
       loadPollingStationLayer(mapInfo);
     } else {
-      mapInfo.mapController.removeLayerSource(CampaignConstants.pollingStationSourceName);
-      mapInfo.mapController.removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.pollingStationSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
     }
   }
 
@@ -67,7 +70,7 @@ mixin MapConsumerPollingStationMixin {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final pollingStations = await campaignService.loadPollingStationsInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureList(
+      await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.pollingStationSourceName,
         pollingStations.transformToFeatureList(),
       );

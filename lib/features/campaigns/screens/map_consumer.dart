@@ -122,7 +122,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   void _loadCachedLayer(PoiCacheType cacheType, String layerSourceName) async {
     var layerItems = await campaignActionCache.getLayerItems(cacheType);
-    mapController.setLayerSourceWithFeatureList(layerSourceName, layerItems);
+    await mapController.setLayerSourceWithFeatureList(layerSourceName, layerItems);
   }
 
   Future<void> loadVisiblePois(LatLng locationSW, LatLng locationNE, bool loadCached) async {
@@ -237,8 +237,8 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       }
       var focusAreaType = FocusAreaType.values.byName(properties[CampaignConstants.focusAreaMapTypeProperty] as String);
 
-      mapController.removeLayerSource(CampaignConstants.focusAreaSelectedSourceName);
-      mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSelectedSourceName, [feature]);
+      await mapController.removeLayerSource(CampaignConstants.focusAreaSelectedSourceName);
+      await mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSelectedSourceName, [feature]);
 
       if (focusAreaType == FocusAreaType.gen2) {
         hideCurrentSnackBar();

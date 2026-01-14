@@ -13,7 +13,7 @@ mixin MapConsumerExperienceAreaMixin {
       CampaignConstants.experienceAreaFillPatternAssetName,
     );
 
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.experienceAreaSourceName, data);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.experienceAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.experienceAreaSourceName,
@@ -35,7 +35,7 @@ mixin MapConsumerExperienceAreaMixin {
     );
 
     // add selected map layers
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.experienceAreaSelectedSourceName, data);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.experienceAreaSelectedSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.experienceAreaSelectedSourceName,
@@ -54,13 +54,13 @@ mixin MapConsumerExperienceAreaMixin {
     );
   }
 
-  void onExperienceAreaLayerStateChanged(bool state, MapInfo mapInfo) {
+  Future<void> onExperienceAreaLayerStateChanged(bool state, MapInfo mapInfo) async {
     experienceAreasVisible = state;
     if (experienceAreasVisible) {
       loadExperienceAreaLayer(mapInfo);
     } else {
-      mapInfo.mapController.removeLayerSource(CampaignConstants.experienceAreaSourceName);
-      mapInfo.mapController.removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.experienceAreaSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
     }
   }
 
@@ -69,7 +69,7 @@ mixin MapConsumerExperienceAreaMixin {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final experienceAreas = await campaignService.loadExperienceAreasInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureList(
+      await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.experienceAreaSourceName,
         experienceAreas.transformToFeatureList(),
       );

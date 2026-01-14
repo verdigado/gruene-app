@@ -88,8 +88,6 @@ class _MapContainerState extends State<MapContainer>
   MapLibreMapController? _controller;
   late MapFeatureManager _mapFeatureManager;
 
-  final _lock = Lock();
-
   final appSettings = GetIt.I<AppSettings>();
   final campaignActionCache = GetIt.I<CampaignActionCache>();
 
@@ -351,7 +349,7 @@ class _MapContainerState extends State<MapContainer>
       });
     }
 
-    setLayerSourceWithFeatureList(CampaignConstants.poiMarkerSourceId, <turf.Feature>{}.toList());
+    await setLayerSourceWithFeatureList(CampaignConstants.poiMarkerSourceId, <turf.Feature>{}.toList());
 
     await _controller!.addSymbolLayer(
       CampaignConstants.poiMarkerSourceId,
@@ -378,7 +376,7 @@ class _MapContainerState extends State<MapContainer>
     );
 
     // add selected map layers
-    setLayerSourceWithFeatureList(CampaignConstants.markerSelectedSourceId, <turf.Feature>{}.toList());
+    await setLayerSourceWithFeatureList(CampaignConstants.markerSelectedSourceId, <turf.Feature>{}.toList());
 
     await _controller!.addSymbolLayer(
       CampaignConstants.markerSelectedSourceId,
@@ -397,27 +395,24 @@ class _MapContainerState extends State<MapContainer>
   }
 
   @override
-  void setPoiMarkerSource(List<turf.Feature> poiList) {
-    setLayerSourceWithFeatureList(CampaignConstants.poiMarkerSourceId, poiList);
+  Future<void> setPoiMarkerSource(List<turf.Feature> poiList) async {
+    await setLayerSourceWithFeatureList(CampaignConstants.poiMarkerSourceId, poiList);
   }
 
   @override
-  void setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData) async {
-    // prevents concurrent addSource call on initialization
-    _lock.synchronized(() async {
-      final sourceIds = await _controller!.getSourceIds();
-      _mapFeatureManager.addMarkers(sourceId, layerData);
-      var newLayerData = _mapFeatureManager.getMarkers(sourceId).asFeatureCollection().toJson();
-      if (sourceIds.contains(sourceId)) {
-        await _controller!.setGeoJsonSource(sourceId, newLayerData);
-      } else {
-        await _controller!.addGeoJsonSource(sourceId, newLayerData);
-      }
-    });
+  Future<void> setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData) async {
+    final sourceIds = await _controller!.getSourceIds();
+    _mapFeatureManager.addMarkers(sourceId, layerData);
+    var newLayerData = _mapFeatureManager.getMarkers(sourceId).asFeatureCollection().toJson();
+    if (sourceIds.contains(sourceId)) {
+      await _controller!.setGeoJsonSource(sourceId, newLayerData);
+    } else {
+      await _controller!.addGeoJsonSource(sourceId, newLayerData);
+    }
   }
 
   @override
-  void removeLayerSource(String layerSourceId) async {
+  Future<void> removeLayerSource(String layerSourceId) async {
     /* 
     * A bug prevents using correct method -> see https://github.com/maplibre/flutter-maplibre-gl/issues/526
     * Therefore we set it as empty datasource. Once the issue has been corrected we can use the designated method.

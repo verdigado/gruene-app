@@ -168,7 +168,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     var actionAreaUpdate = actionArea.asActionAreaUpdate().copyWith(status: newStatus);
 
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaUpdate);
-    widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
+    await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
     setState(() {
       _currentActionAreaDetail = actionAreaUpdate.transformToVirtualActionAreaDetailModel();
     });
@@ -190,7 +190,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
         team: selectedTeam.asRouteTeam(),
       );
       var feature = await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaAssignmentUpdate);
-      widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
+      await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
       setState(() {
         _currentActionAreaDetail = actionAreaAssignmentUpdate.transformToVirtualActionAreaDetailModel();
       });

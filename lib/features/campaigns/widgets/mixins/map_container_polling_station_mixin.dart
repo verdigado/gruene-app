@@ -1,7 +1,7 @@
 part of '../mixins.dart';
 
 mixin MapContainerPollingStationMixin {
-  void removeLayerSource(String layerSourceId);
+  Future<void> removeLayerSource(String layerSourceId);
   Future<void> moveMapIfItemIsOnBorder(LatLng itemCoordinate, Size desiredSize);
 
   Future<void> onPollingStationClick(
@@ -49,7 +49,7 @@ mixin MapContainerPollingStationMixin {
       CampaignConstants.pollingStationSymbolLayerId,
       SymbolLayerProperties(iconOpacity: 1),
     );
-    removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
+    await removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
   }
 
   SizedBox _getPollingStationDetailWidget(turf.Feature pollingStationFeature, BuildContext context) {

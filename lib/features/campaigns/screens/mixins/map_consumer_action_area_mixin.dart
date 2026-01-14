@@ -13,7 +13,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       CampaignConstants.actionAreaFillPatternAssetName,
     );
 
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, data);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, data);
 
     await mapLibreController.addFillLayer(
       CampaignConstants.actionAreaSourceName,
@@ -69,7 +69,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     );
 
     // set layer properties for selected layer
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSelectedSourceName, data);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSelectedSourceName, data);
 
     await mapLibreController.addLineLayer(
       CampaignConstants.actionAreaSelectedSourceName,
@@ -85,7 +85,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     if (actionAreasVisible) {
       loadActionAreaLayer(mapInfo, true);
     } else {
-      mapInfo.mapController.removeLayerSource(CampaignConstants.actionAreaSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.actionAreaSourceName);
     }
   }
 
@@ -95,7 +95,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final areas = await campaignService.loadActionAreasInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureList(
+      await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.actionAreaSourceName,
         areas.transformToFeatureList(),
       );

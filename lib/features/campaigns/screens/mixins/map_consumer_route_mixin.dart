@@ -9,7 +9,7 @@ mixin MapConsumerRouteMixin on InfoBox {
   Future<void> addRouteLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
     final data = <turf.Feature>{}.toList();
 
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, data);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, data);
 
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSourceName,
@@ -34,7 +34,7 @@ mixin MapConsumerRouteMixin on InfoBox {
     );
 
     // add selected map layers
-    mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSelectedSourceName, data);
+    await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSelectedSourceName, data);
 
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSelectedSourceName,
@@ -92,8 +92,8 @@ mixin MapConsumerRouteMixin on InfoBox {
         ),
       );
     } else {
-      mapInfo.mapController.removeLayerSource(CampaignConstants.routesSourceName);
-      mapInfo.mapController.removeLayerSource(CampaignConstants.routesSelectedSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.routesSourceName);
+      await mapInfo.mapController.removeLayerSource(CampaignConstants.routesSelectedSourceName);
       showInfoToast(t.campaigns.infoToast.routes_deactivated);
     }
   }
@@ -105,7 +105,7 @@ mixin MapConsumerRouteMixin on InfoBox {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
       final routes = await campaignService.loadRoutesInRegion(bbox.southwest, bbox.northeast);
-      mapInfo.mapController.setLayerSourceWithFeatureList(
+      await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.routesSourceName,
         routes.transformToFeatureList(),
       );
