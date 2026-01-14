@@ -76,7 +76,10 @@ class ProfileFeatureChecker {
           ),
           actions: [
             TextButton(
-              onPressed: () => _showProfileVisibilitySettings(context, currentProfile),
+              onPressed: () {
+                Navigator.pop(context);
+                _showProfileVisibilitySettings(context, currentProfile);
+              },
               child: Text(
                 t.common.actions.consent,
                 style: theme.textTheme.labelLarge?.apply(color: theme.colorScheme.secondary),
