@@ -73,9 +73,7 @@ class PushNotificationListener {
   void _handleMessage(RemoteMessage message) {
     final notification = message.notification;
 
-    var handler = message.getNotificationHandler();
-
-    String? payload = handler.getPayload(message);
+    String? payload = message.getPayload();
 
     if (notification != null) {
       _localNotifications.show(

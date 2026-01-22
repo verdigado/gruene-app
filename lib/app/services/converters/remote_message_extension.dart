@@ -29,6 +29,11 @@ extension RemoteMessageExtension on RemoteMessage {
     var handler = getNotificationHandler();
     handler.processMessage(this, currentContext);
   }
+
+  String? getPayload() {
+    var handler = getNotificationHandler();
+    return handler.getPayload(this);
+  }
 }
 
 extension NotificationResponseExtension on NotificationResponse {
