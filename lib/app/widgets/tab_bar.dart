@@ -14,12 +14,6 @@ class TabModel extends TabModelBase {
   TabModel({required super.label, required this.view, super.disabled});
 }
 
-class RouterTabModel extends TabModelBase {
-  final String route;
-
-  RouterTabModel({required super.label, required this.route, super.disabled});
-}
-
 class CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
   final TabController tabController;
   final List<TabModelBase> tabs;

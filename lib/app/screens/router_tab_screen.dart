@@ -4,7 +4,7 @@ import 'package:gruene_app/app/widgets/tab_bar.dart';
 
 class RouterTabScreen extends StatefulWidget {
   final PreferredSizeWidget Function(PreferredSizeWidget tabBar) appBarBuilder;
-  final List<RouterTabModel> tabs;
+  final List<TabModelBase> tabs;
   final bool scrollableBody;
   final List<Widget> children;
   final StatefulNavigationShell navigationShell;

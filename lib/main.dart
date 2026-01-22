@@ -28,6 +28,7 @@ import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/services/notification_message_type.dart';
+import 'package:gruene_app/app/services/push_notification_handlers/notification_handlers.dart';
 import 'package:gruene_app/app/services/push_notification_listener.dart';
 import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/services/secure_storage_service.dart';
@@ -113,11 +114,11 @@ Future<void> main() async {
     instanceName: NotificationMessageType.teamMembershipUpdate.toString(),
   );
   GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamNotificationHandler(),
+    () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
     instanceName: NotificationMessageType.routeAssignmentUpdate.toString(),
   );
   GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamNotificationHandler(),
+    () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
     instanceName: NotificationMessageType.areaAssignmentUpdate.toString(),
   );
 
@@ -168,26 +169,6 @@ class MyApp extends StatelessWidget {
                 }
                 var notificationHandler = initialMessage.getNotificationHandler();
                 notificationHandler.processMessage(initialMessage, navigatorKey.currentContext);
-                // var routerLocation = '';
-                // switch (initialMessage.getMessageType()) {
-                //   case NotificationMessageType.news:
-                //     routerLocation = '${RouteLocations.getRoute([RouteLocations.news])}/${initialMessage.getNewsId()}';
-                //     break;
-                //   case NotificationMessageType.teamMembershipUpdate:
-                //     routerLocation = RouteLocations.getRoute([
-                //       RouteLocations.campaigns,
-                //       RouteLocations.campaignTeamDetail,
-                //     ]);
-                //     break;
-                //   default:
-                //     return;
-                // }
-
-                // final newsId = GetIt.I<PushNotificationListener>().initialMessage.getNewsId();
-                // final context = navigatorKey.currentContext;
-                // if (newsId != null && context != null) {
-                //   GoRouter.of(context).go(routerLocation);
-                // }
               });
 
               return MaterialApp.router(

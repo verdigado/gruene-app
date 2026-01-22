@@ -10,7 +10,7 @@ import 'package:gruene_app/app/geocode/nominatim.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/services/notification_message_type.dart';
-import 'package:gruene_app/app/services/push_notification_listener.dart';
+import 'package:gruene_app/app/services/push_notification_handlers/notification_handlers.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
