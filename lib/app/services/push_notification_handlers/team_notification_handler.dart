@@ -11,4 +11,9 @@ class TeamNotificationHandler extends BaseNotificationHandler {
   String? getPayload(RemoteMessage message) {
     return 'team';
   }
+
+  @override
+  void processPayload(NotificationResponse response, BuildContext? context) {
+    _navigateTo(context, RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]));
+  }
 }

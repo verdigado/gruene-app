@@ -167,8 +167,7 @@ class MyApp extends StatelessWidget {
                 if (initialMessage == null) {
                   return;
                 }
-                var notificationHandler = initialMessage.getNotificationHandler();
-                notificationHandler.processMessage(initialMessage, navigatorKey.currentContext);
+                initialMessage.processMessage(navigatorKey.currentContext);
               });
 
               return MaterialApp.router(

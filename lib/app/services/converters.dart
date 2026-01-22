@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-// import 'package:geotypes/geotypes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Route;
@@ -42,8 +41,6 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
-// import 'package:turf/distance.dart' hide Polygon, LineString;
-// import 'package:turf/helpers.dart' hide Polygon, LineString;
 import 'package:turf/turf.dart' as turf;
 
 part 'converters/address_model_parsing.dart';

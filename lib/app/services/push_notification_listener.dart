@@ -2,8 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:go_router/go_router.dart';
-import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/services/converters.dart';
 
 class PushNotificationListener {
@@ -42,8 +40,7 @@ class PushNotificationListener {
 
   void _registerNotificationTapHandler() {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      var notificationHandler = message.getNotificationHandler();
-      notificationHandler.processMessage(message, navigatorKey.currentContext);
+      message.processMessage(navigatorKey.currentContext);
     });
 
     const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
@@ -58,15 +55,7 @@ class PushNotificationListener {
         iOS: initializationSettingsDarwin,
       ),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        final payload = response.payload;
-        if (payload != null) {
-          if (payload.startsWith('news.')) {
-            final newsId = payload.replaceFirst('news.', '');
-            _navigateTo('${RouteLocations.getRoute([RouteLocations.news])}/$newsId');
-          } else if (payload == 'team') {
-            _navigateTo(RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]));
-          }
-        }
+        response.processNotificationResponse(navigatorKey.currentContext);
       },
     );
   }
@@ -105,13 +94,6 @@ class PushNotificationListener {
         ),
         payload: payload,
       );
-    }
-  }
-
-  void _navigateTo(String route) {
-    final context = navigatorKey.currentContext;
-    if (context != null) {
-      GoRouter.of(context).go(route);
     }
   }
 }

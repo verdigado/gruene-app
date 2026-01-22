@@ -1,6 +1,6 @@
 part of '../converters.dart';
 
-extension RemoteMessageExtension on RemoteMessage? {
+extension NullableRemoteMessageExtension on RemoteMessage? {
   NotificationMessageType? getMessageType() {
     if (this == null) return null;
     var type = this?.data['type'];
@@ -17,10 +17,17 @@ extension RemoteMessageExtension on RemoteMessage? {
     }
     return null;
   }
+}
 
+extension RemoteMessageExtension on RemoteMessage {
   BaseNotificationHandler getNotificationHandler() {
     final type = getMessageType();
     return GetIt.I<BaseNotificationHandler>(instanceName: type?.toString() ?? '');
+  }
+
+  void processMessage(BuildContext? currentContext) {
+    var handler = getNotificationHandler();
+    handler.processMessage(this, currentContext);
   }
 }
 
@@ -36,5 +43,10 @@ extension NotificationResponseExtension on NotificationResponse {
     }
 
     return GetIt.I<BaseNotificationHandler>(instanceName: instanceIdentifier.toString());
+  }
+
+  void processNotificationResponse(BuildContext? currentContext) {
+    var handler = getNotificationHandler();
+    handler.processPayload(this, currentContext);
   }
 }

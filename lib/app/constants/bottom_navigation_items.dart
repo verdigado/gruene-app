@@ -3,7 +3,6 @@ import 'package:gruene_app/i18n/translations.g.dart';
 
 class BottomNavigationItem {
   final String label;
-  // final String route;
   final IconData? icon;
   final String? assetIcon;
 

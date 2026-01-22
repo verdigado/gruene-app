@@ -13,6 +13,12 @@ class NewsNotificationHandler extends BaseNotificationHandler {
     return newsId != null ? 'news.$newsId' : null;
   }
 
+  @override
+  void processPayload(NotificationResponse response, BuildContext? context) {
+    final newsId = response.payload?.replaceFirst('news.', '');
+    _navigateTo(context, '${RouteLocations.getRoute([RouteLocations.news])}/$newsId');
+  }
+
   String? _getNewsId(RemoteMessage message) {
     return message.data['newsId']?.toString();
   }

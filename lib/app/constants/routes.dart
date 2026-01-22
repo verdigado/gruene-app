@@ -70,11 +70,7 @@ class Routes {
   static GoRoute campaignFlyerDetail = buildRoute(RouteLocations.campaignFlyerDetail, FlyerScreen());
   static GoRoute campaignTeamDetail = buildRoute(RouteLocations.campaignTeamDetail, TeamsScreen());
   static GoRoute campaignStatisticsDetail = buildRoute(RouteLocations.campaignStatisticsDetail, StatisticsScreen());
-  // static GoRoute campaigns = buildRoute('/campaigns', CampaignsScreen());
   static StatefulShellRoute campaignShellRoute = StatefulShellRoute(
-    // builder: (context, _, navigationShell) {
-    //   return CampaignsScreen(navigationShell: navigationShell);
-    // },
     builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
       return navigationShell;
     },
