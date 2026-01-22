@@ -1,11 +1,16 @@
 import 'dart:convert';
 
 // import 'package:geotypes/geotypes.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Route;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/geocode/nominatim.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/notification_message_type.dart';
+import 'package:gruene_app/app/services/push_notification_listener.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
@@ -85,3 +90,4 @@ part 'converters/user_info_extensions.dart';
 part 'converters/team_extension.dart';
 part 'converters/profile_extension.dart';
 part 'converters/team_membership_type_parsing.dart';
+part 'converters/remote_message_extension.dart';

@@ -3,6 +3,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/route_locations.dart';
+import 'package:gruene_app/app/services/converters.dart';
 
 class PushNotificationListener {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -16,8 +18,8 @@ class PushNotificationListener {
     importance: Importance.high,
   );
 
-  String? _initialNewsId;
-  String? get initialNewsId => _initialNewsId;
+  RemoteMessage? _initialMessage;
+  RemoteMessage? get initialMessage => _initialMessage;
 
   PushNotificationListener(this.navigatorKey);
 
@@ -31,7 +33,7 @@ class PushNotificationListener {
 
   Future<void> _handleInitialMessage() async {
     final message = await _firebaseMessaging.getInitialMessage();
-    _initialNewsId = message?.data['newsId']?.toString();
+    _initialMessage = message;
   }
 
   void _registerForegroundMessageHandler() {
@@ -40,10 +42,8 @@ class PushNotificationListener {
 
   void _registerNotificationTapHandler() {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      final newsId = message.data['newsId'];
-      if (newsId != null) {
-        _navigateTo('/news/$newsId');
-      }
+      var notificationHandler = message.getNotificationHandler();
+      notificationHandler.processMessage(message, navigatorKey.currentContext);
     });
 
     const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
@@ -59,9 +59,13 @@ class PushNotificationListener {
       ),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         final payload = response.payload;
-        if (payload != null && payload.startsWith('news.')) {
-          final newsId = payload.replaceFirst('news.', '');
-          _navigateTo('/news/$newsId');
+        if (payload != null) {
+          if (payload.startsWith('news.')) {
+            final newsId = payload.replaceFirst('news.', '');
+            _navigateTo('${RouteLocations.getRoute([RouteLocations.news])}/$newsId');
+          } else if (payload == 'team') {
+            _navigateTo(RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]));
+          }
         }
       },
     );
@@ -79,7 +83,10 @@ class PushNotificationListener {
 
   void _handleMessage(RemoteMessage message) {
     final notification = message.notification;
-    final newsId = message.data['newsId'];
+
+    var handler = message.getNotificationHandler();
+
+    String? payload = handler.getPayload(message);
 
     if (notification != null) {
       _localNotifications.show(
@@ -96,7 +103,7 @@ class PushNotificationListener {
             icon: '@mipmap/ic_launcher',
           ),
         ),
-        payload: newsId != null ? 'news.$newsId' : null,
+        payload: payload,
       );
     }
   }
@@ -112,4 +119,47 @@ class PushNotificationListener {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+}
+
+class NewsNotificationHandler extends BaseNotificationHandler {
+  @override
+  void processMessage(RemoteMessage message, BuildContext? context) {
+    var routerLocation = '${RouteLocations.getRoute([RouteLocations.news])}/${_getNewsId(message)}';
+    _navigateTo(context, routerLocation);
+  }
+
+  @override
+  String? getPayload(RemoteMessage message) {
+    final newsId = _getNewsId(message);
+    return newsId != null ? 'news.$newsId' : null;
+  }
+
+  String? _getNewsId(RemoteMessage message) {
+    return message.data['newsId']?.toString();
+  }
+}
+
+class TeamNotificationHandler extends BaseNotificationHandler {
+  @override
+  void processMessage(RemoteMessage message, BuildContext? context) {
+    var routerLocation = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]);
+    _navigateTo(context, routerLocation);
+  }
+
+  @override
+  String? getPayload(RemoteMessage message) {
+    return 'team';
+  }
+}
+
+abstract class BaseNotificationHandler {
+  void processMessage(RemoteMessage message, BuildContext? context);
+  String? getPayload(RemoteMessage message);
+
+  @protected
+  void _navigateTo(BuildContext? context, String route) {
+    if (context != null) {
+      GoRouter.of(context).go(route);
+    }
+  }
 }

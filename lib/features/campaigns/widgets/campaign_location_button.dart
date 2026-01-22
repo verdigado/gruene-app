@@ -67,7 +67,7 @@ class _LocationButtonState extends State<CampaignLocationButton> {
       // screen edge
       padding: const EdgeInsets.only(right: 16),
       child: FloatingActionButton(
-        // heroTag: 'fab_map_view',
+        heroTag: 'fab_map_view',
         elevation: 1,
         backgroundColor: ThemeColors.textDisabled.withAlpha(150),
         onPressed: _locationStatus != null ? () => _determinePosition() : null,

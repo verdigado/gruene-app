@@ -7,11 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
@@ -27,6 +27,7 @@ import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/notification_message_type.dart';
 import 'package:gruene_app/app/services/push_notification_listener.dart';
 import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/services/secure_storage_service.dart';
@@ -67,7 +68,7 @@ Future<void> main() async {
 
   registerSecureStorage();
 
-  final navigatorKey = GlobalKey<NavigatorState>();
+  final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
   GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
   GetIt.I.registerSingleton<IpService>(IpService());
@@ -102,6 +103,23 @@ Future<void> main() async {
   GetIt.I.registerFactory<GrueneApiDivisionsService>(() => GrueneApiDivisionsService());
   GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
   GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
+
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => NewsNotificationHandler(),
+    instanceName: NotificationMessageType.news.toString(),
+  );
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => TeamNotificationHandler(),
+    instanceName: NotificationMessageType.teamMembershipUpdate.toString(),
+  );
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => TeamNotificationHandler(),
+    instanceName: NotificationMessageType.routeAssignmentUpdate.toString(),
+  );
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => TeamNotificationHandler(),
+    instanceName: NotificationMessageType.areaAssignmentUpdate.toString(),
+  );
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -144,11 +162,32 @@ class MyApp extends StatelessWidget {
               }
 
               SchedulerBinding.instance.addPostFrameCallback((_) {
-                final newsId = GetIt.I<PushNotificationListener>().initialNewsId;
-                final context = navigatorKey.currentContext;
-                if (newsId != null && context != null) {
-                  GoRouter.of(context).go('/news/$newsId');
+                final initialMessage = GetIt.I<PushNotificationListener>().initialMessage;
+                if (initialMessage == null) {
+                  return;
                 }
+                var notificationHandler = initialMessage.getNotificationHandler();
+                notificationHandler.processMessage(initialMessage, navigatorKey.currentContext);
+                // var routerLocation = '';
+                // switch (initialMessage.getMessageType()) {
+                //   case NotificationMessageType.news:
+                //     routerLocation = '${RouteLocations.getRoute([RouteLocations.news])}/${initialMessage.getNewsId()}';
+                //     break;
+                //   case NotificationMessageType.teamMembershipUpdate:
+                //     routerLocation = RouteLocations.getRoute([
+                //       RouteLocations.campaigns,
+                //       RouteLocations.campaignTeamDetail,
+                //     ]);
+                //     break;
+                //   default:
+                //     return;
+                // }
+
+                // final newsId = GetIt.I<PushNotificationListener>().initialMessage.getNewsId();
+                // final context = navigatorKey.currentContext;
+                // if (newsId != null && context != null) {
+                //   GoRouter.of(context).go(routerLocation);
+                // }
               });
 
               return MaterialApp.router(

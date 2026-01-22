@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 
-class TabModel {
+class TabModelBase {
   final String label;
   final bool disabled;
+
+  TabModelBase({required this.label, this.disabled = false});
+}
+
+class TabModel extends TabModelBase {
   final Widget view;
 
-  TabModel({required this.label, required this.view, this.disabled = false});
+  TabModel({required super.label, required this.view, super.disabled});
+}
+
+class RouterTabModel extends TabModelBase {
+  final String route;
+
+  RouterTabModel({required super.label, required this.route, super.disabled});
 }
 
 class CustomTabBar extends StatelessWidget implements PreferredSizeWidget {
   final TabController tabController;
-  final List<TabModel> tabs;
+  final List<TabModelBase> tabs;
   final void Function(int index) onTap;
 
   const CustomTabBar({super.key, required this.tabController, required this.tabs, required this.onTap});
