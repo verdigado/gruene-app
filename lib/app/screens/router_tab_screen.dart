@@ -64,7 +64,6 @@ class _RouterTabScreenState extends State<RouterTabScreen> with SingleTickerProv
       ),
       body: TabBarView(
         controller: _tabController,
-
         physics: widget.scrollableBody ? null : NeverScrollableScrollPhysics(),
         children: widget.children,
       ),

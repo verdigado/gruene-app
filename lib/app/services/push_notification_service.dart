@@ -102,7 +102,6 @@ class PushNotificationService {
 
     final firebase = FirebaseMessaging.instance;
     var fbToken = await firebase.getToken();
-    logger.d('Firebase token: $fbToken');
 
     if (fbToken != null) {
       // register device on api for api controlled events
@@ -153,7 +152,6 @@ class PushNotificationService {
     topicEnabled(PushNotificationTopic topic) => _settings.topics[topic] ?? true;
 
     topics.addAll(await _getNewsTopics(topicEnabled));
-    topics.addAll(await _getApiTopics(topicEnabled));
 
     return topics;
   }
@@ -218,12 +216,5 @@ class PushNotificationService {
     }
 
     await _secureStorage.write(key: SecureStorageKeys.pushNotificationsFcmTopics, value: jsonEncode([]));
-  }
-
-  Future<Iterable<String>> _getApiTopics(bool Function(PushNotificationTopic topic) topicEnabled) async {
-    final topics = <String>[];
-    // Add API-specific topics here
-
-    return topics;
   }
 }
