@@ -7,11 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
@@ -27,6 +27,8 @@ import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/notification_message_type.dart';
+import 'package:gruene_app/app/services/push_notification_handlers/notification_handlers.dart';
 import 'package:gruene_app/app/services/push_notification_listener.dart';
 import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/services/secure_storage_service.dart';
@@ -67,7 +69,10 @@ Future<void> main() async {
 
   registerSecureStorage();
 
-  final navigatorKey = GlobalKey<NavigatorState>();
+  final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
+  GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
+  GetIt.I.registerSingleton<IpService>(IpService());
 
   final pushNotificationService = PushNotificationService();
   await pushNotificationService.initialize();
@@ -78,8 +83,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<PushNotificationListener>(pushNotificationListener);
 
   GetIt.I.registerSingleton<AppSettings>(AppSettings());
-  GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
-  GetIt.I.registerSingleton<IpService>(IpService());
+
   // Warning: The gruene api singleton depends on the auth repository which depends on the authenticator singleton
   // Therefore this should be last
   GetIt.I.registerSingleton<GrueneApi>(await createGrueneApiClient());
@@ -100,6 +104,23 @@ Future<void> main() async {
   GetIt.I.registerFactory<GrueneApiDivisionsService>(() => GrueneApiDivisionsService());
   GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
   GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
+
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => NewsNotificationHandler(),
+    instanceName: NotificationMessageType.news.toString(),
+  );
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => TeamNotificationHandler(),
+    instanceName: NotificationMessageType.teamMembershipUpdate.toString(),
+  );
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
+    instanceName: NotificationMessageType.routeAssignmentUpdate.toString(),
+  );
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
+    instanceName: NotificationMessageType.areaAssignmentUpdate.toString(),
+  );
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -142,11 +163,11 @@ class MyApp extends StatelessWidget {
               }
 
               SchedulerBinding.instance.addPostFrameCallback((_) {
-                final newsId = GetIt.I<PushNotificationListener>().initialNewsId;
-                final context = navigatorKey.currentContext;
-                if (newsId != null && context != null) {
-                  GoRouter.of(context).go('/news/$newsId');
+                final initialMessage = GetIt.I<PushNotificationListener>().initialMessage;
+                if (initialMessage == null) {
+                  return;
                 }
+                initialMessage.processMessage(navigatorKey.currentContext);
               });
 
               return MaterialApp.router(

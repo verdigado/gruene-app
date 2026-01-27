@@ -9,11 +9,9 @@ import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/bottom_navigation.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-
 GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigatorKey) {
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: navigatorKey,
     initialLocation: Routes.news.path,
     routes: [
       Routes.login,

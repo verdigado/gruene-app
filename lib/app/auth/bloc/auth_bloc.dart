@@ -21,7 +21,7 @@ class Unauthenticated extends AuthState {}
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
-  final PushNotificationService _pushNotificationService = GetIt.instance<PushNotificationService>();
+  final PushNotificationService _pushNotificationService = GetIt.I<PushNotificationService>();
 
   Stream<AuthState> get authStateStream => stream;
 

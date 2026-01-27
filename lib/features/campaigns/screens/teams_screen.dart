@@ -55,7 +55,10 @@ class _TeamsScreenState extends State<TeamsScreen> with NewTeamMixin {
         return Future.delayed(Duration.zero, reload);
       },
 
-      child: SingleChildScrollView(child: Column(children: rows)),
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Column(children: rows),
+      ),
     );
   }
 

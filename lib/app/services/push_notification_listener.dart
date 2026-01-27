@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/services/converters.dart';
 
 class PushNotificationListener {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -16,8 +16,8 @@ class PushNotificationListener {
     importance: Importance.high,
   );
 
-  String? _initialNewsId;
-  String? get initialNewsId => _initialNewsId;
+  RemoteMessage? _initialMessage;
+  RemoteMessage? get initialMessage => _initialMessage;
 
   PushNotificationListener(this.navigatorKey);
 
@@ -31,7 +31,7 @@ class PushNotificationListener {
 
   Future<void> _handleInitialMessage() async {
     final message = await _firebaseMessaging.getInitialMessage();
-    _initialNewsId = message?.data['newsId']?.toString();
+    _initialMessage = message;
   }
 
   void _registerForegroundMessageHandler() {
@@ -40,10 +40,7 @@ class PushNotificationListener {
 
   void _registerNotificationTapHandler() {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      final newsId = message.data['newsId'];
-      if (newsId != null) {
-        _navigateTo('/news/$newsId');
-      }
+      message.processMessage(navigatorKey.currentContext);
     });
 
     const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
@@ -58,11 +55,7 @@ class PushNotificationListener {
         iOS: initializationSettingsDarwin,
       ),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        final payload = response.payload;
-        if (payload != null && payload.startsWith('news.')) {
-          final newsId = payload.replaceFirst('news.', '');
-          _navigateTo('/news/$newsId');
-        }
+        response.processNotificationResponse(navigatorKey.currentContext);
       },
     );
   }
@@ -79,7 +72,8 @@ class PushNotificationListener {
 
   void _handleMessage(RemoteMessage message) {
     final notification = message.notification;
-    final newsId = message.data['newsId'];
+
+    String? payload = message.getPayload();
 
     if (notification != null) {
       _localNotifications.show(
@@ -96,15 +90,8 @@ class PushNotificationListener {
             icon: '@mipmap/ic_launcher',
           ),
         ),
-        payload: newsId != null ? 'news.$newsId' : null,
+        payload: payload,
       );
-    }
-  }
-
-  void _navigateTo(String route) {
-    final context = navigatorKey.currentContext;
-    if (context != null) {
-      GoRouter.of(context).go(route);
     }
   }
 }

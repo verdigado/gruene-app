@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class BottomNavigationItem {
   final String label;
-  final String route;
   final IconData? icon;
   final String? assetIcon;
 
-  BottomNavigationItem({required this.label, required this.route, this.icon, this.assetIcon})
-    : assert(icon != null || assetIcon != null);
+  BottomNavigationItem({required this.label, this.icon, this.assetIcon}) : assert(icon != null || assetIcon != null);
 }
 
 final List<BottomNavigationItem> bottomNavigationItems = [
-  BottomNavigationItem(label: t.news.label, route: Routes.news.path, icon: Icons.feed_outlined),
-  BottomNavigationItem(label: t.events.label, route: Routes.events.path, icon: Icons.event),
-  BottomNavigationItem(label: t.campaigns.label, route: Routes.campaigns.path, icon: Icons.campaign_outlined),
-  BottomNavigationItem(label: t.profiles.label, route: Routes.profiles.path, icon: Icons.group_outlined),
-  BottomNavigationItem(label: t.mfa.label, route: Routes.mfa.path, assetIcon: 'assets/icons/mfa.svg'),
-  BottomNavigationItem(label: t.tools.label, route: Routes.tools.path, icon: Icons.menu_outlined),
+  BottomNavigationItem(label: t.news.label, icon: Icons.feed_outlined),
+  BottomNavigationItem(label: t.events.label, icon: Icons.event),
+  BottomNavigationItem(label: t.campaigns.label, icon: Icons.campaign_outlined),
+  BottomNavigationItem(label: t.profiles.label, icon: Icons.group_outlined),
+  BottomNavigationItem(label: t.mfa.label, assetIcon: 'assets/icons/mfa.svg'),
+  BottomNavigationItem(label: t.tools.label, icon: Icons.menu_outlined),
 ];
