@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
 
 typedef FilterChipStateChangedCallback = void Function(bool state);
 
@@ -16,8 +19,14 @@ class FilterChipModel {
 class FilterChipCampaign extends StatefulWidget {
   final List<FilterChipModel> filterOptions;
   final Map<String, List<String>>? filterExclusions;
+  final FilterChipController filterController;
 
-  const FilterChipCampaign(this.filterOptions, {this.filterExclusions, super.key});
+  const FilterChipCampaign({
+    required this.filterOptions,
+    required this.filterController,
+    this.filterExclusions,
+    super.key,
+  });
 
   @override
   State<FilterChipCampaign> createState() => _FilterChipCampaignState();
@@ -28,21 +37,31 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
 
   @override
   void initState() {
-    super.initState();
-
     currentActiveFilters.addAll(widget.filterOptions.where((x) => x.isActive));
+    widget.filterController.addListener(_selectItem);
+    logger.d('Active: ${widget.filterController.value}');
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _selectItem();
+    });
+    super.initState();
   }
 
-  void unselect(String itemLabel) {
+  @override
+  void dispose() {
+    widget.filterController.removeListener(_selectItem);
+    super.dispose();
+  }
+
+  void _unselect(String itemLabel) {
     currentActiveFilters.removeWhere((z) => z.text == itemLabel);
   }
 
-  void unselectExclusions(FilterChipModel item) {
+  void _unselectExclusions(FilterChipModel item) {
     if (widget.filterExclusions != null) {
       widget.filterExclusions?.entries
           .where((x) => x.key == item.text)
           .map((x) => x.value)
-          .forEach((v) => v.forEach(unselect));
+          .forEach((v) => v.forEach(_unselect));
     }
   }
 
@@ -57,14 +76,14 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 16,
-            children: [SizedBox.shrink(), ...widget.filterOptions.map(getFilterChipItem), SizedBox.shrink()],
+            children: [SizedBox.shrink(), ...widget.filterOptions.map(_getFilterChipItem), SizedBox.shrink()],
           ),
         ),
       ),
     );
   }
 
-  FilterChip getFilterChipItem(FilterChipModel filterItem) {
+  FilterChip _getFilterChipItem(FilterChipModel filterItem) {
     return FilterChip(
       label: Text(filterItem.text),
       backgroundColor: ThemeColors.background,
@@ -77,19 +96,28 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
       selected: currentActiveFilters.contains(filterItem),
       showCheckmark: false,
       labelStyle: TextStyle(color: filterItem.isEnabled ? ChipLabelColor() : ThemeColors.textDisabled),
-      onSelected: (bool selected) {
-        filterItem.stateChanged!(selected);
-        setState(() {
-          if (!filterItem.isEnabled) return;
-          if (selected) {
-            unselectExclusions(filterItem);
-            currentActiveFilters.add(filterItem);
-          } else {
-            currentActiveFilters.remove(filterItem);
-          }
-        });
-      },
+      onSelected: (bool selected) => _executeSelection(filterItem, selected),
     );
+  }
+
+  void _executeSelection(FilterChipModel filterItem, bool selected) {
+    filterItem.stateChanged!(selected);
+    setState(() {
+      if (!filterItem.isEnabled) return;
+      if (selected) {
+        _unselectExclusions(filterItem);
+        currentActiveFilters.add(filterItem);
+      } else {
+        currentActiveFilters.remove(filterItem);
+      }
+    });
+  }
+
+  void _selectItem() {
+    if (widget.filterController.value == null) return;
+    var filterItem = widget.filterOptions.where((f) => f.text == widget.filterController.value).singleOrNull;
+    if (filterItem == null) return;
+    _executeSelection(filterItem, true);
   }
 }
 

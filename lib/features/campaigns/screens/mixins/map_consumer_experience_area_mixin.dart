@@ -54,7 +54,8 @@ mixin MapConsumerExperienceAreaMixin {
     );
   }
 
-  Future<void> onExperienceAreaLayerStateChanged(bool state, MapInfo mapInfo) async {
+  void onExperienceAreaLayerStateChanged(bool state, MapInfo mapInfo) {
+    if (experienceAreasVisible == state) return;
     experienceAreasVisible = state;
     if (experienceAreasVisible) {
       loadExperienceAreaLayer(mapInfo);

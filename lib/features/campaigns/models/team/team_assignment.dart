@@ -1,6 +1,7 @@
 import 'package:turf/turf.dart';
 
 class AssignedElement {
+  final String id;
   final TeamAssignmentStatus status;
   final String name;
   final TeamAssignmentType type;
@@ -10,6 +11,7 @@ class AssignedElement {
   final GeometryObject coords;
 
   AssignedElement({
+    required this.id,
     required this.status,
     required this.name,
     required this.type,

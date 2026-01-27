@@ -56,6 +56,7 @@ mixin MapConsumerPollingStationMixin {
   }
 
   void onPollingStationLayerStateChanged(bool state, MapInfo mapInfo) async {
+    if (pollingStationVisible == state) return;
     pollingStationVisible = state;
     if (pollingStationVisible) {
       loadPollingStationLayer(mapInfo);

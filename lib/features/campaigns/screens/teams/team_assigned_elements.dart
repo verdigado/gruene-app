@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart' hide Route;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
 import 'package:gruene_app/features/campaigns/models/team/team_assignment.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
@@ -112,26 +116,29 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
       ),
-      child: Row(
-        children: [
-          SizedBox(
-            height: 24,
-            width: 24,
-            child: SvgPicture.asset(_getAssetLocationByAssignmentType(assignedElement.type)),
-          ),
-          SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(assignedElement.name, style: theme.textTheme.titleMedium),
+      child: GestureDetector(
+        onTap: () => _switchToMap(assignedElement),
+        child: Row(
+          children: [
+            SizedBox(
+              height: 24,
+              width: 24,
+              child: SvgPicture.asset(_getAssetLocationByAssignmentType(assignedElement.type)),
+            ),
+            SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(assignedElement.name, style: theme.textTheme.titleMedium),
 
-              Text(
-                _getAssignmentInfoText(assignedElement),
-                style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
-              ),
-            ],
-          ),
-        ],
+                Text(
+                  _getAssignmentInfoText(assignedElement),
+                  style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
     if (assignedElement.status == TeamAssignmentStatus.closed) {
@@ -178,5 +185,34 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       return a.status == TeamAssignmentStatus.open ? -1 : 1;
     }
     return a.assignmentDate.compareTo(b.assignmentDate) * -1;
+  }
+
+  Future<void> _switchToMap(AssignedElement assignedElement) async {
+    MapScreenController mapScreenController;
+    String route;
+    switch (assignedElement.type) {
+      case TeamAssignmentType.door:
+        route = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignDoorDetail]);
+        mapScreenController = GetIt.I<MapScreenController>(instanceName: PoiServiceType.door.toString());
+      case TeamAssignmentType.flyer:
+        route = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignFlyerDetail]);
+        mapScreenController = GetIt.I<MapScreenController>(instanceName: PoiServiceType.flyer.toString());
+      case TeamAssignmentType.poster:
+        route = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignPosterDetail]);
+        mapScreenController = GetIt.I<MapScreenController>(instanceName: PoiServiceType.poster.toString());
+    }
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    Future.delayed(Duration.zero, () async {
+      var localContext = context;
+      if (!localContext.mounted) return;
+
+      GoRouter.of(localContext).go(route);
+      switch (assignedElement.elementType) {
+        case AssignedElementType.route:
+          mapScreenController.showRoute(assignedElement.id);
+        case AssignedElementType.area:
+          mapScreenController.showArea(assignedElement.id);
+      }
+    });
   }
 }
