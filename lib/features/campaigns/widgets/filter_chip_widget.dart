@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
 
 typedef FilterChipStateChangedCallback = void Function(bool state);
@@ -39,7 +38,6 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
   void initState() {
     currentActiveFilters.addAll(widget.filterOptions.where((x) => x.isActive));
     widget.filterController.addListener(_selectItem);
-    logger.d('Active: ${widget.filterController.value}');
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _selectItem();
     });

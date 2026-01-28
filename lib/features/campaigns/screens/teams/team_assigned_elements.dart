@@ -116,7 +116,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
       ),
-      child: GestureDetector(
+      child: InkWell(
         onTap: () => _switchToMap(assignedElement),
         child: Row(
           children: [
