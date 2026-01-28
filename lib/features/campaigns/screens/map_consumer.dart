@@ -222,7 +222,12 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   void showFocusAreaInfoAtPoint(Point<double> point) async {
     if (!focusAreasVisible) return;
-    var features = await mapController.getFeaturesInScreen(point, [CampaignConstants.focusAreaFillLayerId]);
+    var features = await mapController.getFeaturesInScreen(
+      point,
+      CampaignConstants.focusAreaFillLayerId,
+      CampaignConstants.focusAreaSourceName,
+    );
+
     if (features.isNotEmpty) {
       final feature = turf.Feature.fromJson(features.first as Map<String, dynamic>);
       if (feature.properties == null) return;

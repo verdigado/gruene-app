@@ -231,7 +231,11 @@ class _MapContainerState extends State<MapContainer>
     final onFeatureClick = widget.onFeatureClick;
     final onNoFeatureClick = widget.onNoFeatureClick;
 
-    final jsonFeaturesPoiMarkers = await getFeaturesInScreen(point, [CampaignConstants.markerLayerId]);
+    final jsonFeaturesPoiMarkers = await getFeaturesInScreen(
+      point,
+      CampaignConstants.markerLayerId,
+      CampaignConstants.poiMarkerSourceId,
+    );
     final poiMarkers = jsonFeaturesPoiMarkers.map((e) => e as Map<String, dynamic>).toList();
 
     if (poiMarkers.isNotEmpty && onFeatureClick != null) {
@@ -258,9 +262,11 @@ class _MapContainerState extends State<MapContainer>
       return;
     }
 
-    final jsonFeaturesPollingStations = await getFeaturesInScreen(point, [
+    final jsonFeaturesPollingStations = await getFeaturesInScreen(
+      point,
       CampaignConstants.pollingStationSymbolLayerId,
-    ]);
+      CampaignConstants.pollingStationSourceName,
+    );
     final pollingStations = jsonFeaturesPollingStations.map((e) => e as Map<String, dynamic>).toList();
 
     if (pollingStations.isNotEmpty) {
@@ -270,7 +276,11 @@ class _MapContainerState extends State<MapContainer>
       return;
     }
 
-    final jsonFeaturesRoutes = await getFeaturesInScreen(point, [CampaignConstants.routesLineLayerId]);
+    final jsonFeaturesRoutes = await getFeaturesInScreen(
+      point,
+      CampaignConstants.routesLineLayerId,
+      CampaignConstants.routesSourceName,
+    );
     final routes = jsonFeaturesRoutes.map((e) => e as Map<String, dynamic>).toList();
 
     if (routes.isNotEmpty) {
@@ -280,7 +290,11 @@ class _MapContainerState extends State<MapContainer>
       return;
     }
 
-    final jsonFeaturesExperienceAreas = await getFeaturesInScreen(point, [CampaignConstants.experienceAreaLayerId]);
+    final jsonFeaturesExperienceAreas = await getFeaturesInScreen(
+      point,
+      CampaignConstants.experienceAreaLayerId,
+      CampaignConstants.experienceAreaSourceName,
+    );
     final experienceAreas = jsonFeaturesExperienceAreas.map((e) => e as Map<String, dynamic>).toList();
 
     if (experienceAreas.isNotEmpty) {
@@ -289,7 +303,11 @@ class _MapContainerState extends State<MapContainer>
       return;
     }
 
-    final jsonFeaturesActionAreas = await getFeaturesInScreen(point, [CampaignConstants.actionAreaLayerId]);
+    final jsonFeaturesActionAreas = await getFeaturesInScreen(
+      point,
+      CampaignConstants.actionAreaLayerId,
+      CampaignConstants.actionAreaSourceName,
+    );
     final actionAreas = jsonFeaturesActionAreas.map((e) => e as Map<String, dynamic>).toList();
 
     if (actionAreas.isNotEmpty) {
@@ -311,8 +329,8 @@ class _MapContainerState extends State<MapContainer>
   }
 
   @override
-  Future<dynamic> getClosestFeaturesInScreen(Point<double> point, List<String> layers) async {
-    var features = await getFeaturesInScreen(point, layers);
+  Future<dynamic> getClosestFeaturesInScreen(Point<double> point, String displayLayer, String sourceLayer) async {
+    var features = await getFeaturesInScreen(point, displayLayer, sourceLayer);
     if (features.isNotEmpty) {
       final controller = _controller!;
       final targetLatLng = await controller.toLatLng(point);
@@ -323,15 +341,24 @@ class _MapContainerState extends State<MapContainer>
   }
 
   @override
-  Future<List<dynamic>> getFeaturesInScreen(Point<double> point, List<String> layers) async {
+  Future<List<dynamic>> getFeaturesInScreen(Point<double> point, String displayLayer, String sourceLayer) async {
     final controller = _controller!;
     final pixelRatio = MediaQuery.of(context).devicePixelRatio;
 
     final touchTargetSize = pixelRatio * 38.0; // corresponds to 1 cm roughly
     final rect = Rect.fromCenter(center: Offset(point.x, point.y), width: touchTargetSize, height: touchTargetSize);
 
-    final jsonFeatures = await controller.queryRenderedFeaturesInRect(rect, layers, null);
-    return jsonFeatures;
+    final jsonFeatures = await controller.queryRenderedFeaturesInRect(rect, [displayLayer], null);
+    if (jsonFeatures.isEmpty) return jsonFeatures;
+    // Rendered features only contain the rendered geometry which may be limited to the viewport.
+    // We use the MapFeatureManager to get the correct markers with the full geometry
+    var markers = _mapFeatureManager.getMarkers(sourceLayer);
+    var allIds = jsonFeatures
+        .map((f) => turf.Feature.fromJson(f as Map<String, dynamic>))
+        .map((e) => e.id.toString())
+        .toList();
+    var jsonFeaturesFromMarkerManager = markers.where((el) => allIds.contains(el.id)).map((x) => x.toJson()).toList();
+    return jsonFeaturesFromMarkerManager;
   }
 
   void _onCameraIdle() async {
