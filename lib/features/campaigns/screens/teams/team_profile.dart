@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
@@ -98,9 +101,16 @@ class TeamProfile extends StatelessWidget {
     var newTeamWidget = EditTeamBasicInfoWidget(team: currentTeam);
     var result = await showModalBottomSheet<Team>(
       context: context,
-      builder: (context) => newTeamWidget,
-      isScrollControlled: false,
+      // builder: (context) => newTeamWidget,
+      builder: (context) => Padding(
+        padding: EdgeInsetsGeometry.only(
+          bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding),
+        ),
+        child: newTeamWidget,
+      ),
+      isScrollControlled: true,
       isDismissible: true,
+      useRootNavigator: true,
       backgroundColor: theme.colorScheme.surface,
     );
 
@@ -123,6 +133,7 @@ class TeamProfile extends StatelessWidget {
           isDismissible: false,
           enableDrag: false,
           backgroundColor: theme.colorScheme.surface,
+          useRootNavigator: true,
         ) ??
         false;
 

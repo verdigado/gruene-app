@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/full_width_image.dart';
 
@@ -30,7 +31,10 @@ class ModalBottomSheet extends StatelessWidget {
                 spacing: 8,
                 children: [
                   if (image != null) FullWidthImage(image: image, heightRatio: 9 / 16),
-                  Padding(padding: EdgeInsets.fromLTRB(16, image == null ? 32 : 16, 16, 60), child: child),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(16, image == null ? 32 : 16, 16, DesignConstants.bottomPadding),
+                    child: child,
+                  ),
                 ],
               ),
             ),
