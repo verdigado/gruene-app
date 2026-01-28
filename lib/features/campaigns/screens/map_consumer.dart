@@ -50,6 +50,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
         MapConsumerFocusAreaMixin,
         MapConsumerPollingStationMixin {
   late MapController mapController;
+  bool _mapCreated = false;
 
   final NominatimService _nominatimService = GetIt.I<NominatimService>();
 
@@ -94,6 +95,12 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
   void onMapCreated(MapController controller) {
     mapController = controller;
+    setState(() {
+      _mapCreated = true;
+    });
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _onMapScreenControllerChanged();
+    });
   }
 
   void addPOIClicked<U, V extends Widget, W>(
@@ -404,6 +411,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   void _onMapScreenControllerChanged() {
+    if (!_mapCreated) return;
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       final scaleFactor = 1.2;
       if (mapScreenController.routeId != null) {
@@ -411,15 +419,15 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
         var routeService = GetIt.I<GrueneApiRouteService>();
         var route = await routeService.getRoute(mapScreenController.routeId!);
         var bbox = turf.bbox(route.lineString.asTurfLine()).scale(scaleFactor);
-        // mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
-        // mapContainerController.showRoute(route);
+        mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
+        mapContainerController.showRoute(route);
       } else if (mapScreenController.areaId != null) {
         filterController.enableFilterChip(t.campaigns.filters.action_areas);
         var areaService = GetIt.I<GrueneApiActionAreaService>();
         var area = await areaService.getActionArea(mapScreenController.areaId!);
         var bbox = turf.bbox(area.polygon.asTurfPolygon()).scale(scaleFactor);
-        // mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
-        // mapContainerController.showArea(area);
+        mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
+        mapContainerController.showArea(area);
       }
     });
   }

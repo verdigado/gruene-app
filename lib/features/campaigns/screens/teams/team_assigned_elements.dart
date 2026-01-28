@@ -201,18 +201,15 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
         route = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignPosterDetail]);
         mapScreenController = GetIt.I<MapScreenController>(instanceName: PoiServiceType.poster.toString());
     }
-    // SchedulerBinding.instance.addPostFrameCallback((_) {
-    Future.delayed(Duration.zero, () async {
-      var localContext = context;
-      if (!localContext.mounted) return;
+    var localContext = context;
+    if (!localContext.mounted) return;
 
-      GoRouter.of(localContext).go(route);
-      switch (assignedElement.elementType) {
-        case AssignedElementType.route:
-          mapScreenController.showRoute(assignedElement.id);
-        case AssignedElementType.area:
-          mapScreenController.showArea(assignedElement.id);
-      }
-    });
+    GoRouter.of(localContext).go(route);
+    switch (assignedElement.elementType) {
+      case AssignedElementType.route:
+        mapScreenController.showRoute(assignedElement.id);
+      case AssignedElementType.area:
+        mapScreenController.showArea(assignedElement.id);
+    }
   }
 }
