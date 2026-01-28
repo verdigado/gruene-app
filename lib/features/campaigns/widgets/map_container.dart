@@ -357,7 +357,10 @@ class _MapContainerState extends State<MapContainer>
         .map((f) => turf.Feature.fromJson(f as Map<String, dynamic>))
         .map((e) => e.id.toString())
         .toList();
-    var jsonFeaturesFromMarkerManager = markers.where((el) => allIds.contains(el.id)).map((x) => x.toJson()).toList();
+    var jsonFeaturesFromMarkerManager = markers
+        .where((el) => allIds.contains(el.id.toString()))
+        .map((x) => x.toJson())
+        .toList();
     return jsonFeaturesFromMarkerManager;
   }
 
