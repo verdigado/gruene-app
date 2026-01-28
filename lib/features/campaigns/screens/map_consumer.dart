@@ -1,13 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
+import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
+import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
+import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
+import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
@@ -44,6 +50,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
         MapConsumerFocusAreaMixin,
         MapConsumerPollingStationMixin {
   late MapController mapController;
+  bool _mapCreated = false;
 
   final NominatimService _nominatimService = GetIt.I<NominatimService>();
 
@@ -57,20 +64,43 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   String? _lastFocusAreaId;
   final campaignActionCache = GetIt.I<CampaignActionCache>();
   final PoiServiceType poiType;
+  late MapScreenController mapScreenController;
+  final FilterChipController filterController = FilterChipController();
+  final MapContainerController mapContainerController = MapContainerController();
 
-  MapConsumer(this.poiType);
+  MapConsumer(this.poiType) {
+    mapScreenController = GetIt.I<MapScreenController>(instanceName: poiType.toString());
+  }
 
   @override
   GrueneApiCampaignsPoiBaseService get campaignService;
 
   @override
+  void initState() {
+    mapScreenController.addListener(_onMapScreenControllerChanged);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _onMapScreenControllerChanged();
+    });
+    super.initState();
+  }
+
+  @override
   void dispose() {
+    mapScreenController.removeListener(_onMapScreenControllerChanged);
+    filterController.dispose();
+    mapContainerController.dispose();
     _lastInfoSnackBar?.close();
     super.dispose();
   }
 
   void onMapCreated(MapController controller) {
     mapController = controller;
+    setState(() {
+      _mapCreated = true;
+    });
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _onMapScreenControllerChanged();
+    });
   }
 
   void addPOIClicked<U, V extends Widget, W>(
@@ -343,8 +373,8 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   @override
-  void navigateMapTo(LatLng location) {
-    mapController.navigateMapTo(location);
+  void navigateMapToLocation(LatLng location) {
+    mapController.navigateMapToLocation(location);
   }
 
   Future<void> savePoi(PoiUpdateType poiUpdate) async {
@@ -378,6 +408,28 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       context: context,
       loadCachedLayer: _loadCachedLayer,
     );
+  }
+
+  void _onMapScreenControllerChanged() {
+    if (!_mapCreated) return;
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      final scaleFactor = 1.2;
+      if (mapScreenController.routeId != null) {
+        filterController.enableFilterChip(t.campaigns.filters.routes);
+        var routeService = GetIt.I<GrueneApiRouteService>();
+        var route = await routeService.getRoute(mapScreenController.routeId!);
+        var bbox = turf.bbox(route.lineString.asTurfLine()).scale(scaleFactor);
+        mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
+        mapContainerController.showRoute(route);
+      } else if (mapScreenController.areaId != null) {
+        filterController.enableFilterChip(t.campaigns.filters.action_areas);
+        var areaService = GetIt.I<GrueneApiActionAreaService>();
+        var area = await areaService.getActionArea(mapScreenController.areaId!);
+        var bbox = turf.bbox(area.polygon.asTurfPolygon()).scale(scaleFactor);
+        mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
+        mapContainerController.showArea(area);
+      }
+    });
   }
 
   Future<PoiDetailType> getCachedPoi(String poiId);

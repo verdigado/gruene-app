@@ -80,6 +80,7 @@ mixin MapConsumerRouteMixin on InfoBox {
   }
 
   void onRouteLayerStateChanged(bool state, MapInfo mapInfo) async {
+    if (routesVisible == state) return;
     routesVisible = state;
     if (routesVisible) {
       loadRouteLayer(mapInfo, true);

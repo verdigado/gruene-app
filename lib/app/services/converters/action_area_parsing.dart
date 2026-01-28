@@ -24,6 +24,7 @@ extension ActionAreaListParsing on List<Area> {
 extension AreaAssignmentParsing on AreaAssignment {
   AssignedElement asAssignedElement() {
     return AssignedElement(
+      id: id,
       status: status.asTeamAsssignmentStatus(),
       name: name ?? '',
       type: type.asTeamAssignmentType(),

@@ -153,7 +153,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
             Expanded(
               child: SingleChildScrollView(
                 child: GestureDetector(
-                  onTap: () => _moveMapTo(result.location),
+                  onTap: () => _moveMapToLocation(result.location),
                   child: Text(
                     result.displayName,
                     style: theme.textTheme.bodyMedium!.copyWith(color: ThemeColors.background),
@@ -163,7 +163,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
               ),
             ),
             IconButton(
-              onPressed: () => _moveMapTo(result.location),
+              onPressed: () => _moveMapToLocation(result.location),
               icon: Icon(Icons.arrow_forward_outlined, color: ThemeColors.background),
             ),
           ],
@@ -172,11 +172,11 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
     );
   }
 
-  void navigateMapTo(LatLng location);
+  void navigateMapToLocation(LatLng location);
 
-  void _moveMapTo(LatLng location) {
+  void _moveMapToLocation(LatLng location) {
     _hideSearchBar();
-    navigateMapTo(location);
+    navigateMapToLocation(location);
   }
 
   void _hideSearchBar() {

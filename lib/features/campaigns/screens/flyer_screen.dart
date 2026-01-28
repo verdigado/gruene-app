@@ -60,12 +60,14 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
         stateChanged: (state) => onExperienceAreaLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),
     ];
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final mapContainer = MapWithLocation(
+      mapContainerController: mapContainerController,
       onMapCreated: onMapCreated,
       addPOIClicked: _addPOIClicked,
       loadVisiblePois: loadVisiblePois,
@@ -81,7 +83,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
 
     return Column(
       children: [
-        FilterChipCampaign(flyerFilter),
+        FilterChipCampaign(filterOptions: flyerFilter, filterController: filterController),
         Expanded(child: Stack(children: [mapContainer, ...getSearchWidgets(context)])),
       ],
     );

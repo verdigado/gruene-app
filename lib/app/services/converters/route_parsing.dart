@@ -23,6 +23,7 @@ extension RouteListParsing on List<Route> {
 extension RouteAssignmentParsing on RouteAssignment {
   AssignedElement asAssignedElement() {
     return AssignedElement(
+      id: id,
       status: status.asTeamAsssignmentStatus(),
       name: name ?? '',
       type: type.asTeamAssignmentType(),

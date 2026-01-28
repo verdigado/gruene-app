@@ -81,6 +81,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
   }
 
   void onActionAreaLayerStateChanged(bool state, MapInfo mapInfo) async {
+    if (actionAreasVisible == state) return;
     actionAreasVisible = state;
     if (actionAreasVisible) {
       loadActionAreaLayer(mapInfo, true);

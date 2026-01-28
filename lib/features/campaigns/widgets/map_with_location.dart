@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
+import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
 
 class MapWithLocation extends StatelessWidget {
+  final MapContainerController mapContainerController;
   final OnMapCreatedCallback? onMapCreated;
   final AddPOIClickedCallback? addPOIClicked;
   final LoadVisiblePoisCallBack? loadVisiblePois;
@@ -17,6 +19,7 @@ class MapWithLocation extends StatelessWidget {
 
   const MapWithLocation({
     super.key,
+    required this.mapContainerController,
     required this.onMapCreated,
     required this.addPOIClicked,
     required this.loadVisiblePois,
@@ -46,6 +49,7 @@ class MapWithLocation extends StatelessWidget {
         final position = snapshot.data;
 
         return MapContainer(
+          mapContainerController: mapContainerController,
           onMapCreated: onMapCreated,
           addPOIClicked: addPOIClicked,
           loadVisiblePois: loadVisiblePois,

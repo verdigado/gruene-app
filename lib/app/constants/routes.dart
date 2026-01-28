@@ -71,10 +71,10 @@ class Routes {
   static GoRoute campaignTeamDetail = buildRoute(RouteLocations.campaignTeamDetail, TeamsScreen());
   static GoRoute campaignStatisticsDetail = buildRoute(RouteLocations.campaignStatisticsDetail, StatisticsScreen());
   static StatefulShellRoute campaignShellRoute = StatefulShellRoute(
-    builder: (BuildContext context, GoRouterState state, StatefulNavigationShell navigationShell) {
+    builder: (_, _, StatefulNavigationShell navigationShell) {
       return navigationShell;
     },
-    navigatorContainerBuilder: (BuildContext context, StatefulNavigationShell navigationShell, List<Widget> children) {
+    navigatorContainerBuilder: (_, StatefulNavigationShell navigationShell, List<Widget> children) {
       return CampaignsScreen(navigationShell: navigationShell, children: children);
     },
     branches: [
