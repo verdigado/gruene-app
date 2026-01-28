@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/screens/profile/profile_visibility_setting.dart';
@@ -15,7 +16,7 @@ class ProfileVisibilityHint extends StatelessWidget {
   Widget build(BuildContext context) {
     if (currentProfile == null) {
       return SizedBox.shrink();
-    } else if (!currentProfile!.isVisibleInKV()) {
+    } else if (currentProfile!.isVisibleInKV()) {
       var theme = Theme.of(context);
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -58,9 +59,13 @@ class ProfileVisibilityHint extends StatelessWidget {
     var newTeamWidget = ProfileVisibilitySetting(currentProfile: currentProfile!);
     var newProfile = await showModalBottomSheet<Profile>(
       context: context,
-      builder: (context) => newTeamWidget,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+        child: newTeamWidget,
+      ),
       isScrollControlled: false,
       isDismissible: true,
+      useRootNavigator: true,
       backgroundColor: theme.colorScheme.surface,
     );
     if (newProfile != null) {

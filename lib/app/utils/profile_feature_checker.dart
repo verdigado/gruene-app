@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
@@ -96,10 +97,14 @@ class ProfileFeatureChecker {
     var newTeamWidget = ProfileVisibilitySetting(currentProfile: currentProfile);
     await showModalBottomSheet<Profile>(
       context: context,
-      builder: (context) => newTeamWidget,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+        child: newTeamWidget,
+      ),
       isScrollControlled: false,
       isDismissible: true,
       backgroundColor: theme.colorScheme.surface,
+      useRootNavigator: true,
     );
   }
 }
