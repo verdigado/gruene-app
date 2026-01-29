@@ -101,7 +101,6 @@ class TeamProfile extends StatelessWidget {
     var newTeamWidget = EditTeamBasicInfoWidget(team: currentTeam);
     var result = await showModalBottomSheet<Team>(
       context: context,
-      // builder: (context) => newTeamWidget,
       builder: (context) => Padding(
         padding: EdgeInsetsGeometry.only(
           bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding),
