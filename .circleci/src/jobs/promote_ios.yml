@@ -1,9 +1,12 @@
 macos:
-  xcode: 16.2.0
+  xcode: 16.4.0
 environment:
   FASTLANE_SKIP_UPDATE_CHECK: true
 steps:
   - checkout
+  - run:
+      name: Set Ruby version
+      command: rbenv global 3.3.8
   - install_fastlane:
       directory: ios
   - run:
