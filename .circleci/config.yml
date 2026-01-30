@@ -58,11 +58,15 @@ commands:
                     - v1-gems-{{ arch }}-
                 name: Restore Ruby Cache
             - run:
-                command: bundle config set path 'vendor/bundle'
+                command: |
+                    rbenv global 3.3.8
+                    bundle config set path 'vendor/bundle'
                 name: Configure Installation Directory
                 working_directory: << parameters.directory >>
             - run:
-                command: bundle check || bundle install
+                command: |
+                    rbenv global 3.3.8
+                    bundle check || bundle install
                 name: Bundle Install
                 working_directory: << parameters.directory >>
             - save_cache:
@@ -287,7 +291,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.1.0
+            xcode: 16.4.0
         parameters:
             environment:
                 default: production
@@ -310,7 +314,9 @@ jobs:
                 directory: ios
             - install_cocoapods
             - run:
-                command: bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
+                command: |
+                    rbenv global 3.3.8
+                    bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
                 name: '[FL] Build'
                 working_directory: ios
             - store_artifacts:
@@ -390,7 +396,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.1.0
+            xcode: 16.4.0
         parameters:
             production_delivery:
                 description: Whether to deliver the build to production.
@@ -405,14 +411,18 @@ jobs:
                 condition: << parameters.production_delivery >>
                 steps:
                     - run:
-                        command: bundle exec fastlane ios production_upload ipa_path:attached_workspace/app-release.ipa version_name:${NEW_VERSION_NAME}
+                        command: |
+                            rbenv global 3.3.8
+                            bundle exec fastlane ios production_upload ipa_path:attached_workspace/app-release.ipa version_name:${NEW_VERSION_NAME}
                         name: '[FL] Apple AppStore Upload'
                         working_directory: ios
             - unless:
                 condition: << parameters.production_delivery >>
                 steps:
                     - run:
-                        command: bundle exec fastlane ios beta_upload ipa_path:attached_workspace/app-release.ipa
+                        command: |
+                            rbenv global 3.3.8
+                            bundle exec fastlane ios beta_upload ipa_path:attached_workspace/app-release.ipa
                         name: '[FL] Apple Testflight Upload'
                         working_directory: ios
     notify_promotion:
@@ -472,13 +482,15 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.1.0
+            xcode: 16.4.0
         steps:
             - checkout
             - install_fastlane:
                 directory: ios
             - run:
-                command: bundle exec fastlane ios promote
+                command: |
+                    rbenv global 3.3.8
+                    bundle exec fastlane ios promote
                 name: '[FL] Apple AppStore Promotion'
                 working_directory: ios
 parameters:

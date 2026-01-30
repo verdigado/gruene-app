@@ -10,11 +10,15 @@ steps:
         - v1-gems-{{ arch }}-
   - run:
       name: Configure Installation Directory
-      command: bundle config set path 'vendor/bundle'
+      command: |
+        rbenv global 3.3.8
+        bundle config set path 'vendor/bundle'
       working_directory: << parameters.directory >>
   - run:
       name: Bundle Install
-      command: bundle check || bundle install
+      command: |
+        rbenv global 3.3.8
+        bundle check || bundle install
       working_directory: << parameters.directory >>
   - save_cache:
       name: Save Ruby Cache

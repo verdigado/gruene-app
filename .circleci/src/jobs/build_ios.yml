@@ -4,7 +4,7 @@ parameters:
     default: production
     enum: [production, staging]
 macos:
-  xcode: 16.1.0
+  xcode: 16.4.0
 environment:
   FASTLANE_SKIP_UPDATE_CHECK: true
 steps:
@@ -23,7 +23,9 @@ steps:
   - install_cocoapods
   - run:
       name: '[FL] Build'
-      command: bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
+      command: |
+        rbenv global 3.3.8
+        bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
       working_directory: ios
   - store_artifacts:
       path: ~/app-release.ipa

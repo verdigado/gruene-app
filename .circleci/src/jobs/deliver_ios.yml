@@ -3,7 +3,7 @@ parameters:
     description: Whether to deliver the build to production.
     type: boolean
 macos:
-  xcode: 16.1.0
+  xcode: 16.4.0
 environment:
   FASTLANE_SKIP_UPDATE_CHECK: true
 steps:
@@ -17,12 +17,16 @@ steps:
       steps:
         - run:
             name: '[FL] Apple AppStore Upload'
-            command: bundle exec fastlane ios production_upload ipa_path:attached_workspace/app-release.ipa version_name:${NEW_VERSION_NAME}
+            command: |
+              rbenv global 3.3.8
+              bundle exec fastlane ios production_upload ipa_path:attached_workspace/app-release.ipa version_name:${NEW_VERSION_NAME}
             working_directory: ios
   - unless:
       condition: << parameters.production_delivery >>
       steps:
         - run:
             name: '[FL] Apple Testflight Upload'
-            command: bundle exec fastlane ios beta_upload ipa_path:attached_workspace/app-release.ipa
+            command: |
+              rbenv global 3.3.8
+              bundle exec fastlane ios beta_upload ipa_path:attached_workspace/app-release.ipa
             working_directory: ios
