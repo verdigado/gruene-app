@@ -27,7 +27,5 @@ steps:
       steps:
         - run:
             name: '[FL] Apple Testflight Upload'
-            command: |
-              rbenv global 3.3.8
-              bundle exec fastlane ios beta_upload ipa_path:attached_workspace/app-release.ipa
+            command: bundle exec fastlane ios beta_upload ipa_path:attached_workspace/app-release.ipa
             working_directory: ios
