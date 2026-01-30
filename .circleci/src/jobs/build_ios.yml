@@ -13,6 +13,9 @@ steps:
   - run:
       name: Install rosetta
       command: softwareupdate --install-rosetta --agree-to-license
+  - run:
+      name: Set Ruby version
+      command: rbenv global 3.3.8
   - restore_environment_variables
   - install_flutter:
       precache: ios
@@ -23,9 +26,7 @@ steps:
   - install_cocoapods
   - run:
       name: '[FL] Build'
-      command: |
-        rbenv global 3.3.8
-        bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
+      command: bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
       working_directory: ios
   - store_artifacts:
       path: ~/app-release.ipa

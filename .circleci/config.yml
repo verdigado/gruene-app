@@ -58,15 +58,11 @@ commands:
                     - v1-gems-{{ arch }}-
                 name: Restore Ruby Cache
             - run:
-                command: |
-                    rbenv global 3.3.8
-                    bundle config set path 'vendor/bundle'
+                command: bundle config set path 'vendor/bundle'
                 name: Configure Installation Directory
                 working_directory: << parameters.directory >>
             - run:
-                command: |
-                    rbenv global 3.3.8
-                    bundle check || bundle install
+                command: bundle check || bundle install
                 name: Bundle Install
                 working_directory: << parameters.directory >>
             - save_cache:
@@ -305,6 +301,9 @@ jobs:
             - run:
                 command: softwareupdate --install-rosetta --agree-to-license
                 name: Install rosetta
+            - run:
+                command: rbenv global 3.3.8
+                name: Set Ruby version
             - restore_environment_variables
             - install_flutter:
                 precache: ios
@@ -314,9 +313,7 @@ jobs:
                 directory: ios
             - install_cocoapods
             - run:
-                command: |
-                    rbenv global 3.3.8
-                    bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
+                command: bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
                 name: '[FL] Build'
                 working_directory: ios
             - store_artifacts:
@@ -404,6 +401,9 @@ jobs:
         steps:
             - checkout
             - prepare_workspace
+            - run:
+                command: rbenv global 3.3.8
+                name: Set Ruby version
             - restore_environment_variables
             - install_fastlane:
                 directory: ios
@@ -411,9 +411,7 @@ jobs:
                 condition: << parameters.production_delivery >>
                 steps:
                     - run:
-                        command: |
-                            rbenv global 3.3.8
-                            bundle exec fastlane ios production_upload ipa_path:attached_workspace/app-release.ipa version_name:${NEW_VERSION_NAME}
+                        command: bundle exec fastlane ios production_upload ipa_path:attached_workspace/app-release.ipa version_name:${NEW_VERSION_NAME}
                         name: '[FL] Apple AppStore Upload'
                         working_directory: ios
             - unless:
@@ -485,12 +483,13 @@ jobs:
             xcode: 16.4.0
         steps:
             - checkout
+            - run:
+                command: rbenv global 3.3.8
+                name: Set Ruby version
             - install_fastlane:
                 directory: ios
             - run:
-                command: |
-                    rbenv global 3.3.8
-                    bundle exec fastlane ios promote
+                command: bundle exec fastlane ios promote
                 name: '[FL] Apple AppStore Promotion'
                 working_directory: ios
 parameters:

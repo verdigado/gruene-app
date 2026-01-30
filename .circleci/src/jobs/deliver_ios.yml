@@ -9,6 +9,9 @@ environment:
 steps:
   - checkout
   - prepare_workspace
+  - run:
+      name: Set Ruby version
+      command: rbenv global 3.3.8
   - restore_environment_variables
   - install_fastlane:
       directory: ios
@@ -17,9 +20,7 @@ steps:
       steps:
         - run:
             name: '[FL] Apple AppStore Upload'
-            command: |
-              rbenv global 3.3.8
-              bundle exec fastlane ios production_upload ipa_path:attached_workspace/app-release.ipa version_name:${NEW_VERSION_NAME}
+            command: bundle exec fastlane ios production_upload ipa_path:attached_workspace/app-release.ipa version_name:${NEW_VERSION_NAME}
             working_directory: ios
   - unless:
       condition: << parameters.production_delivery >>
