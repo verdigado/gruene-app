@@ -44,8 +44,16 @@ mixin NewTeamMixin {
   }
 
   void _beginCreateNewTeam(BuildContext context) async {
+    final theme = Theme.of(context);
+
     var newTeamWidget = NewTeamBasicInfoWidget();
-    var newDetails = await _showModalBottomSheet<NewTeamDetails>(newTeamWidget, context);
+    var newDetails = await showModalBottomSheet<NewTeamDetails>(
+      context: context,
+      builder: (context) => newTeamWidget,
+      isScrollControlled: false,
+      isDismissible: true,
+      backgroundColor: theme.colorScheme.surface,
+    );
 
     if (context.mounted) {
       if (newDetails != null) {
@@ -55,11 +63,19 @@ mixin NewTeamMixin {
   }
 
   void _showStepDivisionSelect(NewTeamDetails newTeamDetails, BuildContext context) async {
+    final theme = Theme.of(context);
+
     var newTeamWidget = NewTeamSelectDivisionWidget(
       newTeamDetails: newTeamDetails,
       currentUserInfo: getCurrentUserInfo(),
     );
-    var newDetails = await _showModalBottomSheet<NewTeamDetails>(newTeamWidget, context);
+    var newDetails = await showModalBottomSheet<NewTeamDetails>(
+      context: context,
+      builder: (context) => newTeamWidget,
+      isScrollControlled: false,
+      isDismissible: true,
+      backgroundColor: theme.colorScheme.surface,
+    );
 
     if (context.mounted) {
       if (newDetails != null) {
@@ -69,10 +85,17 @@ mixin NewTeamMixin {
   }
 
   void _showStepTeamLeadSelect(NewTeamDetails newTeamDetails, BuildContext context) async {
+    final theme = Theme.of(context);
     NewTeamDetails? newDetails = newTeamDetails;
     if (!newDetails.selfJoin) {
       var newTeamWidget = NewTeamSelectTeamLeadWidget(newTeamDetails: newTeamDetails);
-      newDetails = await _showModalBottomSheet<NewTeamDetails>(newTeamWidget, context);
+      newDetails = await showModalBottomSheet<NewTeamDetails>(
+        context: context,
+        builder: (context) => newTeamWidget,
+        isScrollControlled: false,
+        isDismissible: true,
+        backgroundColor: theme.colorScheme.surface,
+      );
     }
 
     if (context.mounted) {
@@ -83,12 +106,19 @@ mixin NewTeamMixin {
   }
 
   Future<void> _showStepTeamMemberSelect(NewTeamDetails newTeamDetails, BuildContext context) async {
+    final theme = Theme.of(context);
     var canceledOrSaved = false;
     NewTeamDetails? newDetails = newTeamDetails;
     while (!canceledOrSaved) {
       var newTeamWidget = NewTeamSelectTeamMemberWidget(newTeamDetails: newDetails!);
       if (!context.mounted) return;
-      newDetails = await _showModalBottomSheet<NewTeamDetails>(newTeamWidget, context);
+      newDetails = await showModalBottomSheet<NewTeamDetails>(
+        context: context,
+        builder: (context) => newTeamWidget,
+        isScrollControlled: false,
+        isDismissible: true,
+        backgroundColor: theme.colorScheme.surface,
+      );
 
       if (newDetails != null) {
         var teamService = GetIt.I<GrueneApiTeamsService>();
@@ -120,20 +150,5 @@ mixin NewTeamMixin {
         canceledOrSaved = true;
       }
     }
-  }
-
-  Future<U?> _showModalBottomSheet<U>(Widget child, BuildContext context) async {
-    var theme = Theme.of(context);
-    return await showModalBottomSheet<U>(
-      context: context,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: child,
-      ),
-      isScrollControlled: true,
-      isDismissible: true,
-      useRootNavigator: true,
-      backgroundColor: theme.colorScheme.surface,
-    );
   }
 }

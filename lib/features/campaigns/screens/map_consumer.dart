@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
@@ -196,11 +195,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       barrierColor: Colors.transparent,
       context: context,
       backgroundColor: theme.colorScheme.surface,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
-        child: detailWidget,
-      ),
-      useRootNavigator: true,
+      builder: (context) => detailWidget,
     );
   }
 
@@ -215,10 +210,9 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       isDismissible: true,
       context: context,
       backgroundColor: theme.colorScheme.surface,
-      useRootNavigator: true,
       builder: (context) => SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: getEditWidget(),
         ),
       ),
@@ -307,14 +301,10 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       var theme = Theme.of(context);
       await showModalBottomSheet<void>(
         context: context,
-        builder: (_) => Padding(
-          padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
-          child: FocusAreaGen2InfoWidget(focusArea: focusArea, poiType: poiType),
-        ),
+        builder: (_) => FocusAreaGen2InfoWidget(focusArea: focusArea, poiType: poiType),
         isScrollControlled: false,
         isDismissible: true,
         backgroundColor: theme.colorScheme.surface,
-        useRootNavigator: true,
       );
     }
   }
