@@ -1,5 +1,5 @@
 macos:
-  xcode: 16.4.0
+  xcode: 16.1.0
 environment:
   FASTLANE_SKIP_UPDATE_CHECK: true
 steps:
