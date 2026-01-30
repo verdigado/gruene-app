@@ -49,6 +49,7 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
   }
 
   void onFocusAreaLayerStateChanged(bool state, MapInfo mapInfo) async {
+    if (focusAreasVisible == state) return;
     focusAreasVisible = state;
     if (focusAreasVisible) {
       loadFocusAreaLayer(mapInfo);

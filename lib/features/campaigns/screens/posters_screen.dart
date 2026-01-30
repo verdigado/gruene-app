@@ -75,12 +75,14 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
         stateChanged: (state) => onExperienceAreaLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),
     ];
+
     super.initState();
   }
 
   @override
   Widget build(localContext) {
     var mapContainer = MapWithLocation(
+      mapContainerController: mapContainerController,
       onMapCreated: onMapCreated,
       addPOIClicked: _addPOIClicked,
       loadVisiblePois: loadVisiblePois,
@@ -98,7 +100,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
 
     return Column(
       children: [
-        FilterChipCampaign(postersFilter),
+        FilterChipCampaign(filterOptions: postersFilter, filterController: filterController),
         Expanded(
           child: Stack(
             children: [

@@ -88,3 +88,4 @@ part 'converters/team_extension.dart';
 part 'converters/profile_extension.dart';
 part 'converters/team_membership_type_parsing.dart';
 part 'converters/remote_message_extension.dart';
+part 'converters/bbox_converter.dart';

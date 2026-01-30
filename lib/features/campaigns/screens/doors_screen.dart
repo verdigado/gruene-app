@@ -68,6 +68,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
   @override
   Widget build(BuildContext context) {
     final mapContainer = MapWithLocation(
+      mapContainerController: mapContainerController,
       onMapCreated: onMapCreated,
       addPOIClicked: _addPOIClicked,
       loadVisiblePois: loadVisiblePois,
@@ -83,7 +84,7 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
 
     return Column(
       children: [
-        FilterChipCampaign(doorsFilter),
+        FilterChipCampaign(filterOptions: doorsFilter, filterController: filterController),
         Expanded(child: Stack(children: [mapContainer, ...getSearchWidgets(context)])),
       ],
     );

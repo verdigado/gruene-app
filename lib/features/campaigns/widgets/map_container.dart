@@ -14,6 +14,7 @@ import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
+import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
@@ -56,9 +57,11 @@ class MapContainer extends StatefulWidget {
   final ShowMapInfoAfterCameraMoveCallback? showMapInfoAfterCameraMove;
   final LatLng? userLocation;
   final bool locationAvailable;
+  final MapContainerController mapContainerController;
 
   const MapContainer({
     super.key,
+    required this.mapContainerController,
     required this.onMapCreated,
     required this.addPOIClicked,
     required this.loadVisiblePois,
@@ -116,6 +119,18 @@ class _MapContainerState extends State<MapContainer>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _permissionGiven = widget.locationAvailable;
+  }
+
+  @override
+  void initState() {
+    widget.mapContainerController.addListener(_showItem);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.mapContainerController.removeListener(_showItem);
+    super.dispose();
   }
 
   @override
@@ -276,7 +291,7 @@ class _MapContainerState extends State<MapContainer>
     if (routes.isNotEmpty) {
       final feature = MapHelper.getClosestFeature(routes, targetLatLng);
 
-      onRouteClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller, () => this);
+      _onRouteClick(feature);
       return;
     }
 
@@ -294,7 +309,7 @@ class _MapContainerState extends State<MapContainer>
 
     if (actionAreas.isNotEmpty) {
       final feature = MapHelper.getClosestFeature(actionAreas, targetLatLng);
-      onActionAreaClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller, () => this);
+      _onActionAreaClick(feature);
       return;
     }
 
@@ -308,6 +323,14 @@ class _MapContainerState extends State<MapContainer>
     setState(() {
       _isInFocusMode = state;
     });
+  }
+
+  void _onActionAreaClick(dynamic feature) {
+    onActionAreaClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller, () => this);
+  }
+
+  void _onRouteClick(dynamic feature) {
+    onRouteClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller, () => this);
   }
 
   @override
@@ -722,9 +745,17 @@ class _MapContainerState extends State<MapContainer>
   }
 
   @override
-  void navigateMapTo(LatLng location) async {
+  void navigateMapToLocation(LatLng location) async {
     await _controller!.animateCamera(
       CameraUpdate.newLatLngZoom(location, zoomLevelSearchLocation),
+      duration: Duration(seconds: 1),
+    );
+  }
+
+  @override
+  void navigateMapToBounds(LatLng locationSouthWest, LatLng locationNorthEast) async {
+    await _controller!.animateCamera(
+      CameraUpdate.newLatLngBounds(LatLngBounds(southwest: locationSouthWest, northeast: locationNorthEast)),
       duration: Duration(seconds: 1),
     );
   }
@@ -832,6 +863,14 @@ class _MapContainerState extends State<MapContainer>
         );
       },
     );
+  }
+
+  void _showItem() {
+    if (widget.mapContainerController.route != null) {
+      _onRouteClick(widget.mapContainerController.route!.asRouteDetail().transformToFeatureItem().toJson());
+    } else if (widget.mapContainerController.area != null) {
+      _onActionAreaClick(widget.mapContainerController.area!.asActionAreaDetail().transformToFeatureItem().toJson());
+    }
   }
 }
 
