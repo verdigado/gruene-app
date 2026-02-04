@@ -2534,6 +2534,26 @@ paths:
       summary: Find own team
       tags:
         - campaigns
+  /v1/campaigns/teams/self/statistics:
+    get:
+      operationId: teamStatistics
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamMembershipStatisticsItem'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get statistics of own team
+      tags:
+        - campaigns
   /v1/campaigns/teams/pendingInvitations:
     get:
       operationId: pendingInvitations
@@ -5968,6 +5988,38 @@ components:
         - createdAt
         - name
         - memberships
+    TeamMembershipStatisticsItem:
+      type: object
+      properties:
+        userName:
+          type: string
+          nullable: true
+        divisionName:
+          type: string
+          nullable: true
+        memberSince:
+          format: date-time
+          type: string
+        status:
+          type: string
+          enum:
+            - PENDING
+            - ACCEPTED
+            - RESIGNED
+        posterCount:
+          type: number
+        flyerCount:
+          type: number
+        openedDoorCount:
+          type: number
+        closedDoorCount:
+          type: number
+      required:
+        - status
+        - posterCount
+        - flyerCount
+        - openedDoorCount
+        - closedDoorCount
     TeamInvitation:
       type: object
       properties:

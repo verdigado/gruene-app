@@ -76,4 +76,7 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
     apiRequest: (api) => api.v1CampaignsTeamsGet(divisionKeys: [divisionKey]),
     map: (data) => data.data,
   );
+
+  Future<List<TeamMembershipStatisticsItem>> getTeamStatistics() =>
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsSelfStatisticsGet());
 }
