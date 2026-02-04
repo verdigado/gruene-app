@@ -116,29 +116,25 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
       ),
-      child: InkWell(
-        onTap: () => _switchToMap(assignedElement),
-        child: Row(
-          children: [
-            SizedBox(
-              height: 24,
-              width: 24,
-              child: SvgPicture.asset(_getAssetLocationByAssignmentType(assignedElement.type)),
-            ),
-            SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(assignedElement.name, style: theme.textTheme.titleMedium),
-
-                Text(
-                  _getAssignmentInfoText(assignedElement),
-                  style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
-                ),
-              ],
-            ),
-          ],
-        ),
+      child: Row(
+        children: [
+          SizedBox(
+            height: 24,
+            width: 24,
+            child: SvgPicture.asset(_getAssetLocationByAssignmentType(assignedElement.type)),
+          ),
+          SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(assignedElement.name, style: theme.textTheme.titleMedium),
+              Text(
+                _getAssignmentInfoText(assignedElement),
+                style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
+              ),
+            ],
+          ),
+        ],
       ),
     );
     if (assignedElement.status == TeamAssignmentStatus.closed) {
@@ -149,7 +145,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
         ],
       );
     }
-    return item;
+    return InkWell(onTap: () => _switchToMap(assignedElement), child: item);
   }
 
   String _getAssetLocationByAssignmentType(TeamAssignmentType type) {
