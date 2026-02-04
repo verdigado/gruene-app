@@ -38,6 +38,7 @@ import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/clean_layout.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
+import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache_timer.dart';
 import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
@@ -97,6 +98,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.poster.toString());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.flyer.toString());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.door.toString());
+  GetIt.I.registerSingleton<TeamRefreshController>(TeamRefreshController());
   GetIt.I.registerFactory<GrueneApiPosterService>(() => GrueneApiPosterService());
   GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
   GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());

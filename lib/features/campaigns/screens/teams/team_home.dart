@@ -4,6 +4,7 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/open_invitation_list.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_visibility_hint.dart';
@@ -27,13 +28,21 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
 
   late Team? _currentTeam;
   late Profile? _currentProfile;
+  final TeamRefreshController _teamController = GetIt.I<TeamRefreshController>();
 
   @override
   void initState() {
     super.initState();
+    _teamController.addListener(_onReload);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
+  }
+
+  @override
+  void dispose() {
+    _teamController.removeListener(_onReload);
+    super.dispose();
   }
 
   void _loadData({Team? preloadedTeam, Profile? preloadedProfile}) async {
@@ -174,5 +183,9 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
       confirmationDialogText: t.campaigns.team.archive_team_confirmation_dialog,
       actionTitle: t.common.actions.confirm,
     );
+  }
+
+  void _onReload() {
+    _loadData();
   }
 }

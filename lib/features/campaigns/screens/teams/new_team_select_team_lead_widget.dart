@@ -19,7 +19,7 @@ class NewTeamSelectTeamLeadWidget extends StatefulWidget {
 }
 
 class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidget> {
-  late PublicProfile? currentTeamLeadProfile;
+  PublicProfile? currentTeamLeadProfile;
 
   @override
   Widget build(BuildContext context) {
