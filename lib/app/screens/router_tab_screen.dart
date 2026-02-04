@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/widgets/tab_bar.dart';
 
@@ -71,9 +72,13 @@ class _RouterTabScreenState extends State<RouterTabScreen> with SingleTickerProv
   }
 
   void _switchedTab() {
-    widget.navigationShell.goBranch(
-      _tabController.index,
-      initialLocation: _tabController.index == widget.navigationShell.currentIndex,
-    );
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        widget.navigationShell.goBranch(
+          _tabController.index,
+          initialLocation: _tabController.index == widget.navigationShell.currentIndex,
+        );
+      });
+    });
   }
 }
