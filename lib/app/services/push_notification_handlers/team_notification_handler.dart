@@ -5,6 +5,7 @@ class TeamNotificationHandler extends BaseNotificationHandler {
   void processMessage(RemoteMessage message, BuildContext? context) {
     var routerLocation = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]);
     _navigateTo(context, routerLocation);
+    GetIt.I<TeamRefreshController>().reload();
   }
 
   @override
@@ -15,5 +16,6 @@ class TeamNotificationHandler extends BaseNotificationHandler {
   @override
   void processPayload(NotificationResponse response, BuildContext? context) {
     _navigateTo(context, RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]));
+    GetIt.I<TeamRefreshController>().reload();
   }
 }
