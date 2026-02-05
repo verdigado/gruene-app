@@ -16,7 +16,7 @@ class ProfileVisibilityHint extends StatelessWidget {
   Widget build(BuildContext context) {
     if (currentProfile == null) {
       return SizedBox.shrink();
-    } else if (currentProfile!.isVisibleInKV()) {
+    } else if (!currentProfile!.isVisibleInKV()) {
       var theme = Theme.of(context);
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
