@@ -344,11 +344,13 @@ class _MapContainerState extends State<MapContainer>
   }
 
   void _onActionAreaClick(dynamic feature) {
-    onActionAreaClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller, () => this);
+    Future.wait([
+      onActionAreaClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller, () => this),
+    ]);
   }
 
   void _onRouteClick(dynamic feature) {
-    onRouteClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller, () => this);
+    Future.wait([onRouteClick(feature, widget.showBottomDetailSheet, _setFocusMode, () => _controller, () => this)]);
   }
 
   @override
