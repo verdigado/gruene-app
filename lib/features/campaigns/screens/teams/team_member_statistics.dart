@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -226,30 +225,4 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
     }
     return memberItemWidget;
   }
-}
-
-class TeamStatistics {
-  final List<MemberStatistics> statistics;
-
-  TeamStatistics({required this.statistics});
-}
-
-class MemberStatistics {
-  final String name;
-  final int flyerCount;
-  final int posterCount;
-  final int openDoorCount;
-  final TeamMembershipStatus status;
-  final String division;
-  final DateTime start;
-
-  MemberStatistics({
-    required this.name,
-    required this.flyerCount,
-    required this.posterCount,
-    required this.openDoorCount,
-    this.status = TeamMembershipStatus.accepted,
-    required this.division,
-    required this.start,
-  });
 }
