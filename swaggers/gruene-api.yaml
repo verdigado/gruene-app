@@ -2537,16 +2537,19 @@ paths:
   /v1/campaigns/teams/self/statistics:
     get:
       operationId: teamStatistics
-      parameters: []
+      parameters:
+        - name: campaignId
+          required: false
+          in: query
+          schema:
+            type: string
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TeamMembershipStatisticsItem'
+                $ref: '#/components/schemas/TeamMembershipStatistics'
         '401':
           description: ''
       security:
@@ -6008,18 +6011,35 @@ components:
             - RESIGNED
         posterCount:
           type: number
+          minimum: 0
         flyerCount:
           type: number
+          minimum: 0
         openedDoorCount:
           type: number
+          minimum: 0
         closedDoorCount:
           type: number
+          minimum: 0
       required:
         - status
         - posterCount
         - flyerCount
         - openedDoorCount
         - closedDoorCount
+    TeamMembershipStatistics:
+      type: object
+      properties:
+        lastUpdate:
+          format: date-time
+          type: string
+        teamStatistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMembershipStatisticsItem'
+      required:
+        - lastUpdate
+        - teamStatistics
     TeamInvitation:
       type: object
       properties:

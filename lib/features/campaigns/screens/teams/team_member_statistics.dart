@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -19,7 +21,7 @@ class TeamMemberStatistics extends StatefulWidget {
 class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
   bool _loading = true;
   var _selectedPoiType = PoiType.poster;
-  late List<TeamMembershipStatisticsItem> _teamStatistics;
+  late TeamMembershipStatistics _teamStatistics;
 
   @override
   void initState() {
@@ -80,6 +82,22 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
               ],
             ),
             Column(children: _getMemberStats()),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+
+                  child: Row(
+                    children: [
+                      Text(
+                        t.common.updatedAt(date: _teamStatistics.lastUpdate.getAsLocalDateTimeString()),
+                        style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -119,7 +137,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
   }
 
   List<Widget> _getMemberStats() {
-    var stats = _teamStatistics;
+    var stats = _teamStatistics.teamStatistics;
     stats.sort(_compareStat);
 
     return stats.indexed.map(_getStatRow).toList();
@@ -184,7 +202,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
                           ? t.common.notAvailable
                           : DateFormat(t.campaigns.poster.date_format).format(item.memberSince!),
                     ),
-                    style: theme.textTheme.labelSmall,
+                    style: theme.textTheme.labelMedium,
                   ),
                 ],
               ),
@@ -193,7 +211,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
           Text(
             textAlign: TextAlign.end,
             NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(_getCurrentStatValue(item)),
-            style: theme.textTheme.labelSmall,
+            style: theme.textTheme.labelMedium,
           ),
         ],
       ),
