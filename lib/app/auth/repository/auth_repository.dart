@@ -17,15 +17,14 @@ class AuthRepository {
   final _secureStorage = GetIt.instance<FlutterSecureStorage>();
   final AuthenticatorService _authenticatorService = GetIt.I<AuthenticatorService>();
   final IpService _ipService = GetIt.I<IpService>();
-  String? _loginId;
 
   Future<String?> getAccessToken() async => await _secureStorage.read(key: SecureStorageKeys.accessToken);
   Future<String?> getRefreshToken() async => await _secureStorage.read(key: SecureStorageKeys.refreshToken);
 
   Future<bool> login() async {
     final authenticator = await _authenticatorService.getFirst();
-    final pollingTimer = authenticator != null ? _pollForChallenge(authenticator) : null;
-    _loginId = Uuid().v4();
+    final loginId = Uuid().v4();
+    final pollingTimer = authenticator != null ? _pollForChallenge(authenticator, loginId) : null;
     try {
       final AuthorizationTokenResponse result = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -34,7 +33,7 @@ class AuthRepository {
           allowInsecureConnections: Config.isDevelopment,
           issuer: Config.oidcIssuer,
           scopes: ['openid', 'profile', 'email', 'offline_access'],
-          additionalParameters: {'login_id': _loginId!},
+          additionalParameters: {'login_id': loginId},
         ),
       );
 
@@ -51,7 +50,6 @@ class AuthRepository {
       logger.w('Login failed: $e');
     } finally {
       stopPolling(pollingTimer);
-      _loginId = null;
     }
     return false;
   }
@@ -135,7 +133,7 @@ class AuthRepository {
     logger.d('Auth tokens deleted successfully');
   }
 
-  Timer _pollForChallenge(Authenticator authenticator) {
+  Timer _pollForChallenge(Authenticator authenticator, String loginId) {
     final startTime = DateTime.now();
     final timeout = Duration(seconds: 120);
 
@@ -147,9 +145,7 @@ class AuthRepository {
         }
 
         final challenge = await authenticator.fetchChallenge();
-        if (challenge != null &&
-            challenge.loginId == _loginId &&
-            await _ipService.isOwnIp(challenge.ipAddress)) {
+        if (challenge != null && challenge.loginId == loginId && await _ipService.isOwnIp(challenge.ipAddress)) {
           stopPolling(timer);
           await authenticator.reply(challenge: challenge, granted: true);
           logger.d('Challenge approved successfully');
