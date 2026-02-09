@@ -38,6 +38,7 @@ import 'package:gruene_app/features/campaigns/models/team/team_assignment.dart';
 import 'package:gruene_app/features/campaigns/widgets/enhanced_wheel_slider.dart';
 import 'package:gruene_app/features/campaigns/widgets/text_input_field.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.enums.swagger.dart' as api_enums;
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
