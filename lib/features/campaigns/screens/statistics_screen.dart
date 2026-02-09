@@ -1,10 +1,14 @@
+import 'dart:developer' show log;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_set.dart';
@@ -228,6 +232,14 @@ class StatisticsScreen extends StatelessWidget {
 
   Future<CampaignStatisticsModel> _loadStatistics() async {
     var campaignSettings = GetIt.I<AppSettings>().campaign;
+
+    try {
+      var teamApiService = GetIt.I<GrueneApiTeamsService>();
+      var stats = await teamApiService.getTeamStatistics();
+      // log('Team statistics: $stats');
+    } catch (e) {
+      logger.e(e);
+    }
 
     if (campaignSettings.recentStatistics != null &&
         DateTime.now().isBefore(campaignSettings.recentStatisticsFetchTimestamp!.add(Duration(minutes: 5)))) {
