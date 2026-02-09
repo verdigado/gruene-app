@@ -81,10 +81,10 @@ commands:
                 type: enum
         steps:
             - run:
-                command: curl -fsSL https://raw.githubusercontent.com/leoafarias/fvm/refs/heads/main/scripts/install.sh | bash
+                command: curl -fsSL https://fvm.app/install.sh | bash
                 name: Install FVM
             - run:
-                command: curl -sL https://raw.githubusercontent.com/leoafarias/fvm/refs/heads/main/scripts/install.sh | shasum -a 256
+                command: curl -fsSL https://fvm.app/install.sh | shasum -a 256
                 name: FVM Install Script Checksum
             - run:
                 command: echo 'export PATH="$HOME/fvm/bin:$PATH"' >> $BASH_ENV
