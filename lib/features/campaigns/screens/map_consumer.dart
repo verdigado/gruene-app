@@ -373,6 +373,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       icon: Icons.info_outlined,
       secondaryColor: ThemeColors.textCancel,
       primaryColor: ThemeColors.infoBackground,
+      displaySideBar: false,
       width: 300,
       height: 80,
       description: GestureDetector(
