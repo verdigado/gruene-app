@@ -127,7 +127,12 @@ class TeamProfile extends StatelessWidget {
     var result =
         await showModalBottomSheet<bool>(
           context: context,
-          builder: (context) => editTeamMembersWidget,
+          builder: (context) => Padding(
+            padding: EdgeInsets.only(
+              bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding),
+            ),
+            child: editTeamMembersWidget,
+          ),
           isScrollControlled: false,
           isDismissible: false,
           enableDrag: false,
