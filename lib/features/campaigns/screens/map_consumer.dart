@@ -365,7 +365,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
 
     MotionToast? toast;
     tapToast() {
-      toast!.closeOverlay();
+      toast!.dismiss();
       moreInfoCallback!();
     }
 

@@ -8,6 +8,8 @@ void showSnackBar(BuildContext context, String text) {
 
 void showToastError(BuildContext context, String text) {
   var theme = Theme.of(context);
+  // should remove the focus from a current input and most likely also close an open keyboard
+  FocusManager.instance.primaryFocus?.unfocus();
   MotionToast.error(
     displaySideBar: false,
     description: Text(text, style: theme.textTheme.labelMedium!.apply(color: ThemeColors.background)),

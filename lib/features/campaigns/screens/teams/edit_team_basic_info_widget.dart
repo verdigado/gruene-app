@@ -79,7 +79,7 @@ class _EditTeamBasicInfoWidgetState extends State<EditTeamBasicInfoWidget> {
     try {
       TeamHelper.validateTeamName(teamNameTextController.text);
     } on ValidationError catch (e) {
-      showSnackBar(context, e.getMessage());
+      showToastError(context, e.getMessage());
       return;
     }
 

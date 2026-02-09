@@ -117,7 +117,7 @@ mixin NewTeamMixin {
           if (isCreatingUserInNewTeam) reload();
           canceledOrSaved = true;
         } on ApiException {
-          if (context.mounted) showSnackBar(context, t.error.unknownError);
+          if (context.mounted) showToastError(context, t.error.unknownError);
         }
       } else {
         canceledOrSaved = true;

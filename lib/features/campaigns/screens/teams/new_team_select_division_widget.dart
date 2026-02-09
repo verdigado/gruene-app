@@ -112,11 +112,11 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
 
   void onSave() {
     if (currentDivision == null) {
-      showSnackBar(context, t.campaigns.team.errors.no_division);
+      showToastError(context, t.campaigns.team.errors.no_division);
       return;
     }
     if (!widget.currentUserInfo.isCampaignManagerInDivision(currentDivision!.divisionKey)) {
-      showSnackBar(context, t.campaigns.team.errors.no_access_on_division);
+      showToastError(context, t.campaigns.team.errors.no_access_on_division);
       return;
     }
 
