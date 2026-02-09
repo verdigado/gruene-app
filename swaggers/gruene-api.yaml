@@ -818,208 +818,6 @@ paths:
       summary: Batch update offboarding users for the authenticated service.
       tags:
         - offboarding
-  /v1/roles:
-    get:
-      operationId: findRoles
-      parameters:
-        - name: limit
-          required: false
-          in: query
-          schema:
-            minimum: 1
-            default: 20
-            type: number
-        - name: offset
-          required: false
-          in: query
-          schema:
-            minimum: 0
-            type: number
-        - name: search
-          required: false
-          in: query
-          description: Search term to look for in role name
-          schema:
-            type: string
-        - name: category
-          required: false
-          in: query
-          description: Filter by category id
-          schema:
-            type: array
-            items:
-              type: string
-        - name: tag
-          required: false
-          in: query
-          description: Filter by tag id
-          schema:
-            type: array
-            items:
-              type: string
-        - name: assignment_status
-          required: false
-          in: query
-          description: >-
-            Filter by assignment status - is the role currently assigned to any
-            user or to none
-          schema:
-            type: string
-            enum:
-              - assigned
-              - unassigned
-        - name: assignment_status_in
-          required: false
-          in: query
-          description: Filter assigned roles in divisions
-          schema:
-            type: array
-            items:
-              type: string
-        - name: hierarchy
-          required: false
-          in: query
-          description: Filter by hierarchy type
-          schema:
-            type: string
-            enum:
-              - GR
-              - GJ
-              - KPV
-        - name: level
-          required: false
-          in: query
-          description: Filter by hierarchy level
-          schema:
-            type: string
-            enum:
-              - ALL
-              - BV
-              - LV
-              - KV
-              - OV
-              - BEZV
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FindRolesResponse'
-        '401':
-          description: ''
-      security:
-        - bearer: []
-        - basic: []
-        - api_key: []
-      summary: Find roles
-      tags:
-        - roles
-  /v1/roles/{roleId}:
-    get:
-      operationId: getRole
-      parameters:
-        - name: roleId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Role'
-        '401':
-          description: ''
-        '404':
-          description: ''
-      security:
-        - bearer: []
-        - basic: []
-        - api_key: []
-      summary: Get role by id
-      tags:
-        - roles
-  /v1/role-tags:
-    get:
-      operationId: findRoleTags
-      parameters:
-        - name: limit
-          required: false
-          in: query
-          schema:
-            minimum: 1
-            default: 20
-            type: number
-        - name: offset
-          required: false
-          in: query
-          schema:
-            minimum: 0
-            type: number
-        - name: search
-          required: false
-          in: query
-          description: Search name attribute for substring
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FindRoleTagsResponse'
-        '401':
-          description: ''
-      security:
-        - bearer: []
-        - basic: []
-        - api_key: []
-      summary: Find role tags
-      tags:
-        - roles
-  /v1/role-categories:
-    get:
-      operationId: findRoleCategories
-      parameters:
-        - name: limit
-          required: false
-          in: query
-          schema:
-            minimum: 1
-            default: 20
-            type: number
-        - name: offset
-          required: false
-          in: query
-          schema:
-            minimum: 0
-            type: number
-        - name: search
-          required: false
-          in: query
-          description: Search name attribute for substring
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FindRoleCategoriesResponse'
-        '401':
-          description: ''
-      security:
-        - bearer: []
-        - basic: []
-        - api_key: []
-      summary: Find role categories
-      tags:
-        - roles
   /v1/campaigns/areas:
     post:
       operationId: createArea
@@ -2536,7 +2334,7 @@ paths:
         - campaigns
   /v1/campaigns/teams/self/statistics:
     get:
-      operationId: teamStatistics
+      operationId: teamMembershipStatistics
       parameters:
         - name: campaignId
           required: false
@@ -2555,6 +2353,42 @@ paths:
       security:
         - bearer: []
       summary: Get statistics of own team
+      tags:
+        - campaigns
+  /v1/campaigns/teams/statistics:
+    get:
+      operationId: teamStatistics
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 50
+            type: number
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: campaignId
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamStatistics'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get statistics over all teams
       tags:
         - campaigns
   /v1/campaigns/teams/pendingInvitations:
@@ -2768,6 +2602,208 @@ paths:
       summary: Get Team assignments
       tags:
         - campaigns
+  /v1/roles:
+    get:
+      operationId: findRoles
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            default: 20
+            type: number
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search term to look for in role name
+          schema:
+            type: string
+        - name: category
+          required: false
+          in: query
+          description: Filter by category id
+          schema:
+            type: array
+            items:
+              type: string
+        - name: tag
+          required: false
+          in: query
+          description: Filter by tag id
+          schema:
+            type: array
+            items:
+              type: string
+        - name: assignment_status
+          required: false
+          in: query
+          description: >-
+            Filter by assignment status - is the role currently assigned to any
+            user or to none
+          schema:
+            type: string
+            enum:
+              - assigned
+              - unassigned
+        - name: assignment_status_in
+          required: false
+          in: query
+          description: Filter assigned roles in divisions
+          schema:
+            type: array
+            items:
+              type: string
+        - name: hierarchy
+          required: false
+          in: query
+          description: Filter by hierarchy type
+          schema:
+            type: string
+            enum:
+              - GR
+              - GJ
+              - KPV
+        - name: level
+          required: false
+          in: query
+          description: Filter by hierarchy level
+          schema:
+            type: string
+            enum:
+              - ALL
+              - BV
+              - LV
+              - KV
+              - OV
+              - BEZV
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindRolesResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Find roles
+      tags:
+        - roles
+  /v1/roles/{roleId}:
+    get:
+      operationId: getRole
+      parameters:
+        - name: roleId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Get role by id
+      tags:
+        - roles
+  /v1/role-tags:
+    get:
+      operationId: findRoleTags
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            default: 20
+            type: number
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search name attribute for substring
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindRoleTagsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Find role tags
+      tags:
+        - roles
+  /v1/role-categories:
+    get:
+      operationId: findRoleCategories
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            default: 20
+            type: number
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search name attribute for substring
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindRoleCategoriesResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Find role categories
+      tags:
+        - roles
   /v1/news:
     get:
       operationId: findNews
@@ -4645,171 +4681,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UpsertOffboardingServiceUser'
-    RoleAlias:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id of the role alias
-          example: '503'
-        label:
-          type: string
-          description: Label of the alias
-        divisionId:
-          type: string
-          description: Division id where this alias applies
-          example: '2092'
-        divisionKey:
-          type: string
-          description: Division key where this alias applies
-          example: '10100000'
-      required:
-        - id
-        - label
-        - divisionId
-        - divisionKey
-    RoleCategory:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The role category id
-          example: '84'
-        label:
-          type: string
-          description: Name of the role category
-        aliases:
-          description: Role category aliases
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleAlias'
-      required:
-        - id
-        - label
-        - aliases
-    RoleTag:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id of the role tag
-          example: '6590132'
-        name:
-          type: string
-          description: Name of the role tag
-      required:
-        - id
-        - name
-    Role:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The role id
-          example: '123'
-        name:
-          type: string
-          description: Name of the role
-        hierarchy:
-          description: Hierarchy this role refers to
-          example: GR
-          enum:
-            - GR
-            - GJ
-            - KPV
-          type: string
-        type:
-          description: Type of role
-          example: ROLLE
-          enum:
-            - AMT
-            - BEZ
-            - MANDAT
-            - ROLLE
-            - SYSTEM
-          type: string
-        minAge:
-          type: number
-          nullable: true
-          description: Role min age
-          example: 0
-        maxAge:
-          type: number
-          description: Role max age
-          example: 99
-        level:
-          description: Hierarchy level this role applies to
-          example: LV
-          enum:
-            - ALL
-            - BV
-            - LV
-            - KV
-            - OV
-            - BEZV
-          type: string
-        categories:
-          description: Role categories
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleCategory'
-        tags:
-          description: Role tags
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleTag'
-        aliases:
-          description: Role Aliases
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleAlias'
-      required:
-        - id
-        - name
-        - hierarchy
-        - type
-        - minAge
-        - maxAge
-        - level
-        - categories
-        - tags
-        - aliases
-    FindRolesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Role'
-        meta:
-          $ref: '#/components/schemas/OffsetPaginationMeta'
-      required:
-        - data
-        - meta
-    FindRoleTagsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleTag'
-        meta:
-          $ref: '#/components/schemas/OffsetPaginationMeta'
-      required:
-        - data
-        - meta
-    FindRoleCategoriesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleCategory'
-        meta:
-          $ref: '#/components/schemas/OffsetPaginationMeta'
-      required:
-        - data
-        - meta
     AreaFlyerSpot:
       type: object
       properties:
@@ -6040,6 +5911,67 @@ components:
       required:
         - lastUpdate
         - teamStatistics
+    TeamStatisticsCategoryItem:
+      type: object
+      properties:
+        teamId:
+          type: string
+        teamName:
+          type: string
+        division:
+          type: string
+        teamMemberCount:
+          type: number
+        teamCreatedAt:
+          format: date-time
+          type: string
+        count:
+          type: number
+      required:
+        - teamId
+        - teamName
+        - division
+        - teamMemberCount
+        - teamCreatedAt
+        - count
+    TeamStatisticsCategory:
+      type: object
+      properties:
+        subDivision:
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamStatisticsCategoryItem'
+        division:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamStatisticsCategoryItem'
+        state:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamStatisticsCategoryItem'
+        germany:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamStatisticsCategoryItem'
+      required:
+        - subDivision
+        - division
+        - state
+        - germany
+    TeamStatistics:
+      type: object
+      properties:
+        poster:
+          $ref: '#/components/schemas/TeamStatisticsCategory'
+        flyer:
+          $ref: '#/components/schemas/TeamStatisticsCategory'
+        house:
+          $ref: '#/components/schemas/TeamStatisticsCategory'
+      required:
+        - poster
+        - flyer
+        - house
     TeamInvitation:
       type: object
       properties:
@@ -6270,6 +6202,171 @@ components:
       required:
         - areas
         - routes
+    RoleAlias:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the role alias
+          example: '503'
+        label:
+          type: string
+          description: Label of the alias
+        divisionId:
+          type: string
+          description: Division id where this alias applies
+          example: '2092'
+        divisionKey:
+          type: string
+          description: Division key where this alias applies
+          example: '10100000'
+      required:
+        - id
+        - label
+        - divisionId
+        - divisionKey
+    RoleCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The role category id
+          example: '84'
+        label:
+          type: string
+          description: Name of the role category
+        aliases:
+          description: Role category aliases
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleAlias'
+      required:
+        - id
+        - label
+        - aliases
+    RoleTag:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the role tag
+          example: '6590132'
+        name:
+          type: string
+          description: Name of the role tag
+      required:
+        - id
+        - name
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The role id
+          example: '123'
+        name:
+          type: string
+          description: Name of the role
+        hierarchy:
+          description: Hierarchy this role refers to
+          example: GR
+          enum:
+            - GR
+            - GJ
+            - KPV
+          type: string
+        type:
+          description: Type of role
+          example: ROLLE
+          enum:
+            - AMT
+            - BEZ
+            - MANDAT
+            - ROLLE
+            - SYSTEM
+          type: string
+        minAge:
+          type: number
+          nullable: true
+          description: Role min age
+          example: 0
+        maxAge:
+          type: number
+          description: Role max age
+          example: 99
+        level:
+          description: Hierarchy level this role applies to
+          example: LV
+          enum:
+            - ALL
+            - BV
+            - LV
+            - KV
+            - OV
+            - BEZV
+          type: string
+        categories:
+          description: Role categories
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleCategory'
+        tags:
+          description: Role tags
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleTag'
+        aliases:
+          description: Role Aliases
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleAlias'
+      required:
+        - id
+        - name
+        - hierarchy
+        - type
+        - minAge
+        - maxAge
+        - level
+        - categories
+        - tags
+        - aliases
+    FindRolesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        meta:
+          $ref: '#/components/schemas/OffsetPaginationMeta'
+      required:
+        - data
+        - meta
+    FindRoleTagsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleTag'
+        meta:
+          $ref: '#/components/schemas/OffsetPaginationMeta'
+      required:
+        - data
+        - meta
+    FindRoleCategoriesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleCategory'
+        meta:
+          $ref: '#/components/schemas/OffsetPaginationMeta'
+      required:
+        - data
+        - meta
     NewsCategory:
       type: object
       properties:
