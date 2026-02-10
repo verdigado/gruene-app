@@ -10,7 +10,6 @@ import 'package:gruene_app/features/campaigns/screens/teams/open_invitation_list
 import 'package:gruene_app/features/campaigns/screens/teams/profile_visibility_hint.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_assigned_elements.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_member_statistics.dart';
-// import 'package:gruene_app/features/campaigns/screens/teams/team_member_statistics.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/team_profile.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
