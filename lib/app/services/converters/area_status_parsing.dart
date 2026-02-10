@@ -1,12 +1,12 @@
 part of '../converters.dart';
 
 extension AreaStatusParsing on AreaStatus {
-  UpdateAreaStatus asUpdateAreaStatus() {
+  api_enums.UpdateAreaStatus asUpdateAreaStatus() {
     switch (this) {
       case AreaStatus.open:
-        return UpdateAreaStatus.open;
+        return api_enums.UpdateAreaStatus.open;
       case AreaStatus.closed:
-        return UpdateAreaStatus.closed;
+        return api_enums.UpdateAreaStatus.closed;
       case AreaStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }

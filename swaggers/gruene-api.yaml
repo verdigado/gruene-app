@@ -171,6 +171,30 @@ paths:
       summary: Add device token for push notifications
       tags:
         - users
+  /v1/users/self/settings/device-tokens/delete:
+    post:
+      operationId: deleteDeviceToken
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveDeviceToken'
+      responses:
+        '201':
+          description: ''
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Delete device token for push notifications
+      tags:
+        - users
   /v1/users/self/settings/notifications:
     get:
       operationId: getNotificationSettings
@@ -236,7 +260,7 @@ paths:
         - bearer: []
         - basic: []
         - api_key: []
-      summary: Deletes the users notification setttings to restore the default
+      summary: Deletes the users notification settings to restore the default
       tags:
         - users
   /v1/party/organizations:
@@ -469,7 +493,7 @@ paths:
         - name: search
           required: false
           in: query
-          description: Search term to look for in firstName, lastName and username
+          description: Search term to look for in firstName, lastName
           schema:
             type: string
         - name: division
@@ -1178,6 +1202,37 @@ paths:
       summary: Delete an Area
       tags:
         - campaigns
+  /v1/campaigns/areas/{areaId}/status:
+    put:
+      operationId: updateAreaStatus
+      parameters:
+        - name: areaId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAreaStatus'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Area'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update an Area status
+      tags:
+        - campaigns
   /v1/campaigns/areas/{areaId}/team:
     put:
       operationId: assignAreaToTeam
@@ -1333,11 +1388,43 @@ paths:
     get:
       operationId: findPollingStations
       parameters:
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 1000
+            type: number
+        - name: campaignId
+          required: false
+          in: query
+          description: Filter by campaign ids
+          schema:
+            type: array
+            items:
+              type: string
         - name: bbox
           required: false
           in: query
           schema:
             example: 47.695103,7.659684,53.670793, 14.229507
+            type: string
+        - name: description
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: sort
+          required: false
+          in: query
+          schema:
+            example: createdAt,-updatedAt
             type: string
         - name: createdAfter
           required: false
@@ -1362,11 +1449,6 @@ paths:
           in: query
           schema:
             format: date-time
-            type: string
-        - name: campaignId
-          required: false
-          in: query
-          schema:
             type: string
       responses:
         '200':
@@ -2008,6 +2090,38 @@ paths:
         - bearer: []
         - oauth2: []
       summary: Delete a Route
+      tags:
+        - campaigns
+  /v1/campaigns/routes/{routeId}/status:
+    put:
+      operationId: updateRouteStatus
+      parameters:
+        - name: routeId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRouteStatus'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Route'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - oauth2: []
+      summary: Update a Route status
       tags:
         - campaigns
   /v1/campaigns/routes/{routeId}/team:
@@ -3412,8 +3526,6 @@ tags: []
 servers:
   - url: https://api.gruene.de
     description: Production
-  - url: http://192.168.178.35:5000
-    description: Development
 components:
   securitySchemes:
     basic:
@@ -3604,6 +3716,15 @@ components:
       required:
         - platform
         - deviceToken
+    RemoveDeviceToken:
+      type: object
+      properties:
+        deviceToken:
+          type: string
+          description: FCM device token for push notifications
+          example: dA1B2c3D4e5F6g7H8i9J0k1L2m3N4o5P6q7R8s9T0u1V2w3X4y5Z
+      required:
+        - deviceToken
     NotificationChannelSettings:
       type: object
       properties:
@@ -3625,6 +3746,8 @@ components:
           type: string
           enum:
             - campaigns.teamMembership.updated
+            - campaigns.routeAssignment.updated
+            - campaigns.areaAssignment.updated
             - news.published
         inApp:
           $ref: '#/components/schemas/NotificationChannelSettings'
@@ -3856,7 +3979,7 @@ components:
         purposes:
           description: |-
             Purposes associated with email
-            Occuring values:
+            Occurring values:
              - privat
              - grüne
              - dienstlich
@@ -4852,6 +4975,16 @@ components:
             $ref: '#/components/schemas/Area'
       required:
         - data
+    UpdateAreaStatus:
+      type: object
+      properties:
+        status:
+          enum:
+            - OPEN
+            - CLOSED
+          type: string
+      required:
+        - status
     AreaAssignTeam:
       type: object
       properties:
@@ -5025,8 +5158,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PollingStation'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
       required:
         - data
+        - total
+        - offset
+        - limit
     PoiAddress:
       type: object
       properties:
@@ -5414,6 +5556,16 @@ components:
             $ref: '#/components/schemas/Route'
       required:
         - data
+    UpdateRouteStatus:
+      type: object
+      properties:
+        status:
+          enum:
+            - OPEN
+            - CLOSED
+          type: string
+      required:
+        - status
     RouteAssignTeam:
       type: object
       properties:
@@ -5733,7 +5885,8 @@ components:
           type: string
         name:
           type: string
-          minLength: 1
+          minLength: 5
+          maxLength: 45
         description:
           type: string
           nullable: true
@@ -5885,7 +6038,8 @@ components:
       properties:
         name:
           type: string
-          minLength: 1
+          minLength: 5
+          maxLength: 45
         description:
           type: string
           nullable: true
