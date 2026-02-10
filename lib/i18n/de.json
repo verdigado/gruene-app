@@ -334,7 +334,8 @@
         "update_info": "wird alle 5 Minuten aktualisiert"
       },
       "team_statistics": {
-        "title": "Team Top-10"
+        "title": "Team Top-10",
+        "update_info": "Team-Statistiken werden mehrmals am Tag aktualisiert"
       },
       "recorded_posters": "Plakate",
       "including_damaged_or_taken_down": "inkl. beschädigt und abgehängt",
