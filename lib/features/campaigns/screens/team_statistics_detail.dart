@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/models/team/team_assignment.dart';
 import 'package:gruene_app/features/campaigns/screens/team_statistics_category_detail.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -33,6 +34,14 @@ class _TeamStatisticsDetailState extends State<TeamStatisticsDetail> {
           ),
           TeamStatisticsCategoryDetail(category: TeamAssignmentType.door, statisticData: widget.teamStatistics.house),
           TeamStatisticsCategoryDetail(category: TeamAssignmentType.flyer, statisticData: widget.teamStatistics.flyer),
+          Row(
+            children: [
+              Text(
+                t.campaigns.statistic.team_statistics.update_info,
+                style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
+              ),
+            ],
+          ),
         ],
       ),
     );
