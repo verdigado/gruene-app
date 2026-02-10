@@ -34,7 +34,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
     setState(() => _loading = true);
 
     var teamsService = GetIt.I<GrueneApiTeamsService>();
-    var teamStatistics = await teamsService.getTeamStatistics();
+    var teamStatistics = await teamsService.getTeamMembershipStatistics();
 
     setState(() {
       _loading = false;
