@@ -90,3 +90,4 @@ part 'converters/string_extension.dart';
 part 'converters/team_extension.dart';
 part 'converters/team_membership_type_parsing.dart';
 part 'converters/user_info_extensions.dart';
+part 'converters/team_assignment_type_extension.dart';

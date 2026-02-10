@@ -21,7 +21,7 @@ class PoiStatisticsDetail extends StatelessWidget {
   }
 
   SingleChildScrollView _buildStatScreen(CampaignStatisticsModel statistics, ThemeData theme, BuildContext context) {
-    var lastUpdateTime = GetIt.I<AppSettings>().campaign.recentStatisticsFetchTimestamp ?? DateTime.now();
+    var lastUpdateTime = GetIt.I<AppSettings>().campaign.recentPoiStatisticsFetchTimestamp ?? DateTime.now();
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.all(16),
@@ -45,7 +45,7 @@ class PoiStatisticsDetail extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '${t.campaigns.statistic.as_at}: ${lastUpdateTime.getAsLocalDateTimeString()} (${t.campaigns.statistic.update_info})',
+                  '${t.campaigns.statistic.as_at}: ${lastUpdateTime.getAsLocalDateTimeString()} (${t.campaigns.statistic.poi_statistics.update_info})',
                   style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
                 ),
               ),
@@ -70,11 +70,14 @@ class PoiStatisticsDetail extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(t.campaigns.statistic.my_badges, style: theme.textTheme.titleMedium),
+            child: Text(t.campaigns.statistic.poi_statistics.my_badges, style: theme.textTheme.titleMedium),
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(t.campaigns.statistic.my_badges_campaign_subtitle, style: theme.textTheme.labelSmall),
+            child: Text(
+              t.campaigns.statistic.poi_statistics.my_badges_campaign_subtitle,
+              style: theme.textTheme.labelSmall,
+            ),
           ),
           ..._getBadges(statistics, theme),
         ],
@@ -191,10 +194,10 @@ class PoiStatisticsDetail extends StatelessWidget {
                   ],
                 )
               : SizedBox(),
-          _getDataRow(t.campaigns.statistic.by_me, stats.own.toInt(), theme),
-          _getDataRow(t.campaigns.statistic.by_my_KV, stats.division.toInt(), theme),
-          _getDataRow(t.campaigns.statistic.by_my_LV, stats.state.toInt(), theme),
-          _getDataRow(t.campaigns.statistic.in_germany, stats.germany.toInt(), theme),
+          _getDataRow(t.campaigns.statistic.poi_statistics.by_me, stats.own.toInt(), theme),
+          _getDataRow(t.campaigns.statistic.poi_statistics.by_my_KV, stats.division.toInt(), theme),
+          _getDataRow(t.campaigns.statistic.poi_statistics.by_my_LV, stats.state.toInt(), theme),
+          _getDataRow(t.campaigns.statistic.poi_statistics.in_germany, stats.germany.toInt(), theme),
         ],
       ),
     );

@@ -24,7 +24,7 @@ class TeamAssignedElements extends StatefulWidget {
 }
 
 class _TeamAssignedElementsState extends State<TeamAssignedElements> {
-  bool _loading = false;
+  bool _loading = true;
   bool _showClosedElements = false;
   List<AssignedElement> _assignedElements = <AssignedElement>[];
 
@@ -121,7 +121,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
           SizedBox(
             height: 24,
             width: 24,
-            child: SvgPicture.asset(_getAssetLocationByAssignmentType(assignedElement.type)),
+            child: SvgPicture.asset(assignedElement.type.getAssetLocationByAssignmentType()),
           ),
           SizedBox(width: 12),
           Column(
@@ -146,17 +146,6 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       );
     }
     return InkWell(onTap: () => _switchToMap(assignedElement), child: item);
-  }
-
-  String _getAssetLocationByAssignmentType(TeamAssignmentType type) {
-    switch (type) {
-      case TeamAssignmentType.door:
-        return 'assets/symbols/doors/door.svg';
-      case TeamAssignmentType.flyer:
-        return 'assets/symbols/flyer/flyer.svg';
-      case TeamAssignmentType.poster:
-        return 'assets/symbols/posters/poster.svg';
-    }
   }
 
   String _getAssignmentInfoText(AssignedElement assignedElement) {

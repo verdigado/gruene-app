@@ -4,7 +4,6 @@ import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
-import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/screens/poi_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/screens/team_statistics_detail.dart';
@@ -18,7 +17,7 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  bool _loading = false;
+  bool _loading = true;
   late CampaignStatisticsModel _poiStatistics;
   late TeamStatistics _teamStatistics;
 
@@ -57,21 +56,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Future<void> reload() async {}
+  Future<void> reload() async {
+    _loadData();
+  }
 
   void _loadData() async {
     setState(() => _loading = true);
-
-    // Profile? profile;
-    // try {
-    //   var profileService = GetIt.I<GrueneApiProfileService>();
-    //   profile = preloadedProfile ?? await profileService.getSelf();
-    // } catch (e) {
-    //   profile = null;
-    // }
-
-    // var teamsService = GetIt.I<GrueneApiTeamsService>();
-    // var team = preloadedTeam ?? await teamsService.getOwnTeam();
 
     var results = await Future.wait([_loadPoiStatistics(), _loadTeamStatistics()]);
 
@@ -82,30 +72,38 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       _loading = false;
       _poiStatistics = poiCampaignStatistics;
       _teamStatistics = teamStatistics;
-      // _currentTeam = team;
-      // _currentProfile = profile;
     });
   }
 
   Future<CampaignStatisticsModel> _loadPoiStatistics() async {
     var campaignSettings = GetIt.I<AppSettings>().campaign;
 
-    if (campaignSettings.recentStatistics != null &&
-        DateTime.now().isBefore(campaignSettings.recentStatisticsFetchTimestamp!.add(Duration(minutes: 5)))) {
-      return campaignSettings.recentStatistics!;
+    if (campaignSettings.recentPoiStatistics != null &&
+        DateTime.now().isBefore(campaignSettings.recentPoiStatisticsFetchTimestamp!.add(Duration(minutes: 5)))) {
+      return campaignSettings.recentPoiStatistics!;
     }
     var statApiService = GetIt.I<GrueneApiCampaignsStatisticsService>();
     var campaignStatistics = await statApiService.getStatistics();
 
-    campaignSettings.recentStatistics = campaignStatistics;
-    campaignSettings.recentStatisticsFetchTimestamp = DateTime.now();
+    campaignSettings.recentPoiStatistics = campaignStatistics;
+    campaignSettings.recentPoiStatisticsFetchTimestamp = DateTime.now();
 
     return campaignStatistics;
   }
 
   Future<TeamStatistics> _loadTeamStatistics() async {
+    var campaignSettings = GetIt.I<AppSettings>().campaign;
+
+    if (campaignSettings.recentTeamStatistics != null &&
+        DateTime.now().isBefore(campaignSettings.recentTeamStatisticsFetchTimestamp!.add(Duration(minutes: 5)))) {
+      return campaignSettings.recentTeamStatistics!;
+    }
     var teamApiService = GetIt.I<GrueneApiTeamsService>();
     var teamStats = await teamApiService.getTeamStatistics();
+
+    campaignSettings.recentTeamStatistics = teamStats;
+    campaignSettings.recentTeamStatisticsFetchTimestamp = DateTime.now();
+
     return teamStats;
   }
 }
