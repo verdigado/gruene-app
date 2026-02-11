@@ -28,6 +28,12 @@ extension StatisticsParser on CampaignStatistics {
 
 extension PoiStatisticsParser on PoiStatistics {
   CampaignStatisticsSet asStatisticsSet() {
-    return CampaignStatisticsSet(own: own, division: division, state: state, germany: germany);
+    return CampaignStatisticsSet(
+      own: own,
+      subDivision: subDivision,
+      division: division,
+      state: state,
+      germany: germany,
+    );
   }
 }

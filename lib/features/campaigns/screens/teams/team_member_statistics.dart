@@ -47,6 +47,8 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
     if (_loading) {
       return Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator());
     }
+    if (_teamStatistics.teamStatistics.isEmpty) return SizedBox.shrink();
+
     var theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
