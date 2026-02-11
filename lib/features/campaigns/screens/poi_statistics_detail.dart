@@ -125,7 +125,7 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
 
     return [
       getButtonSegment(OverallStatTypes.me, t.campaigns.statistic.poi_statistics.me),
-      widget.teamMembershipStatistics.teamStatistics.length == 1
+      widget.teamMembershipStatistics.teamStatistics.isNotEmpty
           ? getButtonSegment(OverallStatTypes.team, t.campaigns.statistic.poi_statistics.team)
           : null,
       hasSubDivisionData ? getButtonSegment(OverallStatTypes.ov, t.divisions.level.ov.short) : null,
@@ -140,12 +140,14 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
     var statValue = _getStatValue(stats, () {
       switch (category) {
         case TeamAssignmentType.poster:
-          return widget.teamMembershipStatistics.teamStatistics.single.posterCount;
+          return widget.teamMembershipStatistics.teamStatistics.fold(0, (sum, s) => sum + s.posterCount);
         case TeamAssignmentType.door:
-          return widget.teamMembershipStatistics.teamStatistics.single.closedDoorCount +
-              widget.teamMembershipStatistics.teamStatistics.single.openedDoorCount;
+          return widget.teamMembershipStatistics.teamStatistics.fold(
+            0,
+            (sum, s) => sum + s.closedDoorCount + s.openedDoorCount,
+          );
         case TeamAssignmentType.flyer:
-          return widget.teamMembershipStatistics.teamStatistics.single.flyerCount;
+          return widget.teamMembershipStatistics.teamStatistics.fold(0, (sum, s) => sum + s.flyerCount);
       }
     });
 
