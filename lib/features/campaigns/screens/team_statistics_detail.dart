@@ -19,7 +19,7 @@ class _TeamStatisticsDetailState extends State<TeamStatisticsDetail> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: EdgeInsets.all(12),
       child: Column(
         children: [
           Padding(

@@ -85,7 +85,7 @@ Future<void> main() async {
   await pushNotificationListener.initialize();
   GetIt.I.registerSingleton<PushNotificationListener>(pushNotificationListener);
 
-  GetIt.I.registerSingleton<AppSettings>(AppSettings());
+  AppSettings.register();
 
   // Warning: The gruene api singleton depends on the auth repository which depends on the authenticator singleton
   // Therefore this should be last

@@ -2332,7 +2332,7 @@ paths:
       summary: Find own team
       tags:
         - campaigns
-  /v1/campaigns/teams/self/statistics:
+  /v1/campaigns/teams/self/membershipStatistics:
     get:
       operationId: teamMembershipStatistics
       parameters:
@@ -2352,7 +2352,7 @@ paths:
           description: ''
       security:
         - bearer: []
-      summary: Get statistics of own team
+      summary: Get statistics over all memberships of the own team
       tags:
         - campaigns
   /v1/campaigns/teams/statistics:
@@ -3585,6 +3585,8 @@ tags: []
 servers:
   - url: https://api.gruene.de
     description: Production
+  - url: http://192.168.178.35:5000
+    description: Development
 components:
   securitySchemes:
     basic:

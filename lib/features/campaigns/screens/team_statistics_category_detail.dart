@@ -73,10 +73,21 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
   }
 
   List<ButtonSegment<DivisionLevel>> _getButtonSegments() {
+    var theme = Theme.of(context);
+    ButtonSegment<DivisionLevel> getButtonSegment(DivisionLevel value, String label) => ButtonSegment(
+      value: value,
+      label: Text(
+        label,
+        style: theme.textTheme.labelMedium?.apply(
+          color: _selectedDivisionType == value ? ThemeColors.background : ThemeColors.textDark,
+        ),
+      ),
+    );
+
     return [
-      ButtonSegment(value: DivisionLevel.kv, label: Text(t.divisions.level.kv.short)),
-      ButtonSegment(value: DivisionLevel.lv, label: Text(t.divisions.level.lv.short)),
-      ButtonSegment(value: DivisionLevel.bv, label: Text(t.divisions.level.bv.short)),
+      getButtonSegment(DivisionLevel.kv, t.divisions.level.kv.short),
+      getButtonSegment(DivisionLevel.lv, t.divisions.level.lv.short),
+      getButtonSegment(DivisionLevel.bv, t.divisions.level.bv.short),
     ];
   }
 
