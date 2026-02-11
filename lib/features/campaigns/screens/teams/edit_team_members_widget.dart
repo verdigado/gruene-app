@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
@@ -100,13 +101,23 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            teamMembership.userName.safe(),
-            style: theme.textTheme.bodyLarge?.apply(
-              color: teamMembership.status != TeamMembershipStatus.pending
-                  ? ThemeColors.textDark
-                  : ThemeColors.textDisabled,
-            ),
+          Row(
+            children: [
+              teamMembership.type == TeamMembershipType.lead
+                  ? Padding(
+                      padding: EdgeInsetsGeometry.only(right: 4),
+                      child: CustomIcon(path: 'assets/icons/chess_queen.svg', color: ThemeColors.textDark),
+                    )
+                  : SizedBox.shrink(),
+              Text(
+                teamMembership.userName.safe(),
+                style: theme.textTheme.bodyLarge?.apply(
+                  color: teamMembership.status != TeamMembershipStatus.pending
+                      ? ThemeColors.textDark
+                      : ThemeColors.textDisabled,
+                ),
+              ),
+            ],
           ),
           Row(children: actions),
         ],
