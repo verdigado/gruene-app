@@ -72,17 +72,6 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
                     ),
                   ),
 
-                  // Row(
-                  //   children: [
-                  //     Container(
-                  //       padding: EdgeInsetsGeometry.all(4),
-                  //       decoration: BoxDecoration(
-                  //         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
-                  //       ),
-                  //       child: SizedBox(height: 1),
-                  //     ),
-                  //   ],
-                  // ),
                   _getCategoryRow(
                     TeamAssignmentType.poster,
                     t.campaigns.statistic.recorded_posters,
