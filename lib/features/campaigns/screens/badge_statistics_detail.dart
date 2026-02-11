@@ -79,7 +79,7 @@ class BadgeStatisticsDetail extends StatelessWidget {
     var iconSize = 50.0;
     for (var i = 0; i < thresholds.length; i++) {
       var currentThreshold = thresholds[i];
-      if (currentThreshold < value) {
+      if (currentThreshold <= value) {
         widgets.add(
           SizedBox(
             height: iconSize,
