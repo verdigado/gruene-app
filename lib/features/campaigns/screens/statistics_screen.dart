@@ -126,7 +126,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     var teamApiService = GetIt.I<GrueneApiTeamsService>();
 
     try {
-      var teamMembershipStats = await teamApiService.getTeamMembershipStatistics(onlyMyData: true);
+      var teamMembershipStats = await teamApiService.getTeamMembershipStatistics();
 
       campaignSettings.recentTeamMembershipStatistics = teamMembershipStats;
       campaignSettings.recentTeamMembershipStatisticsFetchTimestamp = DateTime.now();
