@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Image Cropper Theme - Light Mode -->
-    <style name="Ucrop.CropTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Image Cropper Theme - Dark Mode (seems to work for v35 and above) -->
+    <style name="Ucrop.CropTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
         <item name="android:fitsSystemWindows">true</item>
-        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>
