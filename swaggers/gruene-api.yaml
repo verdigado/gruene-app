@@ -2341,6 +2341,11 @@ paths:
           in: query
           schema:
             type: string
+        - name: onlyMyData
+          required: false
+          in: query
+          schema:
+            type: boolean
       responses:
         '200':
           description: ''
@@ -3585,6 +3590,8 @@ tags: []
 servers:
   - url: https://api.gruene.de
     description: Production
+  - url: http://192.168.178.35:5000
+    description: Development
 components:
   securitySchemes:
     basic:

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/screens/badge_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/screens/poi_statistics_detail.dart';
@@ -21,6 +23,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   bool _loading = true;
   late CampaignStatisticsModel _poiStatistics;
   late TeamStatistics _teamStatistics;
+  late TeamMembershipStatistics _teamMembershipStatistics;
 
   @override
   void initState() {
@@ -51,7 +54,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           children: [
             BadgeStatisticsDetail(poiStatistics: _poiStatistics),
             TeamStatisticsDetail(teamStatistics: _teamStatistics),
-            PoiStatisticsDetail(poiStatistics: _poiStatistics),
+            PoiStatisticsDetail(poiStatistics: _poiStatistics, teamMembershipStatistics: _teamMembershipStatistics),
           ],
         ),
       ),
@@ -65,15 +68,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    var results = await Future.wait([_loadPoiStatistics(), _loadTeamStatistics()]);
+    var results = await Future.wait([_loadPoiStatistics(), _loadTeamStatistics(), _loadOwnTeamStatistics()]);
 
     var poiCampaignStatistics = results[0] as CampaignStatisticsModel;
     var teamStatistics = results[1] as TeamStatistics;
+    var teamMembershipStatistics = results[2] as TeamMembershipStatistics;
 
     setState(() {
       _loading = false;
       _poiStatistics = poiCampaignStatistics;
       _teamStatistics = teamStatistics;
+      _teamMembershipStatistics = teamMembershipStatistics;
     });
   }
 
@@ -107,5 +112,29 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     campaignSettings.recentTeamStatisticsFetchTimestamp = DateTime.now();
 
     return teamStats;
+  }
+
+  Future<TeamMembershipStatistics> _loadOwnTeamStatistics() async {
+    var campaignSettings = GetIt.I<AppSettings>().campaign;
+
+    if (campaignSettings.recentTeamMembershipStatistics != null &&
+        DateTime.now().isBefore(
+          campaignSettings.recentTeamMembershipStatisticsFetchTimestamp!.add(Duration(minutes: 5)),
+        )) {
+      return campaignSettings.recentTeamMembershipStatistics!;
+    }
+    var teamApiService = GetIt.I<GrueneApiTeamsService>();
+
+    try {
+      var teamMembershipStats = await teamApiService.getTeamMembershipStatistics(onlyMyData: true);
+
+      campaignSettings.recentTeamMembershipStatistics = teamMembershipStats;
+      campaignSettings.recentTeamMembershipStatisticsFetchTimestamp = DateTime.now();
+
+      return teamMembershipStats;
+    } on ApiException catch (e) {
+      logger.d(e.message);
+      rethrow;
+    }
   }
 }

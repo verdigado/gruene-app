@@ -7,14 +7,17 @@ class CampaignSessionSettings {
   LatLng? lastPosition;
   double? lastZoomLevel;
 
-  CampaignStatisticsModel? recentPoiStatistics;
-  DateTime? recentPoiStatisticsFetchTimestamp;
-
   bool imageConsentConfirmed = false;
 
   String? searchString;
   List<SearchResultItem>? searchResult = [];
 
+  CampaignStatisticsModel? recentPoiStatistics;
+  DateTime? recentPoiStatisticsFetchTimestamp;
+
   TeamStatistics? recentTeamStatistics;
   DateTime? recentTeamStatisticsFetchTimestamp;
+
+  TeamMembershipStatistics? recentTeamMembershipStatistics;
+  DateTime? recentTeamMembershipStatisticsFetchTimestamp;
 }

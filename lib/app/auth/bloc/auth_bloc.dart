@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/services/push_notification_service.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 
 class AuthEvent {}
 
@@ -30,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       final success = await authRepository.login();
       if (success) {
+        AppSettings.register();
         emit(Authenticated());
         await _pushNotificationService.updateSubscriptions();
       } else {
@@ -40,6 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutRequested>((event, emit) async {
       await authRepository.logout();
       await _pushNotificationService.updateSubscriptions();
+      AppSettings.register();
       emit(Unauthenticated());
     });
 
