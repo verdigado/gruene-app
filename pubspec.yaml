@@ -80,6 +80,7 @@ dependencies:
   form_builder_image_picker: ^4.3.1
   step_progress_indicator: ^1.0.2
   flutter_xlider: ^3.5.0
+  uuid: ^4.5.2
   # flutter_nice_toast: ^0.2.5
 
 dev_dependencies:

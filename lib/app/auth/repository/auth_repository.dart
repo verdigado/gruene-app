@@ -10,12 +10,14 @@ import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:keycloak_authenticator/api.dart';
+import 'package:uuid/uuid.dart';
 
 class AuthRepository {
   final FlutterAppAuth _appAuth = FlutterAppAuth();
   final _secureStorage = GetIt.instance<FlutterSecureStorage>();
   final AuthenticatorService _authenticatorService = GetIt.I<AuthenticatorService>();
   final IpService _ipService = GetIt.I<IpService>();
+  String? _loginId;
 
   Future<String?> getAccessToken() async => await _secureStorage.read(key: SecureStorageKeys.accessToken);
   Future<String?> getRefreshToken() async => await _secureStorage.read(key: SecureStorageKeys.refreshToken);
@@ -23,6 +25,7 @@ class AuthRepository {
   Future<bool> login() async {
     final authenticator = await _authenticatorService.getFirst();
     final pollingTimer = authenticator != null ? _pollForChallenge(authenticator) : null;
+    _loginId = Uuid().v4();
     try {
       final AuthorizationTokenResponse result = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -31,6 +34,7 @@ class AuthRepository {
           allowInsecureConnections: Config.isDevelopment,
           issuer: Config.oidcIssuer,
           scopes: ['openid', 'profile', 'email', 'offline_access'],
+          additionalParameters: {'login_id': _loginId!},
         ),
       );
 
@@ -47,6 +51,7 @@ class AuthRepository {
       logger.w('Login failed: $e');
     } finally {
       stopPolling(pollingTimer);
+      _loginId = null;
     }
     return false;
   }
@@ -142,7 +147,9 @@ class AuthRepository {
         }
 
         final challenge = await authenticator.fetchChallenge();
-        if (challenge != null && await _ipService.isOwnIp(challenge.ipAddress)) {
+        if (challenge != null &&
+            challenge.loginId == _loginId &&
+            await _ipService.isOwnIp(challenge.ipAddress)) {
           stopPolling(timer);
           await authenticator.reply(challenge: challenge, granted: true);
           logger.d('Challenge approved successfully');
