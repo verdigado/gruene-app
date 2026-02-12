@@ -10,6 +10,7 @@ import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:keycloak_authenticator/api.dart';
+import 'package:uuid/uuid.dart';
 
 class AuthRepository {
   final FlutterAppAuth _appAuth = FlutterAppAuth();
@@ -22,7 +23,8 @@ class AuthRepository {
 
   Future<bool> login() async {
     final authenticator = await _authenticatorService.getFirst();
-    final pollingTimer = authenticator != null ? _pollForChallenge(authenticator) : null;
+    final loginId = Uuid().v4();
+    final pollingTimer = authenticator != null ? _pollForChallenge(authenticator, loginId) : null;
     try {
       final AuthorizationTokenResponse result = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -31,6 +33,7 @@ class AuthRepository {
           allowInsecureConnections: Config.isDevelopment,
           issuer: Config.oidcIssuer,
           scopes: ['openid', 'profile', 'email', 'offline_access'],
+          additionalParameters: {'login_id': loginId},
         ),
       );
 
@@ -130,7 +133,7 @@ class AuthRepository {
     logger.d('Auth tokens deleted successfully');
   }
 
-  Timer _pollForChallenge(Authenticator authenticator) {
+  Timer _pollForChallenge(Authenticator authenticator, String loginId) {
     final startTime = DateTime.now();
     final timeout = Duration(seconds: 120);
 
@@ -142,7 +145,7 @@ class AuthRepository {
         }
 
         final challenge = await authenticator.fetchChallenge();
-        if (challenge != null && await _ipService.isOwnIp(challenge.ipAddress)) {
+        if (challenge != null && challenge.loginId == loginId && await _ipService.isOwnIp(challenge.ipAddress)) {
           stopPolling(timer);
           await authenticator.reply(challenge: challenge, granted: true);
           logger.d('Challenge approved successfully');

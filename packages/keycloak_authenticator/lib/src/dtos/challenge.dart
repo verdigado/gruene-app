@@ -42,6 +42,9 @@ class Challenge {
   /// Name of the client
   final String clientName;
 
+  /// A random value that is passed to the authorization endpoint
+  final String? loginId;
+
   Challenge({
     required this.userName,
     required this.userFirstName,
@@ -56,6 +59,7 @@ class Challenge {
     required this.osVersion,
     required this.expiresIn,
     required this.clientName,
+    this.loginId,
   });
 
   static int? _getExpiresInFromUrl(String? targetUrl) {
@@ -95,6 +99,7 @@ class Challenge {
         os: json['os'],
         osVersion: json['osVersion'],
         expiresIn: _getExpiresInFromUrl(json['targetUrl']),
-        clientName: json['clientName']);
+        clientName: json['clientName'],
+        loginId: json['loginId']);
   }
 }
