@@ -15,6 +15,7 @@
     "no": "Nein",
     "saved": "Gespeichert",
     "notAvailable": "N/A",
+    "unknown": "Unbekannt",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",

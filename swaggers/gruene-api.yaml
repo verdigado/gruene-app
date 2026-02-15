@@ -2534,6 +2534,29 @@ paths:
       summary: Find own team
       tags:
         - campaigns
+  /v1/campaigns/teams/self/statistics:
+    get:
+      operationId: teamStatistics
+      parameters:
+        - name: campaignId
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembershipStatistics'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get statistics of own team
+      tags:
+        - campaigns
   /v1/campaigns/teams/pendingInvitations:
     get:
       operationId: pendingInvitations
@@ -5968,6 +5991,55 @@ components:
         - createdAt
         - name
         - memberships
+    TeamMembershipStatisticsItem:
+      type: object
+      properties:
+        userName:
+          type: string
+          nullable: true
+        divisionName:
+          type: string
+          nullable: true
+        memberSince:
+          format: date-time
+          type: string
+        status:
+          type: string
+          enum:
+            - PENDING
+            - ACCEPTED
+            - RESIGNED
+        posterCount:
+          type: number
+          minimum: 0
+        flyerCount:
+          type: number
+          minimum: 0
+        openedDoorCount:
+          type: number
+          minimum: 0
+        closedDoorCount:
+          type: number
+          minimum: 0
+      required:
+        - status
+        - posterCount
+        - flyerCount
+        - openedDoorCount
+        - closedDoorCount
+    TeamMembershipStatistics:
+      type: object
+      properties:
+        lastUpdate:
+          format: date-time
+          type: string
+        teamStatistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMembershipStatisticsItem'
+      required:
+        - lastUpdate
+        - teamStatistics
     TeamInvitation:
       type: object
       properties:
