@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
@@ -103,21 +104,11 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
   }
 
   Future<void> onChangeTeamLead() async {
-    var navState = Navigator.of(context, rootNavigator: true);
-    final result = await navState.push(
-      AppRoute<PublicProfile?>(
-        builder: (context) {
-          return ContentPage(
-            title: t.campaigns.label,
-            contentBackgroundColor: ThemeColors.backgroundSecondary,
-            alignment: Alignment.topCenter,
-            child: ProfileSearchScreen(
-              getActionText: (userId) => SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_lead),
-            ),
-          );
-        },
-      ),
+    final result = await ProfileSearchHelper.searchProfile(
+      context,
+      (userId) => SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_lead),
     );
+
     if (result != null) {
       setState(() {
         currentTeamLeadProfile = result;

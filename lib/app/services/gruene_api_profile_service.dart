@@ -1,11 +1,13 @@
+import 'dart:math';
+
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GrueneApiProfileService extends GrueneApiBaseService {
   Future<Profile> getSelf() async => getFromApi(apiRequest: (api) => api.v1ProfilesSelfGet());
 
-  Future<List<PublicProfile>> searchProfile(String searchText) async => getFromApi(
-    apiRequest: (api) => api.v1ProfilesGet(search: searchText),
+  Future<List<PublicProfile>> searchProfile(String searchText, {int page = 1, int pageSize = 10}) async => getFromApi(
+    apiRequest: (api) => api.v1ProfilesGet(search: searchText, offset: max(0, (page - 1) * pageSize), limit: pageSize),
     map: (result) => result.data,
   );
 

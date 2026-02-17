@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
+import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/profile_search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
@@ -156,21 +157,13 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
   }
 
   Future<void> _onChangeTeamMember(PublicProfile? member) async {
-    var navState = Navigator.of(context, rootNavigator: true);
     var allCurrentMembersAndLeads = [...teamMembers.map((x) => x.userId), (await _getCurrentTeamLeadProfile()).userId];
-    final newTeamMember = await navState.push(
-      AppRoute<PublicProfile?>(
-        builder: (context) {
-          return ContentPage(
-            title: t.campaigns.label,
-            contentBackgroundColor: ThemeColors.backgroundSecondary,
-            alignment: Alignment.topCenter,
-            child: ProfileSearchScreen(
-              getActionText: (userId) => _getActionStateAndText(allCurrentMembersAndLeads, userId),
-            ),
-          );
-        },
-      ),
+    var localContext = context;
+    if (!localContext.mounted) return;
+
+    final newTeamMember = await ProfileSearchHelper.searchProfile(
+      localContext,
+      (userId) => _getActionStateAndText(allCurrentMembersAndLeads, userId),
     );
     if (newTeamMember != null) {
       var allMembersAndLeads = [...teamMembers.map((x) => x.userId), (await _getCurrentTeamLeadProfile()).userId];

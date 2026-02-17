@@ -6,9 +6,11 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/widgets/search_bar_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class ProfileSearchScreen extends StatefulWidget {
   final SearchActionState Function(String userId) getActionText;
@@ -28,28 +30,63 @@ class SearchActionState {
 }
 
 class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
-  List<PublicProfile> _currentSearchResult = [];
+  PagingState<int, PublicProfile> _state = PagingState();
+  String? _searchText;
+  static const _pageSize = 20;
+
+  void _fetchNextPage() async {
+    if (_state.isLoading) return;
+
+    setState(() {
+      _state = _state.copyWith(isLoading: true, error: null);
+    });
+
+    try {
+      final newKey = (_state.keys?.last ?? 0) + 1;
+      final newItems = await onSearchProfileNew(newKey);
+      final isLastPage = newItems.isEmpty || newItems.length < _pageSize;
+
+      setState(() {
+        _state = _state.copyWith(
+          pages: [...?_state.pages, newItems],
+          keys: [...?_state.keys, newKey],
+          hasNextPage: !isLastPage,
+          isLoading: false,
+        );
+      });
+    } catch (error) {
+      setState(() {
+        _state = _state.copyWith(error: error, isLoading: false);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    var widgets = <Widget>[];
     var searchBar = Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: SearchBarWidget(
-        onExecuteSearch: onSearchProfile,
+        onExecuteSearch: onSearchProfileExecuted,
         onSearchCleared: onSearchCleared,
         hintText: t.campaigns.search.hintTextProfile,
       ),
     );
-    widgets.add(searchBar);
-    if (_currentSearchResult.isNotEmpty) {
-      var listWidgets = _currentSearchResult.map((item) => _getSearchResultWidget(item)).toList();
-      var searchResultList = SingleChildScrollView(child: Column(children: [...listWidgets]));
-      widgets.add(searchResultList);
-      widgets.add(SizedBox(height: 50));
-    }
+    var paging = PagedSliverList<int, PublicProfile>(
+      state: _state,
+      fetchNextPage: _fetchNextPage,
+      builderDelegate: PagedChildBuilderDelegate(
+        noItemsFoundIndicatorBuilder: (context) =>
+            _searchText == null ? SizedBox.shrink() : Center(child: Text(t.campaigns.search.no_entries_found)),
+        itemBuilder: (context, item, index) => _getSearchResultWidget(item),
+      ),
+    );
 
-    return Column(children: widgets);
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(child: searchBar),
+        paging,
+      ],
+    );
   }
 
   Widget _getSearchResultWidget(PublicProfile profile) {
@@ -118,26 +155,26 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
     );
   }
 
-  void onSearchProfile(String searchText) async {
-    var scaffoldMessenger = ScaffoldMessenger.of(context);
-    var profileService = GetIt.I<GrueneApiProfileService>();
-    var searchResult = await profileService.searchProfile(searchText);
-
-    if (searchResult.isEmpty) {
-      scaffoldMessenger.removeCurrentSnackBar();
-      scaffoldMessenger.showSnackBar(
-        SnackBar(
-          content: Text(t.campaigns.search.no_entries_found),
-          duration: Duration(seconds: 2),
-          showCloseIcon: true,
-        ),
-      );
-    }
-
+  void onSearchCleared() {
     setState(() {
-      _currentSearchResult = searchResult;
+      _searchText = null;
+      _state = _state.reset();
     });
   }
 
-  void onSearchCleared() {}
+  Future<List<PublicProfile>> onSearchProfileNew(int pageKey) async {
+    if (_searchText == null) {
+      return [];
+    }
+    var profileService = GetIt.I<GrueneApiProfileService>();
+    logger.d('Searching for profiles with search text: $_searchText and pageKey: $pageKey');
+    return await profileService.searchProfile(_searchText!, page: pageKey, pageSize: _pageSize);
+  }
+
+  void onSearchProfileExecuted(String searchText) {
+    setState(() {
+      _searchText = searchText;
+      _state = _state.reset();
+    });
+  }
 }

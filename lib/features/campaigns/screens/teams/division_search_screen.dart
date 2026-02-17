@@ -36,7 +36,6 @@ class _DivisionSearchScreenState extends State<DivisionSearchScreen> {
           .toList();
       var searchResultList = SingleChildScrollView(child: Column(children: [...listWidgets]));
       widgets.add(searchResultList);
-      widgets.add(SizedBox(height: 50));
     }
 
     return Column(children: widgets);

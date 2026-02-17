@@ -146,7 +146,7 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
         builder: (context) {
           return ContentPage(
             title: t.campaigns.label,
-            showBackButton: false,
+            showBackButton: true,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
             child: DivisionSearchScreen(),
