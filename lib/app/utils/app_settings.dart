@@ -7,7 +7,9 @@ class AppSettings {
   ({LatLng lastPosition, double lastZoomLevel})? events;
 
   static void register() {
-    GetIt.I.unregister<AppSettings>(disposingFunction: (appSetting) {});
+    if (GetIt.I.isRegistered<AppSettings>()) {
+      GetIt.I.unregister<AppSettings>(disposingFunction: (appSetting) {});
+    }
     GetIt.I.registerSingleton<AppSettings>(AppSettings());
   }
 }

@@ -10,7 +10,7 @@ class TeamNotificationHandler extends BaseNotificationHandler {
 
   @override
   String? getPayload(RemoteMessage message) {
-    return 'team';
+    return NotificationConstants.payloadTeam;
   }
 
   @override

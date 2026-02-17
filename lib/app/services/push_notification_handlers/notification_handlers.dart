@@ -9,3 +9,5 @@ import 'package:gruene_app/features/campaigns/controllers/team_refresh_controlle
 part 'base_notification_handler.dart';
 part 'news_notification_handler.dart';
 part 'team_notification_handler.dart';
+part 'team_top10_notification_handler.dart';
+part 'notification_constants.dart';
