@@ -56,7 +56,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
 
     var theme = Theme.of(context);
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Column(
         children: [
           Row(
