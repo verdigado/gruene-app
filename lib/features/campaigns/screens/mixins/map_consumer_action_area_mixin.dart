@@ -53,6 +53,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       CampaignConstants.actionAreaSymbolLayerId,
       SymbolLayerProperties(
         iconImage: CampaignConstants.actionAreaAssignmentAssetId,
+        iconRotationAlignment: 'viewport',
         iconSize: [
           Expressions.interpolate,
           ['linear'],

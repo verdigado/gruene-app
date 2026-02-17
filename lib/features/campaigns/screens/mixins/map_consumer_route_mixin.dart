@@ -63,6 +63,7 @@ mixin MapConsumerRouteMixin on InfoBox {
       SymbolLayerProperties(
         iconImage: CampaignConstants.routeAssignmentAssetId,
         symbolPlacement: 'line-center',
+        iconRotationAlignment: 'viewport',
         iconSize: [
           Expressions.interpolate,
           ['linear'],
