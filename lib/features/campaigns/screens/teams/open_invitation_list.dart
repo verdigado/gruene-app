@@ -11,8 +11,14 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class OpenInvitationList extends StatefulWidget {
   final void Function() reload;
   final Team? currentTeam;
+  final void Function(bool value) hasInvitationsCallback;
 
-  const OpenInvitationList({super.key, required this.reload, required this.currentTeam});
+  const OpenInvitationList({
+    super.key,
+    required this.reload,
+    required this.currentTeam,
+    required this.hasInvitationsCallback,
+  });
 
   @override
   State<OpenInvitationList> createState() => _OpenInvitationListState();
@@ -39,6 +45,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
     setState(() {
       _loading = false;
       _openInvitations = openInvitations;
+      widget.hasInvitationsCallback(_openInvitations.isNotEmpty);
     });
   }
 

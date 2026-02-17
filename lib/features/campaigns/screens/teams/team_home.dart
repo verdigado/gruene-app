@@ -30,6 +30,8 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
   late Profile? _currentProfile;
   final TeamRefreshController _teamController = GetIt.I<TeamRefreshController>();
 
+  var _hasInvitations = true;
+
   @override
   void initState() {
     super.initState();
@@ -85,15 +87,39 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     subItems.add(
       OpenInvitationList(
         reload: () => _loadData(preloadedProfile: _currentProfile),
+        hasInvitationsCallback: (bool value) => setState(() => _hasInvitations = value),
         currentTeam: _currentTeam,
       ),
     );
 
     if (_currentTeam != null) {
       subItems.addAll(_getTeamWidgets(context));
+    } else {
+      subItems.add(_getNoTeamHint());
     }
 
     return Column(children: [...subItems]);
+  }
+
+  Offstage _getNoTeamHint() {
+    var theme = Theme.of(context);
+    return Offstage(
+      offstage: _hasInvitations,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        child: Column(
+          children: [
+            Center(child: Icon(Icons.groups_outlined, color: ThemeColors.grey200, size: 64)),
+            Text(
+              widget.currentUser.isCampaignManager()
+                  ? t.campaigns.team.no_team_yet_hint_privileged
+                  : t.campaigns.team.no_team_yet_hint,
+              style: theme.textTheme.labelLarge,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Iterable<Widget> _getTeamWidgets(BuildContext context) sync* {

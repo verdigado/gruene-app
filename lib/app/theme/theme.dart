@@ -14,6 +14,9 @@ class ThemeColors {
   // Very Light Green (#F3FAF6)
   static const Color grey100 = Color(0xFFF3FAF6);
 
+  // Light Green (#E6ECEA)
+  static const Color grey200 = Color(0xFFE6ECEA);
+
   // White (#FFFFFF)
   static const Color background = Color(0xFFFFFFFF);
 
