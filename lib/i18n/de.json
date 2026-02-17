@@ -283,6 +283,8 @@
       "cancel_invitation": "Einladung zurückziehen",
       "add_team_member": "Teammitglied hinzufügen",
       "profile_visibility_hint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Der Team Modus erfordert, dass dein Profil mindestens im Kreisverband [KV] auffindbar sein muss, damit du zu Teams hinzugefügt werden kannst.\nBitte setze eine entsprechende Sichtbarkeitseinstellung.",
+      "no_team_yet_hint": "Du bist momentan in keinem Team Mitglied. Bitte eine*n Lokalkoordinator*in deiner Gliederung, dich in ein Team einzuladen.",
+      "no_team_yet_hint_privileged": "Du bist momentan in keinem Team Mitglied. Du kannst von Lokalkoordinator*innen in ein Team eingeladen werden oder selbst ein neues Team anlegen.",
       "invitations": {
         "open_invitations_label": "Offene Einladungen",
         "open_invitations_description": {
