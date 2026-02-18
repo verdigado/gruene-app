@@ -3,45 +3,40 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
-import 'package:gruene_app/features/campaigns/widgets/search_bar_widget.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/search_screen.dart';
+import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
+import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class DivisionSearchScreen extends StatefulWidget {
-  const DivisionSearchScreen({super.key});
-
-  @override
-  State<DivisionSearchScreen> createState() => _DivisionSearchScreenState();
-}
-
-class _DivisionSearchScreenState extends State<DivisionSearchScreen> {
-  List<Division> _currentSearchResult = [];
-
-  @override
-  Widget build(BuildContext context) {
-    var widgets = <Widget>[];
-    var searchBar = Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: SearchBarWidget(
-        onExecuteSearch: onSearchDivision,
-        onSearchCleared: onSearchCleared,
-        hintText: t.campaigns.search.hintTextDivision,
+class DivisionSearchHelper {
+  static Future<Division?>? searchDivision(BuildContext context) async {
+    var navState = Navigator.of(context, rootNavigator: true);
+    final result = await navState.push(
+      AppRoute<Division?>(
+        builder: (context) {
+          return ContentPage(
+            title: t.campaigns.label,
+            showBackButton: true,
+            contentBackgroundColor: ThemeColors.backgroundSecondary,
+            alignment: Alignment.topCenter,
+            child: SearchScreen<Division>(
+              getSearchItemWidget: _getSearchItemWidget,
+              searchDataDelegate: _getSearchDataDelegate,
+            ),
+          );
+        },
       ),
     );
-    widgets.add(searchBar);
-    if (_currentSearchResult.isNotEmpty) {
-      var listWidgets = _currentSearchResult
-          .where((div) => [DivisionLevel.kv].contains(div.level))
-          .map((item) => _getSearchResultWidget(item))
-          .toList();
-      var searchResultList = SingleChildScrollView(child: Column(children: [...listWidgets]));
-      widgets.add(searchResultList);
-    }
-
-    return Column(children: widgets);
+    return result;
   }
 
-  Widget _getSearchResultWidget(Division division) {
+  static Widget _getSearchItemWidget(
+    Division item,
+    int index,
+    BuildContext context,
+    void Function(Division item) closeSearchScreen,
+  ) {
     var theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(8),
@@ -60,7 +55,7 @@ class _DivisionSearchScreenState extends State<DivisionSearchScreen> {
                       padding: EdgeInsets.all(6),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(division.shortDisplayName(), style: theme.textTheme.titleMedium),
+                        child: Text(item.shortDisplayName(), style: theme.textTheme.titleMedium),
                       ),
                     ),
 
@@ -73,9 +68,7 @@ class _DivisionSearchScreenState extends State<DivisionSearchScreen> {
                           side: BorderSide(color: ThemeColors.primary),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pop(context, division);
-                      },
+                      onPressed: () => closeSearchScreen(item),
                       child: Text(
                         t.campaigns.team.select_as_division,
                         style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background),
@@ -91,25 +84,9 @@ class _DivisionSearchScreenState extends State<DivisionSearchScreen> {
     );
   }
 
-  void onSearchDivision(String searchText) async {
-    var scaffoldMessenger = ScaffoldMessenger.of(context);
+  static Future<List<Division>> _getSearchDataDelegate(String searchText, int pageKey, int pageSize) async {
     var divisionService = GetIt.I<GrueneApiDivisionsService>();
     var searchResult = await divisionService.searchDivision(searchText);
-
-    if (searchResult.isEmpty) {
-      scaffoldMessenger.removeCurrentSnackBar();
-      scaffoldMessenger.showSnackBar(
-        SnackBar(
-          content: Text(t.campaigns.search.no_entries_found),
-          duration: Duration(seconds: 2),
-          showCloseIcon: true,
-        ),
-      );
-    }
-    setState(() {
-      _currentSearchResult = searchResult;
-    });
+    return searchResult;
   }
-
-  void onSearchCleared() {}
 }

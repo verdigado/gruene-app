@@ -7,11 +7,9 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/features/campaigns/helper/division_search_helper.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
-import 'package:gruene_app/features/campaigns/screens/teams/division_search_screen.dart';
-import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
-import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -140,20 +138,8 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
   }
 
   Future<void> onChangeDivision() async {
-    var navState = Navigator.of(context, rootNavigator: true);
-    final result = await navState.push(
-      AppRoute<Division?>(
-        builder: (context) {
-          return ContentPage(
-            title: t.campaigns.label,
-            showBackButton: true,
-            contentBackgroundColor: ThemeColors.backgroundSecondary,
-            alignment: Alignment.topCenter,
-            child: DivisionSearchScreen(),
-          );
-        },
-      ),
-    );
+    final result = await DivisionSearchHelper.searchDivision(context);
+
     if (result != null) {
       setState(() {
         currentDivision = result;
