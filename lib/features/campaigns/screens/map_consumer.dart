@@ -230,14 +230,14 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     mapController.setPoiMarkerSource([markerItem]);
   }
 
-  void addMapLayersForContext(MapLibreMapController mapLibreController) {
-    Future.wait([
-      addFocusAreaLayers(mapLibreController, getMapInfo(MapInfoType.focusArea)),
-      addPollingStationLayer(mapLibreController, getMapInfo(MapInfoType.pollingStation)),
-      addRouteLayer(mapLibreController, getMapInfo(MapInfoType.route)),
-      addExperienceAreaLayer(mapLibreController, getMapInfo(MapInfoType.experienceArea)),
-      addActionAreaLayer(mapLibreController, getMapInfo(MapInfoType.actionArea)),
-    ]);
+  Future<void> addMapLayersForContext(MapLibreMapController mapLibreController) async {
+    // bottom layer
+    await addFocusAreaLayers(mapLibreController, getMapInfo(MapInfoType.focusArea));
+    await addExperienceAreaLayer(mapLibreController, getMapInfo(MapInfoType.experienceArea));
+    await addActionAreaLayer(mapLibreController, getMapInfo(MapInfoType.actionArea));
+    await addRouteLayer(mapLibreController, getMapInfo(MapInfoType.route));
+    await addPollingStationLayer(mapLibreController, getMapInfo(MapInfoType.pollingStation));
+    // top layer
   }
 
   void loadDataLayers(LatLng locationSW, LatLng locationNE, bool loadCached) async {
