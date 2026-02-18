@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
@@ -20,7 +21,9 @@ class DivisionSearchHelper {
             showBackButton: true,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
+            withScroll: false,
             child: SearchScreen<Division>(
+              searchHintText: t.campaigns.search.hintTextDivision,
               getSearchItemWidget: _getSearchItemWidget,
               searchDataDelegate: _getSearchDataDelegate,
             ),
@@ -86,7 +89,11 @@ class DivisionSearchHelper {
 
   static Future<List<Division>> _getSearchDataDelegate(String searchText, int pageKey, int pageSize) async {
     var divisionService = GetIt.I<GrueneApiDivisionsService>();
-    var searchResult = await divisionService.searchDivision(searchText);
+    var searchResult = await divisionService.searchDivision(
+      searchTerm: searchText,
+      offset: PagingHelper.getOffsetForPage(pageKey, pageSize),
+      limit: pageSize,
+    );
     return searchResult;
   }
 }

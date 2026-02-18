@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:gruene_app/features/campaigns/helper/new_page_error_indicator.dart';
 import 'package:gruene_app/features/campaigns/widgets/search_bar_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -12,11 +13,13 @@ class SearchScreen<T> extends StatefulWidget {
   final int pageSize;
   final SearchDataDelegate<T> searchDataDelegate;
   final GetSearchItemWidgetDelegate<T> getSearchItemWidget;
+  final String searchHintText;
 
   const SearchScreen({
     super.key,
     required this.searchDataDelegate,
     required this.getSearchItemWidget,
+    required this.searchHintText,
     this.pageSize = 20,
   });
 
@@ -62,7 +65,7 @@ class _SearchScreenState<T> extends State<SearchScreen<T>> {
       child: SearchBarWidget(
         onExecuteSearch: onSearchExecuted,
         onSearchCleared: onSearchCleared,
-        hintText: t.campaigns.search.hintTextProfile,
+        hintText: widget.searchHintText,
       ),
     );
     var paging = PagedSliverList<int, T>(
@@ -71,6 +74,7 @@ class _SearchScreenState<T> extends State<SearchScreen<T>> {
       builderDelegate: PagedChildBuilderDelegate(
         noItemsFoundIndicatorBuilder: (context) =>
             _searchText == null ? SizedBox.shrink() : Center(child: Text(t.campaigns.search.no_entries_found)),
+        newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(onTap: _fetchNextPage),
         itemBuilder: (context, item, index) =>
             widget.getSearchItemWidget(item, index, context, (item) => Navigator.pop(context, item)),
       ),
@@ -84,87 +88,12 @@ class _SearchScreenState<T> extends State<SearchScreen<T>> {
     );
   }
 
-  // Widget _getSearchResultWidget(PublicProfile profile) {
-  //   var actionState = widget.getActionText(profile.userId);
-  //   var theme = Theme.of(context);
-  //   return Padding(
-  //     padding: EdgeInsets.all(8),
-  //     child: Container(
-  //       decoration: boxShadowDecoration,
-  //       padding: EdgeInsets.all(6),
-  //       child: SizedBox(
-  //         height: 112,
-  //         child: Row(
-  //           children: [
-  //             Expanded(
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.stretch,
-  //                 children: [
-  //                   Container(
-  //                     padding: EdgeInsets.all(6),
-  //                     child: Align(
-  //                       alignment: Alignment.centerLeft,
-  //                       child: Text(profile.fullName(), style: theme.textTheme.titleMedium),
-  //                     ),
-  //                   ),
-  //                   Container(
-  //                     padding: EdgeInsets.symmetric(horizontal: 12),
-  //                     decoration: BoxDecoration(
-  //                       border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
-  //                     ),
-  //                     child: Align(
-  //                       alignment: Alignment.centerLeft,
-  //                       child: Text(
-  //                         profile.memberships!.map((m) => m.division.shortDisplayName()).join(', '),
-  //                         style: theme.textTheme.bodyMedium,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   ElevatedButton(
-  //                     style: ElevatedButton.styleFrom(
-  //                       foregroundColor: ThemeColors.background,
-  //                       backgroundColor: ThemeColors.primary,
-  //                       shape: RoundedRectangleBorder(
-  //                         borderRadius: BorderRadius.circular(24.0),
-  //                         side: BorderSide(color: ThemeColors.primary),
-  //                       ),
-  //                     ),
-  //                     onPressed: !actionState.isEnabled
-  //                         ? null
-  //                         : () {
-  //                             Navigator.pop(context, profile);
-  //                           },
-
-  //                     child: Text(
-  //                       actionState.actionText,
-  //                       style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   void onSearchCleared() {
     setState(() {
       _searchText = null;
       _state = _state.reset();
     });
   }
-
-  // Future<List<PublicProfile>> onSearchProfileNew(int pageKey) async {
-  //   if (_searchText == null) {
-  //     return [];
-  //   }
-  //   var profileService = GetIt.I<GrueneApiProfileService>();
-  //   logger.d('Searching for profiles with search text: $_searchText and pageKey: $pageKey');
-  //   return await profileService.searchProfile(_searchText!, page: pageKey, pageSize: widget.pageSize);
-  // }
 
   void onSearchExecuted(String searchText) {
     setState(() {
@@ -179,12 +108,4 @@ class _SearchScreenState<T> extends State<SearchScreen<T>> {
     }
     return await widget.searchDataDelegate(_searchText!, newKey, widget.pageSize);
   }
-}
-
-class SearchActionState {
-  final bool isEnabled;
-  final String actionText;
-
-  SearchActionState.enabled({required this.actionText}) : isEnabled = true;
-  SearchActionState.disabled({required this.actionText}) : isEnabled = false;
 }

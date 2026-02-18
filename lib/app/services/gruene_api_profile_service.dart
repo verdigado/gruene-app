@@ -4,8 +4,8 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class GrueneApiProfileService extends GrueneApiBaseService {
   Future<Profile> getSelf() async => getFromApi(apiRequest: (api) => api.v1ProfilesSelfGet());
 
-  Future<List<PublicProfile>> searchProfile(String searchText, {int? offset, int? pageSize}) async => getFromApi(
-    apiRequest: (api) => api.v1ProfilesGet(search: searchText, offset: offset, limit: pageSize),
+  Future<List<PublicProfile>> searchProfile(String searchText, {int? offset, int? limit}) async => getFromApi(
+    apiRequest: (api) => api.v1ProfilesGet(search: searchText, offset: offset, limit: limit),
     map: (result) => result.data,
   );
 

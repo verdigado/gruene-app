@@ -1,0 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
+import 'package:flutter/material.dart';
+
+class FooterTile extends StatelessWidget {
+  const FooterTile({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 16, bottom: 16),
+    child: Center(child: child),
+  );
+}

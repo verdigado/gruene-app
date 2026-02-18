@@ -5,6 +5,7 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
+import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
@@ -26,6 +27,7 @@ class ProfileSearchHelper {
             alignment: Alignment.topCenter,
             withScroll: false,
             child: SearchScreen<PublicProfile>(
+              searchHintText: t.campaigns.search.hintTextProfile,
               searchDataDelegate: _searchProfile,
               getSearchItemWidget: (item, index, context, closeSearchScreen) =>
                   _getSearchProfileItemWidget(item, index, context, closeSearchScreen, getActionState),
@@ -42,7 +44,7 @@ class ProfileSearchHelper {
     return await profileService.searchProfile(
       searchText,
       offset: PagingHelper.getOffsetForPage(pageKey, pageSize),
-      pageSize: pageSize,
+      limit: pageSize,
     );
   }
 
