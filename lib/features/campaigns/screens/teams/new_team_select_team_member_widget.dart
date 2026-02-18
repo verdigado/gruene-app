@@ -4,10 +4,8 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
-import 'package:gruene_app/features/campaigns/screens/teams/profile_search_screen.dart';
-import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
+import 'package:gruene_app/features/campaigns/screens/teams/search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
-import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
