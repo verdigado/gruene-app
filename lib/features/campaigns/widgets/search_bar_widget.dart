@@ -71,7 +71,10 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               style: theme.textTheme.labelMedium?.apply(color: foregroundColor, fontSizeDelta: 2),
               onChanged: (value) {
                 setState(() {});
-                widget.onSearchFieldChanged!(value);
+                var onSearchFieldChanged = widget.onSearchFieldChanged;
+                if (onSearchFieldChanged != null) {
+                  onSearchFieldChanged(value);
+                }
               },
               onFieldSubmitted: (value) => widget.onExecuteSearch(_controller.text),
             ),

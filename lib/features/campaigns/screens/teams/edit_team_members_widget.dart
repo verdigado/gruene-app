@@ -4,10 +4,9 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
-import 'package:gruene_app/features/campaigns/screens/teams/profile_search_screen.dart';
-import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
+import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
+import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
-import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -165,19 +164,8 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
   }
 
   Future<void> _addNewTeamMember() async {
-    var navState = Navigator.of(context, rootNavigator: true);
-    final newTeamMember = await navState.push(
-      AppRoute<PublicProfile?>(
-        builder: (context) {
-          return ContentPage(
-            title: t.campaigns.label,
-            contentBackgroundColor: ThemeColors.backgroundSecondary,
-            alignment: Alignment.topCenter,
-            child: ProfileSearchScreen(getActionText: _getActionStateAndText),
-          );
-        },
-      ),
-    );
+    final newTeamMember = await ProfileSearchHelper.searchProfile(context, _getActionStateAndText);
+
     if (newTeamMember != null) {
       if (!_activeMemberships.map((m) => m.userId).contains(newTeamMember.userId)) {
         var teamService = GetIt.I<GrueneApiTeamsService>();

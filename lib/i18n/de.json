@@ -43,7 +43,8 @@
     "unknownError": "Ein unbekannter Fehler ist aufgetreten.",
     "offlineError": "Du bist offline. Keine Verbindung zum Internet möglich.",
     "apiError": "Die Kommunikation mit dem Server ist fehlgeschlagen (${statusCode}).",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "error_try_again": "Etwas ist schiefgelaufen. Tippe hier, um es erneut zu versuchen."
   },
   "news": {
     "news": "News",

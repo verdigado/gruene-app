@@ -6,8 +6,8 @@ class ContentPage extends StatelessWidget {
   final Widget child;
   final bool showBackButton;
   final Color? contentBackgroundColor;
-
   final Alignment alignment;
+  final bool withScroll;
 
   const ContentPage({
     super.key,
@@ -16,6 +16,7 @@ class ContentPage extends StatelessWidget {
     this.contentBackgroundColor,
     this.alignment = Alignment.center,
     this.showBackButton = true,
+    this.withScroll = true,
   });
 
   @override
@@ -25,7 +26,10 @@ class ContentPage extends StatelessWidget {
       backgroundColor: contentBackgroundColor ?? theme.colorScheme.secondary,
       body: Align(
         alignment: alignment,
-        child: SingleChildScrollView(child: child),
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 50),
+          child: withScroll ? SingleChildScrollView(child: child) : child,
+        ),
       ),
       appBar: CustomAppBar(title: title, showBackButton: showBackButton),
     );
