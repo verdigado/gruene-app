@@ -263,7 +263,7 @@ class _MapContainerState extends State<MapContainer>
       } else {
         feature = MapHelper.getClosestFeature(poiMarkers, targetLatLng);
       }
-      if (feature == null) return false;
+      if (feature == null) return true;
       onFeatureClick(feature);
       return true;
     }
