@@ -130,31 +130,7 @@ class _RouteDetailState extends State<RouteDetail> {
           ),
           ((!_currentUserInfo.isCampaignManager() || _currentUserKV == null) && _currentRouteDetail.team == null)
               ? SizedBox.shrink()
-              : Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 6),
-                      Icon(Icons.group_outlined, size: 30),
-                      SizedBox(width: 35),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => (_currentUserInfo.isCampaignManager() && _currentUserKV != null)
-                              ? _selectTeam(_currentRouteDetail)
-                              : null,
-                          child: Text(
-                            _currentRouteDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
-                            style: theme.textTheme.bodyLarge,
-                            softWrap: true,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              : _getAssignmentWidget(theme),
 
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -172,6 +148,35 @@ class _RouteDetailState extends State<RouteDetail> {
         ],
       ),
     );
+  }
+
+  Widget _getAssignmentWidget(ThemeData theme) {
+    var widget = Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+      ),
+      child: Row(
+        children: [
+          SizedBox(width: 6),
+          Icon(Icons.group_outlined, size: 30),
+          SizedBox(width: 35),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => (_currentUserInfo.isCampaignManager() && _currentUserKV != null)
+                  ? _selectTeam(_currentRouteDetail)
+                  : null,
+              child: Text(
+                _currentRouteDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
+                style: theme.textTheme.bodyLarge,
+                softWrap: true,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    return _currentRouteDetail.status == RouteStatus.closed ? widget.disable() : widget;
   }
 
   Future<void> _changeRouteStatus(RouteDetailModel route, bool state) async {
