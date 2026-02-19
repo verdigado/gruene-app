@@ -13,28 +13,27 @@ class BadgeStatisticsDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: EdgeInsets.all(16),
-      color: theme.colorScheme.surfaceDim,
-      child: Column(children: [_getBadgeBox(poiStatistics, context, theme)]),
+      padding: EdgeInsets.all(12),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [Text(t.campaigns.statistic.poi_statistics.my_badges, style: theme.textTheme.titleMedium)],
+            ),
+          ),
+          _getBadgeBox(poiStatistics, context, theme),
+        ],
+      ),
     );
   }
 
   Widget _getBadgeBox(CampaignStatisticsModel statistics, BuildContext context, ThemeData theme) {
-    var mediaQuery = MediaQuery.of(context);
     return Container(
-      padding: EdgeInsets.all(16),
-      width: mediaQuery.size.width,
-      decoration: BoxDecoration(
-        color: ThemeColors.background,
-        borderRadius: BorderRadius.circular(19),
-        boxShadow: [BoxShadow(color: ThemeColors.textDark.withAlpha(10), offset: Offset(2, 4))],
-      ),
+      padding: EdgeInsets.only(bottom: 16, left: 12, right: 12),
+      decoration: boxShadowDecoration,
       child: Column(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(t.campaigns.statistic.poi_statistics.my_badges, style: theme.textTheme.titleMedium),
-          ),
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
