@@ -127,7 +127,13 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(assignedElement.name, style: theme.textTheme.titleMedium),
+              Container(
+                constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 90),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(assignedElement.name, style: theme.textTheme.titleMedium),
+                ),
+              ),
               Text(
                 _getAssignmentInfoText(assignedElement),
                 style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
