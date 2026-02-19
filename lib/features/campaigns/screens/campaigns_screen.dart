@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/enums/badge_source.dart';
 import 'package:gruene_app/app/screens/router_tab_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/tab_bar.dart';
@@ -11,7 +12,7 @@ class CampaignsScreen extends StatelessWidget {
     TabModelBase(label: t.campaigns.door.label),
     TabModelBase(label: t.campaigns.poster.label),
     TabModelBase(label: t.campaigns.flyer.label),
-    TabModelBase(label: t.campaigns.team.label),
+    TabModelBase(label: t.campaigns.team.label, badgeSource: BadgeSource.openInvitations),
     TabModelBase(label: t.campaigns.statistic.label),
   ];
 

@@ -39,8 +39,9 @@ import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/clean_layout.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
+import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
+import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
-import 'package:gruene_app/features/campaigns/helper/campaign_action_cache_timer.dart';
 import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
@@ -93,7 +94,12 @@ Future<void> main() async {
   GetIt.I.registerSingleton<ProfileFeatureChecker>(ProfileFeatureChecker());
   GetIt.I.registerFactory<NominatimService>(() => NominatimService(countryCode: t.campaigns.search.country_code));
   GetIt.I.registerSingleton<CampaignActionCache>(CampaignActionCache());
-  GetIt.I.registerSingleton<CampaignActionCacheTimer>(CampaignActionCacheTimer());
+  GetIt.I.registerSingleton<CampaignValueStore>(CampaignValueStore());
+  GetIt.I.registerSingleton<BackgroundTimer>(
+    AppTimers.getCampaignActionCacheTimer(),
+    instanceName: 'campaignActionCacheTimer',
+  );
+  GetIt.I.registerSingleton<BackgroundTimer>(AppTimers.getOpenInvitationTimer(), instanceName: 'openInvitationTimer');
   GetIt.I.registerSingleton<FileManager>(FileManager());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.poster.toString());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.flyer.toString());
