@@ -94,10 +94,12 @@ Future<void> main() async {
   GetIt.I.registerSingleton<ProfileFeatureChecker>(ProfileFeatureChecker());
   GetIt.I.registerFactory<NominatimService>(() => NominatimService(countryCode: t.campaigns.search.country_code));
   GetIt.I.registerSingleton<CampaignActionCache>(CampaignActionCache());
+  GetIt.I.registerSingleton<CampaignValueStore>(CampaignValueStore());
   GetIt.I.registerSingleton<BackgroundTimer>(
     AppTimers.getCampaignActionCacheTimer(),
     instanceName: 'campaignActionCacheTimer',
   );
+  GetIt.I.registerSingleton<BackgroundTimer>(AppTimers.getOpenInvitationTimer(), instanceName: 'openInvitationTimer');
   GetIt.I.registerSingleton<FileManager>(FileManager());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.poster.toString());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.flyer.toString());
