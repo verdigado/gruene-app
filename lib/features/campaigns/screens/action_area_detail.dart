@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
@@ -186,12 +187,15 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     if (_currentUserKV == null) return;
     var teamsService = GetIt.I<GrueneApiTeamsService>();
 
-    var userTeams = await teamsService.findTeams(_currentUserKV!.divisionKey);
+    var userTeams = await teamsService.findTeams([_currentUserKV!.divisionKey]);
     if (!mounted) return;
     var selectedTeam = await showModalBottomSheet<FindTeamsItem>(
       context: context,
       useRootNavigator: true,
-      builder: (context) => SelectTeamWidget(teams: userTeams, routeOrArea: TeamAssignmentType.area),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+        child: SelectTeamWidget(teams: userTeams, routeOrArea: TeamAssignmentType.area),
+      ),
     );
 
     if (selectedTeam != null) {
