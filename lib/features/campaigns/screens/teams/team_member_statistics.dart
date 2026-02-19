@@ -1,6 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -19,7 +20,7 @@ class TeamMemberStatistics extends StatefulWidget {
 class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
   bool _loading = true;
   var _selectedPoiType = PoiType.poster;
-  late TeamStatistics _teamStatistics;
+  late TeamMembershipStatistics _teamStatistics;
 
   @override
   void initState() {
@@ -32,100 +33,8 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    // await Future.delayed(Duration(milliseconds: 200));
-    // TODO #729 remove mock data when getTeamStatistics is working
-    await Future<void>.delayed(Duration(milliseconds: 250));
-    // var teamsService = GetIt.I<GrueneApiTeamsService>();
-    // var team = await teamsService.getTeamStatistics();
-
-    var rand = Random();
-    var teamStatistics = TeamStatistics(
-      statistics: [
-        MemberStatistics(
-          name: 'Renate B.',
-          division: 'OV Leverkusen Südstadt',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-        MemberStatistics(
-          name: 'Paul Wunderlich',
-          division: 'OV Leverkusen Südstadt',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-        MemberStatistics(
-          name: 'Wiebke U.',
-          division: 'OV Leverkusen Hau',
-          status: TeamMembershipStatus.resigned,
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-        MemberStatistics(
-          name: 'Lukas M.',
-          division: 'OV Leverkusen Opladen',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-        MemberStatistics(
-          name: 'Sophie K.',
-          division: 'OV Leverkusen Südstadt',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-        MemberStatistics(
-          name: 'Maximilian Turbulus-Weberlin',
-          division: 'OV Leverkusen Schlebusch',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-        MemberStatistics(
-          name: 'Emma S.',
-          division: 'OV Leverkusen Südstadt',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-
-        MemberStatistics(
-          name: 'Emma S1.',
-          division: 'OV Leverkusen Südstadt',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-        MemberStatistics(
-          name: 'Emma S2.',
-          division: 'OV Leverkusen Südstadt',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-        MemberStatistics(
-          name: 'Emma S3.',
-          division: 'OV Leverkusen Südstadt',
-          start: DateTime(2025 - rand.nextInt(20), rand.nextInt(11) + 1, rand.nextInt(27) + 1),
-          flyerCount: rand.nextInt(1000),
-          posterCount: rand.nextInt(1000),
-          openDoorCount: rand.nextInt(1000),
-        ),
-      ],
-    );
-    teamStatistics.statistics.shuffle();
+    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var teamStatistics = await teamsService.getTeamStatistics();
 
     setState(() {
       _loading = false;
@@ -172,6 +81,22 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
               ],
             ),
             Column(children: _getMemberStats()),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+
+                  child: Row(
+                    children: [
+                      Text(
+                        t.common.updatedAt(date: _teamStatistics.lastUpdate.getAsLocalDateTimeString()),
+                        style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -211,30 +136,30 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
   }
 
   List<Widget> _getMemberStats() {
-    var stats = _teamStatistics.statistics;
+    var stats = _teamStatistics.teamStatistics;
     stats.sort(_compareStat);
 
     return stats.indexed.map(_getStatRow).toList();
   }
 
-  int _getCurrentStatValue(MemberStatistics item) {
+  double _getCurrentStatValue(TeamMembershipStatisticsItem item) {
     switch (_selectedPoiType) {
       case PoiType.flyerSpot:
         return item.flyerCount;
       case PoiType.poster:
         return item.posterCount;
       case PoiType.house:
-        return item.openDoorCount;
+        return item.openedDoorCount + item.closedDoorCount;
       case PoiType.swaggerGeneratedUnknown:
         return 0;
     }
   }
 
-  int _compareStat(MemberStatistics a, MemberStatistics b) {
+  int _compareStat(TeamMembershipStatisticsItem a, TeamMembershipStatisticsItem b) {
     return _getCurrentStatValue(a).compareTo(_getCurrentStatValue(b)) * -1;
   }
 
-  Widget _getStatRow((int, MemberStatistics) e) {
+  Widget _getStatRow((int, TeamMembershipStatisticsItem) e) {
     var theme = Theme.of(context);
     var index = e.$1 + 1;
     var item = e.$2;
@@ -265,13 +190,18 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(item.name, style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark)),
+                  Text(
+                    item.userName ?? t.common.unknown,
+                    style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
+                  ),
                   Text(
                     t.campaigns.team.member_statistics_member_info(
-                      division: item.division,
-                      date: DateFormat(t.campaigns.poster.date_format).format(item.start),
+                      division: item.divisionName ?? t.common.unknown,
+                      date: item.memberSince == null
+                          ? t.common.notAvailable
+                          : DateFormat(t.campaigns.poster.date_format).format(item.memberSince!),
                     ),
-                    style: theme.textTheme.labelSmall,
+                    style: theme.textTheme.labelMedium,
                   ),
                 ],
               ),
@@ -280,12 +210,12 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
           Text(
             textAlign: TextAlign.end,
             NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(_getCurrentStatValue(item)),
-            style: theme.textTheme.labelSmall,
+            style: theme.textTheme.labelMedium,
           ),
         ],
       ),
     );
-    if (item.status == TeamMembershipStatus.resigned) {
+    if (item.status == TeamMembershipStatisticsItemStatus.resigned) {
       memberItemWidget = Stack(
         children: [
           memberItemWidget,
@@ -295,30 +225,4 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
     }
     return memberItemWidget;
   }
-}
-
-class TeamStatistics {
-  final List<MemberStatistics> statistics;
-
-  TeamStatistics({required this.statistics});
-}
-
-class MemberStatistics {
-  final String name;
-  final int flyerCount;
-  final int posterCount;
-  final int openDoorCount;
-  final TeamMembershipStatus status;
-  final String division;
-  final DateTime start;
-
-  MemberStatistics({
-    required this.name,
-    required this.flyerCount,
-    required this.posterCount,
-    required this.openDoorCount,
-    this.status = TeamMembershipStatus.accepted,
-    required this.division,
-    required this.start,
-  });
 }
