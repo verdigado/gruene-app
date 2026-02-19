@@ -49,12 +49,13 @@ class _RouteDetailState extends State<RouteDetail> {
     var userService = GetIt.I<GrueneApiUserService>();
 
     final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
+    var currentUserKV = await currentUser.getOwnKV();
 
     setState(() {
       _loading = false;
       _currentRouteDetail = widget.routeDetail;
       _currentUserInfo = userInfo;
-      _currentUserKV = currentUser.getOwnKV();
+      _currentUserKV = currentUserKV;
     });
   }
 

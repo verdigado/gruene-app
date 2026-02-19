@@ -49,12 +49,13 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     var profileService = GetIt.I<GrueneApiProfileService>();
 
     final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
+    var currentUserKV = await currentUser.getOwnKV();
 
     setState(() {
       _loading = false;
       _currentActionAreaDetail = widget.actionAreaDetail;
       _currentUserInfo = userInfo;
-      _currentUserKV = currentUser.getOwnKV();
+      _currentUserKV = currentUserKV;
     });
   }
 

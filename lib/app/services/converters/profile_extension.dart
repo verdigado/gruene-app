@@ -16,7 +16,26 @@ extension ProfileExtension on Profile {
     }
   }
 
-  Division? getOwnKV() {
-    return memberships?.firstWhereOrNull((d) => d.division.level == DivisionLevel.kv)?.division;
+  Future<Division?> getOwnKV() async {
+    var division = memberships
+        ?.firstWhereOrNull((d) => [DivisionLevel.kv, DivisionLevel.ov].contains(d.division.level))
+        ?.division;
+
+    switch (division?.level) {
+      case DivisionLevel.kv:
+        return division;
+      case DivisionLevel.ov:
+        var parentKey = DivisionKey(division!.divisionKey).getParentKey(DivisionLevel.kv);
+        var parentDivisions = await GetIt.I<GrueneApiDivisionsService>().searchDivision(
+          divisionKeys: [parentKey],
+          level: DivisionLevel.kv,
+        );
+        return parentDivisions.firstOrNull;
+      case DivisionLevel.lv:
+      case DivisionLevel.bv:
+      case null:
+      case DivisionLevel.swaggerGeneratedUnknown:
+        return null;
+    }
   }
 }
