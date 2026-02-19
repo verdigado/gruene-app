@@ -325,6 +325,9 @@
     "statistic": {
       "label": "Statistik",
       "poi_statistics": {
+        "title": "Gesamtstatistik",
+        "me": "Ich",
+        "team": "Team",
         "my_badges": "Meine Abzeichen",
         "my_badges_campaign_subtitle": "",
         "by_me": "von mir erfasst",
