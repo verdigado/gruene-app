@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gruene_app/app/constants/bottom_navigation_items.dart';
 import 'package:gruene_app/app/enums/badge_source.dart';
 import 'package:gruene_app/app/screens/router_tab_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
