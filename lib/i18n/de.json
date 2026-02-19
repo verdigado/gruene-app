@@ -40,6 +40,26 @@
       "osmContributors": "OpenStreetMap Mitwirkende"
     }
   },
+  "divisions": {
+    "level": {
+      "ov": {
+        "label": "Ortsverband",
+        "short": "OV"
+      },
+      "kv": {
+        "label": "Kreisverband",
+        "short": "KV"
+      },
+      "lv": {
+        "label": "Landesverband",
+        "short": "LV"
+      },
+      "bv": {
+        "label": "Bundesverband",
+        "short": "BV"
+      }
+    }
+  },
   "error": {
     "unknownError": "Ein unbekannter Fehler ist aufgetreten.",
     "offlineError": "Du bist offline. Keine Verbindung zum Internet möglich.",
@@ -304,17 +324,23 @@
     },
     "statistic": {
       "label": "Statistik",
-      "my_badges": "Meine Abzeichen",
-      "my_badges_campaign_subtitle": "",
+      "poi_statistics": {
+        "my_badges": "Meine Abzeichen",
+        "my_badges_campaign_subtitle": "",
+        "by_me": "von mir erfasst",
+        "by_my_KV": "von meinem Kreisverband",
+        "by_my_LV": "von meinem Landesverband",
+        "in_germany": "deutschlandweit",
+        "update_info": "wird alle 5 Minuten aktualisiert"
+      },
+      "team_statistics": {
+        "title": "Team Top-10",
+        "update_info": "Team-Statistiken werden mehrmals am Tag aktualisiert"
+      },
       "recorded_posters": "Plakate",
       "including_damaged_or_taken_down": "inkl. beschädigt und abgehängt",
       "recorded_doors": "Haustüren",
       "recorded_flyer": "Flyer",
-      "by_me": "von mir erfasst",
-      "by_my_KV": "von meinem Kreisverband",
-      "by_my_LV": "von meinem Landesverband",
-      "in_germany": "deutschlandweit",
-      "update_info": "wird alle 5 Minuten aktualisiert",
       "as_at": "Stand"
     },
     "address": {
