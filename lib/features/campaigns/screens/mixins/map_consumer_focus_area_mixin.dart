@@ -25,7 +25,6 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
       ),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
-      belowLayerId: CampaignConstants.markerLayerId,
     );
 
     await mapLibreController.addLineLayer(

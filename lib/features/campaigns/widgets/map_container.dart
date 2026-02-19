@@ -41,7 +41,7 @@ typedef OnNoFeatureClickCallback = void Function(Point<double> point);
 typedef OnShowBottomDetailSheet = Future<U?> Function<U>(Widget detailWidget);
 typedef OnEditItemClickedCallback = void Function();
 typedef ShowMapInfoAfterCameraMoveCallback = void Function();
-typedef AddMapLayersForContextCallback = void Function(MapLibreMapController mapLibreController);
+typedef AddMapLayersForContextCallback = Future<void> Function(MapLibreMapController mapLibreController);
 
 class MapContainer extends StatefulWidget {
   final OnMapCreatedCallback? onMapCreated;
@@ -235,17 +235,8 @@ class _MapContainerState extends State<MapContainer>
     }
   }
 
-  void _onMapClick(Point<double> point, LatLng coordinates) async {
-    final controller = _controller;
-    if (controller == null) {
-      return;
-    }
-    final targetLatLng = await controller.toLatLng(point);
-    if (!mounted) return;
-
+  Future<bool> _findAndHandleClickPoiMarker(Point<double> point, LatLng targetLatLng) async {
     final onFeatureClick = widget.onFeatureClick;
-    final onNoFeatureClick = widget.onNoFeatureClick;
-
     final jsonFeaturesPoiMarkers = await getFeaturesInScreen(
       point,
       CampaignConstants.markerLayerId,
@@ -272,11 +263,14 @@ class _MapContainerState extends State<MapContainer>
       } else {
         feature = MapHelper.getClosestFeature(poiMarkers, targetLatLng);
       }
-      if (feature == null) return;
+      if (feature == null) return true;
       onFeatureClick(feature);
-      return;
+      return true;
     }
+    return false;
+  }
 
+  Future<bool> _findAndHandleClickPollingStations(Point<double> point, LatLng targetLatLng) async {
     final jsonFeaturesPollingStations = await getFeaturesInScreen(
       point,
       CampaignConstants.pollingStationSymbolLayerId,
@@ -288,9 +282,12 @@ class _MapContainerState extends State<MapContainer>
       final feature = MapHelper.getClosestFeature(pollingStations, targetLatLng);
 
       onPollingStationClick(feature, () => context, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
-      return;
+      return true;
     }
+    return false;
+  }
 
+  Future<bool> _findAndHandleClickRoutes(Point<double> point, LatLng targetLatLng) async {
     final jsonFeaturesRoutes = await getFeaturesInScreen(
       point,
       CampaignConstants.routesLineLayerId,
@@ -302,22 +299,12 @@ class _MapContainerState extends State<MapContainer>
       final feature = MapHelper.getClosestFeature(routes, targetLatLng);
 
       _onRouteClick(feature);
-      return;
+      return true;
     }
+    return false;
+  }
 
-    final jsonFeaturesExperienceAreas = await getFeaturesInScreen(
-      point,
-      CampaignConstants.experienceAreaLayerId,
-      CampaignConstants.experienceAreaSourceName,
-    );
-    final experienceAreas = jsonFeaturesExperienceAreas.map((e) => e as Map<String, dynamic>).toList();
-
-    if (experienceAreas.isNotEmpty) {
-      final feature = MapHelper.getClosestFeature(experienceAreas, targetLatLng);
-      onExperienceAreaClick(feature, () => context, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
-      return;
-    }
-
+  Future<bool> _findAndHandleClickActionAreas(Point<double> point, LatLng targetLatLng) async {
     final jsonFeaturesActionAreas = await getFeaturesInScreen(
       point,
       CampaignConstants.actionAreaLayerId,
@@ -328,7 +315,48 @@ class _MapContainerState extends State<MapContainer>
     if (actionAreas.isNotEmpty) {
       final feature = MapHelper.getClosestFeature(actionAreas, targetLatLng);
       _onActionAreaClick(feature);
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> _findAndHandleClickExperienceAreas(Point<double> point, LatLng targetLatLng) async {
+    final jsonFeaturesExperienceAreas = await getFeaturesInScreen(
+      point,
+      CampaignConstants.experienceAreaLayerId,
+      CampaignConstants.experienceAreaSourceName,
+    );
+    final experienceAreas = jsonFeaturesExperienceAreas.map((e) => e as Map<String, dynamic>).toList();
+
+    if (experienceAreas.isNotEmpty) {
+      final feature = MapHelper.getClosestFeature(experienceAreas, targetLatLng);
+      onExperienceAreaClick(feature, () => context, widget.showBottomDetailSheet, _setFocusMode, () => _controller);
+      return true;
+    }
+    return false;
+  }
+
+  void _onMapClick(Point<double> point, LatLng coordinates) async {
+    final controller = _controller;
+    if (controller == null) {
       return;
+    }
+    final targetLatLng = await controller.toLatLng(point);
+    if (!mounted) return;
+
+    final onNoFeatureClick = widget.onNoFeatureClick;
+
+    List<Future<bool> Function()> featureClicks = [
+      () => _findAndHandleClickPoiMarker(point, targetLatLng),
+      () => _findAndHandleClickPollingStations(point, targetLatLng),
+      () => _findAndHandleClickRoutes(point, targetLatLng),
+      () => _findAndHandleClickActionAreas(point, targetLatLng),
+      () => _findAndHandleClickExperienceAreas(point, targetLatLng),
+    ];
+
+    for (final featureClick in featureClicks) {
+      final clickResult = await featureClick();
+      if (clickResult) return;
     }
 
     if (onNoFeatureClick != null) {
@@ -375,6 +403,7 @@ class _MapContainerState extends State<MapContainer>
 
     final jsonFeatures = await controller.queryRenderedFeaturesInRect(rect, [displayLayer], null);
     if (jsonFeatures.isEmpty) return jsonFeatures;
+
     // Rendered features only contain the rendered geometry which may be limited to the viewport.
     // We use the MapFeatureManager to get the correct markers with the full geometry
     var markers = _mapFeatureManager.getMarkers(sourceLayer);
@@ -398,6 +427,14 @@ class _MapContainerState extends State<MapContainer>
   }
 
   void _onStyleLoadedCallback() async {
+    // init context layers re-directed from the context screens
+    // marker layer should be on-top of all other layers, therefore we add these first
+    await widget.addMapLayersForContext!(_controller!);
+
+    await _addPoiMarkerLayers();
+  }
+
+  Future<void> _addPoiMarkerLayers() async {
     if (widget.getMarkerImages != null) {
       widget.getMarkerImages!().forEach((x, y) async {
         await addImageFromAsset(_controller!, x, y);
@@ -444,9 +481,6 @@ class _MapContainerState extends State<MapContainer>
       enableInteraction: false,
       minzoom: minZoomMarkerItems,
     );
-
-    // init context layers re-directed to context screens
-    widget.addMapLayersForContext!(_controller!);
   }
 
   @override
