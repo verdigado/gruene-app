@@ -1,1 +1,7 @@
-enum NotificationMessageType { news, teamMembershipUpdate, routeAssignmentUpdate, areaAssignmentUpdate }
+enum NotificationMessageType {
+  news,
+  teamMembershipUpdate,
+  routeAssignmentUpdate,
+  areaAssignmentUpdate,
+  teamTop10Update,
+}

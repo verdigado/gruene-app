@@ -6,13 +6,15 @@ extension NullableRemoteMessageExtension on RemoteMessage? {
     var type = this?.data['type'];
 
     switch (type) {
-      case 'news.published':
+      case NotificationConstants.notificationTypeNews:
         return NotificationMessageType.news;
-      case 'campaigns.teamMembership.updated':
+      case NotificationConstants.notificationTypeTeamMembershipUpdated:
         return NotificationMessageType.teamMembershipUpdate;
-      case 'campaigns.routeAssignment.updated':
+      case NotificationConstants.notificationTypeTeamTop10Updated:
+        return NotificationMessageType.teamTop10Update;
+      case NotificationConstants.notificationTypeRouteAssignmentUpdated:
         return NotificationMessageType.routeAssignmentUpdate;
-      case 'campaigns.areaAssignment.updated':
+      case NotificationConstants.notificationTypeAreaAssignmentUpdated:
         return NotificationMessageType.areaAssignmentUpdate;
     }
     return null;
@@ -37,14 +39,19 @@ extension RemoteMessageExtension on RemoteMessage {
 }
 
 extension NotificationResponseExtension on NotificationResponse {
-  BaseNotificationHandler getNotificationHandler() {
+  BaseNotificationHandler? getNotificationHandler() {
     var localPayload = payload;
     NotificationMessageType? instanceIdentifier;
     if (localPayload == null) throw UnimplementedError();
-    if (localPayload.startsWith('news.')) {
+    if (localPayload.startsWith(NotificationConstants.payloadNewsPrefix)) {
       instanceIdentifier = NotificationMessageType.news;
-    } else if (localPayload == 'team') {
+    } else if (localPayload == NotificationConstants.payloadTeam) {
       instanceIdentifier = NotificationMessageType.teamMembershipUpdate;
+    } else if (localPayload == NotificationConstants.payloadTeamTop10) {
+      instanceIdentifier = NotificationMessageType.teamTop10Update;
+    } else {
+      logger.e('Unknown notification payload: $localPayload');
+      return null;
     }
 
     return GetIt.I<BaseNotificationHandler>(instanceName: instanceIdentifier.toString());
@@ -52,6 +59,6 @@ extension NotificationResponseExtension on NotificationResponse {
 
   void processNotificationResponse(BuildContext? currentContext) {
     var handler = getNotificationHandler();
-    handler.processPayload(this, currentContext);
+    handler?.processPayload(this, currentContext);
   }
 }

@@ -2334,7 +2334,7 @@ paths:
         - campaigns
   /v1/campaigns/teams/self/membershipStatistics:
     get:
-      operationId: teamMembershipStatistics
+      operationId: ownTeamMembershipStatistics
       parameters:
         - name: campaignId
           required: false
@@ -3807,6 +3807,7 @@ components:
           type: string
           enum:
             - campaigns.teamMembership.updated
+            - campaigns.team-top10.updated
             - campaigns.routeAssignment.updated
             - campaigns.areaAssignment.updated
             - news.published

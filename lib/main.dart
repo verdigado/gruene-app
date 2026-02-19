@@ -128,7 +128,10 @@ Future<void> main() async {
     () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
     instanceName: NotificationMessageType.areaAssignmentUpdate.toString(),
   );
-
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => TeamTop10NotificationHandler(),
+    instanceName: NotificationMessageType.teamTop10Update.toString(),
+  );
   WidgetsFlutterBinding.ensureInitialized();
 
   // setupCachePeriodicFlushing();
