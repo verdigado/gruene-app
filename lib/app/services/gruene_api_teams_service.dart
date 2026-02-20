@@ -72,8 +72,8 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
     ),
   );
 
-  Future<List<FindTeamsItem>> findTeams(String divisionKey) => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsGet(divisionKeys: [divisionKey]),
+  Future<List<FindTeamsItem>> findTeams(List<String> divisionKeys) => getFromApi(
+    apiRequest: (api) => api.v1CampaignsTeamsGet(divisionKeys: divisionKeys),
     map: (data) => data.data,
   );
 

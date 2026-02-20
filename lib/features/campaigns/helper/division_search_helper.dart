@@ -11,7 +11,11 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class DivisionSearchHelper {
-  static Future<Division?>? searchDivision(BuildContext context) async {
+  static Future<Division?>? searchDivision(
+    BuildContext context, {
+    DivisionLevel? level,
+    List<String>? divisionKeysFilter,
+  }) async {
     var navState = Navigator.of(context, rootNavigator: true);
     final result = await navState.push(
       AppRoute<Division?>(
@@ -25,7 +29,13 @@ class DivisionSearchHelper {
             child: SearchScreen<Division>(
               searchHintText: t.campaigns.search.hintTextDivision,
               getSearchItemWidget: _getSearchItemWidget,
-              searchDataDelegate: _getSearchDataDelegate,
+              searchDataDelegate: (String searchText, int pageKey, int pageSize) => _getSearchDivisonDelegate(
+                searchText,
+                pageKey,
+                pageSize,
+                level: level,
+                divisionKeysFilter: divisionKeysFilter,
+              ),
             ),
           );
         },
@@ -87,12 +97,20 @@ class DivisionSearchHelper {
     );
   }
 
-  static Future<List<Division>> _getSearchDataDelegate(String searchText, int pageKey, int pageSize) async {
+  static Future<List<Division>> _getSearchDivisonDelegate(
+    String searchText,
+    int pageKey,
+    int pageSize, {
+    DivisionLevel? level,
+    List<String>? divisionKeysFilter,
+  }) async {
     var divisionService = GetIt.I<GrueneApiDivisionsService>();
     var searchResult = await divisionService.searchDivision(
       searchTerm: searchText,
       offset: PagingHelper.getOffsetForPage(pageKey, pageSize),
       limit: pageSize,
+      level: level,
+      divisionKeys: divisionKeysFilter,
     );
     return searchResult;
   }

@@ -138,7 +138,12 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
   }
 
   Future<void> onChangeDivision() async {
-    final result = await DivisionSearchHelper.searchDivision(context);
+    var campaignManagerDivisions = widget.currentUserInfo.getCampaignManagerDivisionKeys();
+    final result = await DivisionSearchHelper.searchDivision(
+      context,
+      level: DivisionLevel.kv,
+      divisionKeysFilter: campaignManagerDivisions,
+    );
 
     if (result != null) {
       setState(() {

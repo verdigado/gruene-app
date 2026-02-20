@@ -32,4 +32,8 @@ extension UserInfoExtension on UserRbacStructure {
         .where((r) => campaignManagerRoles.contains(r.id))
         .any((r) => division.startsWith(r.divisionKey.stripRight('0')));
   }
+
+  List<String> getCampaignManagerDivisionKeys() {
+    return roles.where((r) => campaignManagerRoles.contains(r.id)).map((r) => r.divisionKey.stripRight('0')).toList();
+  }
 }
