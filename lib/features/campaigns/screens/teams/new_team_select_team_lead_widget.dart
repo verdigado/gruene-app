@@ -91,7 +91,7 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
 
   void onSave() {
     if (currentTeamLeadProfile == null) {
-      showToastError(context, t.campaigns.team.errors.no_team_lead);
+      showToastAsSnack(context, t.campaigns.team.errors.no_team_lead);
       return;
     }
     Navigator.pop(context, widget.newTeamDetails.copyWith(assignedTeamLead: currentTeamLeadProfile));
