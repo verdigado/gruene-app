@@ -15,3 +15,22 @@ void showToastError(BuildContext context, String text) {
     description: Text(text, style: theme.textTheme.labelMedium!.apply(color: ThemeColors.background)),
   ).show(context);
 }
+
+void showToastAsSnack(BuildContext context, String text, {double height = 80, double? width}) {
+  var theme = Theme.of(context);
+  var mediaQuery = MediaQuery.of(
+    context,
+  ); // to get the current keyboard height, so that the toast is shown above the keyboard, if it is open
+  // should remove the focus from a current input and most likely also close an open keyboard
+  FocusManager.instance.primaryFocus?.unfocus();
+  MotionToast(
+    primaryColor: theme.snackBarTheme.backgroundColor ?? Color(0xFF323232),
+    width: width ?? mediaQuery.size.width * 0.9,
+    height: height,
+    displaySideBar: false,
+    description: Padding(
+      padding: const EdgeInsetsDirectional.only(start: 16, end: 16),
+      child: Text(text, style: theme.textTheme.labelMedium!.apply(color: ThemeColors.background)),
+    ),
+  ).show(context);
+}
