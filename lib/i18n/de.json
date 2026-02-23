@@ -344,7 +344,12 @@
       "including_damaged_or_taken_down": "inkl. beschädigt und abgehängt",
       "recorded_doors": "Haustüren",
       "recorded_flyer": "Flyer",
-      "as_at": "Stand"
+      "as_at": "Stand",
+      "no_teams": {
+        "kv": "In deinem KV existieren noch keine Teams.",
+        "lv": "In deinem LV existieren noch keine Teams.",
+        "bv": "In deinem BV existieren noch keine Teams."
+      }
     },
     "address": {
       "street": "Straße",

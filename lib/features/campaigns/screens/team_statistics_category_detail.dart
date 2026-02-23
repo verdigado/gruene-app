@@ -97,6 +97,9 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
 
     stats.sort((a, b) => b.count.compareTo(a.count));
 
+    if (stats.isEmpty) {
+      return _getEmptyStatInfo();
+    }
     return stats.indexed.map(_getStatRow).toList();
   }
 
@@ -191,5 +194,89 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
       case TeamAssignmentType.flyer:
         return t.campaigns.statistic.recorded_flyer;
     }
+  }
+
+  List<Widget> _getEmptyStatInfo() {
+    var mediaQuery = MediaQuery.sizeOf(context);
+    var theme = Theme.of(context);
+    var myPadding = EdgeInsets.symmetric(vertical: 4);
+    var myDecoration = BoxDecoration(borderRadius: BorderRadius.circular(6), color: ThemeColors.primary);
+    var memberItemWidgets = [1, 2].map((index) {
+      return Container(
+        padding: EdgeInsetsGeometry.all(4),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
+
+                  child: Center(
+                    child: Text(
+                      index.toString(),
+                      style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: myPadding,
+                      child: Container(height: 20, width: mediaQuery.width * 0.4, decoration: myDecoration),
+                    ),
+                    Container(height: 10, width: mediaQuery.width * 0.3, decoration: myDecoration),
+                  ],
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: myPadding,
+                  child: Container(height: 20, width: mediaQuery.width * 0.2, decoration: myDecoration),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ).disable(alpha: 220);
+    }).toList();
+
+    getEmptyText() {
+      switch (_selectedDivisionType) {
+        case DivisionLevel.kv:
+          return t.campaigns.statistic.no_teams.kv;
+        case DivisionLevel.lv:
+          return t.campaigns.statistic.no_teams.lv;
+        case DivisionLevel.bv:
+          return t.campaigns.statistic.no_teams.bv;
+        case DivisionLevel.ov:
+        case DivisionLevel.swaggerGeneratedUnknown:
+          throw UnimplementedError();
+      }
+    }
+
+    memberItemWidgets.add(
+      Row(
+        children: [
+          Container(
+            padding: EdgeInsetsGeometry.all(4),
+            child: Padding(padding: myPadding, child: Text(getEmptyText())),
+          ),
+        ],
+      ),
+    );
+
+    return memberItemWidgets;
   }
 }
