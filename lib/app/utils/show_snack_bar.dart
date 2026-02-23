@@ -18,9 +18,8 @@ void showToastError(BuildContext context, String text) {
 
 void showToastAsSnack(BuildContext context, String text, {double height = 80, double? width}) {
   var theme = Theme.of(context);
-  var mediaQuery = MediaQuery.of(
-    context,
-  ); // to get the current keyboard height, so that the toast is shown above the keyboard, if it is open
+  // to get the current keyboard height, so that the toast is shown above the keyboard, if it is open
+  var mediaQuery = MediaQuery.of(context);
   // should remove the focus from a current input and most likely also close an open keyboard
   FocusManager.instance.primaryFocus?.unfocus();
   MotionToast(
