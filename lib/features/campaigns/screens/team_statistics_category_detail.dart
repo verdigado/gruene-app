@@ -133,7 +133,6 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
                 height: 32,
                 width: 32,
                 decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
-
                 child: Center(
                   child: Text(
                     index.toString(),
@@ -142,38 +141,57 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
                 ),
               ),
               SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item.teamName, style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark)),
-                  Text(item.division, style: theme.textTheme.labelMedium),
-                ],
-              ),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                textAlign: TextAlign.end,
-                NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(item.count),
-                style: theme.textTheme.labelLarge,
-              ),
-              Row(
-                children: [
-                  Icon(Icons.group_outlined, size: 16),
-                  SizedBox(width: 2),
-                  Text(
-                    NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(item.teamMemberCount),
-                    style: theme.textTheme.labelMedium,
-                  ),
-                  SizedBox(width: 4),
-                  Icon(Icons.event_outlined, size: 16),
-                  SizedBox(width: 2),
-                  Text(item.teamCreatedAt.getAsLocalDateString(), style: theme.textTheme.labelMedium),
-                ],
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 165),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          item.teamName,
+                          style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      textAlign: TextAlign.end,
+                      NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(item.count),
+                      style: theme.textTheme.labelLarge,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 235),
+                      child: Text(item.division, style: theme.textTheme.labelMedium, overflow: TextOverflow.ellipsis),
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.group_outlined, size: 16),
+                        SizedBox(width: 2),
+                        Text(
+                          NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(item.teamMemberCount),
+                          style: theme.textTheme.labelMedium,
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.event_outlined, size: 16),
+                        SizedBox(width: 2),
+                        Text(item.teamCreatedAt.getAsLocalDateString(), style: theme.textTheme.labelMedium),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
