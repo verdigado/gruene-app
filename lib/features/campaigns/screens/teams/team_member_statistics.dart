@@ -197,12 +197,14 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
                     style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
                   ),
                   Text(
-                    t.campaigns.team.member_statistics_member_info(
-                      division: item.divisionName ?? t.common.unknown,
-                      date: item.memberSince == null
-                          ? t.common.notAvailable
-                          : DateFormat(t.campaigns.poster.date_format).format(item.memberSince!),
-                    ),
+                    [
+                      item.divisionName == '' ? null : item.divisionName,
+                      item.memberSince == null
+                          ? null
+                          : t.campaigns.team.member_statistics_member_info.member_since(
+                              date: DateFormat(t.campaigns.poster.date_format).format(item.memberSince!),
+                            ),
+                    ].nonNulls.join(', '),
                     style: theme.textTheme.labelMedium,
                   ),
                 ],
