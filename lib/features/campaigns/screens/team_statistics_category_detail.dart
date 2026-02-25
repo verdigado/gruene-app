@@ -152,12 +152,10 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
                   children: [
                     Container(
                       constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 165),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          item.teamName,
-                          style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
-                        ),
+                      child: Text(
+                        item.teamName,
+                        style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Text(
@@ -197,6 +195,9 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
       ),
     );
 
+    if (item.teamMemberCount > 0) {
+      memberItemWidget.disable();
+    }
     return memberItemWidget;
   }
 
