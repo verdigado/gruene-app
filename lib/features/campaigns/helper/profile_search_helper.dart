@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/search_screen.dart';
