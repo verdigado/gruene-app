@@ -68,7 +68,7 @@ class DivisionSearchHelper {
                       padding: EdgeInsets.all(6),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(item.shortDisplayName(), style: theme.textTheme.titleMedium),
+                        child: Text(item.shortName, style: theme.textTheme.titleMedium),
                       ),
                     ),
 

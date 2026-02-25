@@ -108,7 +108,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
             Row(
               children: [Expanded(child: Text(invitation.teamName, style: theme.textTheme.titleSmall, softWrap: true))],
             ),
-            Row(children: [Text(invitation.teamDivision?.shortDisplayName() ?? '', style: theme.textTheme.labelSmall)]),
+            Row(children: [Text(invitation.teamDivision?.shortName ?? '', style: theme.textTheme.labelSmall)]),
             SizedBox(height: 4),
             Row(
               children: [

@@ -51,7 +51,7 @@ class TeamProfile extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  (currentTeam.division?.shortDisplayName()).safe(),
+                  (currentTeam.division?.shortName).safe(),
                   style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
                 ),
               ],

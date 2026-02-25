@@ -76,7 +76,7 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
                         children: [
                           Expanded(
                             child: Text(
-                              currentDivision?.shortDisplayName() ?? t.common.notAvailable,
+                              currentDivision?.shortName ?? t.common.notAvailable,
                               style: theme.textTheme.titleMedium,
                             ),
                           ),
