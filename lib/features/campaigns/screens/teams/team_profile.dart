@@ -133,11 +133,10 @@ class TeamProfile extends StatelessWidget {
             ),
             child: editTeamMembersWidget,
           ),
-          isScrollControlled: false,
-          isDismissible: false,
-          enableDrag: false,
-          backgroundColor: theme.colorScheme.surface,
+          isScrollControlled: true,
+          isDismissible: true,
           useRootNavigator: true,
+          backgroundColor: theme.colorScheme.surface,
         ) ??
         false;
 
