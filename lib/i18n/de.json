@@ -346,7 +346,12 @@
       "including_damaged_or_taken_down": "inkl. beschädigt und abgehängt",
       "recorded_doors": "Haustüren",
       "recorded_flyer": "Flyer",
-      "as_at": "Stand"
+      "as_at": "Stand",
+      "no_teams": {
+        "kv": "In deinem KV existieren noch keine Teams mit Wahlkampfaktivitäten.",
+        "lv": "In deinem LV existieren noch keine Teams mit Wahlkampfaktivitäten.",
+        "bv": "In deinem BV existieren noch keine Teams mit Wahlkampfaktivitäten."
+      }
     },
     "address": {
       "street": "Straße",
