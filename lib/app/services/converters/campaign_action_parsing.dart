@@ -76,9 +76,9 @@ extension CampaignActionParsing on CampaignAction {
     );
   }
 
-  RouteUpdateModel getAsRouteUpdate() {
+  RouteStatusUpdateModel getAsRouteStatusUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
-    var model = RouteUpdateModel.fromJson(data.updateIdField(poiId!));
+    var model = RouteStatusUpdateModel.fromJson(data.updateIdField(poiId!));
 
     return model;
   }
@@ -90,9 +90,9 @@ extension CampaignActionParsing on CampaignAction {
     return model;
   }
 
-  ActionAreaUpdateModel getAsActionAreaUpdate() {
+  ActionAreaStatusUpdateModel getAsActionAreaStatusUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
-    var model = ActionAreaUpdateModel.fromJson(data.updateIdField(poiId!));
+    var model = ActionAreaStatusUpdateModel.fromJson(data.updateIdField(poiId!));
 
     return model;
   }

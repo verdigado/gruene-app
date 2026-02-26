@@ -1,6 +1,6 @@
 part of '../converters.dart';
 
-extension RouteUpdateModelParsing on RouteUpdateModel {
+extension RouteStatusUpdateModelParsing on RouteStatusUpdateModel {
   RouteDetailModel transformToVirtualRouteDetailModel() {
     var newRouteDetail = routeDetail.copyWith(status: status, isVirtual: true);
     return newRouteDetail;

@@ -1,8 +1,8 @@
 part of '../converters.dart';
 
 extension ActionAreaDetailModelParsing on ActionAreaDetailModel {
-  ActionAreaUpdateModel asActionAreaUpdate() {
-    return ActionAreaUpdateModel(id: id, status: status, actionAreaDetail: this);
+  ActionAreaStatusUpdateModel asActionAreaUpdate() {
+    return ActionAreaStatusUpdateModel(id: id, status: status, actionAreaDetail: this);
   }
 
   ActionAreaAssignmentUpdateModel asActionAreaAssignmentUpdate() {

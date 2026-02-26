@@ -1,8 +1,8 @@
 part of '../converters.dart';
 
 extension RouteDetailModelParsing on RouteDetailModel {
-  RouteUpdateModel asRouteUpdate() {
-    return RouteUpdateModel(id: id, status: status, routeDetail: this);
+  RouteStatusUpdateModel asRouteStatusUpdate() {
+    return RouteStatusUpdateModel(id: id, status: status, routeDetail: this);
   }
 
   RouteAssignmentUpdateModel asRouteAssignmentUpdate() {

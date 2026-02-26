@@ -27,12 +27,12 @@ extension TeamRouteTypeParsing on RouteType {
 }
 
 extension TeamRouteStatusParsing on RouteStatus {
-  api_enums.UpdateRouteStatus asUpdateRouteStatus() {
+  api_enums.UpdateRouteStatusStatus asUpdateRouteStatusStatus() {
     switch (this) {
       case RouteStatus.open:
-        return api_enums.UpdateRouteStatus.open;
+        return api_enums.UpdateRouteStatusStatus.open;
       case RouteStatus.closed:
-        return api_enums.UpdateRouteStatus.closed;
+        return api_enums.UpdateRouteStatusStatus.closed;
 
       case RouteStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
