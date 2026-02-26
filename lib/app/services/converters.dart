@@ -35,7 +35,7 @@ import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.
 import 'package:gruene_app/features/campaigns/models/posters/poster_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_assignment_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/route/route_update_model.dart';
+import 'package:gruene_app/features/campaigns/models/route/route_status_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/features/campaigns/models/team/team_assignment.dart';
 import 'package:gruene_app/features/campaigns/widgets/enhanced_wheel_slider.dart';

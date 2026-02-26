@@ -183,7 +183,7 @@ class _RouteDetailState extends State<RouteDetail> {
 
   Future<void> _changeRouteStatus(RouteDetailModel route, bool state) async {
     var newStatus = state ? RouteStatus.closed : RouteStatus.open;
-    var routeUpdate = route.asRouteUpdate().copyWith(status: newStatus);
+    var routeUpdate = route.asRouteStatusUpdate().copyWith(status: newStatus);
 
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);
     await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
