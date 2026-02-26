@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
@@ -68,7 +67,7 @@ class DivisionSearchHelper {
                       padding: EdgeInsets.all(6),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(item.shortDisplayName(), style: theme.textTheme.titleMedium),
+                        child: Text(item.shortName, style: theme.textTheme.titleMedium),
                       ),
                     ),
 

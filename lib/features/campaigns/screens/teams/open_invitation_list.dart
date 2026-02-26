@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/team_helper.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -108,7 +107,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
             Row(
               children: [Expanded(child: Text(invitation.teamName, style: theme.textTheme.titleSmall, softWrap: true))],
             ),
-            Row(children: [Text(invitation.teamDivision?.shortDisplayName() ?? '', style: theme.textTheme.labelSmall)]),
+            Row(children: [Text(invitation.teamDivision?.shortName ?? '', style: theme.textTheme.labelSmall)]),
             SizedBox(height: 4),
             Row(
               children: [

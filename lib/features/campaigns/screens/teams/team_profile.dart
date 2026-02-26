@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/edit_team_basic_info_widget.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/edit_team_members_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -51,7 +50,7 @@ class TeamProfile extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  (currentTeam.division?.shortDisplayName()).safe(),
+                  (currentTeam.division?.shortName).safe(),
                   style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
                 ),
               ],
