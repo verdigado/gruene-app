@@ -17,7 +17,7 @@ import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_assignment_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/action_area/action_area_update_model.dart';
+import 'package:gruene_app/features/campaigns/models/action_area/action_area_status_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dart';
@@ -178,15 +178,15 @@ class CampaignActionCache extends ChangeNotifier {
           throw ArgumentError('Unknown route update type');
         }
       case PoiCacheType.actionArea:
-        if (poi.runtimeType == ActionAreaUpdateModel) {
-          return await _addUpdateAction<ActionAreaUpdateModel>(
+        if (poi.runtimeType == ActionAreaStatusUpdateModel) {
+          return await _addUpdateAction<ActionAreaStatusUpdateModel>(
             poiType: poiType,
-            poi: poi as ActionAreaUpdateModel,
+            poi: poi as ActionAreaStatusUpdateModel,
             getId: (poi) => poi.id,
             getJson: (poi) => poi.toJson(),
             mergeUpdates: (action, poiUpdate) => poiUpdate,
             getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
-            getActionType: () => CampaignActionType.editActionArea,
+            getActionType: () => CampaignActionType.editActionAreaStatus,
           );
         } else if (poi.runtimeType == ActionAreaAssignmentUpdateModel) {
           return await _addUpdateAction<ActionAreaAssignmentUpdateModel>(
@@ -291,8 +291,8 @@ class CampaignActionCache extends ChangeNotifier {
           var model = action.getAsRouteAssignmentUpdate();
           markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
 
-        case CampaignActionType.editActionArea:
-          var model = action.getAsActionAreaUpdate();
+        case CampaignActionType.editActionAreaStatus:
+          var model = action.getAsActionAreaStatusUpdate();
           markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
         case CampaignActionType.editActionAreaAssignment:
           var model = action.getAsActionAreaAssignmentUpdate();
@@ -328,7 +328,7 @@ class CampaignActionCache extends ChangeNotifier {
         }
       case PoiCacheType.actionArea:
         return [
-          CampaignActionType.editActionArea,
+          CampaignActionType.editActionAreaStatus,
           CampaignActionType.editActionAreaAssignment,
         ].map((a) => a.index).toList();
       case PoiCacheType.route:
@@ -412,7 +412,7 @@ class CampaignActionCache extends ChangeNotifier {
       case CampaignActionType.addFlyer:
       case CampaignActionType.editFlyer:
       case CampaignActionType.deleteFlyer:
-      case CampaignActionType.editActionArea:
+      case CampaignActionType.editActionAreaStatus:
       case CampaignActionType.editActionAreaAssignment:
       case null:
         throw UnimplementedError();
@@ -425,8 +425,8 @@ class CampaignActionCache extends ChangeNotifier {
     switch (action.actionType) {
       case CampaignActionType.editActionAreaAssignment:
         return action.getAsActionAreaAssignmentUpdate().transformToVirtualActionAreaDetailModel();
-      case CampaignActionType.editActionArea:
-        return action.getAsActionAreaUpdate().transformToVirtualActionAreaDetailModel();
+      case CampaignActionType.editActionAreaStatus:
+        return action.getAsActionAreaStatusUpdate().transformToVirtualActionAreaDetailModel();
       case CampaignActionType.unknown:
       case CampaignActionType.addPoster:
       case CampaignActionType.editPoster:
@@ -447,10 +447,10 @@ class CampaignActionCache extends ChangeNotifier {
   Future<ActionAreaDetailModel> getPoiAsActionAreaDetail(String poiId) async {
     var detailModel = await _getPoiDetail<ActionAreaDetailModel>(
       poiId: poiId,
-      addActionFilter: CampaignActionType.editActionArea,
-      editActionFilter: CampaignActionType.editActionArea,
-      transformEditAction: (action) => action.getAsActionAreaUpdate().transformToVirtualActionAreaDetailModel(),
-      transformAddAction: (action) => action.getAsActionAreaUpdate().transformToVirtualActionAreaDetailModel(),
+      addActionFilter: CampaignActionType.editActionAreaStatus,
+      editActionFilter: CampaignActionType.editActionAreaStatus,
+      transformEditAction: (action) => action.getAsActionAreaStatusUpdate().transformToVirtualActionAreaDetailModel(),
+      transformAddAction: (action) => action.getAsActionAreaStatusUpdate().transformToVirtualActionAreaDetailModel(),
     );
     return detailModel;
   }
@@ -562,9 +562,9 @@ class CampaignActionCache extends ChangeNotifier {
               await routeApiService.updateRouteAssignemnt(model);
               campaignActionDatabase.delete(action.id!);
 
-            case CampaignActionType.editActionArea:
-              var model = action.getAsActionAreaUpdate();
-              await areaApiService.updateActionArea(model);
+            case CampaignActionType.editActionAreaStatus:
+              var model = action.getAsActionAreaStatusUpdate();
+              await areaApiService.updateActionAreaStatus(model);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editActionAreaAssignment:

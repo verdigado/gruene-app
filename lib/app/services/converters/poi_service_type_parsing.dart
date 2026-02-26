@@ -37,9 +37,8 @@ extension PoiCacheTypeParsing on PoiCacheType {
         return CampaignActionType.editDoor;
       case PoiCacheType.flyer:
         return CampaignActionType.editFlyer;
-      case PoiCacheType.actionArea:
-        return CampaignActionType.editActionArea;
       case PoiCacheType.route:
+      case PoiCacheType.actionArea:
         throw UnimplementedError();
     }
   }

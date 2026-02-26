@@ -1,6 +1,6 @@
 part of '../converters.dart';
 
-extension ActionAreaUpdateModelParsing on ActionAreaUpdateModel {
+extension ActionAreaUpdateModelParsing on ActionAreaStatusUpdateModel {
   ActionAreaDetailModel transformToVirtualActionAreaDetailModel() {
     var newActionAreaDetail = actionAreaDetail.copyWith(status: status, isVirtual: true);
     return newActionAreaDetail;
