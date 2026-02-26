@@ -51,7 +51,7 @@ class PushNotificationListener {
 
     _localNotifications.initialize(
       const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings('@drawable/ic_stat_notification_icon'),
         iOS: initializationSettingsDarwin,
       ),
       onDidReceiveNotificationResponse: (NotificationResponse response) {
@@ -87,7 +87,7 @@ class PushNotificationListener {
             channelDescription: _channel.description,
             importance: Importance.high,
             priority: Priority.high,
-            icon: '@mipmap/ic_launcher',
+            icon: '@drawable/ic_stat_notification_icon',
           ),
         ),
         payload: payload,
