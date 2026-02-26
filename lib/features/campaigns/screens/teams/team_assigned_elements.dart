@@ -129,10 +129,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
             children: [
               Container(
                 constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 90),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Text(assignedElement.name, style: theme.textTheme.titleMedium),
-                ),
+                child: Text(assignedElement.name, style: theme.textTheme.titleMedium, overflow: TextOverflow.ellipsis),
               ),
               Text(
                 _getAssignmentInfoText(assignedElement),
@@ -144,12 +141,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       ),
     );
     if (assignedElement.status == TeamAssignmentStatus.closed) {
-      item = Stack(
-        children: [
-          item,
-          Positioned.fill(child: Container(color: ThemeColors.disabledShadow.withAlpha(170))),
-        ],
-      );
+      item = item.disable();
     }
     return InkWell(onTap: () => _switchToMap(assignedElement), child: item);
   }
