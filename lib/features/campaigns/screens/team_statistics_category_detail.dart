@@ -288,9 +288,14 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
     memberItemWidgets.add(
       Row(
         children: [
-          Container(
-            padding: EdgeInsetsGeometry.all(4),
-            child: Padding(padding: myPadding, child: Text(getEmptyText())),
+          Expanded(
+            child: Container(
+              padding: EdgeInsetsGeometry.all(4),
+              child: SizedBox(
+                width: mediaQuery.width * 0.85,
+                child: Padding(padding: myPadding, child: Text(getEmptyText())),
+              ),
+            ),
           ),
         ],
       ),
