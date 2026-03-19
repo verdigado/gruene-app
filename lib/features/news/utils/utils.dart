@@ -12,10 +12,6 @@ extension NewsListExtension on List<NewsModel> {
   }
 }
 
-String getPlaceholderImage(String id) {
-  return 'assets/graphics/placeholders/placeholder_${int.parse(id) % 3 + 1}.jpg';
-}
-
 extension ImageVariant on ImageSrcSet {
   Image variant(String type) => srcset.firstWhereOrNull((image) => image.type == type) ?? original;
 }

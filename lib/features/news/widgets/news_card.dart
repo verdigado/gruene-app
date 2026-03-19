@@ -124,7 +124,7 @@ class NewsCard extends StatelessWidget {
     return DecorationImage(
       image: image != null
           ? CachedNetworkImageProvider(image.variant('large').url)
-          : AssetImage(getPlaceholderImage(news.id)),
+          : AssetImage('assets/graphics/placeholder.png'),
       fit: BoxFit.fitWidth,
     );
   }
