@@ -3,7 +3,6 @@
     "appName": "B90/DIE GRÜNEN",
     "party": "Bündnis 90/DIE GRÜNEN",
     "error": "Fehler",
-    "notImplementedYet": "Diese Funktion befindet sich noch in der Entwicklung. Wir bitten um Verständnis.",
     "dateFrom": "von",
     "dateUntil": "bis",
     "search": "Suche",
@@ -489,8 +488,7 @@
     "dataProtectionStatement": "Datenschutzerklärung",
     "termsOfUse": "Nutzungsbedingungen",
     "logout": "Abmelden",
-    "version": "Version ${version}",
-    "notImplemented": "(folgt)"
+    "version": "Version ${version}"
   },
   "tools": {
     "tools": "Tools",

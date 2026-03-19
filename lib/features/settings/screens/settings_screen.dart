@@ -24,9 +24,6 @@ class SettingsScreen extends StatelessWidget {
       body: ExpandingScrollView(
         children: [
           const SizedBox(height: 16),
-          SectionTitle(title: t.settings.campaignsSettings),
-          TextListItem(title: t.settings.inviteNonMember, onPress: () => {}, isImplemented: false),
-          TextListItem(title: t.settings.offlineMaps, onPress: () => {}, isImplemented: false),
           SectionTitle(title: t.settings.generalSettings),
           TextListItem(
             title: t.settings.pushNotifications.pushNotifications,
@@ -37,8 +34,6 @@ class SettingsScreen extends StatelessWidget {
             onPress: () => openUrl(grueneAppFeedbackUrl, context),
             isExternal: true,
           ),
-          TextListItem(title: t.settings.actionNetwork, onPress: () => {}, isExternal: true, isImplemented: false),
-          TextListItem(title: t.settings.newsletter, onPress: () => {}, isExternal: true, isImplemented: false),
           SectionTitle(title: t.settings.legalSettings),
           TextListItem(
             title: t.settings.legalNotice,
