@@ -86,7 +86,7 @@ class FullWidthImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final image = news.image;
     if (image == null) {
-      return Image.asset('assets/graphics/placeholder.png');
+      return Image.asset('assets/graphics/placeholder.png', height: 256, fit: BoxFit.fitWidth);
     }
 
     final imageVariant = image.variant('wide');
