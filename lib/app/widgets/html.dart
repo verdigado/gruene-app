@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
+
+import 'package:flutter/material.dart' hide Element;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
-import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/expansion_list_tile.dart';
 
 final TagExtension accordionTagExtension = TagExtension(
@@ -10,26 +11,29 @@ final TagExtension accordionTagExtension = TagExtension(
   builder: (extensionContext) {
     final theme = Theme.of(extensionContext.buildContext!);
     final children = extensionContext.elementChildren;
-    final title = children.firstWhereOrNull((child) => child.localName == 'dt');
-    final innerHtml = children.firstWhereOrNull((child) => child.localName == 'dd')?.innerHtml;
+    final titles = children.where((child) => child.localName == 'dt');
+    final contents = children.where((child) => child.localName == 'dd');
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: ExpansionListTile(
-        titleText: title?.text ?? '',
-        backgroundColor: ThemeColors.textLight,
-        titlePadding: const EdgeInsets.symmetric(horizontal: 8),
-        children: innerHtml != null
-            ? [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: ThemeColors.textLight),
-                    color: theme.colorScheme.surface,
-                  ),
-                  child: CustomHtml(data: innerHtml),
+      child: Column(
+        children: List<Widget>.generate(
+          min(titles.length, contents.length),
+          (index) => ExpansionListTile(
+            titleText: titles.elementAt(index).text,
+            backgroundColor: ThemeColors.textLight,
+            titlePadding: const EdgeInsets.symmetric(horizontal: 8),
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: ThemeColors.textLight),
+                  color: theme.colorScheme.surface,
                 ),
-              ]
-            : [],
+                child: CustomHtml(data: contents.elementAt(index).innerHtml),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   },
