@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
@@ -6,6 +5,7 @@ import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/app/widgets/full_width_image.dart';
 import 'package:gruene_app/app/widgets/html.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/models/news_model.dart';
@@ -40,7 +40,7 @@ class NewsDetailScreen extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: double.infinity,
-                        child: FullWidthImage(news: news),
+                        child: NewsDetailImage(news: news),
                       ),
                       Container(
                         padding: EdgeInsets.all(20),
@@ -77,10 +77,10 @@ class NewsDetailScreen extends StatelessWidget {
   }
 }
 
-class FullWidthImage extends StatelessWidget {
+class NewsDetailImage extends StatelessWidget {
   final NewsModel news;
 
-  const FullWidthImage({super.key, required this.news});
+  const NewsDetailImage({super.key, required this.news});
 
   @override
   Widget build(BuildContext context) {
@@ -88,13 +88,7 @@ class FullWidthImage extends StatelessWidget {
     if (image == null) {
       return Image.asset('assets/graphics/placeholder.png', height: 256, fit: BoxFit.fitWidth);
     }
-
     final imageVariant = image.variant('wide');
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final imageHeight = imageVariant.height * screenWidth / imageVariant.width;
-    return CachedNetworkImage(
-      placeholder: (_, _) => SizedBox(height: imageHeight),
-      imageUrl: imageVariant.url,
-    );
+    return FullWidthImage(image: imageVariant.url, heightRatio: imageVariant.height / imageVariant.width);
   }
 }
