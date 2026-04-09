@@ -232,7 +232,7 @@ commands:
 jobs:
     build_android:
         docker:
-            - image: cimg/android:2024.01.1-node
+            - image: cimg/android:2026.03.1-node
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
             GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx2048m" -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2
@@ -287,7 +287,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.4.0
+            xcode: 26.3.0
         parameters:
             environment:
                 default: production
@@ -302,7 +302,7 @@ jobs:
                 command: softwareupdate --install-rosetta --agree-to-license
                 name: Install rosetta
             - run:
-                command: rbenv global 3.3.8
+                command: rbenv global 3.3.10
                 name: Set Ruby version
             - restore_environment_variables
             - install_flutter:
@@ -325,7 +325,7 @@ jobs:
                 root: ~/
     bump_version:
         docker:
-            - image: cimg/node:20.13.1
+            - image: cimg/node:24.14.1
         parameters:
             prepare_delivery:
                 default: false
@@ -354,7 +354,7 @@ jobs:
             - persist_environment_variables
     check:
         docker:
-            - image: cimg/node:20.13.1
+            - image: cimg/node:24.14.1
         resource_class: small
         shell: /bin/bash -eo pipefail
         steps:
@@ -370,7 +370,7 @@ jobs:
                 name: Check Analyzer and Linting
     deliver_android:
         docker:
-            - image: cimg/android:2024.08.1-node
+            - image: cimg/android:2026.03.1-node
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         parameters:
@@ -393,7 +393,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.4.0
+            xcode: 26.3.0
         parameters:
             production_delivery:
                 description: Whether to deliver the build to production.
@@ -402,7 +402,7 @@ jobs:
             - checkout
             - prepare_workspace
             - run:
-                command: rbenv global 3.3.8
+                command: rbenv global 3.3.10
                 name: Set Ruby version
             - restore_environment_variables
             - install_fastlane:
@@ -423,7 +423,7 @@ jobs:
                         working_directory: ios
     notify_promotion:
         docker:
-            - image: cimg/android:2024.08.1-node
+            - image: cimg/android:2026.03.1-node
         resource_class: small
         shell: /bin/bash -eo pipefail
         steps:
@@ -435,7 +435,7 @@ jobs:
                 working_directory: tools
     notify_release:
         docker:
-            - image: cimg/android:2024.08.1-node
+            - image: cimg/android:2026.03.1-node
         parameters:
             production_delivery:
                 description: Whether to deliver the build to production.
@@ -461,7 +461,7 @@ jobs:
                 working_directory: tools
     promote_android:
         docker:
-            - image: cimg/android:2024.08.1-node
+            - image: cimg/android:2026.03.1-node
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         resource_class: small
@@ -478,11 +478,11 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 16.4.0
+            xcode: 26.3.0
         steps:
             - checkout
             - run:
-                command: rbenv global 3.3.8
+                command: rbenv global 3.3.10
                 name: Set Ruby version
             - install_fastlane:
                 directory: ios

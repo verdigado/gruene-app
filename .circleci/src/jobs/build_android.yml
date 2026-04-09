@@ -4,7 +4,7 @@ parameters:
     default: production
     enum: [production, staging]
 docker:
-  - image: cimg/android:2024.01.1-node
+  - image: cimg/android:2026.03.1-node
 resource_class: large
 shell: /bin/bash -eo pipefail
 environment:
