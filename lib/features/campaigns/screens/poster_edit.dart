@@ -223,7 +223,11 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
                 height: 217,
-                child: Column(children: [...PosterStatusHelper.getPosterStatusList.map(_getRadioItem)]),
+                child: RadioGroup(
+                  groupValue: _selectedPosterStatus,
+                  onChanged: (value) => setState(() => _selectedPosterStatus = value!),
+                  child: Column(children: [...PosterStatusHelper.getPosterStatusList.map(_getRadioItem)]),
+                ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
@@ -429,10 +433,6 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     var theme = Theme.of(context);
     return RadioListTile<PosterStatus>(
       value: item.$1,
-      groupValue: _selectedPosterStatus,
-      onChanged: (value) => setState(() {
-        _selectedPosterStatus = value!;
-      }),
       fillColor: WidgetStatePropertyAll(ThemeColors.primary),
       title: Text(item.$2, style: theme.textTheme.bodyMedium),
       visualDensity: VisualDensity(vertical: VisualDensity.minimumDensity, horizontal: VisualDensity.minimumDensity),

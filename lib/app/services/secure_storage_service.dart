@@ -4,7 +4,5 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 void registerSecureStorage() {
-  getIt.registerSingleton<FlutterSecureStorage>(
-    const FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true)),
-  );
+  getIt.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage(aOptions: AndroidOptions()));
 }

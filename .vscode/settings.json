@@ -1,18 +1,21 @@
 {
-    "FSharp.suggestGitignore": false,
-    "cSpell.words": [
-        "gruene",
-        "housenumber"
-    ],
-    "files.eol": "\n",
-    "circleci.filters.branchFilter": "allBranches",
-    "circleci.persistedProjectSelection": [
-        "gh/verdigado/gruene-app"
-    ],
-    "cSpell.enabled": false,
-    "dart.lineLength": 120,
-    "[dart]": {
-        "editor.formatOnSave": true,
-        "editor.rulers": [120],
-    }
+  "FSharp.suggestGitignore": false,
+  "cSpell.words": [
+    "gruene",
+    "housenumber"
+  ],
+  "files.eol": "\n",
+  "circleci.filters.branchFilter": "allBranches",
+  "circleci.persistedProjectSelection": [
+    "gh/verdigado/gruene-app"
+  ],
+  "cSpell.enabled": false,
+  "dart.lineLength": 120,
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.rulers": [
+      120
+    ]
+  },
+  "dart.flutterSdkPath": ".fvm/versions/3.41.0"
 }

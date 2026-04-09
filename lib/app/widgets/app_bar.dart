@@ -26,7 +26,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       bottom: tabBar,
       actions: [
-        if (appBarAction != null) appBarAction!,
+        ?appBarAction,
         if (currentRoute.path != Routes.settings.path && isLoggedIn)
           IconButton(
             icon: Icon(Icons.settings_outlined, color: theme.colorScheme.surface),

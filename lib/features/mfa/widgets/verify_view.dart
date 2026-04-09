@@ -38,7 +38,7 @@ class _VerifyViewState extends State<VerifyView> {
       try {
         bool authenticated = await _auth.authenticate(
           localizedReason: t.mfa.verify.authenticateForApproval,
-          options: const AuthenticationOptions(useErrorDialogs: true, stickyAuth: true),
+          persistAcrossBackgrounding: true,
         );
         if (!mounted) return;
         context.read<MfaBloc>().add(SendReply(authenticated));
