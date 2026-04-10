@@ -19,11 +19,11 @@ class AuthenticatorService {
   AuthenticatorService({required Storage storage}) : _repository = AuthenticatorRepository(storage: storage);
 
   Future<Authenticator> create(
-    String aktivationTokenUrl, {
+    String activationTokenUrl, {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.SHA512withECDSA,
     String? label,
   }) async {
-    var token = ActivationTokenDto.fromUrl(aktivationTokenUrl);
+    var token = ActivationTokenDto.fromUrl(activationTokenUrl);
 
     // TODO: check if combination of keycloak instance an realm is already registered
 
