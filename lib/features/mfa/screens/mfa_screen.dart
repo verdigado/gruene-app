@@ -17,25 +17,27 @@ class MfaScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(title: t.mfa.mfa),
-      body: BlocConsumer<MfaBloc, MfaState>(
-        listener: (context, state) {
-          final error = state.error;
-          if (error != null) {
-            showSnackBar(context, getErrorMessage(error));
-          }
-        },
-        builder: (context, state) {
-          switch (state.status) {
-            case MfaStatus.setup:
-              return const IntroView();
-            case MfaStatus.ready:
-              return const ReadyView();
-            case MfaStatus.verify:
-              return const VerifyView();
-            case MfaStatus.init:
-              return const _InitView();
-          }
-        },
+      body: SafeArea(
+        child: BlocConsumer<MfaBloc, MfaState>(
+          listener: (context, state) {
+            final error = state.error;
+            if (error != null) {
+              showSnackBar(context, getErrorMessage(error));
+            }
+          },
+          builder: (context, state) {
+            switch (state.status) {
+              case MfaStatus.setup:
+                return const IntroView();
+              case MfaStatus.ready:
+                return const ReadyView();
+              case MfaStatus.verify:
+                return const VerifyView();
+              case MfaStatus.init:
+                return const _InitView();
+            }
+          },
+        ),
       ),
     );
   }

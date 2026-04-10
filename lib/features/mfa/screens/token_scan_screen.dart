@@ -21,50 +21,55 @@ class TokenScanScreen extends StatelessWidget {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: MainAppBar(title: t.mfa.tokenScan.title),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: ExpandingScrollView(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 72),
-            Text(t.mfa.tokenScan.intro, textAlign: TextAlign.center, style: theme.textTheme.titleMedium),
-            const SizedBox(height: 72),
-            Center(
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: theme.colorScheme.primary, width: 2),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: MobileScanner(
-                    fit: BoxFit.cover,
-                    controller: MobileScannerController(
-                      detectionSpeed: DetectionSpeed.normal,
-                      detectionTimeoutMs: 4000,
-                      formats: const [BarcodeFormat.qrCode],
-                      autoStart: true,
-                      facing: CameraFacing.back,
-                      torchEnabled: false,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: ExpandingScrollView(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 72),
+              Text(t.mfa.tokenScan.intro, textAlign: TextAlign.center, style: theme.textTheme.titleMedium),
+              const SizedBox(height: 72),
+              Center(
+                child: Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: theme.colorScheme.primary, width: 2),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: MobileScanner(
+                      fit: BoxFit.cover,
+                      controller: MobileScannerController(
+                        detectionSpeed: DetectionSpeed.normal,
+                        detectionTimeoutMs: 4000,
+                        formats: const [BarcodeFormat.qrCode],
+                        autoStart: true,
+                        facing: CameraFacing.back,
+                        torchEnabled: false,
+                      ),
+                      onDetect: (barcode) => onDetect(barcode, context),
                     ),
-                    onDetect: (barcode) => onDetect(barcode, context),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Spacer(),
-            TextButton(
-              onPressed: () => context.pushNested(Routes.mfaTokenInput.path),
-              child: Text(
-                t.mfa.tokenScan.doManual,
-                style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.text, decoration: TextDecoration.underline),
+              const SizedBox(height: 16),
+              Spacer(),
+              TextButton(
+                onPressed: () => context.pushNested(Routes.mfaTokenInput.path),
+                child: Text(
+                  t.mfa.tokenScan.doManual,
+                  style: theme.textTheme.bodyMedium!.apply(
+                    color: ThemeColors.text,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 32),
-          ],
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
     );
