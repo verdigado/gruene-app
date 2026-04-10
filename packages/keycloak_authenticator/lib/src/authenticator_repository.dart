@@ -14,7 +14,7 @@ class AuthenticatorRepository {
     required Storage storage,
   }) : _storage = storage;
 
-  _getAuthenticatorStorageKey(String authenticatorId) {
+  String _getAuthenticatorStorageKey(String authenticatorId) {
     return "authr:$authenticatorId";
   }
 
