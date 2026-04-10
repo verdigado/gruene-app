@@ -8,6 +8,8 @@ extension NullableRemoteMessageExtension on RemoteMessage? {
     switch (type) {
       case NotificationConstants.notificationTypeNews:
         return NotificationMessageType.news;
+      case NotificationConstants.notificationTypeMfa:
+        return NotificationMessageType.mfa;
       case NotificationConstants.notificationTypeTeamMembershipUpdated:
         return NotificationMessageType.teamMembershipUpdate;
       case NotificationConstants.notificationTypeTeamTop10Updated:
@@ -45,6 +47,8 @@ extension NotificationResponseExtension on NotificationResponse {
     if (localPayload == null) throw UnimplementedError();
     if (localPayload.startsWith(NotificationConstants.payloadNewsPrefix)) {
       instanceIdentifier = NotificationMessageType.news;
+    } else if (localPayload.startsWith(NotificationConstants.payloadMfa)) {
+      instanceIdentifier = NotificationMessageType.mfa;
     } else if (localPayload == NotificationConstants.payloadTeam) {
       instanceIdentifier = NotificationMessageType.teamMembershipUpdate;
     } else if (localPayload == NotificationConstants.payloadTeamTop10) {

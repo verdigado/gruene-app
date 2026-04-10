@@ -123,6 +123,10 @@ Future<void> main() async {
     instanceName: NotificationMessageType.news.toString(),
   );
   GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => MfaNotificationHandler(),
+    instanceName: NotificationMessageType.mfa.toString(),
+  );
+  GetIt.I.registerFactory<BaseNotificationHandler>(
     () => TeamNotificationHandler(),
     instanceName: NotificationMessageType.teamMembershipUpdate.toString(),
   );
