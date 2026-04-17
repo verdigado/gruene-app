@@ -39,7 +39,10 @@ class MembershipCardScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(t.profiles.membershipCard.title, style: theme.textTheme.labelLarge),
+                  Text(
+                    t.profiles.membershipCard.title,
+                    style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
+                  ),
                   const SizedBox(height: 4),
                   Text(
                     '${data.firstName}\n${data.lastName}',
