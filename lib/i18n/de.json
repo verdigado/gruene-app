@@ -406,12 +406,10 @@
       "chatbegruenung": "Chatbegrünung"
     },
     "homepage": "Homepage",
-    "digitalMembershipCard": {
-      "title": "Meine Mitgliedskarte",
-      "card": {
-        "title": "Mitgliedskarte",
-        "membershipNumber": "Mitgliedernummer:"
-      }
+    "membershipCard": {
+      "title": "Mitgliedskarte",
+      "membershipNumber": "Mitgliedernummer:",
+      "myMembershipCard": "Meine Mitgliedskarte"
     }
   },
   "mfa": {

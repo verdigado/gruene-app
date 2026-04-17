@@ -9,15 +9,15 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class DigitalMembershipCardScreen extends StatelessWidget {
-  const DigitalMembershipCardScreen({super.key});
+class MembershipCardScreen extends StatelessWidget {
+  const MembershipCardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: MainAppBar(title: t.profiles.digitalMembershipCard.title),
+      appBar: MainAppBar(title: t.profiles.membershipCard.myMembershipCard),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
         buildChild: (Profile data, _) {
@@ -39,7 +39,7 @@ class DigitalMembershipCardScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(t.profiles.digitalMembershipCard.card.title, style: theme.textTheme.labelLarge),
+                  Text(t.profiles.membershipCard.title, style: theme.textTheme.labelLarge),
                   const SizedBox(height: 4),
                   Text(
                     '${data.firstName}\n${data.lastName}',
@@ -63,7 +63,7 @@ class DigitalMembershipCardScreen extends StatelessWidget {
                           RotatedBox(
                             quarterTurns: -1,
                             child: Text(
-                              '${t.common.party}\n${t.profiles.digitalMembershipCard.card.membershipNumber}\n${data.personalId}',
+                              '${t.common.party}\n${t.profiles.membershipCard.membershipNumber}\n${data.personalId}',
                               style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                             ),
                           ),

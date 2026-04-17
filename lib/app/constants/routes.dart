@@ -16,7 +16,7 @@ import 'package:gruene_app/features/mfa/screens/token_input_screen.dart';
 import 'package:gruene_app/features/mfa/screens/token_scan_screen.dart';
 import 'package:gruene_app/features/news/screens/news_detail_screen.dart';
 import 'package:gruene_app/features/news/screens/news_screen.dart';
-import 'package:gruene_app/features/profiles/screens/digital_membership_card_screen.dart';
+import 'package:gruene_app/features/profiles/screens/membership_card_screen.dart';
 import 'package:gruene_app/features/profiles/screens/own_profile_screen.dart';
 import 'package:gruene_app/features/settings/screens/push_notifications_screen.dart';
 import 'package:gruene_app/features/settings/screens/settings_screen.dart';
@@ -95,10 +95,7 @@ class Routes {
       return null;
     },
   );
-  static GoRoute digitalMembershipCard = buildRoute(
-    RouteLocations.digitalMembershipCard,
-    DigitalMembershipCardScreen(),
-  );
+  static GoRoute digitalMembershipCard = buildRoute(RouteLocations.digitalMembershipCard, MembershipCardScreen());
   static GoRoute profiles = buildRoute(
     RouteLocations.getRoute([RouteLocations.profiles]),
     OwnProfileScreen(),
