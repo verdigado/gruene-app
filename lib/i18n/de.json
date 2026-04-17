@@ -450,7 +450,8 @@
       "date": "Datum:",
       "time": "Uhrzeit:",
       "pointInTime": "${time} Uhr",
-      "authenticateForApproval": "Bitte bestätige die Anmeldung.",
+      "authenticateForApproval": "Bitte authentifiziere dich, um die Anmeldung zu bestätigen.",
+      "authenticationFailed": "Authentifizierung fehlgeschlagen. Bitte versuche es erneut.",
       "approve": "Anmeldung erlauben",
       "deny": "Anmeldung verweigern"
     }
