@@ -38,7 +38,7 @@ class OwnProfileScreen extends StatelessWidget {
               ProfileHeader(profile: data, onProfileUpdated: extra.update),
               SizedBox(height: 24),
               TextListItem(
-                title: t.profiles.membershipCard.myMembershipCard,
+                title: t.profiles.myMembershipCard,
                 onPress: () => context.pushNested(Routes.digitalMembershipCard.path),
               ),
               SizedBox(height: 24),

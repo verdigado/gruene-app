@@ -17,7 +17,7 @@ class MembershipCardScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: MainAppBar(title: t.profiles.membershipCard.myMembershipCard),
+      appBar: MainAppBar(title: t.profiles.myMembershipCard),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
         buildChild: (Profile data, _) {
@@ -40,7 +40,7 @@ class MembershipCardScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    t.profiles.membershipCard.title,
+                    t.profiles.membershipCard,
                     style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                   ),
                   const SizedBox(height: 4),
@@ -66,7 +66,7 @@ class MembershipCardScreen extends StatelessWidget {
                           RotatedBox(
                             quarterTurns: -1,
                             child: Text(
-                              '${t.common.party}\n${t.profiles.membershipCard.communicationNumber}\n${data.personalId}',
+                              '${t.common.party}\n${t.profiles.personalId}:\n${data.personalId}',
                               style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                             ),
                           ),

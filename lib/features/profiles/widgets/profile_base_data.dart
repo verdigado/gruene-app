@@ -26,6 +26,8 @@ class ProfileBaseData extends StatelessWidget {
                   Divider(),
                   _buildValueRow(context, t.profiles.baseData.phoneNumber, profile.phoneNumbers.first.number),
                 ],
+                Divider(),
+                _buildValueRow(context, t.profiles.personalId, profile.personalId),
               ],
             ),
           ),
