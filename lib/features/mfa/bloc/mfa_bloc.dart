@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
@@ -22,6 +23,14 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     if (state.status != MfaStatus.init) return;
     try {
       _authenticator = await _service.getFirst();
+
+      String? firebaseToken = await FirebaseMessaging.instance.getToken();
+      await _authenticator?.updateDevicePushId(devicePushId: firebaseToken);
+
+      FirebaseMessaging.instance.onTokenRefresh.listen(
+        (firebaseToken) async => await _authenticator?.updateDevicePushId(devicePushId: firebaseToken),
+      );
+
       emit(
         state.copyWith(
           status: _authenticator != null ? MfaStatus.ready : MfaStatus.setup,
@@ -38,7 +47,8 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     if (state.status != MfaStatus.setup || state.isLoading) return;
     emit(state.copyWith(isLoading: true, error: null));
     try {
-      _authenticator = await _service.create(event.activationToken);
+      String? firebaseToken = await FirebaseMessaging.instance.getToken();
+      _authenticator = await _service.create(event.activationToken, devicePushId: firebaseToken);
       emit(state.copyWith(status: MfaStatus.ready, isLoading: false, loginAttempt: null));
     } catch (error) {
       emit(state.copyWith(error: error, isLoading: false));

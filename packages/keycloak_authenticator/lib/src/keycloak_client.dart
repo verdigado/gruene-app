@@ -202,4 +202,35 @@ class KeycloakClient {
       ),
     );
   }
+
+  Future<void> updateDevicePushId({
+    required String deviceId,
+    required String? devicePushId,
+  }) async {
+    try {
+      await _updateDevicePushIdRequest(deviceId, devicePushId);
+    } on DioException catch (e) {
+      throw KeycloakClientException('Failed to update push notification token', dioException: e);
+    }
+  }
+
+  Future<void> _updateDevicePushIdRequest(String deviceId, String? devicePushId) async {
+    final signatureHeader = buildSignatureHeader(
+      deviceId,
+      {
+        'created': DateTime.now().millisecondsSinceEpoch.toString(),
+      },
+    );
+    await _dio.put(
+      '/$deviceId/credentials',
+      data: {
+        'devicePushId': devicePushId,
+      },
+      options: Options(
+        headers: {
+          'signature': signatureHeader,
+        },
+      ),
+    );
+  }
 }

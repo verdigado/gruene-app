@@ -16,12 +16,14 @@ import 'package:uuid/uuid.dart';
 class AuthenticatorService {
   final AuthenticatorRepository _repository;
   final uuid = const Uuid();
+
   AuthenticatorService({required Storage storage}) : _repository = AuthenticatorRepository(storage: storage);
 
   Future<Authenticator> create(
     String activationTokenUrl, {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.SHA512withECDSA,
     String? label,
+    required String? devicePushId,
   }) async {
     var token = ActivationTokenDto.fromUrl(activationTokenUrl);
 
@@ -42,7 +44,6 @@ class AuthenticatorService {
         break;
     }
 
-    var devicePushId = await DeviceUtils.getDevicePushId();
     DeviceOs deviceOs = DeviceUtils.getDeviceOs();
     var authenticatorId = uuid.v4();
 

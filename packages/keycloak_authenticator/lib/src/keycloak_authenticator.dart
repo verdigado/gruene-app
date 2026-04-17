@@ -96,6 +96,14 @@ class KeycloakAuthenticator implements Authenticator {
       timestamp: challenge.updatedTimestamp,
     );
   }
+
+  @override
+  Future<void> updateDevicePushId({required String? devicePushId}) async {
+    await _client.updateDevicePushId(
+      deviceId: _data.id,
+      devicePushId: devicePushId,
+    );
+  }
 }
 
 class _Data {
