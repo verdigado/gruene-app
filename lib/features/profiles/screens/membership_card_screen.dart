@@ -66,7 +66,7 @@ class MembershipCardScreen extends StatelessWidget {
                           RotatedBox(
                             quarterTurns: -1,
                             child: Text(
-                              '${t.common.party}\n${t.profiles.membershipCard.membershipNumber}\n${data.personalId}',
+                              '${t.common.party}\n${t.profiles.membershipCard.communicationNumber}\n${data.personalId}',
                               style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                             ),
                           ),

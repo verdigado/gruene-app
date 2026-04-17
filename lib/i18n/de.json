@@ -408,7 +408,7 @@
     "homepage": "Homepage",
     "membershipCard": {
       "title": "Mitgliedskarte",
-      "membershipNumber": "Mitgliedernummer:",
+      "communicationNumber": "Personen-/Kommunikationsnummer:",
       "myMembershipCard": "Meine Mitgliedskarte"
     }
   },
