@@ -26,7 +26,7 @@ class EventsList extends StatelessWidget {
           if (state.loading) {
             return Center(child: CircularProgressIndicator());
           }
-          return ErrorScreen(errorMessage: t.events.noEvents, retry: refresh);
+          return ErrorScreen(errorMessage: t.events.noEvents, retry: refresh, icon: Icons.event_busy);
         }
 
         return ListView.builder(

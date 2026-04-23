@@ -511,7 +511,7 @@
     "calendars": "Kalender",
     "dateRange": "Zeitraum",
     "list": "Liste",
-    "noEvents": "Keine Events verfügbar",
+    "noEvents": "In deinem KV gibt es aktuell keine Events.",
     "map": "Karte",
     "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
     "digital": "digital",
