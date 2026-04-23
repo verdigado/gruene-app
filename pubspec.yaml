@@ -110,7 +110,6 @@ flutter:
     - assets/icons/
     - assets/splash/
     - assets/graphics/
-    - assets/graphics/placeholders/
     - assets/symbols/
     - assets/symbols/posters/
     - assets/symbols/posters/svg_inverted/
