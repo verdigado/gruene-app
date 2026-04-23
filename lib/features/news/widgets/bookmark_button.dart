@@ -7,8 +7,9 @@ import 'package:gruene_app/features/news/bloc/bookmark_state.dart';
 
 class BookmarkButton extends StatelessWidget {
   final String newsId;
+  final Color? color;
 
-  const BookmarkButton({super.key, required this.newsId});
+  const BookmarkButton({super.key, required this.newsId, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class BookmarkButton extends StatelessWidget {
         return IconButton(
           icon: Icon(
             isBookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
-            color: theme.colorScheme.surface,
+            color: color ?? theme.colorScheme.surface,
             size: 24,
           ),
           onPressed: state.isLoading
