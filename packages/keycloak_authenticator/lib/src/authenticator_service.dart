@@ -16,14 +16,16 @@ import 'package:uuid/uuid.dart';
 class AuthenticatorService {
   final AuthenticatorRepository _repository;
   final uuid = const Uuid();
+
   AuthenticatorService({required Storage storage}) : _repository = AuthenticatorRepository(storage: storage);
 
   Future<Authenticator> create(
-    String aktivationTokenUrl, {
+    String activationTokenUrl, {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.SHA512withECDSA,
     String? label,
+    required String? devicePushId,
   }) async {
-    var token = ActivationTokenDto.fromUrl(aktivationTokenUrl);
+    var token = ActivationTokenDto.fromUrl(activationTokenUrl);
 
     // TODO: check if combination of keycloak instance an realm is already registered
 
@@ -42,7 +44,6 @@ class AuthenticatorService {
         break;
     }
 
-    var devicePushId = await DeviceUtils.getDevicePushId();
     DeviceOs deviceOs = DeviceUtils.getDeviceOs();
     var authenticatorId = uuid.v4();
 

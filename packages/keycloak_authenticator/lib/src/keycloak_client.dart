@@ -16,7 +16,7 @@ class KeycloakClient {
   final KeyAlgorithm _keyAlgorithm;
 
   KeycloakClient({
-    required baseUrl,
+    required String baseUrl,
     required SignatureAlgorithm signatureAlgorithm,
     required KeyAlgorithm keyAlgorithm,
     required PrivateKey privateKey,
@@ -160,7 +160,7 @@ class KeycloakClient {
     return (res.data as List<dynamic>).map((e) => Challenge.fromJson(e)).toList();
   }
 
-  replyChallenge({
+  Future<void> replyChallenge({
     required String deviceId,
     required String clientId,
     required String tabId,
@@ -194,6 +194,37 @@ class KeycloakClient {
         'tab_id': tabId,
         'key': key,
         'granted': granted,
+      },
+      options: Options(
+        headers: {
+          'signature': signatureHeader,
+        },
+      ),
+    );
+  }
+
+  Future<void> updateDevicePushId({
+    required String deviceId,
+    required String? devicePushId,
+  }) async {
+    try {
+      await _updateDevicePushIdRequest(deviceId, devicePushId);
+    } on DioException catch (e) {
+      throw KeycloakClientException('Failed to update push notification token', dioException: e);
+    }
+  }
+
+  Future<void> _updateDevicePushIdRequest(String deviceId, String? devicePushId) async {
+    final signatureHeader = buildSignatureHeader(
+      deviceId,
+      {
+        'created': DateTime.now().millisecondsSinceEpoch.toString(),
+      },
+    );
+    await _dio.put(
+      '/$deviceId/credentials',
+      data: {
+        'devicePushId': devicePushId,
       },
       options: Options(
         headers: {
