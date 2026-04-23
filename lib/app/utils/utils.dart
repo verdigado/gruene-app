@@ -33,7 +33,7 @@ extension ContainsAny<T> on List<T> {
 }
 
 extension WithDividers on Iterable<Widget> {
-  List<Widget> withDividers([Widget? divider]) => expand((item) => [item, Divider()]).toList()..removeLast();
+  List<Widget> withDividers([Widget? divider]) => expand((item) => [item, divider ?? Divider()]).toList()..removeLast();
 }
 
 extension PushNested on BuildContext {

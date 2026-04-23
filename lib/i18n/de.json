@@ -406,13 +406,9 @@
       "chatbegruenung": "Chatbegrünung"
     },
     "homepage": "Homepage",
-    "digitalMembershipCard": {
-      "title": "Meine Mitgliedskarte",
-      "card": {
-        "title": "Mitgliedskarte",
-        "membershipNumber": "Mitgliedernummer:"
-      }
-    }
+    "membershipCard": "Mitgliedskarte",
+    "myMembershipCard": "Meine Mitgliedskarte",
+    "personalId": "Personen-/Kommunikationsnummer"
   },
   "mfa": {
     "mfa": "2-Faktor-Authentifizierung",
