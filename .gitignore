@@ -208,4 +208,3 @@ node_modules
 
 /lib/swagger_generated_code/
 android/app/google-services.json
-ios/Runner/GoogleService-Info.plist
