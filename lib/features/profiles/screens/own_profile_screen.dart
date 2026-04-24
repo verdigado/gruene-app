@@ -50,7 +50,7 @@ class OwnProfileScreen extends StatelessWidget {
                         title: t.profiles.baseData.phoneNumber,
                         value: profile.phoneNumbers.first.number,
                       ),
-                    ProfileCardListItem(title: t.profiles.personalId, value: profile.personalId),
+                    ProfileCardListItem(title: t.profiles.personalId, value: profile.personalId, copyOnTap: true),
                   ],
                 ),
                 if (profile.memberships?.isNotEmpty ?? false)
