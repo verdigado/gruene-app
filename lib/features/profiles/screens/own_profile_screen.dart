@@ -43,14 +43,9 @@ class OwnProfileScreen extends StatelessWidget {
                 ),
                 ProfileCard(
                   children: [
-                    ProfileCardListItem(title: t.profiles.baseData.firstName, value: profile.firstName),
-                    ProfileCardListItem(title: t.profiles.baseData.lastName, value: profile.lastName),
-                    ProfileCardListItem(title: t.profiles.baseData.email, value: profile.email),
+                    ProfileCardListItem(title: t.profiles.email, value: profile.email),
                     if (profile.phoneNumbers.isNotEmpty)
-                      ProfileCardListItem(
-                        title: t.profiles.baseData.phoneNumber,
-                        value: profile.phoneNumbers.first.number,
-                      ),
+                      ProfileCardListItem(title: t.profiles.phoneNumber, value: profile.phoneNumbers.first.number),
                     ProfileCardListItem(title: t.profiles.personalId, value: profile.personalId, copyOnTap: true),
                   ],
                 ),

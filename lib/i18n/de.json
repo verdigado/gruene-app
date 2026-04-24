@@ -385,12 +385,8 @@
         "text": "Soll Dein Profilbild wirklich gelöscht werden?"
       }
     },
-    "baseData": {
-      "firstName": "Vorname",
-      "lastName": "Nachname",
-      "email": "E-Mail Adresse",
-      "phoneNumber": "Telefonnummer"
-    },
+    "email": "E-Mail Adresse",
+    "phoneNumber": "Telefonnummer",
     "memberships": "Mitgliedschaften",
     "mandates": "Parteifunktionen / Mandate",
     "sherpaRole": "Sherpa-Rolle",
