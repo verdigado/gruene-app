@@ -25,12 +25,23 @@ class CampaignsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RouterTabScreen(
-      appBarBuilder: (PreferredSizeWidget tabBar) =>
-          MainAppBar(title: t.campaigns.campaigns, appBarAction: RefreshButton(), tabBar: tabBar),
+      appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(
+        title: t.campaigns.campaigns,
+        appBarAction: RefreshButton(),
+        tabBar: tabBar,
+        leadingAction: CampaignSelectButton(),
+      ),
       tabs: campaignTabs,
       scrollableBody: false,
       navigationShell: navigationShell,
       children: children,
     );
+  }
+}
+
+class CampaignSelectButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(icon: const Icon(Icons.how_to_vote_outlined), onPressed: () => context.push('/campaigns/select'));
   }
 }
