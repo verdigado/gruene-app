@@ -78,14 +78,14 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  V1CampaignsAreasGetType transformToApiAreasGetType() {
+  AreaType transformToApiAreasGetType() {
     switch (this) {
       case PoiServiceType.door:
-        return V1CampaignsAreasGetType.house;
+        return AreaType.house;
       case PoiServiceType.flyer:
-        return V1CampaignsAreasGetType.flyerSpot;
+        return AreaType.flyerSpot;
       case PoiServiceType.poster:
-        return V1CampaignsAreasGetType.poster;
+        return AreaType.poster;
     }
   }
 
@@ -102,14 +102,14 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  V1CampaignsRoutesGetType transformToRoutesApiGetType() {
+  RouteType transformToRoutesApiGetType() {
     switch (this) {
       case PoiServiceType.poster:
-        return V1CampaignsRoutesGetType.poster;
+        return RouteType.poster;
       case PoiServiceType.door:
-        return V1CampaignsRoutesGetType.house;
+        return RouteType.house;
       case PoiServiceType.flyer:
-        return V1CampaignsRoutesGetType.flyerSpot;
+        return RouteType.flyerSpot;
     }
   }
 
