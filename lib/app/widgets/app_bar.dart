@@ -9,8 +9,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? appBarAction;
   final PreferredSizeWidget? tabBar;
   final String title;
+  final Widget? leadingAction;
 
-  const MainAppBar({super.key, required this.title, this.appBarAction, this.tabBar});
+  const MainAppBar({super.key, required this.title, this.appBarAction, this.leadingAction, this.tabBar});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             onPressed: () => context.push(Routes.settings.path),
           ),
       ],
+      leading: leadingAction,
     );
   }
 
