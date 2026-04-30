@@ -24,7 +24,7 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     try {
       _authenticator = await _service.getFirst();
 
-      String? firebaseToken = await FirebaseMessaging.instance.getToken();
+      final firebaseToken = await FirebaseMessaging.instance.getToken();
       await _authenticator?.updateDevicePushId(devicePushId: firebaseToken);
 
       FirebaseMessaging.instance.onTokenRefresh.listen(
