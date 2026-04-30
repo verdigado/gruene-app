@@ -1,11 +1,12 @@
-import 'package:pointycastle/export.dart';
-import "package:pointycastle/pointycastle.dart";
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
+import 'package:pointycastle/asn1/object_identifiers.dart';
 import 'package:pointycastle/ecc/ecc_fp.dart' as ecc_fp;
+import 'package:pointycastle/export.dart';
+import 'package:pointycastle/pointycastle.dart';
 // ignore: implementation_imports
 import 'package:pointycastle/src/utils.dart';
-import 'package:pointycastle/asn1/object_identifiers.dart';
-import 'dart:math';
-import 'package:flutter/foundation.dart';
 
 /// Wrapper class around the pointycastle library based on the
 /// dart_basic_utils package
@@ -314,7 +315,7 @@ class CryptoUtils {
     return topLevel.encode();
   }
 
-  static ECPublicKey ecPublicKey(String pub, String curveName, {compressed = false}) {
+  static ECPublicKey ecPublicKey(String pub, String curveName, {bool compressed = false}) {
     var pubBytes = CryptoUtils.hexToUint8List(pub);
     var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
     var y = pubBytes.sublist(1 + x.length, pubBytes.length);
@@ -322,9 +323,14 @@ class CryptoUtils {
     var bigX = decodeBigIntWithSign(1, x);
     var bigY = decodeBigIntWithSign(1, y);
     return ECPublicKey(
-        ecc_fp.ECPoint(params.curve as ecc_fp.ECCurve, params.curve.fromBigInteger(bigX) as ecc_fp.ECFieldElement?,
-            params.curve.fromBigInteger(bigY) as ecc_fp.ECFieldElement?, compressed),
-        params);
+      ecc_fp.ECPoint(
+        params.curve as ecc_fp.ECCurve,
+        params.curve.fromBigInteger(bigX) as ecc_fp.ECFieldElement?,
+        params.curve.fromBigInteger(bigY) as ecc_fp.ECFieldElement?,
+        compressed,
+      ),
+      params,
+    );
   }
 
   static Uint8List hexToUint8List(String hex) {
@@ -405,7 +411,7 @@ class CryptoUtils {
       if (b2CurveData == null) {
         throw const FormatException('could not extract b2CurveData from encoded EC private key');
       }
-      curveName = b2CurveData['readableName'];
+      curveName = b2CurveData['readableName'] as String;
 
       var octetString = topLevelSeq.elements!.elementAt(2) as ASN1OctetString;
       asn1Parser = ASN1Parser(octetString.valueBytes);
@@ -427,7 +433,7 @@ class CryptoUtils {
       if (data == null) {
         throw const FormatException('could not extract b2CurveData from encoded EC private key');
       }
-      curveName = data['readableName'];
+      curveName = data['readableName'] as String;
 
       x = privateKeyAsOctetString.valueBytes!;
     }

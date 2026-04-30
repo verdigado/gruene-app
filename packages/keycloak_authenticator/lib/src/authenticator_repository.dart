@@ -15,12 +15,14 @@ class AuthenticatorRepository {
   }) : _storage = storage;
 
   String _getAuthenticatorStorageKey(String authenticatorId) {
-    return "authr:$authenticatorId";
+    return 'authr:$authenticatorId';
   }
 
   Future<Authenticator> add(KeycloakAuthenticator authenticator) async {
     await _storage.write(
-        key: _getAuthenticatorStorageKey(authenticator.getId()), value: jsonEncode(authenticator.toJson()));
+      key: _getAuthenticatorStorageKey(authenticator.getId()),
+      value: jsonEncode(authenticator.toJson()),
+    );
 
     await _addToEntries(authenticator);
 
@@ -32,7 +34,7 @@ class AuthenticatorRepository {
     if (serialized == null) {
       return null;
     }
-    return KeycloakAuthenticator.fromJson(jsonDecode(serialized));
+    return KeycloakAuthenticator.fromJson(jsonDecode(serialized) as Map<String, dynamic>);
   }
 
   Future<void> delete(Authenticator authenticator) async {
@@ -44,7 +46,7 @@ class AuthenticatorRepository {
     List<AuthenticatorEntry> entries = [];
     var serialized = await _storage.read(key: 'entries');
     if (serialized != null) {
-      List<dynamic> jsonList = jsonDecode(serialized);
+      final jsonList = jsonDecode(serialized) as List<Map<String, dynamic>>;
       entries = jsonList.map((json) => AuthenticatorEntry.fromJson(json)).toList();
     }
     return entries;
@@ -56,10 +58,12 @@ class AuthenticatorRepository {
 
   Future<List<AuthenticatorEntry>> _addToEntries(Authenticator authenticator) async {
     var entries = await getEntries();
-    entries.add(AuthenticatorEntry(
-      id: authenticator.getId(),
-      label: authenticator.getLabel(),
-    ));
+    entries.add(
+      AuthenticatorEntry(
+        id: authenticator.getId(),
+        label: authenticator.getLabel(),
+      ),
+    );
     await _saveEntries(entries);
     return entries;
   }

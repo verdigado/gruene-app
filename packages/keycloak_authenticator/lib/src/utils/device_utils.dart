@@ -10,6 +10,6 @@ class DeviceUtils {
     } else if (Platform.isAndroid) {
       return DeviceOs.android;
     }
-    throw Exception("${Platform.operatingSystem} is not supported");
+    throw Exception('${Platform.operatingSystem} is not supported');
   }
 }

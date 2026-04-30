@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:keycloak_authenticator/src/dtos/challenge.dart';
+import 'package:keycloak_authenticator/src/enums/enums.dart';
 import 'package:keycloak_authenticator/src/exceptions/keycloak_client_exception.dart';
 import 'package:keycloak_authenticator/src/utils/crypto_utils.dart';
 import 'package:pointycastle/export.dart';
-
-import 'enums/enums.dart';
-import 'dtos/challenge.dart';
 
 class KeycloakClient {
   final Dio _dio;
@@ -36,7 +35,7 @@ class KeycloakClient {
   }
 
   String _sign(String value) {
-    var algorithmName = _getSignatureAlgorithm();
+    final algorithmName = _getSignatureAlgorithm();
     Uint8List signature = switch (_keyAlgorithm) {
       KeyAlgorithm.RSA => CryptoUtils.rsaSign(
           _privateKey as RSAPrivateKey,
@@ -56,7 +55,7 @@ class KeycloakClient {
     String keyId,
     Map<String, String> keyValues,
   ) {
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
     var first = true;
     keyValues.forEach((key, value) {
       if (!first) {
@@ -65,8 +64,8 @@ class KeycloakClient {
       buffer.writeAll([key, ':', value]);
       first = false;
     });
-    var payload = buffer.toString();
-    var signature = _sign(payload);
+    final payload = buffer.toString();
+    final signature = _sign(payload);
     return 'keyId:$keyId,$payload,signature:$signature';
   }
 
@@ -83,7 +82,16 @@ class KeycloakClient {
   }) async {
     try {
       await _setupRequest(
-          clientId, tabId, deviceId, deviceOs, devicePushId, keyAlgorithm, signatureAlgorithm, publicKey, key);
+        clientId,
+        tabId,
+        deviceId,
+        deviceOs,
+        devicePushId,
+        keyAlgorithm,
+        signatureAlgorithm,
+        publicKey,
+        key,
+      );
     } on DioException catch (err) {
       if (err.type == DioExceptionType.badResponse) {
         throw KeycloakClientException('', dioException: err);
@@ -103,7 +111,7 @@ class KeycloakClient {
     String publicKey,
     String key,
   ) async {
-    await _dio.get(
+    await _dio.get<void>(
       '/login-actions/action-token',
       queryParameters: {
         'client_id': clientId,
@@ -126,7 +134,7 @@ class KeycloakClient {
       return await _getChallengesRequest(deviceId);
     } on DioException catch (err) {
       if (err.type == DioExceptionType.badResponse) {
-        var type = switch (err.response?.statusCode) {
+        final type = switch (err.response?.statusCode) {
           400 => KeycloakExceptionType.badRequest,
           409 => KeycloakExceptionType.notRegistered,
           int() => KeycloakExceptionType.badRequest,
@@ -139,14 +147,14 @@ class KeycloakClient {
   }
 
   Future<List<Challenge>> _getChallengesRequest(String deviceId) async {
-    var signatureHeader = buildSignatureHeader(
+    final signatureHeader = buildSignatureHeader(
       deviceId,
       {
         'created': (DateTime.now().millisecondsSinceEpoch - 1000).toString(),
         // 'request-target': 'get_/realms/$realm/challenge-resource/$deviceId',
       },
     );
-    var res = await _dio.get(
+    var res = await _dio.get<List<Map<String, dynamic>>>(
       '/challenges',
       queryParameters: {
         'device_id': deviceId,
@@ -157,7 +165,7 @@ class KeycloakClient {
         },
       ),
     );
-    return (res.data as List<dynamic>).map((e) => Challenge.fromJson(e)).toList();
+    return res.data!.map((e) => Challenge.fromJson(e)).toList();
   }
 
   Future<void> replyChallenge({
@@ -177,8 +185,15 @@ class KeycloakClient {
   }
 
   Future<void> _challengeReplyRequest(
-      String deviceId, int timestamp, String value, bool granted, String clientId, String tabId, String key) async {
-    var signatureHeader = buildSignatureHeader(
+    String deviceId,
+    int timestamp,
+    String value,
+    bool granted,
+    String clientId,
+    String tabId,
+    String key,
+  ) async {
+    final signatureHeader = buildSignatureHeader(
       deviceId,
       {
         // 'created': DateTime.now().millisecondsSinceEpoch.toString(),
@@ -187,7 +202,7 @@ class KeycloakClient {
         'granted': granted ? 'true' : 'false',
       },
     );
-    await _dio.get(
+    await _dio.get<void>(
       '/login-actions/action-token',
       queryParameters: {
         'client_id': clientId,
@@ -221,7 +236,7 @@ class KeycloakClient {
         'created': DateTime.now().millisecondsSinceEpoch.toString(),
       },
     );
-    await _dio.put(
+    await _dio.put<void>(
       '/$deviceId/credentials',
       data: {
         'devicePushId': devicePushId,

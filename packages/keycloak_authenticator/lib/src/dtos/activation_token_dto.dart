@@ -39,7 +39,7 @@ class ActivationTokenDto {
     if (realm == null) {
       throw const FormatException('missing realm in path');
     }
-    var baseUrl = "${uri.origin}$basePath";
+    var baseUrl = '${uri.origin}$basePath';
     return ActivationTokenDto(
       baseUrl: baseUrl,
       realm: realm,

@@ -6,8 +6,8 @@ class AuthenticatorEntry {
 
   factory AuthenticatorEntry.fromJson(Map<String, dynamic> json) {
     return AuthenticatorEntry(
-      id: json['id'],
-      label: json['label'],
+      id: json['id'] as String,
+      label: json['label'] as String?,
     );
   }
 

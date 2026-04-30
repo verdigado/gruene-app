@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:keycloak_authenticator/src/authenticator.dart';
-import 'package:keycloak_authenticator/src/keycloak_client.dart';
 import 'package:keycloak_authenticator/src/dtos/challenge.dart';
 import 'package:keycloak_authenticator/src/enums/enums.dart';
+import 'package:keycloak_authenticator/src/keycloak_client.dart';
 import 'package:keycloak_authenticator/src/utils/crypto_utils.dart';
 import 'package:pointycastle/export.dart';
 
@@ -155,17 +155,17 @@ class _Data {
   }
 
   factory _Data.fromJson(Map<String, dynamic> json) {
-    var keyAlgorithm = KeyAlgorithm.values.byName(json['keyAlgorithm']);
+    var keyAlgorithm = KeyAlgorithm.values.byName(json['keyAlgorithm'] as String);
     return _Data(
-      id: json['id'],
-      label: json['label'],
-      baseUrl: json['baseUrl'],
-      realm: json['realm'],
-      signatureAlgorithm: SignatureAlgorithm.values.byName(json['signatureAlgorithm']),
+      id: json['id'] as String,
+      label: json['label'] as String?,
+      baseUrl: json['baseUrl'] as String,
+      realm: json['realm'] as String,
+      signatureAlgorithm: SignatureAlgorithm.values.byName(json['signatureAlgorithm'] as String),
       keyAlgorithm: keyAlgorithm,
-      privateKey: _decodePrivateKey(keyAlgorithm, json['privateKey']),
+      privateKey: _decodePrivateKey(keyAlgorithm, json['privateKey'] as String),
       registeredAt: DateTime.fromMillisecondsSinceEpoch(
-        json['registeredAt'],
+        json['registeredAt'] as int,
         isUtc: true,
       ),
     );
