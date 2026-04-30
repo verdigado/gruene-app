@@ -9,7 +9,6 @@ import 'package:keycloak_authenticator/src/keycloak_authenticator.dart';
 import 'package:keycloak_authenticator/src/keycloak_client.dart';
 import 'package:keycloak_authenticator/src/storage/storage.dart';
 import 'package:keycloak_authenticator/src/utils/crypto_utils.dart';
-import 'package:keycloak_authenticator/src/utils/device_utils.dart';
 import 'package:pointycastle/export.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,7 +43,6 @@ class AuthenticatorService {
         break;
     }
 
-    DeviceOs deviceOs = DeviceUtils.getDeviceOs();
     final authenticatorId = uuid.v4();
 
     final client = KeycloakClient(
@@ -58,7 +56,6 @@ class AuthenticatorService {
       clientId: token.clientId,
       tabId: token.tabId,
       deviceId: authenticatorId,
-      deviceOs: deviceOs,
       key: token.key,
       publicKey: encodedPublicKey,
       keyAlgorithm: keyAlgorithm,

@@ -6,6 +6,7 @@ import 'package:keycloak_authenticator/src/dtos/challenge.dart';
 import 'package:keycloak_authenticator/src/enums/enums.dart';
 import 'package:keycloak_authenticator/src/exceptions/keycloak_client_exception.dart';
 import 'package:keycloak_authenticator/src/utils/crypto_utils.dart';
+import 'package:keycloak_authenticator/src/utils/device_utils.dart';
 import 'package:pointycastle/export.dart';
 
 class KeycloakClient {
@@ -74,7 +75,6 @@ class KeycloakClient {
     required String tabId,
     required String key,
     required String deviceId,
-    required DeviceOs deviceOs,
     String? devicePushId,
     required String publicKey,
     required KeyAlgorithm keyAlgorithm,
@@ -85,7 +85,6 @@ class KeycloakClient {
         clientId,
         tabId,
         deviceId,
-        deviceOs,
         devicePushId,
         keyAlgorithm,
         signatureAlgorithm,
@@ -104,7 +103,6 @@ class KeycloakClient {
     String clientId,
     String tabId,
     String deviceId,
-    DeviceOs deviceOs,
     String? devicePushId,
     KeyAlgorithm keyAlgorithm,
     SignatureAlgorithm signatureAlgorithm,
@@ -117,7 +115,7 @@ class KeycloakClient {
         'client_id': clientId,
         'tab_id': tabId,
         'device_id': deviceId,
-        'device_os': deviceOs.name.toString(),
+        'device_os': DeviceUtils.getDeviceOs(),
         'device_push_id': devicePushId,
         'key_algorithm': keyAlgorithm.name.toString(),
         'signature_algorithm': signatureAlgorithm.name.toString(),
