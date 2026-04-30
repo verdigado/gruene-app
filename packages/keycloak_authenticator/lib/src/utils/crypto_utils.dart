@@ -30,8 +30,8 @@ class CryptoUtils {
 
     var keyPair = keyGenerator.generateKeyPair();
     // Cast the keyPair key pair into the RSA key types
-    final myPublic = keyPair.publicKey as RSAPublicKey;
-    final myPrivate = keyPair.privateKey as RSAPrivateKey;
+    final myPublic = keyPair.publicKey;
+    final myPrivate = keyPair.privateKey;
 
     return AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>(myPublic, myPrivate);
   }
@@ -260,8 +260,8 @@ class CryptoUtils {
     var keyPair = generator.generateKeyPair();
 
     // Cast the keyPair key pair into the RSA key types
-    final myPublic = keyPair.publicKey as ECPublicKey;
-    final myPrivate = keyPair.privateKey as ECPrivateKey;
+    final myPublic = keyPair.publicKey;
+    final myPrivate = keyPair.privateKey;
 
     return AsymmetricKeyPair<ECPublicKey, ECPrivateKey>(myPublic, myPrivate);
   }

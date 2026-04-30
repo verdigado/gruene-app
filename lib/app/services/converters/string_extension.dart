@@ -16,6 +16,7 @@ extension StringExtension on String {
   InlineSpan asRichText(BuildContext context) {
     var spans = <TextSpan>[];
 
+    // ignore: avoid_using_regexp
     var regex = RegExp(
       r'(?:http[s]?:\/\/.)[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)',
     );

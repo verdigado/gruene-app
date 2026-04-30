@@ -50,7 +50,7 @@ class PushNotificationListener {
     );
 
     _localNotifications.initialize(
-      const InitializationSettings(
+      settings: const InitializationSettings(
         android: AndroidInitializationSettings('@drawable/ic_stat_notification_icon'),
         iOS: initializationSettingsDarwin,
       ),
@@ -77,10 +77,10 @@ class PushNotificationListener {
 
     if (notification != null) {
       _localNotifications.show(
-        notification.hashCode,
-        notification.title ?? 'Benachrichtigung',
-        notification.body ?? '',
-        NotificationDetails(
+        id: notification.hashCode,
+        title: notification.title ?? 'Benachrichtigung',
+        body: notification.body ?? '',
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             _channel.id,
             _channel.name,

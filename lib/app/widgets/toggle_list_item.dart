@@ -21,7 +21,7 @@ class ToggleListItem extends StatelessWidget {
         trailing: Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: Colors.white,
+          activeThumbColor: Colors.white,
           activeTrackColor: onChanged != null ? theme.colorScheme.primary : ThemeColors.textDisabled,
         ),
       ),
