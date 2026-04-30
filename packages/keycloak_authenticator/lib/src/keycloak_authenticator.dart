@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:keycloak_authenticator/src/authenticator.dart';
 import 'package:keycloak_authenticator/src/dtos/challenge.dart';
-import 'package:keycloak_authenticator/src/enums/enums.dart';
+import 'package:keycloak_authenticator/src/enums/key_algorithm_enum.dart';
+import 'package:keycloak_authenticator/src/enums/signature_algorithm_enum.dart';
 import 'package:keycloak_authenticator/src/keycloak_client.dart';
 import 'package:keycloak_authenticator/src/utils/crypto_utils.dart';
 import 'package:pointycastle/export.dart';

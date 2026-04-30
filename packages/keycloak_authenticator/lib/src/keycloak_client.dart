@@ -3,7 +3,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:keycloak_authenticator/src/dtos/challenge.dart';
-import 'package:keycloak_authenticator/src/enums/enums.dart';
+import 'package:keycloak_authenticator/src/enums/key_algorithm_enum.dart';
+import 'package:keycloak_authenticator/src/enums/signature_algorithm_enum.dart';
 import 'package:keycloak_authenticator/src/exceptions/keycloak_client_exception.dart';
 import 'package:keycloak_authenticator/src/utils/crypto_utils.dart';
 import 'package:keycloak_authenticator/src/utils/device_utils.dart';
