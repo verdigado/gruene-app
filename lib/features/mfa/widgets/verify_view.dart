@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
@@ -18,7 +19,7 @@ class VerifyView extends StatefulWidget {
 }
 
 class _VerifyViewState extends State<VerifyView> {
-  final LocalAuthentication _auth = LocalAuthentication();
+  final LocalAuthentication _localAuthentication = LocalAuthentication();
 
   @override
   void initState() {
@@ -34,22 +35,33 @@ class _VerifyViewState extends State<VerifyView> {
   }
 
   Future<void> onReply(bool granted) async {
-    if (granted) {
-      try {
-        bool authenticated = await _auth.authenticate(
-          localizedReason: t.mfa.verify.authenticateForApproval,
-          persistAcrossBackgrounding: true,
-        );
-        if (!mounted) return;
-        context.read<MfaBloc>().add(SendReply(authenticated));
-      } catch (e) {
-        if (!mounted) return;
-        context.read<MfaBloc>().add(SendReply(false));
-      }
-    } else {
-      if (!mounted) return;
+    if (!granted) {
       context.read<MfaBloc>().add(SendReply(false));
+      return;
     }
+    try {
+      bool authenticated = await _authenticateUser();
+      if (authenticated && mounted) {
+        context.read<MfaBloc>().add(SendReply(true));
+        return;
+      }
+    } on LocalAuthException {
+      // Just show an error in the snackbar
+    }
+    if (mounted) {
+      showSnackBar(context, t.mfa.verify.authenticationFailed);
+    }
+  }
+
+  Future<bool> _authenticateUser() async {
+    if (!await _localAuthentication.isDeviceSupported()) {
+      return true;
+    }
+
+    return await _localAuthentication.authenticate(
+      localizedReason: t.mfa.verify.authenticateForApproval,
+      persistAcrossBackgrounding: true,
+    );
   }
 
   @override
