@@ -151,7 +151,6 @@ class KeycloakClient {
       deviceId,
       {
         'created': (DateTime.now().millisecondsSinceEpoch - 1000).toString(),
-        // 'request-target': 'get_/realms/$realm/challenge-resource/$deviceId',
       },
     );
     final res = await _dio.get<List<Map<String, dynamic>>>(
@@ -196,7 +195,6 @@ class KeycloakClient {
     final signatureHeader = buildSignatureHeader(
       deviceId,
       {
-        // 'created': DateTime.now().millisecondsSinceEpoch.toString(),
         'created': timestamp.toString(),
         'secret': value,
         'granted': granted ? 'true' : 'false',

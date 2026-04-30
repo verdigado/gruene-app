@@ -66,22 +66,27 @@ class Challenge {
     if (targetUrl == null) {
       return null;
     }
+
     final url = Uri.tryParse(targetUrl);
     if (url == null) {
       return null;
     }
+
     final key = url.queryParameters['key'];
     if (key == null) {
       return null;
     }
+
     final jwt = JWT.tryDecode(key);
     if (jwt == null) {
       return null;
     }
+
     final expiresAt = jwt.payload?['exp'] as int?;
     if (expiresAt == null) {
       return null;
     }
+
     return max(0, expiresAt - DateTime.now().millisecondsSinceEpoch ~/ 1000);
   }
 
