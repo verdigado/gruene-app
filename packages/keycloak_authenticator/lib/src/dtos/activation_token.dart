@@ -1,11 +1,11 @@
-class ActivationTokenDto {
+class ActivationToken {
   final String baseUrl;
   final String realm;
   final String key;
   final String tabId;
   final String clientId;
 
-  ActivationTokenDto({
+  ActivationToken({
     required this.baseUrl,
     required this.realm,
     required this.key,
@@ -13,7 +13,7 @@ class ActivationTokenDto {
     required this.clientId,
   });
 
-  factory ActivationTokenDto.fromUrl(String url) {
+  factory ActivationToken.fromUrl(String url) {
     final uri = Uri.parse(url);
 
     final clientId = uri.queryParameters['client_id'];
@@ -40,7 +40,7 @@ class ActivationTokenDto {
       throw const FormatException('missing realm in path');
     }
 
-    return ActivationTokenDto(
+    return ActivationToken(
       baseUrl: '${uri.origin}$basePath',
       realm: realm,
       clientId: clientId,

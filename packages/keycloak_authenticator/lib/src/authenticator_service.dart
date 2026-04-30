@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:keycloak_authenticator/src/authenticator.dart';
 import 'package:keycloak_authenticator/src/authenticator_repository.dart';
-import 'package:keycloak_authenticator/src/dtos/activation_token_dto.dart';
+import 'package:keycloak_authenticator/src/dtos/activation_token.dart';
 import 'package:keycloak_authenticator/src/dtos/authenticator_entry.dart';
 import 'package:keycloak_authenticator/src/enums/enums.dart';
 import 'package:keycloak_authenticator/src/keycloak_authenticator.dart';
@@ -25,7 +25,7 @@ class AuthenticatorService {
     String? label,
     required String? devicePushId,
   }) async {
-    final token = ActivationTokenDto.fromUrl(activationTokenUrl);
+    final token = ActivationToken.fromUrl(activationTokenUrl);
 
     // TODO: check if combination of keycloak instance an realm is already registered
 
