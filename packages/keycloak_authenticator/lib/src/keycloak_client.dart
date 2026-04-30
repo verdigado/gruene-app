@@ -56,7 +56,7 @@ class KeycloakClient {
     Map<String, String> keyValues,
   ) {
     final buffer = StringBuffer();
-    var first = true;
+    bool first = true;
     keyValues.forEach((key, value) {
       if (!first) {
         buffer.write(',');
@@ -154,7 +154,7 @@ class KeycloakClient {
         // 'request-target': 'get_/realms/$realm/challenge-resource/$deviceId',
       },
     );
-    var res = await _dio.get<List<Map<String, dynamic>>>(
+    final res = await _dio.get<List<Map<String, dynamic>>>(
       '/challenges',
       queryParameters: {
         'device_id': deviceId,

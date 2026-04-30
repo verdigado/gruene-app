@@ -17,7 +17,7 @@ class CryptoUtils {
   static AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> generateRsaKeyPair({
     int bitLength = 4096,
   }) {
-    var keyGenerator = RSAKeyGenerator()
+    final keyGenerator = RSAKeyGenerator()
       ..init(
         ParametersWithRandom(
           RSAKeyGeneratorParameters(
@@ -29,7 +29,7 @@ class CryptoUtils {
         ),
       );
 
-    var keyPair = keyGenerator.generateKeyPair();
+    final keyPair = keyGenerator.generateKeyPair();
     // Cast the keyPair key pair into the RSA key types
     final myPublic = keyPair.publicKey;
     final myPrivate = keyPair.privateKey;
@@ -46,7 +46,7 @@ class CryptoUtils {
   ///
   /// Signing the given [data] with the given [privateKey].
   ///
-  /// The default [algorithm] used is **SHA-256/RSA**. All supported algorihms are :
+  /// The default [algorithm] used is **SHA-256/RSA**. All supported algorithms are :
   ///
   /// * MD2/RSA
   /// * MD4/RSA
@@ -65,11 +65,11 @@ class CryptoUtils {
     Uint8List data, {
     String algorithmName = 'SHA-256/RSA',
   }) {
-    var signer = Signer(algorithmName) as RSASigner;
+    final signer = Signer(algorithmName) as RSASigner;
 
     signer.init(true, PrivateKeyParameter<RSAPrivateKey>(privateKey));
 
-    var signature = signer.generateSignature(data);
+    final signature = signer.generateSignature(data);
 
     return signature.bytes;
   }
@@ -78,7 +78,7 @@ class CryptoUtils {
   /// Verifying the given [signedData] with the given [publicKey] and the given [signature].
   /// Will return **true** if the given [signature] matches the [signedData].
   ///
-  /// The default [algorithm] used is **SHA-256/RSA**. All supported algorihms are :
+  /// The default [algorithm] used is **SHA-256/RSA**. All supported algorithms are :
   ///
   /// * MD2/RSA
   /// * MD4/RSA
@@ -112,7 +112,7 @@ class CryptoUtils {
   }
 
   static SecureRandom _getSecureRandom() {
-    var random = Random.secure();
+    final random = Random.secure();
     List<int> seeds = [];
     for (int i = 0; i < 32; i++) {
       seeds.add(random.nextInt(255 + 1));
@@ -122,36 +122,36 @@ class CryptoUtils {
   }
 
   static Uint8List encodeRsaPublicKeyToPkcs8(RSAPublicKey publicKey) {
-    var paramsAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList([0x5, 0x0]));
-    var algorithmSeq = ASN1Sequence()
+    final paramsAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList([0x5, 0x0]));
+    final algorithmSeq = ASN1Sequence()
       ..add(ASN1ObjectIdentifier.fromName('rsaEncryption'))
       ..add(paramsAsn1Obj);
 
-    var publicKeySeq = ASN1Sequence()
+    final publicKeySeq = ASN1Sequence()
       ..add(ASN1Integer(publicKey.modulus))
       ..add(ASN1Integer(publicKey.exponent));
-    var publicKeySeqBitString = ASN1BitString(stringValues: Uint8List.fromList(publicKeySeq.encode()));
+    final publicKeySeqBitString = ASN1BitString(stringValues: Uint8List.fromList(publicKeySeq.encode()));
 
-    var topLevelSeq = ASN1Sequence()
+    final topLevelSeq = ASN1Sequence()
       ..add(algorithmSeq)
       ..add(publicKeySeqBitString);
     return topLevelSeq.encode();
   }
 
   static Uint8List encodeRsaPrivateKeyToPkcs8(RSAPrivateKey privateKey) {
-    var paramsAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList([0x5, 0x0]));
-    var algorithmSeq = ASN1Sequence()
+    final paramsAsn1Obj = ASN1Object.fromBytes(Uint8List.fromList([0x5, 0x0]));
+    final algorithmSeq = ASN1Sequence()
       ..add(ASN1ObjectIdentifier.fromName('rsaEncryption'))
       ..add(paramsAsn1Obj);
 
-    var dP = privateKey.privateExponent! % (privateKey.p! - BigInt.one);
-    var exp1 = ASN1Integer(dP);
-    var dQ = privateKey.privateExponent! % (privateKey.q! - BigInt.one);
-    var exp2 = ASN1Integer(dQ);
-    var iQ = privateKey.q!.modInverse(privateKey.p!);
-    var co = ASN1Integer(iQ);
-    var version = ASN1Integer(BigInt.zero);
-    var privateKeySeq = ASN1Sequence()
+    final dP = privateKey.privateExponent! % (privateKey.p! - BigInt.one);
+    final exp1 = ASN1Integer(dP);
+    final dQ = privateKey.privateExponent! % (privateKey.q! - BigInt.one);
+    final exp2 = ASN1Integer(dQ);
+    final iQ = privateKey.q!.modInverse(privateKey.p!);
+    final co = ASN1Integer(iQ);
+    final version = ASN1Integer(BigInt.zero);
+    final privateKeySeq = ASN1Sequence()
       ..add(version)
       ..add(ASN1Integer(privateKey.n))
       ..add(ASN1Integer(privateKey.publicExponent))
@@ -162,9 +162,9 @@ class CryptoUtils {
       ..add(exp2)
       ..add(co);
 
-    var publicKeySeqOctetString = ASN1OctetString(octets: Uint8List.fromList(privateKeySeq.encode()));
+    final publicKeySeqOctetString = ASN1OctetString(octets: Uint8List.fromList(privateKeySeq.encode()));
 
-    var topLevelSeq = ASN1Sequence()
+    final topLevelSeq = ASN1Sequence()
       ..add(version)
       ..add(algorithmSeq)
       ..add(publicKeySeqOctetString);
@@ -173,25 +173,25 @@ class CryptoUtils {
   }
 
   static RSAPrivateKey decodeRsaPrivateKeyFromPkcs8(Uint8List bytes) {
-    var asn1Parser = ASN1Parser(bytes);
-    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+    ASN1Parser asn1Parser = ASN1Parser(bytes);
+    final topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
     //ASN1Object version = topLevelSeq.elements[0];
     //ASN1Object algorithm = topLevelSeq.elements[1];
-    var privateKey = topLevelSeq.elements![2];
+    final privateKey = topLevelSeq.elements![2];
 
     asn1Parser = ASN1Parser(privateKey.valueBytes);
-    var pkSeq = asn1Parser.nextObject() as ASN1Sequence;
+    final pkSeq = asn1Parser.nextObject() as ASN1Sequence;
 
-    var modulus = pkSeq.elements![1] as ASN1Integer;
+    final modulus = pkSeq.elements![1] as ASN1Integer;
     //ASN1Integer publicExponent = pkSeq.elements[2] as ASN1Integer;
-    var privateExponent = pkSeq.elements![3] as ASN1Integer;
-    var p = pkSeq.elements![4] as ASN1Integer;
-    var q = pkSeq.elements![5] as ASN1Integer;
+    final privateExponent = pkSeq.elements![3] as ASN1Integer;
+    final p = pkSeq.elements![4] as ASN1Integer;
+    final q = pkSeq.elements![5] as ASN1Integer;
     //ASN1Integer exp1 = pkSeq.elements[6] as ASN1Integer;
     //ASN1Integer exp2 = pkSeq.elements[7] as ASN1Integer;
     //ASN1Integer co = pkSeq.elements[8] as ASN1Integer;
 
-    var rsaPrivateKey = RSAPrivateKey(
+    final rsaPrivateKey = RSAPrivateKey(
       modulus.integer!,
       privateExponent.integer!,
       p.integer,
@@ -251,14 +251,14 @@ class CryptoUtils {
   /// * secp521r1
   ///
   static AsymmetricKeyPair<ECPublicKey, ECPrivateKey> generateEcKeyPair({String curve = 'prime256v1'}) {
-    var ecDomainParameters = ECDomainParameters(curve);
-    var keyParams = ECKeyGeneratorParameters(ecDomainParameters);
+    final ecDomainParameters = ECDomainParameters(curve);
+    final keyParams = ECKeyGeneratorParameters(ecDomainParameters);
 
-    var secureRandom = _getSecureRandom();
+    final secureRandom = _getSecureRandom();
 
-    var generator = ECKeyGenerator()..init(ParametersWithRandom(keyParams, secureRandom));
+    final generator = ECKeyGenerator()..init(ParametersWithRandom(keyParams, secureRandom));
 
-    var keyPair = generator.generateKeyPair();
+    final keyPair = generator.generateKeyPair();
 
     // Cast the keyPair key pair into the RSA key types
     final myPublic = keyPair.publicKey;
@@ -274,7 +274,7 @@ class CryptoUtils {
   ///
   /// Signing the given [dataToSign] with the given [privateKey].
   ///
-  /// The default [algorithm] used is **SHA-1/ECDSA**. All supported algorihms are :
+  /// The default [algorithm] used is **SHA-1/ECDSA**. All supported algorithms are :
   ///
   /// * SHA-1/ECDSA
   /// * SHA-224/ECDSA
@@ -288,12 +288,12 @@ class CryptoUtils {
   /// * SHA-512/DET-ECDSA
   ///
   static Uint8List ecSign(ECPrivateKey privateKey, Uint8List dataToSign, {String algorithmName = 'SHA-1/ECDSA'}) {
-    var signer = Signer(algorithmName) as ECDSASigner;
+    final signer = Signer(algorithmName) as ECDSASigner;
 
-    var params = ParametersWithRandom(PrivateKeyParameter<ECPrivateKey>(privateKey), _getSecureRandom());
+    final params = ParametersWithRandom(PrivateKeyParameter<ECPrivateKey>(privateKey), _getSecureRandom());
     signer.init(true, params);
 
-    var sig = signer.generateSignature(dataToSign) as ECSignature;
+    final sig = signer.generateSignature(dataToSign) as ECSignature;
     return _ecSignatureToBase64(sig);
   }
 
@@ -308,7 +308,7 @@ class CryptoUtils {
   /// This is mainly used for passing signature as string via request/response use cases
   ///
   static Uint8List _ecSignatureToBase64(ECSignature signature) {
-    var topLevel = ASN1Sequence()
+    final topLevel = ASN1Sequence()
       ..add(ASN1Integer(signature.r))
       ..add(ASN1Integer(signature.s));
 
@@ -316,12 +316,12 @@ class CryptoUtils {
   }
 
   static ECPublicKey ecPublicKey(String pub, String curveName, {bool compressed = false}) {
-    var pubBytes = CryptoUtils.hexToUint8List(pub);
-    var x = pubBytes.sublist(1, (pubBytes.length / 2).round());
-    var y = pubBytes.sublist(1 + x.length, pubBytes.length);
-    var params = ECDomainParameters(curveName);
-    var bigX = decodeBigIntWithSign(1, x);
-    var bigY = decodeBigIntWithSign(1, y);
+    final pubBytes = CryptoUtils.hexToUint8List(pub);
+    final x = pubBytes.sublist(1, (pubBytes.length / 2).round());
+    final y = pubBytes.sublist(1 + x.length, pubBytes.length);
+    final params = ECDomainParameters(curveName);
+    final bigX = decodeBigIntWithSign(1, x);
+    final bigY = decodeBigIntWithSign(1, y);
     return ECPublicKey(
       ecc_fp.ECPoint(
         params.curve as ecc_fp.ECCurve,
@@ -337,19 +337,19 @@ class CryptoUtils {
     if (hex.length % 2 != 0) {
       throw 'Odd number of hex digits';
     }
-    var length = hex.length ~/ 2;
-    var result = Uint8List(length);
-    for (var i = 0; i < length; ++i) {
-      var x = int.parse(hex.substring(2 * i, 2 * (i + 1)), radix: 16);
+    final length = hex.length ~/ 2;
+    final result = Uint8List(length);
+    for (int i = 0; i < length; ++i) {
+      final x = int.parse(hex.substring(2 * i, 2 * (i + 1)), radix: 16);
       result[i] = x;
     }
     return result;
   }
 
   ///
-  /// Enode the given elliptic curve [publicKey] to PEM format.
+  /// Encode the given elliptic curve [publicKey] to PEM format.
   ///
-  /// This is descripted in <https://tools.ietf.org/html/rfc5915>
+  /// This is described in <https://tools.ietf.org/html/rfc5915>
   ///
   /// ```ASN1
   /// ECPrivateKey ::= SEQUENCE {
@@ -361,22 +361,22 @@ class CryptoUtils {
   ///
   /// ```
   ///
-  /// As descripted in the mentioned RFC, all optional values will always be set.
+  /// As described in the mentioned RFC, all optional values will always be set.
   ///
   static Uint8List encodeEcPrivateKeyToPkcs8(ECPrivateKey ecPrivateKey) {
-    var outer = ASN1Sequence();
+    final outer = ASN1Sequence();
 
-    var version = ASN1Integer(BigInt.from(1));
-    var privateKeyAsBytes = i2osp(ecPrivateKey.d!);
-    var privateKey = ASN1OctetString(octets: privateKeyAsBytes);
-    var choice = ASN1Sequence(tag: 0xA0);
+    final version = ASN1Integer(BigInt.from(1));
+    final privateKeyAsBytes = i2osp(ecPrivateKey.d!);
+    final privateKey = ASN1OctetString(octets: privateKeyAsBytes);
+    final choice = ASN1Sequence(tag: 0xA0);
 
     choice.add(ASN1ObjectIdentifier.fromName(ecPrivateKey.parameters!.domainName));
 
-    var publicKey = ASN1Sequence(tag: 0xA1);
-    var q = ecPrivateKey.parameters!.G * ecPrivateKey.d!;
-    var encodedBytes = q!.getEncoded(false);
-    var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
+    final publicKey = ASN1Sequence(tag: 0xA1);
+    final q = ecPrivateKey.parameters!.G * ecPrivateKey.d!;
+    final encodedBytes = q!.getEncoded(false);
+    final subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
     publicKey.add(subjectPublicKey);
 
     outer.add(version);
@@ -398,38 +398,38 @@ class CryptoUtils {
     bool pkcs8 = false,
     ECDomainParameters? parameters,
   }) {
-    var asn1Parser = ASN1Parser(bytes);
-    var topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
+    ASN1Parser asn1Parser = ASN1Parser(bytes);
+    final topLevelSeq = asn1Parser.nextObject() as ASN1Sequence;
     String curveName;
     Uint8List x;
     if (pkcs8) {
       // Parse the PKCS8 format
-      var innerSeq = topLevelSeq.elements!.elementAt(1) as ASN1Sequence;
-      var b2 = innerSeq.elements!.elementAt(1) as ASN1ObjectIdentifier;
-      var b2Data = b2.objectIdentifierAsString;
-      var b2CurveData = ObjectIdentifiers.getIdentifierByIdentifier(b2Data);
+      final innerSeq = topLevelSeq.elements!.elementAt(1) as ASN1Sequence;
+      final b2 = innerSeq.elements!.elementAt(1) as ASN1ObjectIdentifier;
+      final b2Data = b2.objectIdentifierAsString;
+      final b2CurveData = ObjectIdentifiers.getIdentifierByIdentifier(b2Data);
       if (b2CurveData == null) {
         throw const FormatException('could not extract b2CurveData from encoded EC private key');
       }
       curveName = b2CurveData['readableName'] as String;
 
-      var octetString = topLevelSeq.elements!.elementAt(2) as ASN1OctetString;
+      final octetString = topLevelSeq.elements!.elementAt(2) as ASN1OctetString;
       asn1Parser = ASN1Parser(octetString.valueBytes);
-      var octetStringSeq = asn1Parser.nextObject() as ASN1Sequence;
-      var octetStringKeyData = octetStringSeq.elements!.elementAt(1) as ASN1OctetString;
+      final octetStringSeq = asn1Parser.nextObject() as ASN1Sequence;
+      final octetStringKeyData = octetStringSeq.elements!.elementAt(1) as ASN1OctetString;
 
       x = octetStringKeyData.valueBytes!;
     } else {
       // Parse the SEC1 format
-      var privateKeyAsOctetString = topLevelSeq.elements!.elementAt(1) as ASN1OctetString;
-      var choice = topLevelSeq.elements!.elementAt(2);
-      var s = ASN1Sequence();
-      var parser = ASN1Parser(choice.valueBytes);
+      final privateKeyAsOctetString = topLevelSeq.elements!.elementAt(1) as ASN1OctetString;
+      final choice = topLevelSeq.elements!.elementAt(2);
+      final s = ASN1Sequence();
+      final parser = ASN1Parser(choice.valueBytes);
       while (parser.hasNext()) {
         s.add(parser.nextObject());
       }
-      var curveNameOi = s.elements!.elementAt(0) as ASN1ObjectIdentifier;
-      var data = ObjectIdentifiers.getIdentifierByIdentifier(curveNameOi.objectIdentifierAsString);
+      final curveNameOi = s.elements!.elementAt(0) as ASN1ObjectIdentifier;
+      final data = ObjectIdentifiers.getIdentifierByIdentifier(curveNameOi.objectIdentifierAsString);
       if (data == null) {
         throw const FormatException('could not extract b2CurveData from encoded EC private key');
       }
@@ -448,16 +448,16 @@ class CryptoUtils {
   /// Conversion of integer to bytes according to RFC 3447 at <https://datatracker.ietf.org/doc/html/rfc3447#page-8>
   ///
   static Uint8List i2osp(BigInt number, {int? outLen, Endian endian = Endian.big}) {
-    var size = (number.bitLength + 7) >> 3;
+    final size = (number.bitLength + 7) >> 3;
     if (outLen == null) {
       outLen = size;
     } else if (outLen < size) {
       throw Exception('Number too large');
     }
     final result = Uint8List(outLen);
-    var byteMask = BigInt.from(0xff);
-    var pos = endian == Endian.big ? outLen - 1 : 0;
-    for (var i = 0; i < size; i++) {
+    final byteMask = BigInt.from(0xff);
+    int pos = endian == Endian.big ? outLen - 1 : 0;
+    for (int i = 0; i < size; i++) {
       result[pos] = (number & byteMask).toInt();
       if (endian == Endian.big) {
         pos -= 1;
@@ -473,12 +473,12 @@ class CryptoUtils {
   /// Conversion of bytes to integer according to RFC 3447 at <https://datatracker.ietf.org/doc/html/rfc3447#page-8>
   ///
   static BigInt osp2i(Iterable<int> bytes, {Endian endian = Endian.big}) {
-    var result = BigInt.from(0);
+    BigInt result = BigInt.from(0);
     if (endian == Endian.little) {
       bytes = bytes.toList().reversed;
     }
 
-    for (var byte in bytes) {
+    for (final byte in bytes) {
       result = result << 8;
       result |= BigInt.from(byte);
     }
@@ -487,9 +487,9 @@ class CryptoUtils {
   }
 
   ///
-  /// Enode the given elliptic curve [publicKey] to PEM format.
+  /// Encode the given elliptic curve [publicKey] to PEM format.
   ///
-  /// This is descripted in <https://tools.ietf.org/html/rfc5480>
+  /// This is described in <https://tools.ietf.org/html/rfc5480>
   ///
   /// ```ASN1
   /// SubjectPublicKeyInfo  ::=  SEQUENCE  {
@@ -499,13 +499,13 @@ class CryptoUtils {
   /// ```
   ///
   static Uint8List encodeEcPublicKeyToPkcs8(ECPublicKey publicKey) {
-    var algorithm = ASN1Sequence();
+    final algorithm = ASN1Sequence();
     algorithm.add(ASN1ObjectIdentifier.fromName('ecPublicKey'));
     algorithm.add(ASN1ObjectIdentifier.fromName(publicKey.parameters!.domainName));
-    var encodedBytes = publicKey.Q!.getEncoded(false);
+    final encodedBytes = publicKey.Q!.getEncoded(false);
 
-    var subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
-    var outer = ASN1Sequence()
+    final subjectPublicKey = ASN1BitString(stringValues: encodedBytes);
+    final outer = ASN1Sequence()
       ..add(algorithm)
       ..add(subjectPublicKey);
 

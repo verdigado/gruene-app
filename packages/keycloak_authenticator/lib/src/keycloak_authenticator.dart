@@ -47,7 +47,7 @@ class KeycloakAuthenticator implements Authenticator {
   }
 
   factory KeycloakAuthenticator.fromJson(Map<String, dynamic> json) {
-    var data = _Data.fromJson(json);
+    final data = _Data.fromJson(json);
     return KeycloakAuthenticator._(
       data: data,
       client: KeycloakClient(
@@ -75,7 +75,7 @@ class KeycloakAuthenticator implements Authenticator {
 
   @override
   Future<Challenge?> fetchChallenge() async {
-    var challenges = await _client.getChallenges(_data.id);
+    final challenges = await _client.getChallenges(_data.id);
     return challenges.firstOrNull;
   }
 
@@ -155,7 +155,7 @@ class _Data {
   }
 
   factory _Data.fromJson(Map<String, dynamic> json) {
-    var keyAlgorithm = KeyAlgorithm.values.byName(json['keyAlgorithm'] as String);
+    final keyAlgorithm = KeyAlgorithm.values.byName(json['keyAlgorithm'] as String);
     return _Data(
       id: json['id'] as String,
       label: json['label'] as String?,

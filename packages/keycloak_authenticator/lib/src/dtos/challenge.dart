@@ -6,7 +6,7 @@ class Challenge {
   /// User who is requesting authentication
   final String userName;
 
-  /// User frist name
+  /// User first name
   final String userFirstName;
 
   /// User last name
@@ -66,19 +66,19 @@ class Challenge {
     if (targetUrl == null) {
       return null;
     }
-    var url = Uri.tryParse(targetUrl);
+    final url = Uri.tryParse(targetUrl);
     if (url == null) {
       return null;
     }
-    var key = url.queryParameters['key'];
+    final key = url.queryParameters['key'];
     if (key == null) {
       return null;
     }
-    var jwt = JWT.tryDecode(key);
+    final jwt = JWT.tryDecode(key);
     if (jwt == null) {
       return null;
     }
-    int? expiresAt = jwt.payload?['exp'] as int?;
+    final expiresAt = jwt.payload?['exp'] as int?;
     if (expiresAt == null) {
       return null;
     }

@@ -25,11 +25,11 @@ class AuthenticatorService {
     String? label,
     required String? devicePushId,
   }) async {
-    var token = ActivationTokenDto.fromUrl(activationTokenUrl);
+    final token = ActivationTokenDto.fromUrl(activationTokenUrl);
 
     // TODO: check if combination of keycloak instance an realm is already registered
 
-    var keyAlgorithm = _getKeyAlgorithmForSignatureAlgorithm(signatureAlgorithm);
+    final keyAlgorithm = _getKeyAlgorithmForSignatureAlgorithm(signatureAlgorithm);
 
     AsymmetricKeyPair keyPair;
     String encodedPublicKey;
@@ -45,9 +45,9 @@ class AuthenticatorService {
     }
 
     DeviceOs deviceOs = DeviceUtils.getDeviceOs();
-    var authenticatorId = uuid.v4();
+    final authenticatorId = uuid.v4();
 
-    var client = KeycloakClient(
+    final client = KeycloakClient(
       baseUrl: token.baseUrl,
       signatureAlgorithm: signatureAlgorithm,
       keyAlgorithm: keyAlgorithm,
@@ -66,7 +66,7 @@ class AuthenticatorService {
       devicePushId: devicePushId,
     );
 
-    var authenticator = KeycloakAuthenticator.fromParams(
+    final authenticator = KeycloakAuthenticator.fromParams(
       id: authenticatorId,
       label: label,
       baseUrl: token.baseUrl,
@@ -86,8 +86,8 @@ class AuthenticatorService {
   }
 
   Future<Authenticator?> getFirst() async {
-    var entries = await _repository.getEntries();
-    var firstEntry = entries.firstOrNull;
+    final entries = await _repository.getEntries();
+    final firstEntry = entries.firstOrNull;
     return firstEntry != null ? await _repository.getById(firstEntry.id) : null;
   }
 

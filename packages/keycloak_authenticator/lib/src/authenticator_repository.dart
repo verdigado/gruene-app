@@ -30,7 +30,7 @@ class AuthenticatorRepository {
   }
 
   Future<Authenticator?> getById(String authenticatorId) async {
-    var serialized = await _storage.read(key: _getAuthenticatorStorageKey(authenticatorId));
+    final serialized = await _storage.read(key: _getAuthenticatorStorageKey(authenticatorId));
     if (serialized == null) {
       return null;
     }
@@ -44,7 +44,7 @@ class AuthenticatorRepository {
 
   Future<List<AuthenticatorEntry>> getEntries() async {
     List<AuthenticatorEntry> entries = [];
-    var serialized = await _storage.read(key: 'entries');
+    final serialized = await _storage.read(key: 'entries');
     if (serialized != null) {
       final jsonList = jsonDecode(serialized) as List<Map<String, dynamic>>;
       entries = jsonList.map((json) => AuthenticatorEntry.fromJson(json)).toList();
@@ -57,7 +57,7 @@ class AuthenticatorRepository {
   }
 
   Future<List<AuthenticatorEntry>> _addToEntries(Authenticator authenticator) async {
-    var entries = await getEntries();
+    final entries = await getEntries();
     entries.add(
       AuthenticatorEntry(
         id: authenticator.getId(),
@@ -69,7 +69,7 @@ class AuthenticatorRepository {
   }
 
   Future<List<AuthenticatorEntry>> _deleteFromEntries(Authenticator authenticator) async {
-    var list = await getEntries();
+    final list = await getEntries();
     list.removeWhere((element) => element.id == authenticator.getId());
     await _saveEntries(list);
     return list;
