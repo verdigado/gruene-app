@@ -1,7 +1,7 @@
 library;
 
-export 'src/authenticator_service.dart';
 export 'src/authenticator.dart';
+export 'src/authenticator_service.dart';
 export 'src/dtos/authenticator_info.dart';
 export 'src/dtos/challenge.dart';
 export 'src/exceptions/keycloak_client_exception.dart';

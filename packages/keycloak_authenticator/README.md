@@ -1,39 +1,66 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A flutter package implementing Keycloak multifactor authentication (mfa) with https://github.com/netzbegruenung/keycloak-mfa-plugins/tree/main/app-authenticator.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+This package provides a flutter implementation for keycloak multifactor authentication.
+It supports push notifications for new challenges (e.g. with [firebase](https://pub.dev/packages/firebase_messaging))
+and provides a [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) implementation to persist the setup.
+Supports registering multiple authenticators.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the package to your pubspec.yaml:
+
+``` shell
+fvm flutter pub add flutter_keycloak_authenticator
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+### Setup
 
-```dart
-const like = 'sample';
+``` dart
+// Use the provided adapter for https://pub.dev/packages/flutter_secure_storage or a custom storage implementation
+final storage = FlutterSecureStorageAdapter(FlutterSecureStorage());
+final AuthenticatorService service = AuthenticatorService(storage: storage);
+
+// Setup with https://pub.dev/packages/firebase_messaging to receive push notifications for new challenges
+// Pass null as `devicePushId` to skip the push notification setup
+final devicePushId = await FirebaseMessaging.instance.getToken();
+
+// Get the already registered authenticator or create a new one
+final authenticator = await service.getFirst() ?? await service.create(activationToken, devicePushId: devicePushId);
+
+// Listen to firebase token refreshes
+FirebaseMessaging.instance.onTokenRefresh.listen(
+  (devicePushId) async => await authenticator.updateDevicePushId(devicePushId: devicePushId),
+);
+```
+
+### Fetch a challenge
+
+``` dart
+final challenge = await authenticator.fetchChallenge();
+```
+
+### Reply to a challenge
+
+``` dart
+await authenticator.reply(challenge: challenge, granted: true);
+```
+
+### Update the devicePushId
+
+``` dart
+await authenticator?.updateDevicePushId(devicePushId: devicePushId);
+```
+
+### Unregister an authenticator
+
+``` dart
+await service.delete(authenticator);
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+https://github.com/netzbegruenung/keycloak-mfa-plugins/tree/main/app-authenticator

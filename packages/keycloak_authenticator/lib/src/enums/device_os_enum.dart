@@ -1,4 +1,0 @@
-enum DeviceOs {
-  android,
-  ios,
-}

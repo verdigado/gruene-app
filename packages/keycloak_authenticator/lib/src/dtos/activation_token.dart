@@ -1,11 +1,11 @@
-class ActivationTokenDto {
+class ActivationToken {
   final String baseUrl;
   final String realm;
   final String key;
   final String tabId;
   final String clientId;
 
-  ActivationTokenDto({
+  ActivationToken({
     required this.baseUrl,
     required this.realm,
     required this.key,
@@ -13,35 +13,35 @@ class ActivationTokenDto {
     required this.clientId,
   });
 
-  factory ActivationTokenDto.fromUrl(String url) {
+  factory ActivationToken.fromUrl(String url) {
     final uri = Uri.parse(url);
 
-    var clientId = uri.queryParameters['client_id'];
+    final clientId = uri.queryParameters['client_id'];
     if (clientId == null) {
       throw const FormatException('missing client_id');
     }
 
-    var tabId = uri.queryParameters['tab_id'];
+    final tabId = uri.queryParameters['tab_id'];
     if (tabId == null) {
       throw const FormatException('missing tab_id');
     }
 
-    var key = uri.queryParameters['key'];
+    final key = uri.queryParameters['key'];
     if (key == null) {
       throw const FormatException('missing key');
     }
 
     RegExp exp = RegExp(r'(.*\/realms\/([^\/]+))\/');
     RegExpMatch? match = exp.firstMatch(uri.path);
-    var basePath = match?[1];
-    var realm = match?[2];
+    final basePath = match?[1];
+    final realm = match?[2];
 
     if (realm == null) {
       throw const FormatException('missing realm in path');
     }
-    var baseUrl = "${uri.origin}$basePath";
-    return ActivationTokenDto(
-      baseUrl: baseUrl,
+
+    return ActivationToken(
+      baseUrl: '${uri.origin}$basePath',
       realm: realm,
       clientId: clientId,
       tabId: tabId,

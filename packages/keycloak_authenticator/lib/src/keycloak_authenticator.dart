@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:keycloak_authenticator/src/authenticator.dart';
-import 'package:keycloak_authenticator/src/keycloak_client.dart';
 import 'package:keycloak_authenticator/src/dtos/challenge.dart';
-import 'package:keycloak_authenticator/src/enums/enums.dart';
+import 'package:keycloak_authenticator/src/enums/key_algorithm_enum.dart';
+import 'package:keycloak_authenticator/src/enums/signature_algorithm_enum.dart';
+import 'package:keycloak_authenticator/src/keycloak_client.dart';
 import 'package:keycloak_authenticator/src/utils/crypto_utils.dart';
 import 'package:pointycastle/export.dart';
 
@@ -47,7 +48,7 @@ class KeycloakAuthenticator implements Authenticator {
   }
 
   factory KeycloakAuthenticator.fromJson(Map<String, dynamic> json) {
-    var data = _Data.fromJson(json);
+    final data = _Data.fromJson(json);
     return KeycloakAuthenticator._(
       data: data,
       client: KeycloakClient(
@@ -75,7 +76,7 @@ class KeycloakAuthenticator implements Authenticator {
 
   @override
   Future<Challenge?> fetchChallenge() async {
-    var challenges = await _client.getChallenges(_data.id);
+    final challenges = await _client.getChallenges(_data.id);
     return challenges.firstOrNull;
   }
 
@@ -155,17 +156,17 @@ class _Data {
   }
 
   factory _Data.fromJson(Map<String, dynamic> json) {
-    var keyAlgorithm = KeyAlgorithm.values.byName(json['keyAlgorithm']);
+    final keyAlgorithm = KeyAlgorithm.values.byName(json['keyAlgorithm'] as String);
     return _Data(
-      id: json['id'],
-      label: json['label'],
-      baseUrl: json['baseUrl'],
-      realm: json['realm'],
-      signatureAlgorithm: SignatureAlgorithm.values.byName(json['signatureAlgorithm']),
+      id: json['id'] as String,
+      label: json['label'] as String?,
+      baseUrl: json['baseUrl'] as String,
+      realm: json['realm'] as String,
+      signatureAlgorithm: SignatureAlgorithm.values.byName(json['signatureAlgorithm'] as String),
       keyAlgorithm: keyAlgorithm,
-      privateKey: _decodePrivateKey(keyAlgorithm, json['privateKey']),
+      privateKey: _decodePrivateKey(keyAlgorithm, json['privateKey'] as String),
       registeredAt: DateTime.fromMillisecondsSinceEpoch(
-        json['registeredAt'],
+        json['registeredAt'] as int,
         isUtc: true,
       ),
     );

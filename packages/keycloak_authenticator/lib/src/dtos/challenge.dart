@@ -6,7 +6,7 @@ class Challenge {
   /// User who is requesting authentication
   final String userName;
 
-  /// User frist name
+  /// User first name
   final String userFirstName;
 
   /// User last name
@@ -66,40 +66,46 @@ class Challenge {
     if (targetUrl == null) {
       return null;
     }
-    var url = Uri.tryParse(targetUrl);
+
+    final url = Uri.tryParse(targetUrl);
     if (url == null) {
       return null;
     }
-    var key = url.queryParameters['key'];
+
+    final key = url.queryParameters['key'];
     if (key == null) {
       return null;
     }
-    var jwt = JWT.tryDecode(key);
+
+    final jwt = JWT.tryDecode(key);
     if (jwt == null) {
       return null;
     }
-    int? expiresAt = jwt.payload?['exp'];
+
+    final expiresAt = jwt.payload?['exp'] as int?;
     if (expiresAt == null) {
       return null;
     }
+
     return max(0, expiresAt - DateTime.now().millisecondsSinceEpoch ~/ 1000);
   }
 
   factory Challenge.fromJson(Map<String, dynamic> json) {
     return Challenge(
-        userName: json['userName'],
-        userFirstName: json['userFirstName'],
-        userLastName: json['userLastName'],
-        targetUrl: json['targetUrl'],
-        secret: json['codeChallenge'],
-        updatedTimestamp: json['updatedTimestamp'],
-        ipAddress: json['ipAddress'],
-        device: json['device'],
-        browser: json['browser'],
-        os: json['os'],
-        osVersion: json['osVersion'],
-        expiresIn: _getExpiresInFromUrl(json['targetUrl']),
-        clientName: json['clientName'],
-        loginId: json['loginId']);
+      userName: json['userName'] as String,
+      userFirstName: json['userFirstName'] as String,
+      userLastName: json['userLastName'] as String,
+      targetUrl: json['targetUrl'] as String,
+      secret: json['codeChallenge'] as String,
+      updatedTimestamp: json['updatedTimestamp'] as int,
+      ipAddress: json['ipAddress'] as String,
+      device: json['device'] as String,
+      browser: json['browser'] as String,
+      os: json['os'] as String,
+      osVersion: json['osVersion'] as String,
+      expiresIn: _getExpiresInFromUrl(json['targetUrl'] as String?),
+      clientName: json['clientName'] as String,
+      loginId: json['loginId'] as String?,
+    );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'storage.dart';
+import 'package:keycloak_authenticator/src/storage/storage.dart';
 
 class FlutterSecureStorageAdapter implements Storage {
   final FlutterSecureStorage _storage;
