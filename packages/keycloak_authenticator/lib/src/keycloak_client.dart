@@ -152,7 +152,7 @@ class KeycloakClient {
         'created': (DateTime.now().millisecondsSinceEpoch - 1000).toString(),
       },
     );
-    final res = await _dio.get<List<Map<String, dynamic>>>(
+    final res = await _dio.get<List<dynamic>>(
       '/challenges',
       queryParameters: {
         'device_id': deviceId,
@@ -163,7 +163,7 @@ class KeycloakClient {
         },
       ),
     );
-    return res.data!.map((e) => Challenge.fromJson(e)).toList();
+    return res.data!.map((challenge) => Challenge.fromJson(challenge as Map<String, dynamic>)).toList();
   }
 
   Future<void> replyChallenge({

@@ -46,8 +46,8 @@ class AuthenticatorRepository {
     List<AuthenticatorEntry> entries = [];
     final serialized = await _storage.read(key: 'entries');
     if (serialized != null) {
-      final jsonList = jsonDecode(serialized) as List<Map<String, dynamic>>;
-      entries = jsonList.map((json) => AuthenticatorEntry.fromJson(json)).toList();
+      final jsonList = jsonDecode(serialized) as List<dynamic>;
+      entries = jsonList.map((json) => AuthenticatorEntry.fromJson(json as Map<String, dynamic>)).toList();
     }
     return entries;
   }
