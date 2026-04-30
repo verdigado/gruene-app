@@ -26,9 +26,6 @@ class AuthenticatorService {
     required String? devicePushId,
   }) async {
     final token = ActivationToken.fromUrl(activationTokenUrl);
-
-    // TODO: check if combination of keycloak instance an realm is already registered
-
     final keyAlgorithm = _getKeyAlgorithmForSignatureAlgorithm(signatureAlgorithm);
 
     AsymmetricKeyPair keyPair;
