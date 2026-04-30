@@ -35,8 +35,8 @@ dependencies:
   jwt_decoder: ^2.0.1
   flutter_native_splash: ^2.4.2
   url_launcher: ^6.3.1
-  maplibre_gl: ^0.22.0
-  maplibre_gl_platform_interface: ^0.22.0
+  maplibre_gl: ^0.26.0
+  maplibre_gl_platform_interface: ^0.26.0
 #--------- swagger_dart_code_generator --------------
   chopper: ^8.0.0
   json_annotation: ^4.8.0
