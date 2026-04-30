@@ -1067,7 +1067,7 @@ packages:
       path: "packages/keycloak_authenticator"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.1.0"
   leak_tracker:
     dependency: transitive
     description:
