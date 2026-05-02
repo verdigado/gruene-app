@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
@@ -78,7 +79,7 @@ class EventDetailScreen extends StatelessWidget {
               children: [
                 if (image != null) FullWidthImage(image: image),
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: defaultScreenPadding,
                   child: EventDetail(event: event, recurrence: recurrence, calendar: calendar),
                 ),
               ],

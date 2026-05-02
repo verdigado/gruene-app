@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -43,7 +44,7 @@ class NewsDetailScreen extends StatelessWidget {
                 Stack(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(20),
+                      padding: defaultScreenPadding,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

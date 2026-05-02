@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/membership.dart';
@@ -31,7 +32,7 @@ class OwnProfileScreen extends StatelessWidget {
           DivisionMembership? kvMembership = extractKvMembership(profile.memberships);
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: defaultScreenPadding.copyWith(left: 0, right: 0),
             child: Column(
               spacing: 16,
               children: [

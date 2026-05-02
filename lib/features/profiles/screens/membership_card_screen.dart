@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/membership.dart';
@@ -24,7 +25,7 @@ class MembershipCardScreen extends StatelessWidget {
           DivisionMembership? kvMembership = extractKvMembership(data.memberships);
 
           return Padding(
-            padding: const EdgeInsets.all(16),
+            padding: defaultScreenPadding,
             child: Container(
               padding: const EdgeInsets.fromLTRB(20, 24, 12, 12),
               decoration: BoxDecoration(
