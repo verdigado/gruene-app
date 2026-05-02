@@ -234,7 +234,7 @@ class KeycloakClient {
       },
     );
     await _dio.put<void>(
-      '/$deviceId/credentials',
+      '/app-authenticators/$deviceId/credentials',
       data: {
         'devicePushId': devicePushId,
       },
