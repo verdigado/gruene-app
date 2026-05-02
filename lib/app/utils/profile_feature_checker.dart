@@ -12,6 +12,7 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/features/campaigns/screens/profile/profile_visibility_setting.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:http/http.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ProfileFeatureChecker {
@@ -44,14 +45,18 @@ class ProfileFeatureChecker {
     }
 
     if (!latestProfileCheckSettings!.hasProfilePrivacyCheckCompleted) {
-      var profileService = GetIt.I<GrueneApiProfileService>();
-      var currentProfile = await profileService.getSelf();
-      if (!currentProfile.isVisibleInKV()) {
-        if (!context.mounted) return;
-        _showProfileSettingDialog(context, currentProfile);
+      try {
+        var profileService = GetIt.I<GrueneApiProfileService>();
+        var currentProfile = await profileService.getSelf();
+        if (!currentProfile.isVisibleInKV()) {
+          if (!context.mounted) return;
+          _showProfileSettingDialog(context, currentProfile);
 
-        latestProfileCheckSettings = latestProfileCheckSettings?.copyWith(hasProfilePrivacyCheckCompleted: true);
-        secureStorage.write(key: SecureStorageKeys.profileCheck, value: latestProfileCheckSettings?.toJson());
+          latestProfileCheckSettings = latestProfileCheckSettings?.copyWith(hasProfilePrivacyCheckCompleted: true);
+          secureStorage.write(key: SecureStorageKeys.profileCheck, value: latestProfileCheckSettings?.toJson());
+        }
+      } on ClientException {
+        // Don't crash the app on network errors
       }
     }
   }

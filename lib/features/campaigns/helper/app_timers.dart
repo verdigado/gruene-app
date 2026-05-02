@@ -4,6 +4,7 @@ import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
+import 'package:http/http.dart';
 
 class AppTimers {
   static BackgroundTimer getCampaignActionCacheTimer() {
@@ -34,10 +35,14 @@ class CampaignValueStore extends ChangeNotifier {
   int get openInvitations => _openInvitationCount;
 
   void reloadOpenInvitations() async {
-    var openInvitations = await GetIt.I<GrueneApiTeamsService>().getOpenInvitations();
-    if (openInvitations.length != _openInvitationCount) {
-      _openInvitationCount = openInvitations.length;
-      notifyListeners();
+    try {
+      var openInvitations = await GetIt.I<GrueneApiTeamsService>().getOpenInvitations();
+      if (openInvitations.length != _openInvitationCount) {
+        _openInvitationCount = openInvitations.length;
+        notifyListeners();
+      }
+    } on ClientException {
+      // Don't crash the app on network errors
     }
   }
 }
