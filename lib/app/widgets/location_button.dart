@@ -56,7 +56,9 @@ class _LocationButtonState extends State<LocationButton> {
     final requestedPosition = _requestedPosition;
     return FloatingActionButton.small(
       heroTag: 'location',
-      onPressed: () => _followUserPosition(context),
+      onPressed: () => requestedPosition == null || requestedPosition.position == null
+          ? _determinePosition(context)
+          : widget.bringCameraToUser(requestedPosition),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
         child: LocationIcon(requestedPosition: requestedPosition, followUserLocation: widget.followUserLocation),
@@ -78,15 +80,7 @@ class _LocationButtonState extends State<LocationButton> {
     );
   }
 
-  Future<void> _followUserPosition(BuildContext context) async {
-    final requestedPosition = _requestedPosition;
-    final position = requestedPosition == null || requestedPosition.position == null
-        ? await _determinePosition(context)
-        : requestedPosition;
-    widget.bringCameraToUser(position);
-  }
-
-  Future<RequestedPosition> _determinePosition(BuildContext context) async {
+  Future<void> _determinePosition(BuildContext context) async {
     setState(() => _requestedPosition = null);
     final requestedPosition = await determinePosition(
       context,
@@ -98,6 +92,6 @@ class _LocationButtonState extends State<LocationButton> {
       _showFeatureDisabled(context);
     }
 
-    return requestedPosition;
+    await widget.bringCameraToUser(requestedPosition);
   }
 }
