@@ -69,41 +69,32 @@ class _VerifyViewState extends State<VerifyView> {
     final theme = Theme.of(context);
 
     return BlocBuilder<MfaBloc, MfaState>(
-      builder: (context, state) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: ExpandingScrollView(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 60),
-            Center(child: SizedBox(height: 108, child: SvgPicture.asset('assets/graphics/mfa_verify.svg'))),
-            const SizedBox(height: 16),
-            Text(t.mfa.verify.title, textAlign: TextAlign.center, style: theme.textTheme.displayLarge),
-            const SizedBox(height: 16),
-            Text(t.mfa.verify.description, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
-            const SizedBox(height: 16),
-            LoginAttemptCard(loginAttempt: state.loginAttempt!),
-            const SizedBox(height: 16),
-            Spacer(),
-            FilledButton(
-              onPressed: () => {onReply(true)},
-              style: ButtonStyle(minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56))),
-              child: Text(
-                t.mfa.verify.approve,
-                style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
-              ),
+      builder: (context, state) => ExpandingScrollView(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 16,
+        children: [
+          Center(child: SizedBox(height: 128, child: SvgPicture.asset('assets/graphics/mfa_verify.svg'))),
+          Text(t.mfa.verify.title, textAlign: TextAlign.center, style: theme.textTheme.displayLarge),
+          Text(t.mfa.verify.description, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
+          LoginAttemptCard(loginAttempt: state.loginAttempt!),
+          Spacer(),
+          FilledButton(
+            onPressed: () => onReply(true),
+            style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
+            child: Text(
+              t.mfa.verify.approve,
+              style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
             ),
-            const SizedBox(height: 8),
-            OutlinedButton(
-              onPressed: () => onReply(false),
-              style: ButtonStyle(minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56))),
-              child: Text(
-                t.mfa.verify.deny,
-                style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
-              ),
+          ),
+          OutlinedButton(
+            onPressed: () => onReply(false),
+            style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
+            child: Text(
+              t.mfa.verify.deny,
+              style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
             ),
-            const SizedBox(height: 32),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

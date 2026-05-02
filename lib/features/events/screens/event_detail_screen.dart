@@ -74,6 +74,7 @@ class EventDetailScreen extends StatelessWidget {
         child: Stack(
           children: [
             ExpandingScrollView(
+              padding: const EdgeInsets.all(0),
               children: [
                 if (image != null) FullWidthImage(image: image),
                 Padding(
