@@ -36,7 +36,7 @@ class OwnProfileScreen extends StatelessWidget {
             child: Column(
               spacing: 16,
               children: [
-                ProfileHeader(profile: profile, onProfileUpdated: extra.update),
+                ProfileHeader(profile: profile, update: extra.update),
                 TextListItem(
                   title: t.profiles.myMembershipCard,
                   onPress: () => context.pushNested(Routes.digitalMembershipCard.path),

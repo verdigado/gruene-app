@@ -2,28 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/horizontal_divider.dart';
-import 'package:gruene_app/features/profiles/widgets/profile_image_deleter.dart';
-import 'package:gruene_app/features/profiles/widgets/profile_image_uploader.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_image_delete_button.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_image_edit_button.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileHeader extends StatefulWidget {
   final Profile profile;
-  final ValueChanged<Profile> onProfileUpdated;
+  final void Function(Profile profile) update;
 
-  const ProfileHeader({super.key, required this.profile, required this.onProfileUpdated});
+  const ProfileHeader({super.key, required this.profile, required this.update});
 
   @override
   State<ProfileHeader> createState() => _ProfileHeaderState();
 }
 
 class _ProfileHeaderState extends State<ProfileHeader> {
-  bool _isProcessing = false;
+  bool loading = false;
 
-  void _setProcessing(bool isProcessing) {
-    setState(() {
-      _isProcessing = isProcessing;
-    });
-  }
+  void _setLoading(bool isLoading) => setState(() => loading = isLoading);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +41,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
                 child: imageUrl == null ? Icon(Icons.person, size: 90, color: theme.colorScheme.surface) : null,
               ),
-              if (_isProcessing)
+              if (loading)
                 Container(
                   width: 90,
                   height: 90,
@@ -62,17 +58,9 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ProfileImageUploader(
-              profile: widget.profile,
-              onProfileUpdated: widget.onProfileUpdated,
-              onProcessing: _setProcessing,
-            ),
+            ProfileImageEditButton(profile: widget.profile, update: widget.update, setLoading: _setLoading),
             if (widget.profile.image != null)
-              ProfileImageDeleter(
-                profile: widget.profile,
-                onProfileUpdated: widget.onProfileUpdated,
-                onProcessing: _setProcessing,
-              ),
+              ProfileImageDeleteButton(profile: widget.profile, update: widget.update, setLoading: _setLoading),
           ].withDividers(HorizontalDivider(color: theme.disabledColor)),
         ),
       ],
