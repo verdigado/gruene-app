@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
@@ -55,19 +54,7 @@ class ProfileVisibilityHint extends StatelessWidget {
   Future<void> _showProfileVisibilitySettings(BuildContext context) async {
     if (currentProfile == null) throw ArgumentError('Profile not set');
 
-    var theme = Theme.of(context);
-    var newTeamWidget = ProfileVisibilitySetting(currentProfile: currentProfile!);
-    var newProfile = await showModalBottomSheet<Profile>(
-      context: context,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
-        child: newTeamWidget,
-      ),
-      isScrollControlled: false,
-      isDismissible: true,
-      useRootNavigator: true,
-      backgroundColor: theme.colorScheme.surface,
-    );
+    var newProfile = await showProfileVisibilitySetting(context, currentProfile!);
     if (newProfile != null) {
       reloadProfile(newProfile);
     }
