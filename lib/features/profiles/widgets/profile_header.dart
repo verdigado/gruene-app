@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/horizontal_divider.dart';
@@ -24,6 +25,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final name = '${widget.profile.firstName} ${widget.profile.lastName}';
     final imageUrl = widget.profile.image?.thumbnail.url;
 
     return Column(
@@ -52,7 +54,10 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             ],
           ),
         ),
-        Text('${widget.profile.firstName} ${widget.profile.lastName}', style: theme.textTheme.titleLarge),
+        GestureDetector(
+          onLongPress: () => Clipboard.setData(ClipboardData(text: name)),
+          child: Text(name, style: theme.textTheme.titleLarge),
+        ),
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
