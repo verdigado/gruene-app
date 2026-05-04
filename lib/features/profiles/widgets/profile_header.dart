@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/app/widgets/horizontal_divider.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_image_deleter.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_image_uploader.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -56,17 +58,23 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         SizedBox(height: 8),
         Text('${widget.profile.firstName} ${widget.profile.lastName}', style: theme.textTheme.titleLarge),
         SizedBox(height: 8),
-        ProfileImageUploader(
-          profile: widget.profile,
-          onProfileUpdated: widget.onProfileUpdated,
-          onProcessing: _setProcessing,
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ProfileImageUploader(
+              profile: widget.profile,
+              onProfileUpdated: widget.onProfileUpdated,
+              onProcessing: _setProcessing,
+            ),
+            if (widget.profile.image != null)
+              ProfileImageDeleter(
+                profile: widget.profile,
+                onProfileUpdated: widget.onProfileUpdated,
+                onProcessing: _setProcessing,
+              ),
+          ].withDividers(HorizontalDivider(color: theme.disabledColor)),
         ),
-        if (widget.profile.image != null)
-          ProfileImageDeleter(
-            profile: widget.profile,
-            onProfileUpdated: widget.onProfileUpdated,
-            onProcessing: _setProcessing,
-          ),
       ],
     );
   }
