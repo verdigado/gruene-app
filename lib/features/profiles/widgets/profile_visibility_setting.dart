@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
@@ -8,6 +9,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileVisibilitySetting extends StatefulWidget {
   final Profile currentProfile;
+
   const ProfileVisibilitySetting({super.key, required this.currentProfile});
 
   @override
@@ -112,3 +114,13 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
     );
   }
 }
+
+Future<Profile?> showProfileVisibilitySetting(BuildContext context, Profile currentProfile) async =>
+    await showModalBottomSheet<Profile>(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+        child: ProfileVisibilitySetting(currentProfile: currentProfile),
+      ),
+    );
