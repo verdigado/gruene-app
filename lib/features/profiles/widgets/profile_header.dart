@@ -28,6 +28,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 8,
       children: [
         SizedBox(
           width: 90,
@@ -51,9 +52,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             ],
           ),
         ),
-        SizedBox(height: 8),
         Text('${widget.profile.firstName} ${widget.profile.lastName}', style: theme.textTheme.titleLarge),
-        SizedBox(height: 8),
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
