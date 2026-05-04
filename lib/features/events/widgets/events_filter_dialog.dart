@@ -109,7 +109,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
           children: [
             SectionTitle(title: t.events.attendance),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: EventAttendanceSelection(
                 attendanceStatus: _localSelectedAttendanceStatuses,
                 setAttendanceStatus: (attendanceStatuses) {

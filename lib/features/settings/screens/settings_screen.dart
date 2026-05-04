@@ -22,8 +22,8 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.settings.settings),
       body: ExpandingScrollView(
+        padding: const EdgeInsets.fromLTRB(0, 16, 0, 32),
         children: [
-          const SizedBox(height: 16),
           SectionTitle(title: t.settings.generalSettings),
           TextListItem(
             title: t.settings.pushNotifications.pushNotifications,
@@ -58,7 +58,6 @@ class SettingsScreen extends StatelessWidget {
                 )
               : Container(),
           VersionNumber(),
-          const SizedBox(height: 32),
         ],
       ),
     );

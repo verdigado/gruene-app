@@ -32,29 +32,28 @@ class _TokenInputScreenState extends State<TokenInputScreen> {
     return Scaffold(
       appBar: MainAppBar(title: t.mfa.tokenInput.title),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: ExpandingScrollView(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 32),
-              Text(t.mfa.tokenInput.intro, style: theme.textTheme.titleMedium),
-              const SizedBox(height: 32),
-              Text(t.mfa.tokenInput.token, style: theme.textTheme.bodyMedium),
-              const SizedBox(height: 8),
-              TextField(controller: urlInput),
-              const SizedBox(height: 48),
-              FilledButton(
-                onPressed: () => {onSubmit(context)},
-                style: ButtonStyle(minimumSize: WidgetStateProperty.all<Size>(Size.fromHeight(56))),
-                child: Text(
-                  t.mfa.tokenInput.submit,
-                  style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
-                ),
+        child: ExpandingScrollView(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 32,
+          children: [
+            Text(t.mfa.tokenInput.intro, textAlign: TextAlign.center, style: theme.textTheme.titleMedium),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
+              children: [
+                Text(t.mfa.tokenInput.token, style: theme.textTheme.bodyMedium),
+                TextField(controller: urlInput),
+              ],
+            ),
+            FilledButton(
+              onPressed: () => onSubmit(context),
+              style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
+              child: Text(
+                t.mfa.tokenInput.submit,
+                style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
               ),
-              const SizedBox(height: 32),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

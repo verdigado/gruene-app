@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
@@ -56,7 +57,7 @@ class _EventsScreenState extends State<EventsScreen> {
           Offstage(
             offstage: showMap,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+              padding: defaultScreenPadding.copyWith(bottom: 0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

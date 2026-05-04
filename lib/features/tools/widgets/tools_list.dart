@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/settings/widgets/settings_card.dart';
@@ -15,7 +16,7 @@ class ToolsList extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: defaultScreenPadding,
       children: tools.map((tool) {
         final icon = tool.icon;
         final url = tool.url;

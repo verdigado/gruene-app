@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
@@ -87,7 +88,7 @@ class _NewsScreenState extends State<NewsScreen> {
     );
 
     return Container(
-      padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+      padding: defaultScreenPadding.copyWith(bottom: 0),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
