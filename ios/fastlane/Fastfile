@@ -54,6 +54,7 @@ platform :ios do
 
     build_app(
        workspace: "Runner.xcworkspace",
+       scheme: "Runner",
        output_directory: "#{ENV['HOME']}",
        output_name: "app-release.ipa",
        export_method: "app-store",
