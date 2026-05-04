@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:http/http.dart';
 
 OverlayEntry? _overlay;
 
@@ -40,10 +39,7 @@ Future<T?> tryAndNotify<T>({
     return value;
   } catch (error) {
     if (rootContext.mounted) {
-      showSnackBar(
-        rootContext,
-        errorMessage ?? (error is ClientException ? t.error.offlineError : t.error.unknownError),
-      );
+      showSnackBar(rootContext, getErrorMessage(error, defaultMessage: errorMessage));
     }
   } finally {
     setLoading != null ? setLoading(false) : hideLoadingOverlay();
