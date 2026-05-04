@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/error_message.dart';
+import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class ErrorScreen<T> extends StatelessWidget {
