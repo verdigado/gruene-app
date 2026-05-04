@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/screens/profile/profile_visibility_setting.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
