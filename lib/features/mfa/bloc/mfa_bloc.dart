@@ -25,11 +25,9 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
       _authenticator = await _service.getFirst();
 
       final firebaseToken = await FirebaseMessaging.instance.getToken();
-      await _authenticator?.updateDevicePushId(devicePushId: firebaseToken);
+      await _updateDevicePushId(firebaseToken);
 
-      FirebaseMessaging.instance.onTokenRefresh.listen(
-        (firebaseToken) async => await _authenticator?.updateDevicePushId(devicePushId: firebaseToken),
-      );
+      FirebaseMessaging.instance.onTokenRefresh.listen(_updateDevicePushId);
 
       emit(
         state.copyWith(
@@ -125,5 +123,21 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
   void _onIdleTimeout(IdleTimeout event, Emitter<MfaState> emit) {
     if (state.status != MfaStatus.verify || state.loginAttempt == null || state.isLoading) return;
     emit(state.copyWith(status: MfaStatus.ready, loginAttempt: null));
+  }
+
+  Future<void> _updateDevicePushId(String? devicePushId) async {
+    try {
+      await _authenticator?.updateDevicePushId(devicePushId: devicePushId);
+    } on KeycloakClientException catch (error) {
+      if (error.type == KeycloakExceptionType.notRegistered) {
+        // The authenticator is not registered and will be removed anyway
+        // Therefore, we can just fail silently
+        return;
+      }
+      if (error.type == KeycloakExceptionType.networkError) {
+        return;
+      }
+      rethrow;
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -122,6 +123,10 @@ class AuthRepository {
       return true;
     } catch (e) {
       logger.w('Token refresh failed: $e');
+      if (e is PlatformException && (e.message?.contains('Unable to resolve host') ?? false)) {
+        // Continue without successful token refresh if the app is offline
+        return true;
+      }
     }
     return false;
   }

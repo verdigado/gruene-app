@@ -1,20 +1,37 @@
 import 'package:dio/dio.dart';
 
+enum KeycloakExceptionType {
+  notRegistered,
+  badRequest,
+  networkError,
+  serverError,
+  unknown,
+}
+
 class KeycloakClientException implements Exception {
   String message;
   KeycloakExceptionType type;
-  DioException dioException;
+  Object innerException;
+
   KeycloakClientException(
     this.message, {
-    required this.dioException,
-    this.type = KeycloakExceptionType.badRequest,
+    required this.type,
+    required this.innerException,
   });
 }
 
-enum KeycloakExceptionType {
-  networkError,
-  unknown,
-  notRegistered,
-  serverError,
-  badRequest,
+extension KeycloakClientExceptionExtension on DioException {
+  KeycloakClientException keycloakClientException(String message) {
+    if (type == DioExceptionType.badResponse) {
+      final statusCode = response?.statusCode;
+      final type = switch (statusCode) {
+        null => KeycloakExceptionType.unknown,
+        409 || 412 => KeycloakExceptionType.notRegistered,
+        >= 500 => KeycloakExceptionType.serverError,
+        _ => KeycloakExceptionType.badRequest,
+      };
+      return KeycloakClientException(message, type: type, innerException: this);
+    }
+    return KeycloakClientException(message, type: KeycloakExceptionType.networkError, innerException: this);
+  }
 }
