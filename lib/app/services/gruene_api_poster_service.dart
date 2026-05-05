@@ -19,6 +19,7 @@ class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
 
   Future<PoiDetailModel> createNewPoster(PosterCreateModel newPoster) async {
     final requestParam = CreatePoi(
+      campaignId: newPoster.campaignId,
       coords: newPoster.location.transformToGeoJsonCoords(),
       type: poiType.transformToApiCreatePoiType(),
       address: newPoster.address.transformToPoiAddress(),

@@ -11,11 +11,14 @@ class MapInfo {
   BuildContext context;
   LoadCachedLayerCallback loadCachedLayer;
 
+  String campaignId;
+
   MapInfo({
     required this.mapController,
     required this.minZoom,
     required this.lastInfoSnackbar,
     required this.context,
     required this.loadCachedLayer,
+    required this.campaignId,
   });
 }

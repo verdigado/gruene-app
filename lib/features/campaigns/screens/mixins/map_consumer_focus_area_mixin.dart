@@ -72,7 +72,11 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
     if (mapInfo.mapController.getCurrentZoomLevel() > mapInfo.minZoom) {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
-      final focusAreas = await campaignService.loadFocusAreasInRegion(bbox.southwest, bbox.northeast);
+      final focusAreas = await campaignService.loadFocusAreasInRegion(
+        mapInfo.campaignId,
+        bbox.southwest,
+        bbox.northeast,
+      );
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.focusAreaSourceName,
         focusAreas.transformToFeatureList(),

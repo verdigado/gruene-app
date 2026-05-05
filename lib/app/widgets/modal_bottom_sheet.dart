@@ -38,7 +38,7 @@ class ModalBottomSheet extends StatelessWidget {
                 ],
               ),
             ),
-            DialogCloseButton(),
+            DialogCloseButton(onClose: onClose),
             if (aside != null) aside,
           ],
         ),

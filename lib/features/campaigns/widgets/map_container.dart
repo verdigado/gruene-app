@@ -32,8 +32,10 @@ import 'package:turf/turf.dart' as turf;
 
 typedef OnMapCreatedCallback = void Function(MapController controller);
 typedef AddPOIClickedCallback = void Function(LatLng location);
-typedef LoadVisiblePoisCallBack = void Function(LatLng locationSW, LatLng locationNE, bool loadCached);
-typedef LoadDataLayersCallBack = void Function(LatLng locationSW, LatLng locationNE, bool loadCached);
+typedef LoadVisiblePoisCallBack =
+    void Function(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached);
+typedef LoadDataLayersCallBack =
+    void Function(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached);
 typedef GetMarkerImagesCallback = Map<String, String> Function();
 typedef OnFeatureClickCallback = void Function(dynamic feature);
 typedef GetBasicPoiFromFeatureCallback = Future<BasicPoi> Function(Map<String, dynamic> feature);
@@ -124,12 +126,14 @@ class _MapContainerState extends State<MapContainer>
   @override
   void initState() {
     widget.mapContainerController.addListener(_showItem);
+    appSettings.campaign.activeCampaign.addListener(_changeActiveCampaign);
     super.initState();
   }
 
   @override
   void dispose() {
     widget.mapContainerController.removeListener(_showItem);
+    appSettings.campaign.activeCampaign.removeListener(_changeActiveCampaign);
     super.dispose();
   }
 
@@ -211,14 +215,26 @@ class _MapContainerState extends State<MapContainer>
 
     _showAddMarker = currentZoomLevel > minimumMarkerZoomLevel;
 
-    final loadVisiblePois = widget.loadVisiblePois;
-    if (loadVisiblePois != null) {
-      loadVisiblePois(visRegion.southwest, visRegion.northeast, init);
-    }
+    if (appSettings.campaign.activeCampaign.recentSelectedCampaignId != null) {
+      final loadVisiblePois = widget.loadVisiblePois;
+      if (loadVisiblePois != null) {
+        loadVisiblePois(
+          appSettings.campaign.activeCampaign.recentSelectedCampaignId!,
+          visRegion.southwest,
+          visRegion.northeast,
+          init,
+        );
+      }
 
-    final loadDataLayers = widget.loadDataLayers;
-    if (loadDataLayers != null) {
-      loadDataLayers(visRegion.southwest, visRegion.northeast, init);
+      final loadDataLayers = widget.loadDataLayers;
+      if (loadDataLayers != null) {
+        loadDataLayers(
+          appSettings.campaign.activeCampaign.recentSelectedCampaignId!,
+          visRegion.southwest,
+          visRegion.northeast,
+          init,
+        );
+      }
     }
 
     final showInfo = widget.showMapInfoAfterCameraMove;
@@ -937,6 +953,11 @@ class _MapContainerState extends State<MapContainer>
     } else if (widget.mapContainerController.area != null) {
       _onActionAreaClick(widget.mapContainerController.area!.asActionAreaDetail().transformToFeatureItem().toJson());
     }
+  }
+
+  void _changeActiveCampaign() {
+    resetMarkerItems();
+    campaignActionCache.flushCache();
   }
 }
 

@@ -121,8 +121,8 @@ class _EventsMapState extends State<EventsMap> {
   Widget build(BuildContext context) {
     final appSettings = GetIt.I<AppSettings>();
     final cameraPosition = CameraPosition(
-      target: appSettings.events?.lastPosition ?? germanyCenter,
-      zoom: appSettings.events?.lastZoomLevel ?? germanyZoom,
+      target: appSettings.recentEventMapSetting?.lastPosition ?? germanyCenter,
+      zoom: appSettings.recentEventMapSetting?.lastZoomLevel ?? germanyZoom,
     );
 
     return BlocListener<EventsBloc, EventsState>(
@@ -142,7 +142,7 @@ class _EventsMapState extends State<EventsMap> {
             myLocationTrackingMode: followUserLocation ? MyLocationTrackingMode.tracking : MyLocationTrackingMode.none,
             onCameraTrackingDismissed: () => setState(() => followUserLocation = false),
             onCameraIdle: () {
-              appSettings.events = (
+              appSettings.recentEventMapSetting = (
                 lastPosition: mapController!.cameraPosition!.target,
                 lastZoomLevel: mapController!.cameraPosition!.zoom,
               );

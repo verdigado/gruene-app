@@ -13,6 +13,7 @@ class GrueneApiFlyerService extends GrueneApiCampaignsPoiBaseService {
   Future<PoiDetailModel> createNewFlyer(FlyerCreateModel newFlyer) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisPost(
       body: CreatePoi(
+        campaignId: newFlyer.campaignId,
         coords: newFlyer.location.transformToGeoJsonCoords(),
         type: poiType.transformToApiCreatePoiType(),
         address: newFlyer.address.transformToPoiAddress(),

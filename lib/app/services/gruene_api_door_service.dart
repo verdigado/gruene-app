@@ -13,6 +13,7 @@ class GrueneApiDoorService extends GrueneApiCampaignsPoiBaseService {
   Future<PoiDetailModel> createNewDoor(DoorCreateModel newDoor) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisPost(
       body: CreatePoi(
+        campaignId: newDoor.campaignId,
         coords: newDoor.location.transformToGeoJsonCoords(),
         type: poiType.transformToApiCreatePoiType(),
         address: newDoor.address.transformToPoiAddress(),

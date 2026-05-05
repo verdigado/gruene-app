@@ -12,6 +12,7 @@ import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
@@ -68,6 +69,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   late MapScreenController mapScreenController;
   final FilterChipController filterController = FilterChipController();
   final MapContainerController mapContainerController = MapContainerController();
+  final appSettings = GetIt.I<AppSettings>();
 
   MapConsumer(this.poiType) {
     mapScreenController = GetIt.I<MapScreenController>(instanceName: poiType.toString());
@@ -156,10 +158,10 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     await mapController.setLayerSourceWithFeatureList(layerSourceName, layerItems);
   }
 
-  Future<void> loadVisiblePois(LatLng locationSW, LatLng locationNE, bool loadCached) async {
+  Future<void> loadVisiblePois(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached) async {
     if (loadCached) _loadCachedPois();
     if (mapController.getCurrentZoomLevel() > mapController.minimumMarkerZoomLevel) {
-      final markerItems = await campaignService.loadPoisInRegion(locationSW, locationNE);
+      final markerItems = await campaignService.loadPoisInRegion(campaignId, locationSW, locationNE);
       mapController.setPoiMarkerSource(markerItems.transformToFeatureList());
     }
   }
@@ -240,7 +242,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     // top layer
   }
 
-  void loadDataLayers(LatLng locationSW, LatLng locationNE, bool loadCached) async {
+  void loadDataLayers(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached) async {
     if (focusAreasVisible) {
       loadFocusAreaLayer(getMapInfo(MapInfoType.focusArea));
     }
@@ -425,6 +427,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       lastInfoSnackbar: _lastInfoSnackBar,
       context: context,
       loadCachedLayer: _loadCachedLayer,
+      campaignId: appSettings.campaign.activeCampaign.recentSelectedCampaignId ?? '-1',
     );
   }
 

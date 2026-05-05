@@ -70,7 +70,11 @@ mixin MapConsumerPollingStationMixin {
     if (mapInfo.mapController.getCurrentZoomLevel() > mapInfo.minZoom) {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
-      final pollingStations = await campaignService.loadPollingStationsInRegion(bbox.southwest, bbox.northeast);
+      final pollingStations = await campaignService.loadPollingStationsInRegion(
+        mapInfo.campaignId,
+        bbox.southwest,
+        bbox.northeast,
+      );
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.pollingStationSourceName,
         pollingStations.transformToFeatureList(),

@@ -4,12 +4,16 @@ import 'package:maplibre_gl_platform_interface/maplibre_gl_platform_interface.da
 
 class AppSettings {
   var campaign = CampaignSessionSettings();
-  ({LatLng lastPosition, double lastZoomLevel})? events;
+  ({LatLng lastPosition, double lastZoomLevel})? recentEventMapSetting;
 
   static void register() {
     if (GetIt.I.isRegistered<AppSettings>()) {
       GetIt.I.unregister<AppSettings>(disposingFunction: (appSetting) {});
     }
-    GetIt.I.registerSingleton<AppSettings>(AppSettings());
+    GetIt.I.registerSingletonAsync<AppSettings>(() async {
+      var settings = AppSettings();
+      await settings.campaign.init();
+      return settings;
+    });
   }
 }

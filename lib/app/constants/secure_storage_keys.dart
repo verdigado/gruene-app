@@ -11,6 +11,8 @@ class SecureStorageKeys {
   static const String newsDivisionFilters = 'news.division_filters';
   // events
   static const String eventsCalendarFilters = 'events.calendar_filters';
+  // campaigns
+  static const String activeCampaigns = 'campaigns.active';
 
   // profile
   static const String profileCheck = 'profile.check';
