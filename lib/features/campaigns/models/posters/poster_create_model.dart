@@ -15,7 +15,9 @@ class PosterCreateModel {
 
   final String? imageFileLocation;
 
-  PosterCreateModel({required this.address, this.imageFileLocation, required this.location});
+  final String campaignId;
+
+  PosterCreateModel({required this.address, this.imageFileLocation, required this.location, required this.campaignId});
 
   factory PosterCreateModel.fromJson(Map<String, dynamic> json) => _$PosterCreateModelFromJson(json);
 

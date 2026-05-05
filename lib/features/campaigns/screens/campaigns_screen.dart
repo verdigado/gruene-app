@@ -4,6 +4,7 @@ import 'package:gruene_app/app/enums/badge_source.dart';
 import 'package:gruene_app/app/screens/router_tab_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/tab_bar.dart';
+import 'package:gruene_app/features/campaigns/screens/campaign_select_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/refresh_button.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
@@ -36,12 +37,5 @@ class CampaignsScreen extends StatelessWidget {
       navigationShell: navigationShell,
       children: children,
     );
-  }
-}
-
-class CampaignSelectButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(icon: const Icon(Icons.how_to_vote_outlined), onPressed: () => context.push('/campaigns/select'));
   }
 }

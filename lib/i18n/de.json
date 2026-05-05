@@ -121,6 +121,11 @@
       "experience_areas": "Erfahrungsgebiete",
       "action_areas": "Einsatzgebiete"
     },
+    "select":{
+      "title": "Kampagne auswählen",
+      "hint": "In welcher Kampagne bist du gerade aktiv? Du kannst die Kampagne jederzeit in deinen Einstellungen ändern.",
+      "electionDate": "Wahltermin"
+    },
     "infoToast": {
       "focusAreas_activated": "Fokusgebiete aktiviert",
       "focusAreas_deactivated": "Fokusgebiete deaktiviert",

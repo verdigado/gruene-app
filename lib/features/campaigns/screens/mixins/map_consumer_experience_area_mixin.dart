@@ -69,7 +69,11 @@ mixin MapConsumerExperienceAreaMixin {
     if (mapInfo.mapController.getCurrentZoomLevel() > mapInfo.minZoom) {
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
-      final experienceAreas = await campaignService.loadExperienceAreasInRegion(bbox.southwest, bbox.northeast);
+      final experienceAreas = await campaignService.loadExperienceAreasInRegion(
+        mapInfo.campaignId,
+        bbox.southwest,
+        bbox.northeast,
+      );
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.experienceAreaSourceName,
         experienceAreas.transformToFeatureList(),

@@ -14,7 +14,9 @@ class FlyerCreateModel {
 
   final int flyerCount;
 
-  FlyerCreateModel({required this.location, required this.address, required this.flyerCount});
+  final String campaignId;
+
+  FlyerCreateModel({required this.location, required this.address, required this.flyerCount, required this.campaignId});
 
   factory FlyerCreateModel.fromJson(Map<String, dynamic> json) => _$FlyerCreateModelFromJson(json);
 
