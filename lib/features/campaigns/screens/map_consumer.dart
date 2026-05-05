@@ -13,6 +13,7 @@ import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
@@ -427,7 +428,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       lastInfoSnackbar: _lastInfoSnackBar,
       context: context,
       loadCachedLayer: _loadCachedLayer,
-      campaignId: appSettings.campaign.activeCampaign.recentSelectedCampaignId ?? '-1',
+      campaignId: getCurrentCampaignId() ?? '-1',
     );
   }
 

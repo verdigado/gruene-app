@@ -11,6 +11,7 @@ import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/widgets/map_attribution.dart';
@@ -215,25 +216,16 @@ class _MapContainerState extends State<MapContainer>
 
     _showAddMarker = currentZoomLevel > minimumMarkerZoomLevel;
 
-    if (appSettings.campaign.activeCampaign.recentSelectedCampaignId != null) {
+    var currentCampaignId = getCurrentCampaignId();
+    if (currentCampaignId != null) {
       final loadVisiblePois = widget.loadVisiblePois;
       if (loadVisiblePois != null) {
-        loadVisiblePois(
-          appSettings.campaign.activeCampaign.recentSelectedCampaignId!,
-          visRegion.southwest,
-          visRegion.northeast,
-          init,
-        );
+        loadVisiblePois(currentCampaignId, visRegion.southwest, visRegion.northeast, init);
       }
 
       final loadDataLayers = widget.loadDataLayers;
       if (loadDataLayers != null) {
-        loadDataLayers(
-          appSettings.campaign.activeCampaign.recentSelectedCampaignId!,
-          visRegion.southwest,
-          visRegion.northeast,
-          init,
-        );
+        loadDataLayers(currentCampaignId, visRegion.southwest, visRegion.northeast, init);
       }
     }
 

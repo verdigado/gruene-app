@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
-import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/widgets/create_address_widget.dart';
@@ -128,7 +127,6 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
     if (!localContext.mounted) return;
     final validationResult = validateDoors(openedDoorTextController.text, closedDoorTextController.text, context);
     if (validationResult == null) return;
-    var appSettings = GetIt.I<AppSettings>();
     Navigator.maybePop(
       context,
       DoorCreateModel(
@@ -136,7 +134,7 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
         address: getAddress(),
         openedDoors: validationResult.openedDoors,
         closedDoors: validationResult.closedDoors,
-        campaignId: appSettings.campaign.activeCampaign.recentSelectedCampaignId!,
+        campaignId: getCurrentCampaignId()!,
       ),
     );
   }

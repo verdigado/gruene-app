@@ -5,6 +5,7 @@ import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -44,8 +45,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
     var divisionService = GetIt.I<GrueneApiDivisionsService>();
     var activeCampaignDivisions = await divisionService.searchDivision(divisionKeys: divisionKeys);
 
-    var appSettings = GetIt.I<AppSettings>();
-    var selectedCampaignId = appSettings.campaign.activeCampaign.recentSelectedCampaignId;
+    var selectedCampaignId = getCurrentCampaignId();
 
     setState(() {
       _loading = false;
