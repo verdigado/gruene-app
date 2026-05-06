@@ -9,8 +9,6 @@ import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -49,7 +47,7 @@ class ProfileFeatureChecker {
         var currentProfile = await profileService.getSelf();
         if (!currentProfile.isVisibleInKV()) {
           if (!context.mounted) return;
-          _showProfileSettingDialog(context, currentProfile);
+          showProfileVisibilitySetting(context, currentProfile, explicitTeamHint: true);
 
           latestProfileCheckSettings = latestProfileCheckSettings?.copyWith(hasProfilePrivacyCheckCompleted: true);
           secureStorage.write(key: SecureStorageKeys.profileCheck, value: latestProfileCheckSettings?.toJson());
@@ -65,35 +63,6 @@ class ProfileFeatureChecker {
     String? userId;
     if (jwtToken.containsKey('uidnumber')) userId = jwtToken['uidnumber'].toString();
     return userId;
-  }
-
-  void _showProfileSettingDialog(BuildContext context, Profile currentProfile) async {
-    final theme = Theme.of(context);
-    await showDialog<bool>(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(
-            t.campaigns.team.profile_visibility_hint,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                showProfileVisibilitySetting(context, currentProfile);
-              },
-              child: Text(
-                t.common.actions.consent,
-                style: theme.textTheme.labelLarge?.apply(color: theme.colorScheme.secondary),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
 

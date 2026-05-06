@@ -1,126 +1,125 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/constants/design_constants.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/loading_overlay.dart';
+import 'package:gruene_app/app/widgets/option_slider.dart';
+import 'package:gruene_app/app/widgets/stable_height_text.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
+import 'package:gruene_app/features/profiles/utils/profile_visibility.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileVisibilitySetting extends StatefulWidget {
-  final Profile currentProfile;
+  final Profile profile;
+  final bool explicitTeamHint;
 
-  const ProfileVisibilitySetting({super.key, required this.currentProfile});
+  const ProfileVisibilitySetting({super.key, required this.profile, this.explicitTeamHint = false});
 
   @override
   State<ProfileVisibilitySetting> createState() => _ProfileVisibilitySettingState();
 }
 
 class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
-  late ProfilePrivacySettingsOverall _currentPrivacySetting;
+  late ProfilePrivacySettingsOverall _selectedVisibility;
 
   @override
   void initState() {
-    _currentPrivacySetting = widget.currentProfile.privacy.overall;
     super.initState();
+    _selectedVisibility = widget.profile.privacy.overall;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    return SizedBox(
-      height: 422,
-      child: Container(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            CloseSaveWidget(onClose: _onClose, onSave: _onSave),
-            SizedBox(height: 8),
-            Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(t.profile.visibility_setting.title, style: theme.textTheme.titleMedium),
-                ),
-                SizedBox(height: 16),
+  Future<void> _updateProfile() async {
+    if (widget.profile.privacy.overall == _selectedVisibility) {
+      Navigator.pop(context);
+      return;
+    }
 
-                ..._getVisibilityOptions(),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    final profileService = GetIt.I<GrueneApiProfileService>();
+    final newProfile = widget.profile.copyWith(privacy: widget.profile.privacy.copyWith(overall: _selectedVisibility));
 
-  void _onClose() {
-    Navigator.pop(context);
-  }
-
-  Future<void> _onSave() async {
-    var profileService = GetIt.I<GrueneApiProfileService>();
-    var newProfile = await profileService.updateProfile(
-      widget.currentProfile.copyWith(privacy: widget.currentProfile.privacy.copyWith(overall: _currentPrivacySetting)),
+    await tryAndNotify(
+      function: () => profileService.updateProfile(newProfile),
+      context: context,
+      successMessage: t.profiles.visibility.updated,
     );
     if (!mounted) return;
     Navigator.pop(context, newProfile);
   }
 
-  List<Widget> _getVisibilityOptions() {
-    return [
-      _getSingleVisibilityOption(
-        value: ProfilePrivacySettingsOverall.public,
-        title: t.profile.visibility_setting.visibility_public,
-      ),
-      _getSingleVisibilityOption(
-        value: ProfilePrivacySettingsOverall.bvWide,
-        title: t.profile.visibility_setting.visibility_BV,
-      ),
-      _getSingleVisibilityOption(
-        value: ProfilePrivacySettingsOverall.lvWide,
-        title: t.profile.visibility_setting.visibility_LV,
-      ),
-      _getSingleVisibilityOption(
-        value: ProfilePrivacySettingsOverall.kvWide,
-        title: t.profile.visibility_setting.visibility_KV,
-      ),
-      _getSingleVisibilityOption(
-        value: ProfilePrivacySettingsOverall.ovWide,
-        title: t.profile.visibility_setting.visibility_OV,
-      ),
-      _getSingleVisibilityOption(
-        value: ProfilePrivacySettingsOverall.private,
-        title: t.profile.visibility_setting.visibility_private,
-      ),
-    ];
-  }
+  @override
+  Widget build(BuildContext context) {
+    final memberships = widget.profile.memberships!;
+    // TODO: Adjust to OV if teams are available for OVs and user is in an OV
+    // final minVisibility = memberships.profileVisibilityOptions()[2];
+    final minVisibility = ProfilePrivacySettingsOverall.kvWide;
+    final minVisibilityLabel = visibilityLabel(minVisibility);
+    final minVisibilityShort = visibilityShortLabel(minVisibility);
+    final theme = Theme.of(context);
 
-  Widget _getSingleVisibilityOption({required ProfilePrivacySettingsOverall value, required String title}) {
-    var theme = Theme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      spacing: 8,
       children: [
-        Text(title, style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark)),
-        Switch(
-          value: _currentPrivacySetting == value,
-          onChanged: (flag) {
-            var newValue = flag ? value : ProfilePrivacySettingsOverall.private;
-            setState(() {
-              _currentPrivacySetting = newValue;
-            });
-          },
+        CloseSaveWidget(onClose: () => Navigator.pop(context), onSave: _updateProfile),
+        Row(
+          spacing: 8,
+          children: [
+            Icon(Icons.visibility),
+            Text(t.profiles.visibility.visibility, style: Theme.of(context).textTheme.titleMedium),
+          ],
+        ),
+        if (widget.explicitTeamHint) ...[
+          Text(
+            t.profiles.visibility.teamVisibilityHint(
+              minVisibility: minVisibilityLabel,
+              minVisibilityShort: minVisibilityShort,
+            ),
+          ),
+          SizedBox(height: 8),
+        ],
+        Text(
+          visibilityLabel(_selectedVisibility),
+          style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
+        ),
+        StableHeightText(
+          text: visibilityHint(_selectedVisibility),
+          longestText: visibilityHint(ProfilePrivacySettingsOverall.private),
+          style: theme.textTheme.bodyMedium!,
+        ),
+        OptionSlider(
+          values: memberships.profileVisibilityOptions(),
+          value: _selectedVisibility,
+          getLabel: (value) => visibilityShortLabel(value),
+          update: (visibility) => setState(() => _selectedVisibility = visibility),
         ),
       ],
     );
   }
 }
 
-Future<Profile?> showProfileVisibilitySetting(BuildContext context, Profile currentProfile) async =>
-    await showModalBottomSheet<Profile>(
-      context: context,
-      useRootNavigator: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
-        child: ProfileVisibilitySetting(currentProfile: currentProfile),
-      ),
-    );
+Future<Profile?> showProfileVisibilitySetting(
+  BuildContext context,
+  Profile profile, {
+  bool explicitTeamHint = false,
+}) async {
+  if (profile.memberships == null) return null;
+
+  return await showModalBottomSheet<Profile>(
+    context: context,
+    useRootNavigator: true,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) => SafeArea(
+          child: Padding(
+            padding: defaultScreenPadding.copyWith(bottom: 48),
+            child: ProfileVisibilitySetting(profile: profile, explicitTeamHint: explicitTeamHint),
+          ),
+        ),
+      );
+    },
+  );
+}

@@ -81,18 +81,6 @@
     "moreCategories": "Weitere Schlagworte",
     "publicationDate": "Veröffentlichungsdatum"
   },
-  "profile": {
-    "visibility_setting": {
-      "visibility_setting_action": "Sichtbarkeitseinstellungen",
-      "title": "Mein Profil ist einsehbar für Mitglieder*innen ...",
-      "visibility_public": "... für alle (ganze Partei)",
-      "visibility_BV": "... im Bundesverband",
-      "visibility_LV": "... im Landesverband",
-      "visibility_KV": "... im Kreisverband",
-      "visibility_OV": "... im Ortsverband",
-      "visibility_private": "... keine (privat)"
-    }
-  },
   "campaigns": {
     "debug": {
       "confirm_storing_cache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
@@ -305,7 +293,6 @@
       "appoint_as_team_lead": "Zum Team-Lead ernennen",
       "cancel_invitation": "Einladung zurückziehen",
       "add_team_member": "Teammitglied hinzufügen",
-      "profile_visibility_hint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Der Team Modus erfordert, dass dein Profil mindestens im Kreisverband [KV] auffindbar sein muss, damit du zu Teams hinzugefügt werden kannst.\nBitte setze eine entsprechende Sichtbarkeitseinstellung.",
       "no_team_yet_hint": "Du bist momentan in keinem Team Mitglied. Bitte eine*n Lokalkoordinator*in deiner Gliederung, dich in ein Team einzuladen.",
       "no_team_yet_hint_privileged": "Du bist momentan in keinem Team Mitglied. Du kannst von Lokalkoordinator*innen in ein Team eingeladen werden oder selbst ein neues Team anlegen.",
       "invitations": {
@@ -384,6 +371,17 @@
         "title": "Profilbild löschen",
         "text": "Soll Dein Profilbild wirklich gelöscht werden?"
       }
+    },
+    "visibility": {
+      "visibility": "Profil-Sichtbarkeit",
+      "private": "Privat",
+      "privateHint": "Dein Profil ist nur für Dich selbst sichtbar.\nAchtung: Mit einem privaten Profil kannst Du nicht zu Wahlkampf-Teams hinzugefügt werden.",
+      "ovHint": "Dein Profil ist sichtbar für Mitglieder in Deinem Ortsverband.",
+      "divisionHint": "Dein Profil ist sichtbar für Mitglieder in Deinem ${division} und allen untergeordneten Gliederungen.",
+      "public": "Alle",
+      "publicHint": "Dein Profil ist sichtbar für alle Mitglieder der Partei sowie der Grünen Jugend (GJ) und der Kommunalpolitischen Vereinigungen (KPV).",
+      "updated": "Profil-Sichtbarkeit wurde gespeichert",
+      "teamVisibilityHint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Damit Du zu Wahlkampf-Teams hinzugefügt werden kannst, muss Dein Profil mindestens die Sichtbarkeit \"${minVisibility} (${minVisibilityShort})\" haben. Bitte setze eine entsprechende Sichtbarkeitseinstellung."
     },
     "email": "E-Mail Adresse",
     "phoneNumber": "Telefonnummer",
