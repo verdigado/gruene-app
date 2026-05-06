@@ -7,10 +7,11 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
-import 'package:gruene_app/features/profiles/helper/social_media_type_translation.dart';
+import 'package:gruene_app/features/profiles/utils/social_media_type_translation.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card_list_item.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -37,9 +38,17 @@ class OwnProfileScreen extends StatelessWidget {
               spacing: 16,
               children: [
                 ProfileHeader(profile: profile, update: extra.update),
-                TextListItem(
-                  title: t.profiles.myMembershipCard,
-                  onPress: () => context.pushNested(Routes.digitalMembershipCard.path),
+                Column(
+                  children: [
+                    TextListItem(
+                      title: t.profiles.myMembershipCard,
+                      onPress: () => context.pushNested(Routes.digitalMembershipCard.path),
+                    ),
+                    TextListItem(
+                      title: t.profiles.visibility.visibility,
+                      onPress: () => showProfileVisibilitySetting(context, profile),
+                    ),
+                  ],
                 ),
                 ProfileCard(
                   children: [

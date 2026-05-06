@@ -5,13 +5,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
-import 'package:gruene_app/features/campaigns/screens/profile/profile_visibility_setting.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:http/http.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -50,7 +47,7 @@ class ProfileFeatureChecker {
         var currentProfile = await profileService.getSelf();
         if (!currentProfile.isVisibleInKV()) {
           if (!context.mounted) return;
-          _showProfileSettingDialog(context, currentProfile);
+          showProfileVisibilitySetting(context, currentProfile, explicitTeamHint: true);
 
           latestProfileCheckSettings = latestProfileCheckSettings?.copyWith(hasProfilePrivacyCheckCompleted: true);
           secureStorage.write(key: SecureStorageKeys.profileCheck, value: latestProfileCheckSettings?.toJson());
@@ -66,51 +63,6 @@ class ProfileFeatureChecker {
     String? userId;
     if (jwtToken.containsKey('uidnumber')) userId = jwtToken['uidnumber'].toString();
     return userId;
-  }
-
-  void _showProfileSettingDialog(BuildContext context, Profile currentProfile) async {
-    final theme = Theme.of(context);
-    await showDialog<bool>(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(
-            t.campaigns.team.profile_visibility_hint,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _showProfileVisibilitySettings(context, currentProfile);
-              },
-              child: Text(
-                t.common.actions.consent,
-                style: theme.textTheme.labelLarge?.apply(color: theme.colorScheme.secondary),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showProfileVisibilitySettings(BuildContext context, Profile currentProfile) async {
-    var theme = Theme.of(context);
-    var newTeamWidget = ProfileVisibilitySetting(currentProfile: currentProfile);
-    await showModalBottomSheet<Profile>(
-      context: context,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
-        child: newTeamWidget,
-      ),
-      isScrollControlled: false,
-      isDismissible: true,
-      backgroundColor: theme.colorScheme.surface,
-      useRootNavigator: true,
-    );
   }
 }
 
