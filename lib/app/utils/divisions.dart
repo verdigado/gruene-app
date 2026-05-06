@@ -14,6 +14,15 @@ extension MembershipsExtension on List<DivisionMembership> {
   Division? gjDivision() => divisions().firstWhereOrNull((division) => division.hierarchy == 'GJ');
 
   Division? kpvDivision() => divisions().firstWhereOrNull((division) => division.hierarchy == 'KPV');
+
+  List<ProfilePrivacySettingsOverall> profileVisibilityOptions() => [
+    ProfilePrivacySettingsOverall.private,
+    ...(partyDivision()?.level == DivisionLevel.ov ? [ProfilePrivacySettingsOverall.ovWide] : []),
+    ProfilePrivacySettingsOverall.kvWide,
+    ProfilePrivacySettingsOverall.lvWide,
+    ProfilePrivacySettingsOverall.bvWide,
+    ProfilePrivacySettingsOverall.public,
+  ];
 }
 
 extension DivisionFilter on Iterable<Division> {
