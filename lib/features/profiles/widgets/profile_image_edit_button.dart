@@ -6,33 +6,30 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-class ProfileImageUploader extends StatelessWidget {
+class ProfileImageEditButton extends StatelessWidget {
+  final void Function(Profile profile) update;
+  final void Function(bool processing) setLoading;
   final Profile profile;
-  final ValueChanged<Profile> onProfileUpdated;
-  final ValueChanged<bool> onProcessing;
 
-  const ProfileImageUploader({
-    super.key,
-    required this.profile,
-    required this.onProfileUpdated,
-    required this.onProcessing,
-  });
+  const ProfileImageEditButton({super.key, required this.profile, required this.update, required this.setLoading});
+
+  Future<void> _editProfileImage(BuildContext context) async {
+    final imageFile = await pickImage(context, CropAspectRatio(ratioX: 1, ratioY: 1));
+    if (imageFile == null) return;
+    final image = await multipartImage(imageFile, 'profileImage');
+    final newProfile = await updateProfileImage(profileId: profile.id, profileImage: image);
+    update(newProfile);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return TextButton(
       onPressed: () => tryAndNotify(
-        function: () async {
-          final imageFile = await pickImage(context, CropAspectRatio(ratioX: 1, ratioY: 1));
-          if (imageFile == null) return;
-          final image = await multipartImage(imageFile, 'profileImage');
-          final newProfile = await updateProfileImage(profileId: profile.id, profileImage: image);
-          onProfileUpdated(newProfile);
-        },
+        function: () async => _editProfileImage(context),
         context: context,
         successMessage: t.profiles.profileImage.updated,
-        setLoading: onProcessing,
+        setLoading: setLoading,
       ),
       style: TextButton.styleFrom(
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -40,7 +37,7 @@ class ProfileImageUploader extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: Text(
-        t.profiles.profileImage.update,
+        t.profiles.profileImage.edit,
         style: theme.textTheme.bodyMedium!.apply(decoration: TextDecoration.underline),
       ),
     );
