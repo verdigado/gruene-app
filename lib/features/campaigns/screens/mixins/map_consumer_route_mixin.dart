@@ -106,7 +106,7 @@ mixin MapConsumerRouteMixin on InfoBox {
 
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
-      final routes = await campaignService.loadRoutesInRegion(bbox.southwest, bbox.northeast);
+      final routes = await campaignService.loadRoutesInRegion(mapInfo.campaignId, bbox.southwest, bbox.northeast);
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.routesSourceName,
         routes.transformToFeatureList(),

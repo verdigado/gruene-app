@@ -96,7 +96,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       if (loadCached) _loadCachedActionAreas(mapInfo.loadCachedLayer);
       final bbox = await mapInfo.mapController.getCurrentBoundingBox();
 
-      final areas = await campaignService.loadActionAreasInRegion(bbox.southwest, bbox.northeast);
+      final areas = await campaignService.loadActionAreasInRegion(mapInfo.campaignId, bbox.southwest, bbox.northeast);
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.actionAreaSourceName,
         areas.transformToFeatureList(),

@@ -851,17 +851,22 @@ paths:
           schema:
             example: '-74.006,40.7128,-73.935242,40.789142'
             type: string
+        - name: status
+          required: false
+          in: query
+          description: Filter by area status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AreaStatus'
         - name: type
           required: false
           in: query
-          description: filter by Area type
+          description: Filter by area type
           schema:
-            example: FLYER_SPOT
-            type: string
-            enum:
-              - FLYER_SPOT
-              - POSTER
-              - HOUSE
+            type: array
+            items:
+              $ref: '#/components/schemas/AreaType'
         - name: campaignId
           required: false
           in: query
@@ -891,17 +896,22 @@ paths:
           schema:
             example: '-74.006,40.7128,-73.935242,40.789142'
             type: string
+        - name: status
+          required: false
+          in: query
+          description: Filter by area status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AreaStatus'
         - name: type
           required: false
           in: query
-          description: filter by Area type
+          description: Filter by area type
           schema:
-            example: FLYER_SPOT
-            type: string
-            enum:
-              - FLYER_SPOT
-              - POSTER
-              - HOUSE
+            type: array
+            items:
+              $ref: '#/components/schemas/AreaType'
         - name: campaignId
           required: false
           in: query
@@ -1218,6 +1228,14 @@ paths:
           in: query
           schema:
             type: string
+        - name: onlyMyPollingStations
+          required: false
+          in: query
+          schema:
+            type: string
+            enum:
+              - 'true'
+              - 'false'
         - name: sort
           required: false
           in: query
@@ -1398,15 +1416,7 @@ paths:
           schema:
             type: array
             items:
-              type: string
-              enum:
-                - OK
-                - DAMAGED
-                - REMOVED
-                - MISSING
-                - TO_BE_MOVED
-                - OPENED_DOORS
-                - CLOSED_DOORS
+              $ref: '#/components/schemas/PoiStatus'
         - name: divisionKeys
           required: false
           in: query
@@ -1513,15 +1523,7 @@ paths:
           schema:
             type: array
             items:
-              type: string
-              enum:
-                - OK
-                - DAMAGED
-                - REMOVED
-                - MISSING
-                - TO_BE_MOVED
-                - OPENED_DOORS
-                - CLOSED_DOORS
+              $ref: '#/components/schemas/PoiStatus'
         - name: divisionKeys
           required: false
           in: query
@@ -1774,14 +1776,19 @@ paths:
         - name: type
           required: false
           in: query
-          description: filter by Route type
+          description: Filter by route type
           schema:
-            example: POSTER
-            type: string
-            enum:
-              - FLYER_SPOT
-              - POSTER
-              - HOUSE
+            type: array
+            items:
+              $ref: '#/components/schemas/RouteType'
+        - name: status
+          required: false
+          in: query
+          description: Filter by route status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RouteStatus'
         - name: bbox
           required: false
           in: query
@@ -2220,6 +2227,20 @@ paths:
     get:
       operationId: getCampaignStatistics
       parameters:
+        - name: start
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-03-20T06:03:50.427'
+            type: string
+        - name: end
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-04-23T12:15:59.123'
+            type: string
         - name: campaignId
           required: false
           in: query
@@ -4684,29 +4705,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UpsertOffboardingServiceUser'
-    AreaFlyerSpot:
-      type: object
-      properties:
-        flyerCount:
-          type: number
-          description: Number of flyers on this spot.
-          minimum: 0
-      required:
-        - flyerCount
-    AreaHouse:
-      type: object
-      properties:
-        countOpenedDoors:
-          type: number
-          description: Number of apartment doors that were opened for a conversation.
-          minimum: 0
-        countClosedDoors:
-          type: number
-          description: Number of apartment doors that remained closed.
-          minimum: 0
-      required:
-        - countOpenedDoors
-        - countClosedDoors
     Polygon:
       type: object
       properties:
@@ -4738,24 +4736,23 @@ components:
             - OPEN
             - CLOSED
           type: string
+        type:
+          enum:
+            - FLYER_SPOT
+            - POSTER
+            - HOUSE
+          type: string
         comment:
           type: string
           nullable: true
         name:
           type: string
           nullable: true
-        flyerSpot:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/AreaFlyerSpot'
-        house:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/AreaHouse'
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
         - status
+        - type
         - comment
         - name
         - polygon
@@ -4777,14 +4774,6 @@ components:
         name:
           type: string
           nullable: true
-        flyerSpot:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/AreaFlyerSpot'
-        house:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/AreaHouse'
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
@@ -4837,10 +4826,6 @@ components:
         name:
           type: string
           nullable: true
-        flyerSpot:
-          $ref: '#/components/schemas/AreaFlyerSpot'
-        house:
-          $ref: '#/components/schemas/AreaHouse'
         polygon:
           $ref: '#/components/schemas/Polygon'
         assignedBy:
@@ -4863,6 +4848,17 @@ components:
         - comment
         - name
         - polygon
+    AreaStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
+    AreaType:
+      type: string
+      enum:
+        - FLYER_SPOT
+        - POSTER
+        - HOUSE
     FindAreasResponse:
       type: object
       properties:
@@ -4892,47 +4888,101 @@ components:
     UpdateCampaign:
       type: object
       properties:
+        description:
+          type: string
+          nullable: true
         start:
           type: string
-          format: date
+          nullable: true
+          format: date-time
         end:
           type: string
-          format: date
+          nullable: true
+          format: date-time
+        electionDate:
+          type: string
+          format: date-time
         name:
           type: string
         scope:
           enum:
+            - EU
             - FEDERAL
             - STATE
             - DISTRICT
+            - MIXED
+          type: string
+        type:
+          enum:
+            - ELECTION
+            - INITIATIVE
+          type: string
+        status:
+          enum:
+            - DRAFT
+            - ACTIVE
+            - PAUSED
+            - CLOSED
+            - ARCHIVED
+          type: string
+        divisionKey:
           type: string
       required:
-        - start
-        - end
+        - electionDate
         - name
         - scope
+        - type
+        - status
+        - divisionKey
     CreateCampaign:
       type: object
       properties:
+        description:
+          type: string
+          nullable: true
         start:
           type: string
-          format: date
+          nullable: true
+          format: date-time
         end:
           type: string
-          format: date
+          nullable: true
+          format: date-time
+        electionDate:
+          type: string
+          format: date-time
         name:
           type: string
         scope:
           enum:
+            - EU
             - FEDERAL
             - STATE
             - DISTRICT
+            - MIXED
+          type: string
+        type:
+          enum:
+            - ELECTION
+            - INITIATIVE
+          type: string
+        status:
+          enum:
+            - DRAFT
+            - ACTIVE
+            - PAUSED
+            - CLOSED
+            - ARCHIVED
+          type: string
+        divisionKey:
           type: string
       required:
-        - start
-        - end
+        - electionDate
         - name
         - scope
+        - type
+        - status
+        - divisionKey
     Campaign:
       type: object
       properties:
@@ -4941,24 +4991,51 @@ components:
           example: '1'
         name:
           type: string
+        description:
+          type: string
+          nullable: true
         scope:
           enum:
+            - EU
             - FEDERAL
             - STATE
             - DISTRICT
+            - MIXED
+          type: string
+        type:
+          enum:
+            - ELECTION
+            - INITIATIVE
+          type: string
+        status:
+          enum:
+            - DRAFT
+            - ACTIVE
+            - PAUSED
+            - CLOSED
+            - ARCHIVED
+          type: string
+        divisionKey:
           type: string
         start:
           format: date-time
           type: string
+          nullable: true
         end:
+          format: date-time
+          type: string
+          nullable: true
+        electionDate:
           format: date-time
           type: string
       required:
         - id
         - name
         - scope
-        - start
-        - end
+        - type
+        - status
+        - divisionKey
+        - electionDate
     FindCampaignsResponse:
       type: object
       properties:
@@ -5310,6 +5387,16 @@ components:
         - photos
         - address
         - type
+    PoiStatus:
+      type: string
+      enum:
+        - OK
+        - DAMAGED
+        - REMOVED
+        - MISSING
+        - TO_BE_MOVED
+        - OPENED_DOORS
+        - CLOSED_DOORS
     FindPoisResponse:
       type: object
       properties:
@@ -5370,12 +5457,17 @@ components:
         name:
           type: string
           nullable: true
+        description:
+          type: string
+          nullable: true
+          maxLength: 250
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
         - status
         - type
         - name
+        - description
         - lineString
     CreateRoute:
       type: object
@@ -5392,11 +5484,16 @@ components:
         name:
           type: string
           nullable: true
+        description:
+          type: string
+          nullable: true
+          maxLength: 250
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
         - type
         - name
+        - description
         - lineString
     Route:
       type: object
@@ -5423,6 +5520,9 @@ components:
         name:
           type: string
           nullable: true
+        description:
+          type: string
+          nullable: true
         lineString:
           $ref: '#/components/schemas/LineString'
         assignedBy:
@@ -5443,7 +5543,19 @@ components:
         - createdAt
         - status
         - name
+        - description
         - lineString
+    RouteType:
+      type: string
+      enum:
+        - FLYER_SPOT
+        - POSTER
+        - HOUSE
+    RouteStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
     FindRoutesResponse:
       type: object
       properties:
@@ -6176,6 +6288,9 @@ components:
         name:
           type: string
           nullable: true
+        description:
+          type: string
+          nullable: true
         lineString:
           $ref: '#/components/schemas/LineString'
         assignedAt:
@@ -6190,6 +6305,7 @@ components:
         - createdAt
         - status
         - name
+        - description
         - lineString
     TeamAssignmentResponse:
       type: object
