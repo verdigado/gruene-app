@@ -6,6 +6,7 @@ import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
+import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
@@ -73,6 +74,21 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
     var previousCampaignName = widget.mode == CampaignSelectMode.enforceSelect && selectedCampaignId != null
         ? allCampaigns.firstWhereOrNull((c) => c.id == selectedCampaignId)?.name ?? t.common.unknown
         : t.common.unknown;
+
+    if (widget.mode == CampaignSelectMode.enforceSelect &&
+        selectedCampaignId == null &&
+        selectableCampaigns.isNotEmpty) {
+      var profileService = GetIt.I<GrueneApiProfileService>();
+      var currentProfile = await profileService.getSelf();
+      var userDivisionKeys = (currentProfile.memberships ?? []).map((m) => m.division.divisionKey).toList();
+      var preSelectCandidates = selectableCampaigns
+          .where((c) => userDivisionKeys.any((d) => d.startsWith(c.divisionKey.stripRight('0'))))
+          .map((c) => c.id)
+          .toList();
+      if (preSelectCandidates.length == 1) {
+        selectedCampaignId = preSelectCandidates.first;
+      }
+    }
 
     var recentCampaigns = selectableCampaigns.map((c) => c.id).toList();
     var previouslySeenCampaignIds = recentCampaigns;
