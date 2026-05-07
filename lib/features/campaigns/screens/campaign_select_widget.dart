@@ -82,36 +82,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
                         onChanged: (value) => setState(() {
                           _selectedCampaignId = value!;
                         }),
-                        child: Column(
-                          children: _activeCampaigns
-                              .map(
-                                (c) => Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
-                                  ),
-                                  child: RadioListTile<String>(
-                                    value: c.id,
-                                    fillColor: WidgetStatePropertyAll(ThemeColors.primary),
-                                    title: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(c.name, style: theme.textTheme.labelLarge),
-                                        Text(
-                                          '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == c.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${c.electionDate.getAsLocalDateString()}',
-                                          style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
-                                        ),
-                                      ],
-                                    ),
-                                    visualDensity: VisualDensity(
-                                      vertical: VisualDensity.minimumDensity,
-                                      horizontal: VisualDensity.minimumDensity,
-                                    ),
-                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
+                        child: Column(children: _activeCampaigns.map((c) => _getCampaignRadioTile(c, theme)).toList()),
                       ),
                     ),
                   ),
@@ -125,5 +96,29 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
     var appSettings = GetIt.I<AppSettings>();
     appSettings.campaign.activeCampaign.recentSelectedCampaignId = _selectedCampaignId;
     Navigator.of(context).pop();
+  }
+
+  Widget _getCampaignRadioTile(Campaign c, ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+      ),
+      child: RadioListTile<String>(
+        value: c.id,
+        fillColor: WidgetStatePropertyAll(ThemeColors.primary),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(c.name, style: theme.textTheme.labelLarge),
+            Text(
+              '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == c.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${c.electionDate.getAsLocalDateString()}',
+              style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
+            ),
+          ],
+        ),
+        visualDensity: VisualDensity(vertical: VisualDensity.minimumDensity, horizontal: VisualDensity.minimumDensity),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
   }
 }
