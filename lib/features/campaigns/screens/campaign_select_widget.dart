@@ -77,39 +77,41 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
                 ? Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator())
                 : Expanded(
                     child: SingleChildScrollView(
-                      child: Column(
-                        children: _activeCampaigns
-                            .map(
-                              (c) => Container(
-                                decoration: BoxDecoration(
-                                  border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
-                                ),
-                                child: RadioListTile<String>(
-                                  value: c.id,
-                                  groupValue: _selectedCampaignId,
-                                  onChanged: (value) => setState(() {
-                                    _selectedCampaignId = value!;
-                                  }),
-                                  fillColor: WidgetStatePropertyAll(ThemeColors.primary),
-                                  title: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(c.name, style: theme.textTheme.labelLarge),
-                                      Text(
-                                        '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == c.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${c.electionDate.getAsLocalDateString()}',
-                                        style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
-                                      ),
-                                    ],
+                      child: RadioGroup(
+                        groupValue: _selectedCampaignId,
+                        onChanged: (value) => setState(() {
+                          _selectedCampaignId = value!;
+                        }),
+                        child: Column(
+                          children: _activeCampaigns
+                              .map(
+                                (c) => Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
                                   ),
-                                  visualDensity: VisualDensity(
-                                    vertical: VisualDensity.minimumDensity,
-                                    horizontal: VisualDensity.minimumDensity,
+                                  child: RadioListTile<String>(
+                                    value: c.id,
+                                    fillColor: WidgetStatePropertyAll(ThemeColors.primary),
+                                    title: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(c.name, style: theme.textTheme.labelLarge),
+                                        Text(
+                                          '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == c.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${c.electionDate.getAsLocalDateString()}',
+                                          style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
+                                        ),
+                                      ],
+                                    ),
+                                    visualDensity: VisualDensity(
+                                      vertical: VisualDensity.minimumDensity,
+                                      horizontal: VisualDensity.minimumDensity,
+                                    ),
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   ),
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
-                              ),
-                            )
-                            .toList(),
+                              )
+                              .toList(),
+                        ),
                       ),
                     ),
                   ),
