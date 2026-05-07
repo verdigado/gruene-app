@@ -24,10 +24,11 @@ class MembershipCardScreen extends StatelessWidget {
         buildChild: (Profile profile, _) {
           Division? partyDivision = profile.memberships?.partyDivision();
 
-          return Padding(
-            padding: defaultScreenPadding,
+          return ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 640),
             child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 24, 12, 12),
+              margin: defaultScreenPadding,
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [ThemeColors.primary, ThemeColors.secondary],
@@ -39,30 +40,29 @@ class MembershipCardScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
+                spacing: 8,
                 children: [
                   Text(
                     t.profiles.membershipCard,
                     style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                   ),
-                  const SizedBox(height: 4),
                   Text(
                     '${profile.firstName}\n${profile.lastName}',
                     style: theme.textTheme.headlineLarge?.copyWith(color: ThemeColors.background),
                   ),
-                  if (partyDivision != null) ...[
-                    const SizedBox(height: 20),
+                  if (partyDivision != null)
                     Text(
                       partyDivision.displayName(),
                       style: theme.textTheme.titleSmall?.copyWith(color: ThemeColors.background),
                     ),
-                  ],
-                  const SizedBox(height: 80),
+                  Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 16,
                         children: [
                           RotatedBox(
                             quarterTurns: -1,
@@ -71,7 +71,6 @@ class MembershipCardScreen extends StatelessWidget {
                               style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                             ),
                           ),
-                          const SizedBox(height: 24),
                           CustomIcon(path: 'assets/icons/sunflower.svg', height: 48, color: ThemeColors.background),
                         ],
                       ),
@@ -80,7 +79,7 @@ class MembershipCardScreen extends StatelessWidget {
                         child: QrImageView(
                           data: profile.personalId,
                           version: QrVersions.auto,
-                          size: 212,
+                          size: 192,
                           backgroundColor: ThemeColors.background,
                         ),
                       ),
