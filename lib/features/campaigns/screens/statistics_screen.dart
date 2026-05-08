@@ -6,10 +6,12 @@ import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/screens/badge_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/screens/poi_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/screens/team_statistics_detail.dart';
+import 'package:gruene_app/features/campaigns/widgets/statistics_campaign_switcher.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class StatisticsScreen extends StatefulWidget {
@@ -24,6 +26,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   late CampaignStatisticsModel _poiStatistics;
   late TeamStatistics _teamStatistics;
   late TeamMembershipStatistics _teamMembershipStatistics;
+  final _appSettings = GetIt.I<AppSettings>();
 
   @override
   void initState() {
@@ -31,6 +34,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
+    _appSettings.campaign.activeCampaign.addListener(() => reload());
   }
 
   @override
@@ -52,6 +56,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
+            StatisticsCampaignSwitcher(),
             BadgeStatisticsDetail(poiStatistics: _poiStatistics),
             TeamStatisticsDetail(teamStatistics: _teamStatistics),
             PoiStatisticsDetail(poiStatistics: _poiStatistics, teamMembershipStatistics: _teamMembershipStatistics),

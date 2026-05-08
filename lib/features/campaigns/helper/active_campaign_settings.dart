@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'active_campaign_settings.g.dart';
@@ -17,6 +18,7 @@ class ActiveCampaignSettings extends ChangeNotifier {
 
   set recentSelectedCampaignId(String? recentSelectedCampaignId) {
     _recentSelectedCampaignId = recentSelectedCampaignId;
+    GetIt.I<AppSettings>().campaign.recentPoiStatisticsCampaignId = null;
     save();
     notifyListeners();
   }

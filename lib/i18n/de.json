@@ -341,7 +341,9 @@
         "by_my_KV": "von meinem Kreisverband",
         "by_my_LV": "von meinem Landesverband",
         "in_germany": "deutschlandweit",
-        "update_info": "wird alle 5 Minuten aktualisiert"
+        "update_info": "wird alle 5 Minuten aktualisiert",
+        "stats_for_campaign": "Statistiken für",
+        "all_time": "All time"
       },
       "team_statistics": {
         "title": "Team Top-10",

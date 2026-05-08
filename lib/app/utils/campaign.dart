@@ -5,3 +5,11 @@ String? getCurrentCampaignId() {
   var appSettings = GetIt.I<AppSettings>();
   return appSettings.campaign.activeCampaign.recentSelectedCampaignId;
 }
+
+String? getCurrentPoiStatisticsCampaignId() {
+  var appSettings = GetIt.I<AppSettings>();
+  var currentCampaignId =
+      appSettings.campaign.recentPoiStatisticsCampaignId ??
+      appSettings.campaign.activeCampaign.recentSelectedCampaignId;
+  return currentCampaignId;
+}
