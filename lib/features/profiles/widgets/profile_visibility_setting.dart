@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
@@ -37,16 +38,32 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
       return;
     }
 
+    final teamsService = GetIt.I<GrueneApiTeamsService>();
     final profileService = GetIt.I<GrueneApiProfileService>();
     final newProfile = widget.profile.copyWith(privacy: widget.profile.privacy.copyWith(overall: _selectedVisibility));
 
-    await tryAndNotify(
-      function: () => profileService.updateProfile(newProfile),
+    final team = await tryAndNotify(
+      function: () async {
+        await profileService.updateProfile(newProfile);
+        return await teamsService.getOwnTeam();
+      },
       context: context,
       successMessage: t.profiles.visibility.updated,
     );
+
     if (!mounted) return;
     Navigator.pop(context, newProfile);
+
+    if (_selectedVisibility == ProfilePrivacySettingsOverall.private && team != null) {
+      await showDialog<bool>(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text(t.profiles.visibility.privateProfileInTeamTitle),
+          content: Text(t.profiles.visibility.privateProfileInTeamHint(team: team.name)),
+          actions: [TextButton(onPressed: Navigator.of(context).pop, child: Text(t.common.actions.confirm))],
+        ),
+      );
+    }
   }
 
   @override
