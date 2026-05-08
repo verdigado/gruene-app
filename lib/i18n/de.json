@@ -381,7 +381,9 @@
       "public": "Alle",
       "publicHint": "Dein Profil ist sichtbar für alle Mitglieder der Partei sowie der GRÜNEN JUGEND (GJ) und der Kommunalpolitischen Vereinigungen (KPV).",
       "updated": "Profil-Sichtbarkeit wurde gespeichert",
-      "teamVisibilityHint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Damit Du zu Wahlkampf-Teams hinzugefügt werden kannst, muss Dein Profil mindestens die Sichtbarkeit \"${minVisibility} (${minVisibilityShort})\" haben. Bitte setze eine entsprechende Sichtbarkeitseinstellung."
+      "teamVisibilityHint": "Dein Profil hat nur eine eingeschränkte Sichtbarkeit. Damit Du zu Wahlkampf-Teams hinzugefügt werden kannst, muss Dein Profil mindestens die Sichtbarkeit \"${minVisibility} (${minVisibilityShort})\" haben. Bitte setze eine entsprechende Sichtbarkeitseinstellung.",
+      "privateProfileInTeamTitle": "Sichtbarkeit im Team",
+      "privateProfileInTeamHint": "Achtung: Private Profile können in Wahlkampf-Teams weiterhin sichtbar sein. Wenn Du auch in deinem aktuellen Team \"${team}\" nicht mehr sichtbar sein möchtest, verlasse bitte das Team."
     },
     "email": "E-Mail Adresse",
     "phoneNumber": "Telefonnummer",
