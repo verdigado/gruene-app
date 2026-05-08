@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "B90/DIE GRÜNEN",
-    "party": "Bündnis 90/DIE GRÜNEN",
+    "party": "BÜNDNIS 90/DIE GRÜNEN",
     "error": "Fehler",
     "dateFrom": "von",
     "dateUntil": "bis",
@@ -84,7 +84,7 @@
   "profile": {
     "visibility_setting": {
       "visibility_setting_action": "Sichtbarkeitseinstellungen",
-      "title": "Mein Profil ist einsehbar für Mitglieder*innen ...",
+      "title": "Mein Profil ist einsehbar für Mitglieder ...",
       "visibility_public": "... für alle (ganze Partei)",
       "visibility_BV": "... im Bundesverband",
       "visibility_LV": "... im Landesverband",
