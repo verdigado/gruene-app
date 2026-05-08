@@ -62,10 +62,11 @@ class ProfileFeatureChecker {
   }
 
   Future<String?> _getCurrentUserId(String? currentAccessToken) async {
-    var jwtToken = JwtDecoder.decode(currentAccessToken!);
-    String? userId;
-    if (jwtToken.containsKey('uidnumber')) userId = jwtToken['uidnumber'].toString();
-    return userId;
+    final jwtToken = currentAccessToken != null ? JwtDecoder.decode(currentAccessToken) : null;
+    if (jwtToken != null && jwtToken.containsKey('uidnumber')) {
+      return jwtToken['uidnumber'].toString();
+    }
+    return null;
   }
 
   void _showProfileSettingDialog(BuildContext context, Profile currentProfile) async {
