@@ -10,7 +10,7 @@ class DialogCloseButton extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       alignment: Alignment.topRight,
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.symmetric(vertical: 8),
       width: 64,
       height: 64,
       child: CircleAvatar(
