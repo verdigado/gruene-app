@@ -81,50 +81,48 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) _updateProfile();
       },
-      child: SafeArea(
-        child: Padding(
-          padding: defaultScreenPadding.copyWith(top: 0, bottom: 64),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            spacing: 8,
-            children: [
-              // CloseSaveWidget(onClose: () => Navigator.pop(context), onSave: _updateProfile),
-              Row(
-                spacing: 8,
-                children: [
-                  Icon(Icons.visibility),
-                  Text(t.profiles.visibility.visibility, style: Theme.of(context).textTheme.titleMedium),
-                  Spacer(),
-                  DialogCloseButton(onClose: _updateProfile),
-                ],
-              ),
-              if (widget.explicitTeamHint) ...[
-                Text(
-                  t.profiles.visibility.teamVisibilityHint(
-                    minVisibility: minVisibilityLabel,
-                    minVisibilityShort: minVisibilityShort,
-                  ),
-                ),
-                SizedBox(height: 8),
+      child: Padding(
+        padding: defaultScreenPadding.copyWith(top: 0, bottom: 64),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            // CloseSaveWidget(onClose: () => Navigator.pop(context), onSave: _updateProfile),
+            Row(
+              spacing: 8,
+              children: [
+                Icon(Icons.visibility),
+                Text(t.profiles.visibility.visibility, style: Theme.of(context).textTheme.titleMedium),
+                Spacer(),
+                DialogCloseButton(onClose: _updateProfile),
               ],
+            ),
+            if (widget.explicitTeamHint) ...[
               Text(
-                visibilityLabel(_selectedVisibility),
-                style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
+                t.profiles.visibility.teamVisibilityHint(
+                  minVisibility: minVisibilityLabel,
+                  minVisibilityShort: minVisibilityShort,
+                ),
               ),
-              StableHeightText(
-                text: visibilityHint(_selectedVisibility),
-                longestText: visibilityHint(ProfilePrivacySettingsOverall.private),
-                style: theme.textTheme.bodyMedium!,
-              ),
-              OptionSlider(
-                values: memberships.profileVisibilityOptions(),
-                value: _selectedVisibility,
-                getLabel: (value) => visibilityShortLabel(value),
-                update: (visibility) => setState(() => _selectedVisibility = visibility),
-              ),
+              SizedBox(height: 8),
             ],
-          ),
+            Text(
+              visibilityLabel(_selectedVisibility),
+              style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
+            ),
+            StableHeightText(
+              text: visibilityHint(_selectedVisibility),
+              longestText: visibilityHint(ProfilePrivacySettingsOverall.private),
+              style: theme.textTheme.bodyMedium!,
+            ),
+            OptionSlider(
+              values: memberships.profileVisibilityOptions(),
+              value: _selectedVisibility,
+              getLabel: (value) => visibilityShortLabel(value),
+              update: (visibility) => setState(() => _selectedVisibility = visibility),
+            ),
+          ],
         ),
       ),
     );
