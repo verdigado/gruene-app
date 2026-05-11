@@ -1,5 +1,5 @@
+import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:keycloak_authenticator/api.dart';
 
 String getErrorMessage(Object error, {String? defaultMessage}) {
   if (error is KeycloakClientException) {

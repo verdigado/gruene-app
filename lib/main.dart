@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
@@ -55,7 +56,6 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:keycloak_authenticator/api.dart';
 import 'package:rrule/rrule.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
