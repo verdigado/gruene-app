@@ -68,7 +68,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
 
   @override
   Widget build(BuildContext context) {
-    final memberships = widget.profile.memberships!;
+    final profileVisibilityOptions = widget.profile.memberships!.profileVisibilityOptions();
     // TODO: Adjust to OV if teams are available for OVs and user is in an OV
     // final minVisibility = memberships.profileVisibilityOptions()[2];
     final minVisibility = ProfilePrivacySettingsOverall.kvWide;
@@ -81,15 +81,12 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) _updateProfile();
       },
-      child: Padding(
-        padding: defaultScreenPadding.copyWith(top: 0, bottom: 64),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          spacing: 8,
-          children: [
-            // CloseSaveWidget(onClose: () => Navigator.pop(context), onSave: _updateProfile),
-            Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: defaultScreenPadding.left, right: 8),
+            child: Row(
               spacing: 8,
               children: [
                 Icon(Icons.visibility),
@@ -98,32 +95,42 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
                 DialogCloseButton(onClose: _updateProfile),
               ],
             ),
-            if (widget.explicitTeamHint) ...[
-              Text(
-                t.profiles.visibility.teamVisibilityHint(
-                  minVisibility: minVisibilityLabel,
-                  minVisibilityShort: minVisibilityShort,
+          ),
+          Padding(
+            padding: defaultScreenPadding.copyWith(top: 0, bottom: 64),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 8,
+              children: [
+                if (widget.explicitTeamHint) ...[
+                  Text(
+                    t.profiles.visibility.teamVisibilityHint(
+                      minVisibility: minVisibilityLabel,
+                      minVisibilityShort: minVisibilityShort,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                ],
+                Text(
+                  visibilityLabel(_selectedVisibility),
+                  style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
                 ),
-              ),
-              SizedBox(height: 8),
-            ],
-            Text(
-              visibilityLabel(_selectedVisibility),
-              style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
+                StableHeightText(
+                  text: visibilityHint(_selectedVisibility),
+                  longestText: visibilityHint(ProfilePrivacySettingsOverall.private),
+                  style: theme.textTheme.bodyMedium!,
+                ),
+                OptionSlider(
+                  values: profileVisibilityOptions,
+                  value: _selectedVisibility,
+                  getLabel: (value) => visibilityShortLabel(value),
+                  update: (visibility) => setState(() => _selectedVisibility = visibility),
+                ),
+              ],
             ),
-            StableHeightText(
-              text: visibilityHint(_selectedVisibility),
-              longestText: visibilityHint(ProfilePrivacySettingsOverall.private),
-              style: theme.textTheme.bodyMedium!,
-            ),
-            OptionSlider(
-              values: memberships.profileVisibilityOptions(),
-              value: _selectedVisibility,
-              getLabel: (value) => visibilityShortLabel(value),
-              update: (visibility) => setState(() => _selectedVisibility = visibility),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
