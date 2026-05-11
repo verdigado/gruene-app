@@ -3,11 +3,14 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 extension DivisionExtension on Division {
   String shortDisplayName() => level == DivisionLevel.bv ? name2 : '${level.value} $name2';
+
   String displayName() => level == DivisionLevel.bv ? name2 : '$name1 $name2';
 }
 
 extension MembershipsExtension on List<DivisionMembership> {
   List<Division> divisions() => map((membership) => membership.division).toList();
+
+  bool isStaff() => partyDivision() == null;
 
   Division? partyDivision() => divisions().firstWhereOrNull((division) => division.hierarchy == 'GR');
 
@@ -15,14 +18,20 @@ extension MembershipsExtension on List<DivisionMembership> {
 
   Division? kpvDivision() => divisions().firstWhereOrNull((division) => division.hierarchy == 'KPV');
 
-  List<ProfilePrivacySettingsOverall> profileVisibilityOptions() => [
-    ProfilePrivacySettingsOverall.private,
-    ...(partyDivision()?.level == DivisionLevel.ov ? [ProfilePrivacySettingsOverall.ovWide] : []),
-    ProfilePrivacySettingsOverall.kvWide,
-    ProfilePrivacySettingsOverall.lvWide,
-    ProfilePrivacySettingsOverall.bvWide,
-    ProfilePrivacySettingsOverall.public,
-  ];
+  List<ProfilePrivacySettingsOverall> profileVisibilityOptions() {
+    if (isStaff()) {
+      // Staff members don't have assigned divisions, so a profile can only be private or public
+      return [ProfilePrivacySettingsOverall.private, ProfilePrivacySettingsOverall.public];
+    }
+    return [
+      ProfilePrivacySettingsOverall.private,
+      ...(partyDivision()?.level == DivisionLevel.ov ? [ProfilePrivacySettingsOverall.ovWide] : []),
+      ProfilePrivacySettingsOverall.kvWide,
+      ProfilePrivacySettingsOverall.lvWide,
+      ProfilePrivacySettingsOverall.bvWide,
+      ProfilePrivacySettingsOverall.public,
+    ];
+  }
 }
 
 extension DivisionFilter on Iterable<Division> {

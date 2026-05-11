@@ -68,7 +68,8 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
 
   @override
   Widget build(BuildContext context) {
-    final profileVisibilityOptions = widget.profile.memberships!.profileVisibilityOptions();
+    final memberships = widget.profile.memberships!;
+    final profileVisibilityOptions = memberships.profileVisibilityOptions();
     // TODO: Adjust to OV if teams are available for OVs and user is in an OV
     // final minVisibility = memberships.profileVisibilityOptions()[2];
     final minVisibility = ProfilePrivacySettingsOverall.kvWide;
@@ -105,28 +106,51 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
               children: [
                 if (widget.explicitTeamHint) ...[
                   Text(
-                    t.profiles.visibility.teamVisibilityHint(
-                      minVisibility: minVisibilityLabel,
-                      minVisibilityShort: minVisibilityShort,
-                    ),
+                    memberships.isStaff()
+                        ? t.profiles.visibility.teamVisibilityHintStaff
+                        : t.profiles.visibility.teamVisibilityHint(
+                            minVisibility: minVisibilityLabel,
+                            minVisibilityShort: minVisibilityShort,
+                          ),
                   ),
                   SizedBox(height: 8),
                 ],
-                Text(
-                  visibilityLabel(_selectedVisibility),
-                  style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
-                ),
-                StableHeightText(
-                  text: visibilityHint(_selectedVisibility),
-                  longestText: visibilityHint(ProfilePrivacySettingsOverall.private),
-                  style: theme.textTheme.bodyMedium!,
-                ),
-                OptionSlider(
-                  values: profileVisibilityOptions,
-                  value: _selectedVisibility,
-                  getLabel: (value) => visibilityShortLabel(value),
-                  update: (visibility) => setState(() => _selectedVisibility = visibility),
-                ),
+                if (memberships.isStaff())
+                  RadioGroup(
+                    groupValue: _selectedVisibility,
+                    onChanged: (value) => setState(() => _selectedVisibility = value!),
+                    child: Column(
+                      children: [
+                        for (final option in profileVisibilityOptions)
+                          RadioListTile(
+                            title: Text(
+                              visibilityLabel(option),
+                              style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
+                            ),
+                            subtitle: Text(visibilityHint(option), style: theme.textTheme.bodySmall),
+                            value: option,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                      ],
+                    ),
+                  )
+                else ...[
+                  Text(
+                    visibilityLabel(_selectedVisibility),
+                    style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
+                  ),
+                  StableHeightText(
+                    text: visibilityHint(_selectedVisibility),
+                    longestText: visibilityHint(ProfilePrivacySettingsOverall.private),
+                    style: theme.textTheme.bodyMedium!,
+                  ),
+                  OptionSlider(
+                    values: profileVisibilityOptions,
+                    value: _selectedVisibility,
+                    getLabel: (value) => visibilityShortLabel(value),
+                    update: (visibility) => setState(() => _selectedVisibility = visibility),
+                  ),
+                ],
               ],
             ),
           ),
