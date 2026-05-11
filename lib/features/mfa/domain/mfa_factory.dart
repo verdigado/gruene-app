@@ -1,6 +1,6 @@
+import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:keycloak_authenticator/api.dart';
 
 class MfaFactory {
   static AuthenticatorService create() {
