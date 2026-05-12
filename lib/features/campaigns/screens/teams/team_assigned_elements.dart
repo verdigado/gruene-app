@@ -5,8 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
+import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/app/utils/globals.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
 import 'package:gruene_app/features/campaigns/models/team/team_assignment.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -27,6 +32,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
   bool _loading = true;
   bool _showClosedElements = false;
   List<AssignedElement> _assignedElements = <AssignedElement>[];
+  List<Campaign> _activeCampaigns = <Campaign>[];
 
   @override
   void initState() {
@@ -42,11 +48,23 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
     var teamsService = GetIt.I<GrueneApiTeamsService>();
     var assignedElements = await teamsService.getTeamAssignments(teamId: widget.currentTeam.id);
 
+    var campaignIds = assignedElements.routes.map((r) => r.campaignId).toList();
+    campaignIds.addAll(assignedElements.areas.map((a) => a.campaignId));
+    campaignIds = campaignIds.groupBy((c) => c).keys.toList();
+
+    var campaignService = GetIt.I<GrueneApiCampaignService>();
+    var activeCampaigns = (await campaignService.findCampaigns()).activeCampaigns();
+
     setState(() {
       _loading = false;
+      _activeCampaigns = activeCampaigns;
       _assignedElements = [
-        ...assignedElements.routes.map((r) => r.asAssignedElement()),
-        ...assignedElements.areas.map((a) => a.asAssignedElement()),
+        ...assignedElements.routes
+            .where((r) => activeCampaigns.any((c) => c.id == r.campaignId))
+            .map((r) => r.asAssignedElement()),
+        ...assignedElements.areas
+            .where((a) => activeCampaigns.any((c) => c.id == a.campaignId))
+            .map((a) => a.asAssignedElement()),
       ];
     });
   }
@@ -96,11 +114,30 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
                 ),
               ],
             ),
-            ..._getAssignedElementRows(assignedElementDisplayList),
+            ..._getAssignedElementRowsByCampaign(assignedElementDisplayList),
           ],
         ),
       ),
     );
+  }
+
+  Iterable<Widget> _getAssignedElementRowsByCampaign(List<AssignedElement> assignedElementDisplayList) {
+    var campaignIds = assignedElementDisplayList.map((e) => e.campaignId).groupBy(id).keys.toList();
+    logger.d('CampaignIds for assigned elements: $campaignIds');
+    campaignIds.sort(sortCampaigns);
+    return campaignIds.map((campaignId) {
+      var campaignName = _activeCampaigns.singleWhere((c) => c.id == campaignId).name;
+      return Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 12, bottom: 6),
+            alignment: Alignment.centerLeft,
+            child: Text(campaignName, style: Theme.of(context).textTheme.titleSmall),
+          ),
+          ..._getAssignedElementRows(assignedElementDisplayList.where((e) => e.campaignId == campaignId).toList()),
+        ],
+      );
+    });
   }
 
   Iterable<Widget> _getAssignedElementRows(List<AssignedElement> assignedElementDisplayList) {
@@ -129,7 +166,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
             children: [
               Container(
                 constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 90),
-                child: Text(assignedElement.name, style: theme.textTheme.titleMedium, overflow: TextOverflow.ellipsis),
+                child: Text(assignedElement.name, style: theme.textTheme.bodyLarge, overflow: TextOverflow.ellipsis),
               ),
               Text(
                 _getAssignmentInfoText(assignedElement),
@@ -194,5 +231,16 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       case AssignedElementType.area:
         mapScreenController.showArea(assignedElement.id);
     }
+  }
+
+  int sortCampaigns(String a, String b) {
+    var currentSelectedCampaign = getCurrentCampaignId();
+    if (a == currentSelectedCampaign) return -1;
+    if (b == currentSelectedCampaign) return 1;
+    return _activeCampaigns
+            .singleWhere((c) => c.id == a)
+            .electionDate
+            .compareTo(_activeCampaigns.singleWhere((c) => c.id == b).electionDate) *
+        -1;
   }
 }

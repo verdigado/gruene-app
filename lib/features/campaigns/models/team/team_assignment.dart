@@ -9,6 +9,7 @@ class AssignedElement {
   final DateTime assignmentDate;
   final String assignee;
   final GeometryObject coords;
+  final String campaignId;
 
   AssignedElement({
     required this.id,
@@ -19,6 +20,7 @@ class AssignedElement {
     required this.assignmentDate,
     required this.assignee,
     required this.coords,
+    required this.campaignId,
   });
 }
 
