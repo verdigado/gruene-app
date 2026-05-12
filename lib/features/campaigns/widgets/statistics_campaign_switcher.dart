@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/features/campaigns/screens/campaign_select_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class StatisticsCampaignSwitcher extends StatefulWidget {
-  const StatisticsCampaignSwitcher({super.key});
+  const StatisticsCampaignSwitcher({super.key, required Future<dynamic> Function() campaignChanged});
 
   @override
   State<StatisticsCampaignSwitcher> createState() => _StatisticsCampaignSwitcherState();
@@ -14,8 +16,8 @@ class StatisticsCampaignSwitcher extends StatefulWidget {
 
 class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher> {
   String? _currentCampaignName;
-
   bool _isloading = true;
+  final _appSettings = GetIt.I<AppSettings>();
 
   @override
   void initState() {
@@ -23,6 +25,13 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
+    _appSettings.campaign.activeCampaign.addListener(_loadData);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _appSettings.campaign.activeCampaign.removeListener(_loadData);
   }
 
   Future<void> _loadData() async {
@@ -32,9 +41,11 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
     String? currentCampaignId = getCurrentPoiStatisticsCampaignId();
-    var campaignName = currentCampaignId == null
-        ? t.campaigns.statistic.poi_statistics.all_time
-        : (await campaignService.getCampaign(currentCampaignId)).name;
+    var campaignName = switch (currentCampaignId) {
+      null => t.common.unknown,
+      '-1' => t.campaigns.statistic.poi_statistics.all_time,
+      _ => (await campaignService.getCampaign(currentCampaignId)).name,
+    };
 
     setState(() {
       _isloading = false;
@@ -76,5 +87,12 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
     );
   }
 
-  void _selectCampaign() {}
+  Future<void> _selectCampaign() async {
+    var selectedCampaignId = await showCampaignSelectDialogForStatistics(context);
+    if (selectedCampaignId != null) {
+      var appSettings = GetIt.I<AppSettings>();
+      appSettings.campaign.recentPoiStatisticsCampaignId = selectedCampaignId;
+      _loadData();
+    }
+  }
 }

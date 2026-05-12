@@ -34,7 +34,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
-    _appSettings.campaign.activeCampaign.addListener(() => reload());
+    _appSettings.campaign.activeCampaign.addListener(reload);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _appSettings.campaign.activeCampaign.removeListener(reload);
   }
 
   @override
@@ -56,7 +62,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            StatisticsCampaignSwitcher(),
+            StatisticsCampaignSwitcher(campaignChanged: () => reload()),
             BadgeStatisticsDetail(poiStatistics: _poiStatistics),
             TeamStatisticsDetail(teamStatistics: _teamStatistics),
             PoiStatisticsDetail(poiStatistics: _poiStatistics, teamMembershipStatistics: _teamMembershipStatistics),
