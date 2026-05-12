@@ -33,7 +33,7 @@ class CustomTabBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomTabBarState extends State<CustomTabBar> {
-  final campaignValueStore = GetIt.I<CampaignValueStore>();
+  final campaignValueStore = GetIt.I<OpenInvitationCampaignValueStore>();
   void safeOnTap(int index) => widget.onTap(widget.tabs[index].disabled ? widget.tabController.previousIndex : index);
 
   @override

@@ -17,7 +17,7 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  final campaignValueStore = GetIt.I<CampaignValueStore>();
+  final campaignValueStore = GetIt.I<OpenInvitationCampaignValueStore>();
 
   @override
   void initState() {
