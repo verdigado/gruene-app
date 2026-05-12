@@ -5,8 +5,8 @@ import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/logger.dart';
-import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/screens/badge_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/screens/poi_statistics_detail.dart';
@@ -62,7 +62,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            StatisticsCampaignSwitcher(campaignChanged: () => reload()),
+            StatisticsCampaignSwitcher(campaignChanged: () => reload(overrideCache: true)),
             BadgeStatisticsDetail(poiStatistics: _poiStatistics),
             TeamStatisticsDetail(teamStatistics: _teamStatistics),
             PoiStatisticsDetail(poiStatistics: _poiStatistics, teamMembershipStatistics: _teamMembershipStatistics),
@@ -72,14 +72,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Future<void> reload() async {
-    _loadData();
+  Future<void> reload({bool overrideCache = false}) async {
+    _loadData(overrideCache: overrideCache);
   }
 
-  void _loadData() async {
+  void _loadData({bool overrideCache = false}) async {
     setState(() => _loading = true);
 
-    var results = await Future.wait([_loadPoiStatistics(), _loadTeamStatistics(), _loadOwnTeamStatistics()]);
+    var results = await Future.wait([
+      _loadPoiStatistics(overrideCache: overrideCache),
+      _loadTeamStatistics(overrideCache: overrideCache),
+      _loadOwnTeamStatistics(overrideCache: overrideCache),
+    ]);
 
     var poiCampaignStatistics = results[0] as CampaignStatisticsModel;
     var teamStatistics = results[1] as TeamStatistics;
@@ -93,15 +97,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     });
   }
 
-  Future<CampaignStatisticsModel> _loadPoiStatistics() async {
+  Future<CampaignStatisticsModel> _loadPoiStatistics({required bool overrideCache}) async {
     var campaignSettings = GetIt.I<AppSettings>().campaign;
 
-    if (campaignSettings.recentPoiStatistics != null &&
-        DateTime.now().isBefore(campaignSettings.recentPoiStatisticsFetchTimestamp!.add(Duration(minutes: 5)))) {
+    if (!overrideCache &&
+        (campaignSettings.recentPoiStatistics != null &&
+            DateTime.now().isBefore(campaignSettings.recentPoiStatisticsFetchTimestamp!.add(Duration(minutes: 5))))) {
       return campaignSettings.recentPoiStatistics!;
     }
     var statApiService = GetIt.I<GrueneApiCampaignsStatisticsService>();
-    var campaignStatistics = await statApiService.getStatistics();
+    var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
+    var campaignStatistics = await statApiService.getStatistics(
+      campaigndId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
+    );
 
     campaignSettings.recentPoiStatistics = campaignStatistics;
     campaignSettings.recentPoiStatisticsFetchTimestamp = DateTime.now();
@@ -109,15 +117,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return campaignStatistics;
   }
 
-  Future<TeamStatistics> _loadTeamStatistics() async {
+  Future<TeamStatistics> _loadTeamStatistics({required bool overrideCache}) async {
     var campaignSettings = GetIt.I<AppSettings>().campaign;
 
-    if (campaignSettings.recentTeamStatistics != null &&
-        DateTime.now().isBefore(campaignSettings.recentTeamStatisticsFetchTimestamp!.add(Duration(minutes: 5)))) {
+    if (!overrideCache &&
+        (campaignSettings.recentTeamStatistics != null &&
+            DateTime.now().isBefore(campaignSettings.recentTeamStatisticsFetchTimestamp!.add(Duration(minutes: 5))))) {
       return campaignSettings.recentTeamStatistics!;
     }
     var teamApiService = GetIt.I<GrueneApiTeamsService>();
-    var teamStats = await teamApiService.getTeamStatistics();
+    var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
+    var teamStats = await teamApiService.getTeamStatistics(
+      campaignId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
+    );
 
     campaignSettings.recentTeamStatistics = teamStats;
     campaignSettings.recentTeamStatisticsFetchTimestamp = DateTime.now();
@@ -125,19 +137,23 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return teamStats;
   }
 
-  Future<TeamMembershipStatistics> _loadOwnTeamStatistics() async {
+  Future<TeamMembershipStatistics> _loadOwnTeamStatistics({required bool overrideCache}) async {
     var campaignSettings = GetIt.I<AppSettings>().campaign;
 
-    if (campaignSettings.recentTeamMembershipStatistics != null &&
-        DateTime.now().isBefore(
-          campaignSettings.recentTeamMembershipStatisticsFetchTimestamp!.add(Duration(minutes: 5)),
-        )) {
+    if (!overrideCache &&
+        (campaignSettings.recentTeamMembershipStatistics != null &&
+            DateTime.now().isBefore(
+              campaignSettings.recentTeamMembershipStatisticsFetchTimestamp!.add(Duration(minutes: 5)),
+            ))) {
       return campaignSettings.recentTeamMembershipStatistics!;
     }
     var teamApiService = GetIt.I<GrueneApiTeamsService>();
 
     try {
-      var teamMembershipStats = await teamApiService.getTeamMembershipStatistics();
+      var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
+      var teamMembershipStats = await teamApiService.getTeamMembershipStatistics(
+        campaignId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
+      );
 
       campaignSettings.recentTeamMembershipStatistics = teamMembershipStats;
       campaignSettings.recentTeamMembershipStatisticsFetchTimestamp = DateTime.now();

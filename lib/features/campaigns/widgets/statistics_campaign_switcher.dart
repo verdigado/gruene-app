@@ -8,7 +8,9 @@ import 'package:gruene_app/features/campaigns/screens/campaign_select_widget.dar
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class StatisticsCampaignSwitcher extends StatefulWidget {
-  const StatisticsCampaignSwitcher({super.key, required Future<dynamic> Function() campaignChanged});
+  final Future<dynamic> Function() campaignChanged;
+
+  const StatisticsCampaignSwitcher({super.key, required this.campaignChanged});
 
   @override
   State<StatisticsCampaignSwitcher> createState() => _StatisticsCampaignSwitcherState();
@@ -93,6 +95,7 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
       var appSettings = GetIt.I<AppSettings>();
       appSettings.campaign.recentPoiStatisticsCampaignId = selectedCampaignId;
       _loadData();
+      widget.campaignChanged();
     }
   }
 }
