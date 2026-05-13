@@ -1,19 +1,15 @@
-import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_set.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiCampaignsStatisticsService {
-  late GrueneApi grueneApi;
+class GrueneApiCampaignsStatisticsService extends GrueneApiBaseService {
+  GrueneApiCampaignsStatisticsService() : super();
 
-  GrueneApiCampaignsStatisticsService() {
-    grueneApi = GetIt.I<GrueneApi>();
-  }
-
-  Future<CampaignStatisticsModel> getStatistics() async {
-    var statResult = await grueneApi.v1CampaignsStatisticsGet();
-    return statResult.body!.asCampaignStatistics();
-  }
+  Future<CampaignStatisticsModel> getStatistics({required String? campaigndId}) async => getFromApi(
+    apiRequest: (api) => api.v1CampaignsStatisticsGet(campaignId: campaigndId),
+    map: (result) => result.asCampaignStatistics(),
+  );
 }
 
 extension StatisticsParser on CampaignStatistics {

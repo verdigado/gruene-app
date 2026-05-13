@@ -12,14 +12,15 @@ import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
+import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class CampaignSelectWidget extends StatefulWidget {
-  final bool enforceSelect;
+  final CampaignSelectMode mode;
   static int showCounter = 0;
 
-  const CampaignSelectWidget({super.key, this.enforceSelect = false});
+  const CampaignSelectWidget({super.key, this.mode = CampaignSelectMode.normal});
 
   @override
   State<CampaignSelectWidget> createState() => _CampaignSelectWidgetState();
@@ -50,24 +51,30 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    var selectedCampaignId = getCurrentCampaignId();
+    var selectedCampaignId = switch (widget.mode) {
+      CampaignSelectMode.normal || CampaignSelectMode.enforceSelect => getCurrentCampaignId(),
+      CampaignSelectMode.statistics => getCurrentPoiStatisticsCampaignId(),
+    };
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
     var allCampaigns = await campaignService.findCampaigns();
-    var activeCampaigns = allCampaigns.activeCampaigns();
-    activeCampaigns.sort((a, b) => a.electionDate.compareTo(b.electionDate));
+    var selectableCampaigns = switch (widget.mode) {
+      CampaignSelectMode.normal || CampaignSelectMode.enforceSelect => allCampaigns.activeCampaigns(),
+      CampaignSelectMode.statistics => allCampaigns.activeAndClosedCampaigns(),
+    };
+    selectableCampaigns.sort((a, b) => a.electionDate.compareTo(b.electionDate));
 
-    var divisionKeys = activeCampaigns.groupBy((c) => c.divisionKey).keys.toList();
+    var divisionKeys = selectableCampaigns.groupBy((c) => c.divisionKey).keys.toList();
     var divisionService = GetIt.I<GrueneApiDivisionsService>();
     var activeCampaignDivisions = await divisionService.searchDivision(divisionKeys: divisionKeys);
 
-    var previousCampaignName = widget.enforceSelect && selectedCampaignId != null
+    var previousCampaignName = widget.mode == CampaignSelectMode.enforceSelect && selectedCampaignId != null
         ? allCampaigns.firstWhereOrNull((c) => c.id == selectedCampaignId)?.name ?? t.common.unknown
         : t.common.unknown;
 
     setState(() {
       _loading = false;
-      _activeCampaigns = activeCampaigns;
+      _activeCampaigns = selectableCampaigns;
       _activeCampaignDivisions = activeCampaignDivisions;
       _selectedCampaignId = selectedCampaignId;
       _previousCampaignName = previousCampaignName;
@@ -76,9 +83,27 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var titleText = '', hintText = '', height = 300.0;
+
+    switch (widget.mode) {
+      case CampaignSelectMode.normal:
+        titleText = t.campaigns.select.title;
+        hintText = t.campaigns.select.hint;
+        break;
+      case CampaignSelectMode.enforceSelect:
+        titleText = t.campaigns.select.title;
+        hintText = t.campaigns.select.enforceSelectHint(previousCampaignName: _previousCampaignName);
+        break;
+      case CampaignSelectMode.statistics:
+        titleText = t.campaigns.select.statisticsTitle;
+        hintText = t.campaigns.select.statisticsHint;
+        height = 450;
+        break;
+    }
+
     var theme = Theme.of(context);
     return SizedBox(
-      height: 300,
+      height: height,
       child: Container(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -86,16 +111,11 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(t.campaigns.select.title, style: theme.textTheme.titleLarge),
+                Text(titleText, style: theme.textTheme.titleLarge),
                 DialogCloseButton(onClose: _closeAndSave),
               ],
             ),
-            Text(
-              widget.enforceSelect
-                  ? t.campaigns.select.enforceSelectHint(previousCampaignName: _previousCampaignName)
-                  : t.campaigns.select.hint,
-              style: theme.textTheme.bodySmall,
-            ),
+            Text(hintText, style: theme.textTheme.bodySmall),
             SizedBox(height: 16),
             _loading
                 ? Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator())
@@ -106,7 +126,14 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
                         onChanged: (value) => setState(() {
                           _selectedCampaignId = value!;
                         }),
-                        child: Column(children: _activeCampaigns.map((c) => _getCampaignRadioTile(c, theme)).toList()),
+                        child: Column(
+                          children: [
+                            widget.mode == CampaignSelectMode.statistics
+                                ? _getCampaignRadioTile(null, theme)
+                                : SizedBox.shrink(),
+                            ..._activeCampaigns.map((c) => _getCampaignRadioTile(c, theme)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -117,33 +144,37 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
   }
 
   void _closeAndSave() {
-    if (widget.enforceSelect && !_activeCampaigns.isCampaignActive(_selectedCampaignId)) {
+    if (widget.mode == CampaignSelectMode.enforceSelect && !_activeCampaigns.isCampaignActive(_selectedCampaignId)) {
       // Don't allow closing without selection if selection is enforced
       return;
     }
-    var appSettings = GetIt.I<AppSettings>();
-    appSettings.campaign.activeCampaign.recentSelectedCampaignId = _selectedCampaignId;
-    GetIt.I<ActiveCampaignNotifier>().reset();
-
-    Navigator.of(context).pop(true);
+    Navigator.of(context).pop(_selectedCampaignId);
   }
 
-  Widget _getCampaignRadioTile(Campaign c, ThemeData theme) {
+  Widget _getCampaignRadioTile(Campaign? campaign, ThemeData theme) {
+    var campaignId = '-1',
+        campaignName = t.campaigns.statistic.poi_statistics.all_time,
+        campaignSubtitle = t.campaigns.statistic.poi_statistics.all_time_subtitle;
+
+    if (campaign != null) {
+      campaignId = campaign.id;
+      campaignName = campaign.name;
+      campaignSubtitle =
+          '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == campaign.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${campaign.electionDate.getAsLocalDateString()}';
+    }
+
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
       ),
       child: RadioListTile<String>(
-        value: c.id,
+        value: campaignId,
         fillColor: WidgetStatePropertyAll(ThemeColors.primary),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(c.name, style: theme.textTheme.labelLarge),
-            Text(
-              '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == c.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${c.electionDate.getAsLocalDateString()}',
-              style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
-            ),
+            Text(campaignName, style: theme.textTheme.labelLarge),
+            Text(campaignSubtitle, style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled)),
           ],
         ),
         visualDensity: VisualDensity(vertical: VisualDensity.minimumDensity, horizontal: VisualDensity.minimumDensity),
@@ -163,32 +194,42 @@ Future<void> showCampaignSelectDialog(BuildContext context, {bool enforceSelect 
 
   final theme = Theme.of(context);
   while (true) {
-    var dialogResult = await showModalBottomSheet<bool>(
+    var selectCampaignResult = await showModalBottomSheet<String>(
       context: context,
       builder: (context) => Padding(
         padding: EdgeInsets.only(bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding)),
-        child: CampaignSelectWidget(enforceSelect: enforceSelect),
+        child: CampaignSelectWidget(mode: enforceSelect ? CampaignSelectMode.enforceSelect : CampaignSelectMode.normal),
       ),
       isScrollControlled: true,
       isDismissible: isDismissible,
       useRootNavigator: true,
       backgroundColor: theme.colorScheme.surface,
     );
-    if (enforceSelect && (dialogResult == null || dialogResult == false)) {
+    if (enforceSelect && selectCampaignResult == null) {
       // If selection is enforced, we need to show the dialog again if the user dismissed it without selecting
       continue;
     }
+    // apply selection
+    var appSettings = GetIt.I<AppSettings>();
+    appSettings.campaign.activeCampaign.recentSelectedCampaignId = selectCampaignResult;
+    GetIt.I<ActiveCampaignNotifier>().reset();
+
     break;
   }
 }
 
-extension CampaignListExtension on List<Campaign> {
-  List<Campaign> activeCampaigns() {
-    return where((c) => c.status == CampaignStatus.active).toList();
-  }
-
-  bool isCampaignActive(String? campaignId) {
-    if (campaignId == null) return false;
-    return activeCampaigns().any((c) => c.id == campaignId);
-  }
+Future<String?> showCampaignSelectDialogForStatistics(BuildContext context) async {
+  final theme = Theme.of(context);
+  var selectCampaignResult = await showModalBottomSheet<String>(
+    context: context,
+    builder: (context) => Padding(
+      padding: EdgeInsets.only(bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding)),
+      child: CampaignSelectWidget(mode: CampaignSelectMode.statistics),
+    ),
+    isScrollControlled: true,
+    isDismissible: true,
+    useRootNavigator: true,
+    backgroundColor: theme.colorScheme.surface,
+  );
+  return selectCampaignResult;
 }

@@ -77,8 +77,9 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
     map: (data) => data.data,
   );
 
-  Future<TeamMembershipStatistics> getTeamMembershipStatistics() =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsSelfMembershipStatisticsGet());
+  Future<TeamMembershipStatistics> getTeamMembershipStatistics({required String? campaignId}) =>
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsSelfMembershipStatisticsGet(campaignId: campaignId));
 
-  Future<TeamStatistics> getTeamStatistics() => getFromApi(apiRequest: (api) => api.v1CampaignsTeamsStatisticsGet());
+  Future<TeamStatistics> getTeamStatistics({required String? campaignId}) =>
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsStatisticsGet(campaignId: campaignId));
 }

@@ -14,6 +14,8 @@ class CampaignSessionSettings {
   String? searchString;
   List<SearchResultItem>? searchResult = [];
 
+  String? recentPoiStatisticsCampaignId;
+
   CampaignStatisticsModel? recentPoiStatistics;
   DateTime? recentPoiStatisticsFetchTimestamp;
 
