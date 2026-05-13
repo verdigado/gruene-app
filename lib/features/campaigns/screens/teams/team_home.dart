@@ -4,6 +4,7 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/open_invitation_list.dart';
@@ -29,6 +30,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
   late Team? _currentTeam;
   late Profile? _currentProfile;
   final TeamRefreshController _teamController = GetIt.I<TeamRefreshController>();
+  final _appSettings = GetIt.I<AppSettings>();
 
   var _hasInvitations = true;
 
@@ -39,11 +41,13 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
+    _appSettings.campaign.activeCampaign.addListener(_onReload);
   }
 
   @override
   void dispose() {
     _teamController.removeListener(_onReload);
+    _appSettings.campaign.activeCampaign.removeListener(_onReload);
     super.dispose();
   }
 

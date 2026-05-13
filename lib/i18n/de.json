@@ -304,6 +304,9 @@
       "team_assigned_elements_area_info": "${area} km² Gebiet",
       "team_assigned_elements_route_info": "${distance} km Route",
       "team_assigned_elements_assignment_info": "zugewiesen am ${date} von ${assignee}",
+      "team_target_campaign_conflict": "Kampagnen-Konflikt",
+      "team_target_campaign_conflict_message": "Du bist momentan in '${currentCampaign}' aktiv. Das ausgewählte Element gehört zu einer anderen Kampagne.\n\nZu '${targetCampaign}' wechseln?",
+      "team_target_campaign_conflict_action": "Kampagne\nwechseln",
       "member_statistics": "Mitglieder-Statistik",
       "member_statistics_member_info": {
         "member_since": "Team-Mitglied seit ${date}"

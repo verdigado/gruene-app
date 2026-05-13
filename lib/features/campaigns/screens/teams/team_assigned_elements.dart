@@ -208,6 +208,16 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
   }
 
   Future<void> _switchToMap(AssignedElement assignedElement) async {
+    var currentSelectedCampaign = getCurrentCampaignId();
+    if (currentSelectedCampaign != assignedElement.campaignId) {
+      var currentCampaign = _activeCampaigns.singleWhere((c) => c.id == currentSelectedCampaign);
+      var targetCampaign = _activeCampaigns.singleWhere((c) => c.id == assignedElement.campaignId);
+      if (await _confirmCampaignSwitch(currentCampaign, targetCampaign)) {
+        switchCampaign(targetCampaign.id);
+      } else {
+        return;
+      }
+    }
     MapScreenController mapScreenController;
     String route;
     switch (assignedElement.type) {
@@ -233,14 +243,49 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
     }
   }
 
+  Future<bool> _confirmCampaignSwitch(Campaign currentCampaign, Campaign targetCampaign) async {
+    final theme = Theme.of(context);
+    var dialogResult = await showDialog<bool>(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(t.campaigns.team.team_target_campaign_conflict),
+          content: Text(
+            t.campaigns.team.team_target_campaign_conflict_message(
+              currentCampaign: currentCampaign.name,
+              targetCampaign: targetCampaign.name,
+            ),
+            textAlign: TextAlign.left,
+            style: theme.textTheme.labelLarge,
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.maybePop(context, false),
+              child: Text(t.common.actions.cancel, style: theme.textTheme.labelLarge?.apply(fontWeightDelta: -8)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.maybePop(context, true),
+              child: Text(
+                t.campaigns.team.team_target_campaign_conflict_action,
+                style: theme.textTheme.labelLarge?.apply(color: theme.colorScheme.primary, fontWeightDelta: -8),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    return dialogResult ?? false;
+  }
+
   int sortCampaigns(String a, String b) {
     var currentSelectedCampaign = getCurrentCampaignId();
     if (a == currentSelectedCampaign) return -1;
     if (b == currentSelectedCampaign) return 1;
-    return _activeCampaigns
-            .singleWhere((c) => c.id == a)
-            .electionDate
-            .compareTo(_activeCampaigns.singleWhere((c) => c.id == b).electionDate) *
-        -1;
+
+    var campaignA = _activeCampaigns.singleWhere((c) => c.id == a);
+    var campaignB = _activeCampaigns.singleWhere((c) => c.id == b);
+    return campaignA.electionDate.compareTo(campaignB.electionDate) * -1;
   }
 }

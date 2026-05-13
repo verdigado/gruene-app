@@ -7,11 +7,9 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
-import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -209,10 +207,9 @@ Future<void> showCampaignSelectDialog(BuildContext context, {bool enforceSelect 
       // If selection is enforced, we need to show the dialog again if the user dismissed it without selecting
       continue;
     }
+
     // apply selection
-    var appSettings = GetIt.I<AppSettings>();
-    appSettings.campaign.activeCampaign.recentSelectedCampaignId = selectCampaignResult;
-    GetIt.I<ActiveCampaignNotifier>().reset();
+    switchCampaign(selectCampaignResult);
 
     break;
   }
