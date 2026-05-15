@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/membership.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
@@ -21,8 +21,8 @@ class MembershipCardScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.myMembershipCard),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile data, _) {
-          DivisionMembership? kvMembership = extractKvMembership(data.memberships);
+        buildChild: (Profile profile, _) {
+          Division? partyDivision = profile.memberships?.partyDivision();
 
           return Padding(
             padding: defaultScreenPadding,
@@ -46,13 +46,13 @@ class MembershipCardScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${data.firstName}\n${data.lastName}',
+                    '${profile.firstName}\n${profile.lastName}',
                     style: theme.textTheme.headlineLarge?.copyWith(color: ThemeColors.background),
                   ),
-                  if (kvMembership != null) ...[
+                  if (partyDivision != null) ...[
                     const SizedBox(height: 20),
                     Text(
-                      '${kvMembership.division.name1} ${kvMembership.division.name2}',
+                      partyDivision.displayName(),
                       style: theme.textTheme.titleSmall?.copyWith(color: ThemeColors.background),
                     ),
                   ],
@@ -67,7 +67,7 @@ class MembershipCardScreen extends StatelessWidget {
                           RotatedBox(
                             quarterTurns: -1,
                             child: Text(
-                              '${t.common.party}\n${t.profiles.personalId}:\n${data.personalId}',
+                              '${t.common.party}\n${t.profiles.personalId}:\n${profile.personalId}',
                               style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                             ),
                           ),
@@ -78,7 +78,7 @@ class MembershipCardScreen extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: QrImageView(
-                          data: data.personalId,
+                          data: profile.personalId,
                           version: QrVersions.auto,
                           size: 212,
                           backgroundColor: ThemeColors.background,

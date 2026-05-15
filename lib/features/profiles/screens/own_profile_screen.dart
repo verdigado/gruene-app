@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/utils/membership.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
@@ -29,7 +29,7 @@ class OwnProfileScreen extends StatelessWidget {
           );
           Iterable<ProfileRole> sherpaRoles = profile.roles.where((role) => role.type == ProfileRoleType.role);
           Iterable<ProfileTag> skillTags = profile.tags.where((tag) => tag.type == ProfileTagType.skill);
-          DivisionMembership? kvMembership = extractKvMembership(profile.memberships);
+          Division? partyDivision = profile.memberships?.partyDivision();
 
           return SingleChildScrollView(
             padding: defaultScreenPadding.copyWith(left: 0, right: 0),
@@ -74,10 +74,10 @@ class OwnProfileScreen extends StatelessWidget {
                     title: t.profiles.skills,
                     children: skillTags.map((tag) => ProfileCardListItem(value: tag.label)).toList(),
                   ),
-                if (kvMembership?.division.urls.isNotEmpty ?? false)
+                if (partyDivision != null && partyDivision.urls.isNotEmpty)
                   ProfileCard(
                     title: t.profiles.myKreisverband,
-                    children: kvMembership!.division.urls
+                    children: partyDivision.urls
                         .map((url) => ProfileCardListItem(value: t.profiles.homepage, url: url))
                         .toList(),
                   ),
