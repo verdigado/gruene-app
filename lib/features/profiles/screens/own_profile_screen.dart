@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
@@ -30,7 +30,7 @@ class OwnProfileScreen extends StatelessWidget {
           );
           Iterable<ProfileRole> sherpaRoles = profile.roles.where((role) => role.type == ProfileRoleType.role);
           Iterable<ProfileTag> skillTags = profile.tags.where((tag) => tag.type == ProfileTagType.skill);
-          Division? partyDivision = profile.memberships?.partyDivision();
+          Division? partyDivision = profile.partyDivision();
 
           return SingleChildScrollView(
             padding: defaultScreenPadding.copyWith(left: 0, right: 0),

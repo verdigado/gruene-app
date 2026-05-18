@@ -4,8 +4,8 @@ import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
+import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';
@@ -51,10 +51,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
       successMessage: t.profiles.visibility.updated,
     );
 
-    if (!mounted) return;
-    Navigator.pop(context, newProfile);
-
-    if (_selectedVisibility == ProfilePrivacySettingsOverall.private && team != null) {
+    if (_selectedVisibility == ProfilePrivacySettingsOverall.private && team != null && mounted) {
       await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
@@ -64,14 +61,15 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
         ),
       );
     }
+
+    if (!mounted) return;
+    Navigator.pop(context, newProfile);
   }
 
   @override
   Widget build(BuildContext context) {
-    final profileVisibilityOptions = widget.profile.memberships!.profileVisibilityOptions();
-    // TODO: Adjust to OV if teams are available for OVs and user is in an OV
-    // final minVisibility = memberships.profileVisibilityOptions()[2];
-    final minVisibility = ProfilePrivacySettingsOverall.kvWide;
+    final profileVisibilityOptions = widget.profile.profileVisibilityOptions();
+    final minVisibility = widget.profile.minTeamVisibilityOption();
     final minVisibilityLabel = visibilityLabel(minVisibility);
     final minVisibilityShort = visibilityShortLabel(minVisibility);
     final theme = Theme.of(context);
