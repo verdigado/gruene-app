@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 
 class DialogCloseButton extends StatelessWidget {
-  const DialogCloseButton({super.key});
+  final void Function()? onClose;
+
+  const DialogCloseButton({super.key, this.onClose});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
       alignment: Alignment.topRight,
-      padding: EdgeInsets.all(8),
-      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 8),
+      width: 64,
       height: 64,
       child: CircleAvatar(
         backgroundColor: theme.colorScheme.surface,
         child: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: Navigator.of(context).pop,
+          onPressed: onClose ?? Navigator.of(context).pop,
           color: theme.colorScheme.onSurface,
         ),
       ),
