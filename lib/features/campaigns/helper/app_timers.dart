@@ -4,6 +4,7 @@ import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -19,7 +20,11 @@ class AppTimers {
   }
 
   static BackgroundTimer getEnforceActiveCampaignTimer() {
-    return BackgroundTimer(onTimer: _checkCurrentCampaignIsActive, runEvery: Duration(minutes: 1));
+    return BackgroundTimer(
+      onTimer: _checkCurrentCampaignIsActive,
+      runEvery: Duration(minutes: 1),
+      initialRunDelay: Duration(seconds: 1),
+    );
   }
 
   static void _flushCacheData() async {
@@ -75,6 +80,9 @@ class ActiveCampaignNotifier extends ChangeNotifier {
       }
       _isCurrentCampaignActive = isActive;
       if (!isActive) {
+        logger.d(
+          'Current campaign is not active anymore. Notifying listeners to show campaign select dialog if needed.',
+        );
         notifyListeners();
       }
     } on ClientException {
