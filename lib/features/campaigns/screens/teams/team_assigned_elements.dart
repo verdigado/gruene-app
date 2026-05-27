@@ -123,7 +123,6 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
 
   Iterable<Widget> _getAssignedElementRowsByCampaign(List<AssignedElement> assignedElementDisplayList) {
     var campaignIds = assignedElementDisplayList.map((e) => e.campaignId).groupBy(id).keys.toList();
-    logger.d('CampaignIds for assigned elements: $campaignIds');
     campaignIds.sort(sortCampaigns);
     return campaignIds.map((campaignId) {
       var campaignName = _activeCampaigns.singleWhere((c) => c.id == campaignId).name;
