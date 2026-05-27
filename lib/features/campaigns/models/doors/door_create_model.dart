@@ -13,11 +13,14 @@ class DoorCreateModel {
   final int openedDoors;
   final int closedDoors;
 
+  final String campaignId;
+
   DoorCreateModel({
     required this.location,
     required this.address,
     required this.openedDoors,
     required this.closedDoors,
+    required this.campaignId,
   });
 
   factory DoorCreateModel.fromJson(Map<String, dynamic> json) => _$DoorCreateModelFromJson(json);

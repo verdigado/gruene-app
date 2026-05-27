@@ -31,6 +31,7 @@ extension RouteAssignmentParsing on RouteAssignment {
       assignmentDate: assignedAt ?? DateTime.now(),
       assignee: assigningUser,
       coords: lineString.asTurfLine(),
+      campaignId: campaignId,
     );
   }
 }

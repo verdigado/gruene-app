@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -34,7 +35,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
     setState(() => _loading = true);
 
     var teamsService = GetIt.I<GrueneApiTeamsService>();
-    var teamStatistics = await teamsService.getTeamMembershipStatistics();
+    var teamStatistics = await teamsService.getTeamMembershipStatistics(campaignId: getCurrentCampaignId() ?? '-1');
 
     setState(() {
       _loading = false;

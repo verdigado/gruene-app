@@ -32,6 +32,7 @@ extension AreaAssignmentParsing on AreaAssignment {
       assignmentDate: assignedAt ?? DateTime.now(),
       assignee: assigningUser,
       coords: polygon.asTurfPolygon(),
+      campaignId: campaignId,
     );
   }
 }

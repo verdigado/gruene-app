@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_create_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/widgets/create_address_widget.dart';
@@ -119,7 +120,12 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
     if (validationResult == null) return;
     Navigator.maybePop(
       context,
-      FlyerCreateModel(location: widget.location, address: getAddress(), flyerCount: validationResult.flyerCount),
+      FlyerCreateModel(
+        location: widget.location,
+        address: getAddress(),
+        flyerCount: validationResult.flyerCount,
+        campaignId: getCurrentCampaignId()!,
+      ),
     );
   }
 }

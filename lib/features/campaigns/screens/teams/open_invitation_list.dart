@@ -49,7 +49,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
 
       // enforce reload of open invitations in campaign value store
       // if the number of open invitations has changed since the last load
-      var store = GetIt.I<CampaignValueStore>();
+      var store = GetIt.I<OpenInvitationCampaignValueStore>();
       if (_openInvitations.length != store.openInvitations) {
         store.reloadOpenInvitations();
       }
@@ -179,14 +179,14 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
     }
     var teamService = GetIt.I<GrueneApiTeamsService>();
     await teamService.acceptTeamMembership(invitation.teamId);
-    GetIt.I<CampaignValueStore>().reloadOpenInvitations();
+    GetIt.I<OpenInvitationCampaignValueStore>().reloadOpenInvitations();
     widget.reload();
   }
 
   Future<void> _rejectInvitation(TeamInvitation invitation) async {
     var teamService = GetIt.I<GrueneApiTeamsService>();
     await teamService.rejectTeamMembership(invitation.teamId);
-    GetIt.I<CampaignValueStore>().reloadOpenInvitations();
+    GetIt.I<OpenInvitationCampaignValueStore>().reloadOpenInvitations();
     widget.reload();
   }
 }

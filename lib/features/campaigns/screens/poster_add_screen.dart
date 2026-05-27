@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
@@ -174,7 +175,12 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
   void _saveAndReturn(String? fileLocation) {
     Navigator.maybePop(
       context,
-      PosterCreateModel(location: widget.location, address: getAddress(), imageFileLocation: fileLocation),
+      PosterCreateModel(
+        location: widget.location,
+        address: getAddress(),
+        imageFileLocation: fileLocation,
+        campaignId: getCurrentCampaignId()!,
+      ),
     );
   }
 
