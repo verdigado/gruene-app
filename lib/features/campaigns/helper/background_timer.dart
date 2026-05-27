@@ -5,14 +5,14 @@ class BackgroundTimer {
 
   BackgroundTimer({
     Duration runEvery = const Duration(minutes: 5),
-    Duration? intialRunDelay = const Duration(seconds: 5),
+    Duration? initialRunDelay = const Duration(seconds: 5),
     required void Function() onTimer,
   }) {
     timer = Timer.periodic(runEvery, (timer) => onTimer());
 
     // initial flush
-    if (intialRunDelay != null) {
-      Future.delayed(intialRunDelay, () => Timer.run(onTimer));
+    if (initialRunDelay != null) {
+      Future.delayed(initialRunDelay, () => Timer.run(onTimer));
     }
   }
 }

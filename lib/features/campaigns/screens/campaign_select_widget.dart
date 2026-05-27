@@ -146,7 +146,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       // Don't allow closing without selection if selection is enforced
       return;
     }
-    Navigator.of(context).pop(_selectedCampaignId);
+    Navigator.of(context).pop(CampaignSelectResult.success(_selectedCampaignId));
   }
 
   Widget _getCampaignRadioTile(Campaign? campaign, ThemeData theme) {
@@ -192,7 +192,7 @@ Future<void> showCampaignSelectDialog(BuildContext context, {bool enforceSelect 
 
   final theme = Theme.of(context);
   while (true) {
-    var selectCampaignResult = await showModalBottomSheet<String>(
+    var selectCampaignResult = await showModalBottomSheet<CampaignSelectResult>(
       context: context,
       builder: (context) => Padding(
         padding: EdgeInsets.only(bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding)),
@@ -203,21 +203,22 @@ Future<void> showCampaignSelectDialog(BuildContext context, {bool enforceSelect 
       useRootNavigator: true,
       backgroundColor: theme.colorScheme.surface,
     );
-    if (enforceSelect && selectCampaignResult == null) {
+    if (enforceSelect &&
+        (selectCampaignResult == null || !selectCampaignResult.success || selectCampaignResult.campaignId == null)) {
       // If selection is enforced, we need to show the dialog again if the user dismissed it without selecting
       continue;
     }
-
-    // apply selection
-    switchCampaign(selectCampaignResult);
-
+    if (selectCampaignResult != null && selectCampaignResult.success) {
+      // apply selection
+      switchCampaign(selectCampaignResult.campaignId);
+    }
     break;
   }
 }
 
 Future<String?> showCampaignSelectDialogForStatistics(BuildContext context) async {
   final theme = Theme.of(context);
-  var selectCampaignResult = await showModalBottomSheet<String>(
+  var selectCampaignResult = await showModalBottomSheet<CampaignSelectResult>(
     context: context,
     builder: (context) => Padding(
       padding: EdgeInsets.only(bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding)),
@@ -228,5 +229,23 @@ Future<String?> showCampaignSelectDialogForStatistics(BuildContext context) asyn
     useRootNavigator: true,
     backgroundColor: theme.colorScheme.surface,
   );
-  return selectCampaignResult;
+  if (selectCampaignResult != null && selectCampaignResult.success) {
+    return selectCampaignResult.campaignId;
+  }
+  return null;
+}
+
+class CampaignSelectResult {
+  final String? campaignId;
+  final bool success;
+
+  CampaignSelectResult(this.success, this.campaignId);
+
+  factory CampaignSelectResult.success(String? campaignId) {
+    return CampaignSelectResult(true, campaignId);
+  }
+
+  factory CampaignSelectResult.fail() {
+    return CampaignSelectResult(false, null);
+  }
 }
