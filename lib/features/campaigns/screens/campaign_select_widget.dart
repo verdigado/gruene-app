@@ -103,7 +103,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
     return SizedBox(
       height: height,
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             Row(

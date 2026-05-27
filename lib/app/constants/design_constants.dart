@@ -1,3 +1,3 @@
 class DesignConstants {
-  static const double bottomPadding = 60;
+  static const double bottomPadding = 48;
 }
