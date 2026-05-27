@@ -114,7 +114,7 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
             ),
           ),
           Container(
-            padding: EdgeInsets.only(top: 6, bottom: 24),
+            padding: EdgeInsets.only(top: 6, bottom: 24), 
             child: DeleteAndSaveWidget(
               onDelete: () => confirmDelete(context, onDeletePressed: _onDeletePressed),
               onSave: _saveDoor,
