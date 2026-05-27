@@ -103,7 +103,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
     return SizedBox(
       height: height,
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             Row(
@@ -165,18 +165,36 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
       ),
-      child: RadioListTile<String>(
-        value: campaignId,
-        fillColor: WidgetStatePropertyAll(ThemeColors.primary),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.symmetric(vertical: 6),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedCampaignId = campaignId;
+          });
+        },
+        child: Row(
           children: [
-            Text(campaignName, style: theme.textTheme.labelLarge),
-            Text(campaignSubtitle, style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled)),
+            Radio<String>(
+              value: campaignId,
+              fillColor: WidgetStatePropertyAll(ThemeColors.primary),
+              visualDensity: VisualDensity(
+                vertical: VisualDensity.minimumDensity,
+                horizontal: VisualDensity.minimumDensity,
+              ),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              splashRadius: 0,
+            ),
+            SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(campaignName, style: theme.textTheme.labelLarge),
+                Text(campaignSubtitle, style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled)),
+              ],
+            ),
+            // ),
           ],
         ),
-        visualDensity: VisualDensity(vertical: VisualDensity.minimumDensity, horizontal: VisualDensity.minimumDensity),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     );
   }
