@@ -162,6 +162,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authRepository = AuthRepository();
+    final shortestSide = MediaQuery.sizeOf(context).shortestSide;
+
+    if (shortestSide < 640) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
 
     return MultiBlocProvider(
       providers: [

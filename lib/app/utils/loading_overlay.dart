@@ -26,7 +26,7 @@ void hideLoadingOverlay() {
 Future<T?> tryAndNotify<T>({
   required Future<T> Function() function,
   required BuildContext context,
-  required String successMessage,
+  String? successMessage,
   String? errorMessage,
   void Function(bool loading)? setLoading,
 }) async {
@@ -34,7 +34,7 @@ Future<T?> tryAndNotify<T>({
   setLoading != null ? setLoading(true) : showLoadingOverlay(context);
   try {
     final value = await function();
-    if (rootContext.mounted) {
+    if (successMessage != null && rootContext.mounted) {
       showSnackBar(rootContext, successMessage);
     }
     return value;

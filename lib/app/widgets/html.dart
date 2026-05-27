@@ -46,11 +46,15 @@ class CustomHtml extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Html(
       data: data,
       extensions: [accordionTagExtension],
       onLinkTap: (url, _, _) => url != null ? openUrl(url, context) : null,
-      style: {'body': Style(margin: Margins.zero)},
+      style: {
+        'body': Style(margin: Margins.zero),
+        'a': Style(color: theme.primaryColor, textDecorationColor: theme.primaryColor),
+      },
     );
   }
 }

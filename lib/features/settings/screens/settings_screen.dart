@@ -51,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsets.only(top: 24),
                   child: OutlinedButton.icon(
-                    onPressed: () => context.read<AuthBloc>().add(LogoutRequested()),
+                    onPressed: () => context.read<AuthBloc>().add(LogoutRequested(context)),
                     label: Text(t.settings.logout),
                     icon: Icon(Icons.logout),
                   ),

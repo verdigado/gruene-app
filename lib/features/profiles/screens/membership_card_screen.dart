@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/membership.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
@@ -21,13 +22,14 @@ class MembershipCardScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.myMembershipCard),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile data, _) {
-          DivisionMembership? kvMembership = extractKvMembership(data.memberships);
+        buildChild: (Profile profile, _) {
+          Division? partyDivision = profile.partyDivision();
 
-          return Padding(
-            padding: defaultScreenPadding,
+          return ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 640),
             child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 24, 12, 12),
+              margin: defaultScreenPadding,
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [ThemeColors.primary, ThemeColors.secondary],
@@ -39,48 +41,46 @@ class MembershipCardScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
+                spacing: 8,
                 children: [
                   Text(
                     t.profiles.membershipCard,
                     style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                   ),
-                  const SizedBox(height: 4),
                   Text(
-                    '${data.firstName}\n${data.lastName}',
+                    '${profile.firstName}\n${profile.lastName}',
                     style: theme.textTheme.headlineLarge?.copyWith(color: ThemeColors.background),
                   ),
-                  if (kvMembership != null) ...[
-                    const SizedBox(height: 20),
+                  if (partyDivision != null)
                     Text(
-                      '${kvMembership.division.name1} ${kvMembership.division.name2}',
+                      partyDivision.displayName(),
                       style: theme.textTheme.titleSmall?.copyWith(color: ThemeColors.background),
                     ),
-                  ],
-                  const SizedBox(height: 80),
+                  Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 16,
                         children: [
                           RotatedBox(
                             quarterTurns: -1,
                             child: Text(
-                              '${t.common.party}\n${t.profiles.personalId}:\n${data.personalId}',
+                              '${t.common.party}\n${t.profiles.personalId}:\n${profile.personalId}',
                               style: theme.textTheme.labelLarge?.copyWith(color: ThemeColors.background),
                             ),
                           ),
-                          const SizedBox(height: 24),
                           CustomIcon(path: 'assets/icons/sunflower.svg', height: 48, color: ThemeColors.background),
                         ],
                       ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: QrImageView(
-                          data: data.personalId,
+                          data: profile.personalId,
                           version: QrVersions.auto,
-                          size: 212,
+                          size: 192,
                           backgroundColor: ThemeColors.background,
                         ),
                       ),

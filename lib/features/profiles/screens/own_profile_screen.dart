@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/utils/membership.dart';
+import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
-import 'package:gruene_app/features/profiles/helper/social_media_type_translation.dart';
+import 'package:gruene_app/features/profiles/utils/social_media_type_translation.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card_list_item.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -29,7 +30,7 @@ class OwnProfileScreen extends StatelessWidget {
           );
           Iterable<ProfileRole> sherpaRoles = profile.roles.where((role) => role.type == ProfileRoleType.role);
           Iterable<ProfileTag> skillTags = profile.tags.where((tag) => tag.type == ProfileTagType.skill);
-          DivisionMembership? kvMembership = extractKvMembership(profile.memberships);
+          Division? partyDivision = profile.partyDivision();
 
           return SingleChildScrollView(
             padding: defaultScreenPadding.copyWith(left: 0, right: 0),
@@ -37,9 +38,22 @@ class OwnProfileScreen extends StatelessWidget {
               spacing: 16,
               children: [
                 ProfileHeader(profile: profile, update: extra.update),
-                TextListItem(
-                  title: t.profiles.myMembershipCard,
-                  onPress: () => context.pushNested(Routes.digitalMembershipCard.path),
+                Column(
+                  children: [
+                    TextListItem(
+                      title: t.profiles.myMembershipCard,
+                      onPress: () => context.pushNested(Routes.digitalMembershipCard.path),
+                    ),
+                    TextListItem(
+                      title: t.profiles.visibility.visibility,
+                      onPress: () async {
+                        final newProfile = await showProfileVisibilitySetting(context, profile);
+                        if (newProfile != null) {
+                          extra.update(newProfile);
+                        }
+                      },
+                    ),
+                  ],
                 ),
                 ProfileCard(
                   children: [
@@ -74,10 +88,10 @@ class OwnProfileScreen extends StatelessWidget {
                     title: t.profiles.skills,
                     children: skillTags.map((tag) => ProfileCardListItem(value: tag.label)).toList(),
                   ),
-                if (kvMembership?.division.urls.isNotEmpty ?? false)
+                if (partyDivision != null && partyDivision.urls.isNotEmpty)
                   ProfileCard(
                     title: t.profiles.myKreisverband,
-                    children: kvMembership!.division.urls
+                    children: partyDivision.urls
                         .map((url) => ProfileCardListItem(value: t.profiles.homepage, url: url))
                         .toList(),
                   ),
