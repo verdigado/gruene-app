@@ -5,8 +5,6 @@ class DialogCloseButton extends StatelessWidget {
 
   const DialogCloseButton({super.key, this.onClose});
 
-  final void Function()? onClose;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
