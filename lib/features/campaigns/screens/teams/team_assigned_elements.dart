@@ -128,7 +128,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       return Column(
         children: [
           Container(
-            padding: EdgeInsets.only(top: 12, bottom: 6),
+            padding: EdgeInsets.only(top: 30, bottom: 4),
             alignment: Alignment.centerLeft,
             child: Text(campaignName, style: Theme.of(context).textTheme.titleSmall),
           ),
