@@ -22,6 +22,7 @@ import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
+import 'package:gruene_app/features/campaigns/screens/campaign_select_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/campaign_location_button.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
@@ -150,7 +151,10 @@ class _MapContainerState extends State<MapContainer>
       addMarker = Center(
         child: Container(
           padding: EdgeInsets.only(bottom: 65 /* height of the add_marker icon to position it exactly on the middle */),
-          child: GestureDetector(onTap: _onIconTap, child: SvgPicture.asset(CampaignConstants.addMarkerAssetName)),
+          child: GestureDetector(
+            onTap: _onAddNewPoiMarkerTap,
+            child: SvgPicture.asset(CampaignConstants.addMarkerAssetName),
+          ),
         ),
       );
     }
@@ -235,8 +239,12 @@ class _MapContainerState extends State<MapContainer>
     }
   }
 
-  void _onIconTap() {
+  Future<void> _onAddNewPoiMarkerTap() async {
     final addPOIClicked = widget.addPOIClicked;
+
+    if (appSettings.campaign.activeCampaign.recentSelectedCampaignId == null) {
+      await showCampaignSelectDialog(context, enforceSelect: true);
+    }
 
     if (addPOIClicked != null) {
       addPOIClicked(_controller!.cameraPosition!.target);
