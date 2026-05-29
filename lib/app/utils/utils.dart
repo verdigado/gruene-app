@@ -56,4 +56,5 @@ extension NullableStringExtension on String? {
 
 extension NormalizeExtension on String {
   String get normalized => removeDiacritics(this).toLowerCase();
+  bool matches(String query) => normalized.contains(query.normalized);
 }

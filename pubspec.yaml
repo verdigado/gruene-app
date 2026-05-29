@@ -84,6 +84,7 @@ dependencies:
   infinite_scroll_pagination: ^5.1.1
   # flutter_nice_toast: ^0.2.5
   diacritic: ^0.1.6
+  dropdown_search: ^7.0.0
 
 dev_dependencies:
 

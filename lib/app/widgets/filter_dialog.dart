@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
+import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+
+class FilterSection extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const FilterSection({super.key, required this.title, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SectionTitle(title: title),
+        Container(color: theme.colorScheme.surface, padding: screenPaddingSymmetric(vertical: 8), child: child),
+      ],
+    );
+  }
+}
 
 class FilterDialog extends StatelessWidget {
   final void Function() resetFilters;
@@ -20,6 +41,7 @@ class FilterDialog extends StatelessWidget {
             )
           : null,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 16,
         children: [
           ...children,

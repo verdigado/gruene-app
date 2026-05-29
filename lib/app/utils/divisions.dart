@@ -5,6 +5,9 @@ extension DivisionExtension on Division {
   String get shortDisplayName => level == DivisionLevel.bv ? name2 : '${level.value} $name2';
 
   String get displayName => level == DivisionLevel.bv ? name2 : '$name1 $name2';
+
+  bool matches(String query) =>
+      displayName.normalized.contains(query.normalized) || shortDisplayName.normalized.contains(query.normalized);
 }
 
 extension SortExtension on List<Division> {
@@ -26,11 +29,7 @@ extension SortExtension on List<Division> {
 }
 
 extension FilterExtension on Iterable<Division> {
-  List<Division> filter(String query) => where(
-    (division) =>
-        division.displayName.normalized.contains(query.normalized) ||
-        division.shortDisplayName.normalized.contains(query.normalized),
-  ).toList().sortByLevel();
+  List<Division> filter(String query) => where((division) => division.matches(query)).toList().sortByLevel();
 
   List<Division> filterByLevel(DivisionLevel level) {
     final filtered = where((division) => division.level == level).toList();
