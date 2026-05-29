@@ -28,7 +28,7 @@ class MembershipCardScreen extends StatelessWidget {
           return ConstrainedBox(
             constraints: BoxConstraints(maxHeight: 640),
             child: Container(
-              margin: defaultScreenPadding,
+              margin: screenPadding,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(

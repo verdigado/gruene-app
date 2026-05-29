@@ -57,7 +57,7 @@ class _EventsScreenState extends State<EventsScreen> {
           Offstage(
             offstage: showMap,
             child: Padding(
-              padding: defaultScreenPadding.copyWith(bottom: 0),
+              padding: screenPadding.copyWith(bottom: 0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

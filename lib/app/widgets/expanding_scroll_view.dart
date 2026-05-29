@@ -12,7 +12,7 @@ class ExpandingScrollView extends StatelessWidget {
     super.key,
     required this.children,
     this.crossAxisAlignment = CrossAxisAlignment.center,
-    this.padding = defaultScreenPadding,
+    this.padding = screenPadding,
     this.spacing = 0,
   });
 
