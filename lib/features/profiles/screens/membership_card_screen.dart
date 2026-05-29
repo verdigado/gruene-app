@@ -53,7 +53,7 @@ class MembershipCardScreen extends StatelessWidget {
                   ),
                   if (partyDivision != null)
                     Text(
-                      partyDivision.displayName(),
+                      partyDivision.displayName,
                       style: theme.textTheme.titleSmall?.copyWith(color: ThemeColors.background),
                     ),
                   Spacer(),

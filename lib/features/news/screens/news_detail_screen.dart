@@ -48,7 +48,7 @@ class NewsDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          division != null ? Text(division.shortDisplayName()) : Container(),
+                          division != null ? Text(division.shortDisplayName) : Container(),
                           Text(
                             news.title,
                             style: theme.textTheme.titleLarge?.copyWith(

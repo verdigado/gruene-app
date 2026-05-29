@@ -61,7 +61,7 @@ class NewsCard extends StatelessWidget {
                         Container(
                           margin: EdgeInsets.only(top: 16),
                           child: Chip(
-                            label: Text(division.shortDisplayName(), style: theme.textTheme.labelSmall),
+                            label: Text(division.shortDisplayName, style: theme.textTheme.labelSmall),
                             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                             visualDensity: VisualDensity(vertical: -4),
                             backgroundColor: theme.colorScheme.surface,
