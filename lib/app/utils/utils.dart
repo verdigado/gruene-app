@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/config.dart';
@@ -51,4 +52,8 @@ Future<bool> hasInternetAccess() async {
 
 extension NullableStringExtension on String? {
   bool get isNotEmpty => this?.isNotEmpty ?? false;
+}
+
+extension NormalizeExtension on String {
+  String get normalized => removeDiacritics(this).toLowerCase();
 }
