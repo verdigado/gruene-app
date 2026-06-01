@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/date_range_filter.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/filter_dialog.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
+import 'package:gruene_app/app/widgets/selection.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
@@ -91,17 +93,20 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
             selectedOptions: _localSelectedCalendars,
             getLabel: (calendar) => calendar.displayName,
           ),
-        SelectionView(
-          setSelectedOptions: (categories) {
-            setState(() => _localSelectedCategories = categories);
-            widget.categoryFilter.update(categories);
-          },
+        FilterSection(
           title: t.events.categories,
-          options: prominentEventCategories,
-          moreOptionsTitle: t.events.moreCategories,
-          moreOptions: moreEventCategories,
-          selectedOptions: _localSelectedCategories,
-          getLabel: (category) => category,
+          child: MultiSelection(
+            selected: _localSelectedCategories,
+            setSelected: (categories) {
+              setState(() => _localSelectedCategories = categories);
+              widget.categoryFilter.update(categories);
+            },
+            items: eventCategories,
+            compare: (category1, category2) => category1 == category2,
+            filter: (category, query) => category.matches(query),
+            itemAsString: (category) => category,
+            hint: t.events.searchCategories,
+          ),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
