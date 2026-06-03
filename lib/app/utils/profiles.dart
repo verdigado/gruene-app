@@ -4,17 +4,9 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 extension ProfileExtension on Profile {
   String get fullName => '$firstName $lastName';
 
-  List<Division> get divisions => memberships.map((membership) => membership.division).toList();
+  List<Division> get divisions => publicProfile.divisions;
 
-  Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GR');
-
-  Division? get gjDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GJ');
-
-  Division? get kpvDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'KPV');
-
-  ProfileRole? get partyRole => roles.firstWhereOrNull((role) => role.type == ProfileRoleType.role);
-
-  ProfileRole? get mandate => roles.firstWhereOrNull((role) => role.type == ProfileRoleType.mandate);
+  Division? get partyDivision => publicProfile.partyDivision;
 
   // TODO #1065: Adjust to OV if teams are available for OVs and user is in an OV
   // ProfilePrivacySettingsOverall minTeamVisibilityOption() => profileVisibilityOptions()[2];
@@ -28,6 +20,25 @@ extension ProfileExtension on Profile {
     Visibility.bvWide,
     Visibility.public,
   ];
+
+  PublicProfile get publicProfile => PublicProfile(
+    id: id,
+    userId: userId,
+    personalId: personalId,
+    username: username,
+    firstName: firstName,
+    lastName: lastName,
+    image: image,
+    phoneNumbers: phoneNumbers,
+    messengers: messengers,
+    socialMedia: socialMedia,
+    tags: tags,
+    joinedAt: joinedAt,
+    memberships: memberships,
+    roles: roles,
+    achievements: achievements,
+    email: email,
+  );
 
   UpdateProfile get updateProfile => UpdateProfile(
     email: email,
@@ -53,14 +64,6 @@ extension PublicProfileExtension on PublicProfile {
   List<Division> get divisions => memberships.map((membership) => membership.division).toList();
 
   Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GR');
-
-  Division? get gjDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GJ');
-
-  Division? get kpvDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'KPV');
-
-  ProfileRole? get partyRole => roles.firstWhereOrNull((role) => role.type == ProfileRoleType.office);
-
-  ProfileRole? get mandate => roles.firstWhereOrNull((role) => role.type == ProfileRoleType.mandate);
 }
 
 extension ProfileRoleExtension on ProfileRole {
