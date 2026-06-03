@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -40,11 +41,13 @@ class FilterDialog extends StatelessWidget {
               child: Text(t.common.actions.resetFilter, style: theme.textTheme.bodyLarge),
             )
           : null,
-      child: Column(
+      child: ExpandingScrollView(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        padding: EdgeInsets.zero,
         spacing: 16,
         children: [
           ...children,
+          Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             child: FilledButton(

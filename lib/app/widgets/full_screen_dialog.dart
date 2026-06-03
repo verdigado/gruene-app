@@ -26,7 +26,7 @@ class FullScreenDialog extends StatelessWidget {
           IconButton(icon: Icon(Icons.close), onPressed: Navigator.of(context).pop),
         ],
       ),
-      body: SafeArea(child: SingleChildScrollView(child: child)),
+      body: SafeArea(child: child),
     );
   }
 }
