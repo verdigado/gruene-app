@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
-import 'package:gruene_app/features/profiles/utils/social_media_type_translation.dart';
-import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
-import 'package:gruene_app/features/profiles/widgets/profile_card_list_item.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_details.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -25,94 +22,34 @@ class OwnProfileScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.profiles),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile profile, extra) {
-          Iterable<ProfileRole> mandateRoles = profile.roles.where(
-            (role) => [ProfileRoleType.mandate, ProfileRoleType.office].contains(role.type),
-          );
-          Iterable<ProfileRole> sherpaRoles = profile.roles.where((role) => role.type == ProfileRoleType.role);
-          Iterable<ProfileTag> skillTags = profile.tags.where((tag) => tag.type == ProfileTagType.skill);
-          Division? partyDivision = profile.partyDivision;
-
-          return SingleChildScrollView(
-            padding: verticalScreenPadding,
-            child: Column(
-              spacing: 16,
-              children: [
-                OwnProfileHeader(profile: profile, update: extra.update),
-                Column(
-                  children: [
-                    TextListItem(
-                      title: t.profiles.search,
-                      onPress: () => context.pushNested(Routes.profileSearch.path),
-                    ),
-                    TextListItem(
-                      title: t.profiles.myMembershipCard,
-                      onPress: () => context.pushNested(Routes.membershipCard.path),
-                    ),
-                    TextListItem(
-                      title: t.profiles.visibility.visibility,
-                      onPress: () async {
-                        final newProfile = await showProfileVisibilitySetting(context, profile);
-                        if (newProfile != null) {
-                          extra.update(newProfile);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                ProfileCard(
-                  children: [
-                    ProfileCardListItem(title: t.profiles.email, value: profile.email),
-                    if (profile.phoneNumbers.isNotEmpty)
-                      ProfileCardListItem(title: t.profiles.phoneNumber, value: profile.phoneNumbers.first.number),
-                    ProfileCardListItem(title: t.profiles.personalId, value: profile.personalId, copyOnTap: true),
-                  ],
-                ),
-                if (profile.memberships.isNotEmpty)
-                  ProfileCard(
-                    title: t.profiles.memberships,
-                    children: profile.memberships
-                        .map((membership) => ProfileCardListItem(value: membership.division.displayName))
-                        .toList(),
+        buildChild: (Profile profile, extra) => SingleChildScrollView(
+          padding: verticalScreenPadding,
+          child: Column(
+            spacing: 16,
+            children: [
+              OwnProfileHeader(profile: profile, update: extra.update),
+              Column(
+                children: [
+                  TextListItem(title: t.profiles.search, onPress: () => context.pushNested(Routes.profileSearch.path)),
+                  TextListItem(
+                    title: t.profiles.myMembershipCard,
+                    onPress: () => context.pushNested(Routes.membershipCard.path),
                   ),
-                if (mandateRoles.isNotEmpty)
-                  ProfileCard(
-                    title: t.profiles.mandates,
-                    children: mandateRoles.map((role) => ProfileCardListItem(value: role.alias)).toList(),
+                  TextListItem(
+                    title: t.profiles.visibility.visibility,
+                    onPress: () async {
+                      final newProfile = await showProfileVisibilitySetting(context, profile);
+                      if (newProfile != null) {
+                        extra.update(newProfile);
+                      }
+                    },
                   ),
-                if (sherpaRoles.isNotEmpty)
-                  ProfileCard(
-                    title: t.profiles.sherpaRole,
-                    children: sherpaRoles.map((role) => ProfileCardListItem(value: role.alias)).toList(),
-                  ),
-                if (skillTags.isNotEmpty)
-                  ProfileCard(
-                    title: t.profiles.skills,
-                    children: skillTags.map((tag) => ProfileCardListItem(value: tag.label)).toList(),
-                  ),
-                if (partyDivision != null && partyDivision.urls.isNotEmpty)
-                  ProfileCard(
-                    title: t.profiles.myKreisverband,
-                    children: partyDivision.urls
-                        .map((url) => ProfileCardListItem(value: t.profiles.homepage, url: url))
-                        .toList(),
-                  ),
-                if (profile.socialMedia.isNotEmpty)
-                  ProfileCard(
-                    title: t.profiles.socialMedia,
-                    children: profile.socialMedia
-                        .map(
-                          (socialMedia) => ProfileCardListItem(
-                            value: getSocialMediaTypeTranslation(socialMedia.type),
-                            url: socialMedia.url,
-                          ),
-                        )
-                        .toList(),
-                  ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+              ProfileDetails(profile: profile.publicProfile),
+            ],
+          ),
+        ),
       ),
     );
   }

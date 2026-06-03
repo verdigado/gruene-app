@@ -15,7 +15,6 @@ class ProfileListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final roles = profile.roles.map((role) => role.shortName).toSet().map((role) => Text(role));
     final division = profile.memberships.firstOrNull?.division;
 
     return Card(
@@ -31,7 +30,10 @@ class ProfileListItem extends StatelessWidget {
             if (division != null) Text(division.shortDisplayName, maxLines: 1, overflow: TextOverflow.ellipsis),
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
-              children: roles.withDividers(HorizontalDivider(color: ThemeColors.textDisabled)),
+              children: profile
+                  .displayRoles([ProfileRoleType.office, ProfileRoleType.mandate])
+                  .map((role) => Text(role))
+                  .withDividers(HorizontalDivider(color: ThemeColors.textDisabled)),
             ),
           ],
         ),

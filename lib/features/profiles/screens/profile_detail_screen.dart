@@ -5,6 +5,7 @@ import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_details.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -27,12 +28,13 @@ class ProfileDetailScreen extends StatelessWidget {
             return ErrorScreen(errorMessage: t.profiles.profileNotFound, retry: extra.refresh);
           }
           return SingleChildScrollView(
-            padding: screenPadding,
+            padding: verticalScreenPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 16,
               children: [
                 ProfileHeader(profile: profile),
+                ProfileDetails(profile: profile),
               ],
             ),
           );
