@@ -37,7 +37,7 @@ extension FilterExtension on Iterable<Division> {
     return filtered;
   }
 
-  Division bundesverband() => firstWhere((it) => it.divisionKey == '10000000');
+  Division get bundesverband => firstWhere((it) => it.divisionKey == '10000000');
 }
 
 extension DivisionLevelExtension on DivisionLevel {

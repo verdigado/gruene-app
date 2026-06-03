@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
@@ -48,7 +48,7 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
                   future: _getCurrentTeamLeadProfile(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      var teamLeadFullName = snapshot.data?.fullName() ?? t.common.notAvailable;
+                      var teamLeadFullName = snapshot.data?.fullName ?? t.common.notAvailable;
                       return Row(
                         children: [
                           Expanded(child: Text(teamLeadFullName, style: theme.textTheme.titleMedium)),

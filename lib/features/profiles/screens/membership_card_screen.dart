@@ -22,8 +22,8 @@ class MembershipCardScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.myMembershipCard),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile profile, _) {
-          Division? partyDivision = profile.partyDivision();
+        buildChild: (profile, _) {
+          Division? partyDivision = profile.partyDivision;
 
           return ConstrainedBox(
             constraints: BoxConstraints(maxHeight: 640),

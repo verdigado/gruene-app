@@ -81,7 +81,6 @@ part 'converters/poster_detail_model_extension.dart';
 part 'converters/poster_status_parsing.dart';
 part 'converters/poster_update_model_parsing.dart';
 part 'converters/profile_extension.dart';
-part 'converters/public_profile_parsing.dart';
 part 'converters/remote_message_extension.dart';
 part 'converters/route_detail_model_parsing.dart';
 part 'converters/route_parsing.dart';

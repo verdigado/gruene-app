@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
@@ -30,7 +31,7 @@ class OwnProfileScreen extends StatelessWidget {
           );
           Iterable<ProfileRole> sherpaRoles = profile.roles.where((role) => role.type == ProfileRoleType.role);
           Iterable<ProfileTag> skillTags = profile.tags.where((tag) => tag.type == ProfileTagType.skill);
-          Division? partyDivision = profile.partyDivision();
+          Division? partyDivision = profile.partyDivision;
 
           return SingleChildScrollView(
             padding: verticalScreenPadding,
@@ -67,10 +68,7 @@ class OwnProfileScreen extends StatelessWidget {
                   ProfileCard(
                     title: t.profiles.memberships,
                     children: profile.memberships
-                        .map(
-                          (membership) =>
-                              ProfileCardListItem(value: '${membership.division.name1} ${membership.division.name2}'),
-                        )
+                        .map((membership) => ProfileCardListItem(value: membership.division.displayName))
                         .toList(),
                   ),
                 if (mandateRoles.isNotEmpty)

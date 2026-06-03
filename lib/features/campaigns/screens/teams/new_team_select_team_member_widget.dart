@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
@@ -54,7 +54,7 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
                   future: _getCurrentTeamLeadProfile(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      var teamLeadFullname = snapshot.data?.fullName() ?? t.common.notAvailable;
+                      var teamLeadFullname = snapshot.data?.fullName ?? t.common.notAvailable;
                       return Container(
                         decoration: BoxDecoration(
                           border: Border(bottom: BorderSide(color: ThemeColors.textLight)),
@@ -122,7 +122,7 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
   Widget _getMemberWidget(int index) {
     final theme = Theme.of(context);
     var member = teamMembers.length > index ? teamMembers[index] : null;
-    var memberFullName = member?.fullName() ?? t.common.notAvailable;
+    var memberFullName = member?.fullName ?? t.common.notAvailable;
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: ThemeColors.textLight)),
