@@ -414,7 +414,9 @@
     "mandateRoles": "Mandate",
     "sherpaRoles": "Sherpa-Rollen",
     "skills": "Kompetenzen",
+    "searchSkills": "Kompetenzen suchen",
     "interests": "Interessen",
+    "searchInterests": "Interessen suchen",
     "socialMedia": "Social Media",
     "socialMediaType": {
       "facebook": "Facebook",
