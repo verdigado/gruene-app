@@ -17,7 +17,7 @@ extension ProfileExtension on Profile {
   }
 
   Future<Division?> getOwnKV() async {
-    var division = memberships
+    final division = memberships
         .firstWhereOrNull((d) => [DivisionLevel.kv, DivisionLevel.ov].contains(d.division.level))
         ?.division;
 
@@ -25,16 +25,13 @@ extension ProfileExtension on Profile {
       case DivisionLevel.kv:
         return division;
       case DivisionLevel.ov:
-        var parentKey = DivisionKey(division!.divisionKey).getParentKey(DivisionLevel.kv);
-        var parentDivisions = await GetIt.I<GrueneApiDivisionsService>().searchDivision(
+        final parentKey = division!.parentDivisionKey(DivisionLevel.kv);
+        final parentDivisions = await GetIt.I<GrueneApiDivisionsService>().searchDivision(
           divisionKeys: [parentKey],
           level: DivisionLevel.kv,
         );
         return parentDivisions.firstOrNull;
-      case DivisionLevel.lv:
-      case DivisionLevel.bv:
-      case null:
-      case DivisionLevel.swaggerGeneratedUnknown:
+      default:
         return null;
     }
   }
