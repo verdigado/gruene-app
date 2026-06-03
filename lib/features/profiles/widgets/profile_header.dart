@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/horizontal_divider.dart';
@@ -40,6 +41,7 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final double imageSize = 96;
+    final division = profile.partyDivision;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,6 +68,11 @@ class ProfileHeader extends StatelessWidget {
           onLongPress: () => Clipboard.setData(ClipboardData(text: profile.fullName)),
           child: Text(profile.fullName, style: theme.textTheme.titleLarge),
         ),
+        if (division != null)
+          GestureDetector(
+            onLongPress: () => Clipboard.setData(ClipboardData(text: division.shortDisplayName)),
+            child: Text(division.shortDisplayName),
+          ),
         ...(children ?? []),
       ],
     );
