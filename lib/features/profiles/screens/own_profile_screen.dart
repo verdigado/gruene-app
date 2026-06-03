@@ -42,7 +42,7 @@ class OwnProfileScreen extends StatelessWidget {
                   children: [
                     TextListItem(
                       title: t.profiles.myMembershipCard,
-                      onPress: () => context.pushNested(Routes.digitalMembershipCard.path),
+                      onPress: () => context.pushNested(Routes.membershipCard.path),
                     ),
                     TextListItem(
                       title: t.profiles.visibility.visibility,
