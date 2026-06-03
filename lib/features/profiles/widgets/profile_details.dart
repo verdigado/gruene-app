@@ -54,6 +54,13 @@ class ProfileDetails extends StatelessWidget {
             title: t.profiles.sherpaRoles,
             children: sherpaRoles.map((role) => ProfileCardListItem(value: role)),
           ),
+        if (profile.socialMedia.isNotEmpty)
+          ProfileCard(
+            title: t.profiles.socialMedia,
+            children: profile.socialMedia.map(
+              (platform) => ProfileCardListItem(value: platform.label, url: platform.url),
+            ),
+          ),
         if (skills.isNotEmpty)
           ProfileCard(
             title: t.profiles.skills,
@@ -63,13 +70,6 @@ class ProfileDetails extends StatelessWidget {
           ProfileCard(
             title: t.profiles.interests,
             children: interests.map((tag) => ProfileCardListItem(value: tag)),
-          ),
-        if (profile.socialMedia.isNotEmpty)
-          ProfileCard(
-            title: t.profiles.socialMedia,
-            children: profile.socialMedia.map(
-              (platform) => ProfileCardListItem(value: platform.label, url: platform.url),
-            ),
           ),
       ],
     );
