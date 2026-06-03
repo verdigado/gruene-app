@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
@@ -9,6 +8,7 @@ import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';
+import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/utils/profile_visibility.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -39,12 +39,11 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
     }
 
     final teamsService = GetIt.I<GrueneApiTeamsService>();
-    final profileService = GetIt.I<GrueneApiProfileService>();
     final newProfile = widget.profile.copyWith(privacy: widget.profile.privacy.copyWith(overall: _selectedVisibility));
 
     final team = await tryAndNotify(
       function: () async {
-        await profileService.updateProfile(newProfile);
+        await updateProfile(newProfile);
         return await teamsService.getOwnTeam();
       },
       context: context,

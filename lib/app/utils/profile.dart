@@ -22,4 +22,37 @@ extension MembershipsExtension on Profile {
     ProfilePrivacySettingsOverall.bvWide,
     ProfilePrivacySettingsOverall.public,
   ];
+
+  UpdateProfile get updateProfile => UpdateProfile(
+    email: email,
+    phoneNumbers: phoneNumbers
+        .map((number) => UpdatePhoneNumber(id: number.id, country: number.country, number: number.number))
+        .toList(),
+    messengers: messengers
+        .map(
+          (messenger) => UpdateMessengerEntry(
+            id: messenger.id,
+            externalId: messenger.externalId,
+            type: UpdateMessengerEntryType.values.firstWhere(
+              (type) => type.value == messenger.type.value,
+              orElse: () => UpdateMessengerEntryType.swaggerGeneratedUnknown,
+            ),
+          ),
+        )
+        .toList(),
+    socialMedia: socialMedia
+        .map(
+          (socialMedia) => UpdateSocialMediaEntry(
+            id: socialMedia.id,
+            url: socialMedia.url,
+            type: UpdateSocialMediaEntryType.values.firstWhere(
+              (type) => type.value == socialMedia.type.value,
+              orElse: () => UpdateSocialMediaEntryType.swaggerGeneratedUnknown,
+            ),
+          ),
+        )
+        .toList(),
+    tags: tags.map((tag) => tag.externalId!).toList(),
+    privacy: privacy,
+  );
 }
