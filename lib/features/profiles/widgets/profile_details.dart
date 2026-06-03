@@ -8,8 +8,9 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileDetails extends StatelessWidget {
   final PublicProfile profile;
+  final bool isOwnProfile;
 
-  const ProfileDetails({super.key, required this.profile});
+  const ProfileDetails({super.key, required this.profile, this.isOwnProfile = false});
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +25,16 @@ class ProfileDetails extends StatelessWidget {
     return Column(
       spacing: 16,
       children: [
-        ProfileCard(
-          children: [
-            if (email != null) ProfileCardListItem(title: t.profiles.email, value: email),
-            if (profile.phoneNumbers.isNotEmpty)
-              ProfileCardListItem(title: t.profiles.phoneNumber, value: profile.phoneNumbers.first.number),
-            ProfileCardListItem(title: t.profiles.personalId, value: profile.personalId, copyOnTap: true),
-          ],
-        ),
+        if (email != null || profile.phoneNumbers.isNotEmpty || isOwnProfile)
+          ProfileCard(
+            children: [
+              if (email != null) ProfileCardListItem(title: t.profiles.email, value: email),
+              if (profile.phoneNumbers.isNotEmpty)
+                ProfileCardListItem(title: t.profiles.phoneNumber, value: profile.phoneNumbers.first.number),
+              if (isOwnProfile)
+                ProfileCardListItem(title: t.profiles.personalId, value: profile.personalId, copyOnTap: true),
+            ],
+          ),
         if (divisions.isNotEmpty)
           ProfileCard(
             title: t.profiles.memberships,

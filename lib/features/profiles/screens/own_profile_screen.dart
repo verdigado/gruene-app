@@ -46,7 +46,7 @@ class OwnProfileScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              ProfileDetails(profile: profile.publicProfile),
+              ProfileDetails(profile: profile.publicProfile, isOwnProfile: true),
             ],
           ),
         ),
