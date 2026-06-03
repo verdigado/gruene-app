@@ -4,7 +4,7 @@ import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
-import 'package:gruene_app/app/utils/profile.dart';
+import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';

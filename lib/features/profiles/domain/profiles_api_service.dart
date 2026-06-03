@@ -1,5 +1,5 @@
 import 'package:gruene_app/app/services/gruene_api_core.dart';
-import 'package:gruene_app/app/utils/profile.dart';
+import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
 

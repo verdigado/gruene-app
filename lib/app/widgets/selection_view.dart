@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/widgets/expansion_list_tile.dart';
 import 'package:gruene_app/app/widgets/section_title.dart';
 import 'package:gruene_app/app/widgets/selection_list_item.dart';
 
@@ -8,8 +7,6 @@ class SelectionView<T> extends StatelessWidget {
   final String Function(T option) getLabel;
   final String? title;
   final List<T> options;
-  final String? moreOptionsTitle;
-  final List<T>? moreOptions;
   final List<T> selectedOptions;
   final Color? backgroundColor;
 
@@ -20,8 +17,6 @@ class SelectionView<T> extends StatelessWidget {
     required this.options,
     required this.selectedOptions,
     this.title,
-    this.moreOptions,
-    this.moreOptionsTitle,
     this.backgroundColor,
   });
 
@@ -49,9 +44,6 @@ class SelectionView<T> extends StatelessWidget {
       children: [
         ...title != null ? [SectionTitle(title: title!)] : [],
         ...renderSelectionListItems(options),
-        ...moreOptions != null && moreOptions!.isNotEmpty
-            ? [ExpansionListTile(titleText: moreOptionsTitle ?? '', children: renderSelectionListItems(moreOptions!))]
-            : [],
       ],
     );
   }

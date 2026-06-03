@@ -3,7 +3,7 @@ import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
-import 'package:gruene_app/app/utils/profile.dart';
+import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';

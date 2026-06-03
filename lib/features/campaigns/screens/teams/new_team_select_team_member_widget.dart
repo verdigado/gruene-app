@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/profile.dart';
+import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
