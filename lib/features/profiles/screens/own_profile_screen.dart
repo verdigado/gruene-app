@@ -38,7 +38,7 @@ class OwnProfileScreen extends StatelessWidget {
             child: Column(
               spacing: 16,
               children: [
-                ProfileHeader(profile: profile, update: extra.update),
+                OwnProfileHeader(profile: profile, update: extra.update),
                 Column(
                   children: [
                     TextListItem(
