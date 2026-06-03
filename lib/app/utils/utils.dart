@@ -34,7 +34,13 @@ extension ContainsAny<T> on List<T> {
 }
 
 extension WithDividers on Iterable<Widget> {
-  List<Widget> withDividers([Widget? divider]) => expand((item) => [item, divider ?? Divider()]).toList()..removeLast();
+  List<Widget> withDividers([Widget? divider]) {
+    final items = expand((item) => [item, divider ?? Divider()]).toList();
+    if (items.isNotEmpty) {
+      return items..removeLast();
+    }
+    return items;
+  }
 }
 
 extension PushNested on BuildContext {
