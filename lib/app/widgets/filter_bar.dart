@@ -35,11 +35,11 @@ class FilterBar extends StatelessWidget {
           Flexible(child: CustomSearchBar(searchFilter: searchFilter)),
           if (bookmarkFilter != null)
             RoundedIconButton(
-              onPressed: () => bookmarkFilter.update(!bookmarkFilter.selected),
+              onPressed: () => bookmarkFilter.update(!bookmarkFilter.current),
               icon: Icons.bookmark_outline,
               iconColor: ThemeColors.textDisabled,
               backgroundColor: theme.colorScheme.surface,
-              selected: bookmarkFilter.selected,
+              selected: bookmarkFilter.current,
               width: 40,
             ),
           loading

@@ -16,8 +16,8 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EventsFilterDialog extends StatefulWidget {
   final FilterModel<Set<CalendarEventAttendanceStatus>> attendanceStatusFilter;
-  final FilterModel<List<Calendar>> calendarFilter;
-  final FilterModel<List<String>> categoryFilter;
+  final SelectionFilterModel<List<Calendar>, List<Calendar>> calendarFilter;
+  final SelectionFilterModel<List<String>, List<String>> categoryFilter;
   final FilterModel<DateTimeRange> dateRangeFilter;
 
   const EventsFilterDialog({
@@ -43,10 +43,10 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   @override
   void initState() {
     super.initState();
-    _localSelectedAttendanceStatuses = widget.attendanceStatusFilter.selected;
-    _localSelectedCalendars = widget.calendarFilter.selected;
-    _localSelectedCategories = widget.categoryFilter.selected;
-    _localDateRange = widget.dateRangeFilter.selected;
+    _localSelectedAttendanceStatuses = widget.attendanceStatusFilter.current;
+    _localSelectedCalendars = widget.calendarFilter.current;
+    _localSelectedCategories = widget.categoryFilter.current;
+    _localDateRange = widget.dateRangeFilter.current;
   }
 
   void resetFilters(BuildContext context) {
@@ -143,32 +143,34 @@ class EventsFilterBar extends StatelessWidget {
         final searchFilter = FilterModel(
           update: (query) => context.read<EventsBloc>().add(LoadEvents(query: query)),
           initial: defaultQuery,
-          selected: state.query,
+          current: state.query,
         );
-        final calendarFilter = FilterModel(
+        final calendarFilter = SelectionFilterModel(
           update: (calendars) => context.read<EventsBloc>().add(LoadEvents(calendars: calendars)),
           initial: calendars,
-          selected: state.calendars,
+          current: state.calendars,
+          values: calendars,
         );
         final dateRangeFilter = FilterModel(
           update: (dateRange) => context.read<EventsBloc>().add(LoadEvents(dateRange: dateRange)),
           initial: defaultDateRange,
-          selected: state.dateRange,
+          current: state.dateRange,
         );
-        final categoryFilter = FilterModel(
+        final categoryFilter = SelectionFilterModel(
           update: (categories) => context.read<EventsBloc>().add(LoadEvents(categories: categories)),
           initial: defaultCategories,
-          selected: state.categories,
+          current: state.categories,
+          values: defaultCategories,
         );
         final attendanceStatusFilter = FilterModel(
           update: (attendanceStatuses) =>
               context.read<EventsBloc>().add(LoadEvents(attendanceStatuses: attendanceStatuses)),
           initial: defaultAttendanceStatuses,
-          selected: state.attendanceStatuses,
+          current: state.attendanceStatuses,
         );
         return FilterBar(
           searchFilter: searchFilter,
-          modified: [attendanceStatusFilter, categoryFilter, calendarFilter].modified(),
+          modified: <FilterModel<dynamic>>[attendanceStatusFilter, categoryFilter, calendarFilter].modified(),
           loading: state.loading && state.events.isNotEmpty,
           filterDialog: EventsFilterDialog(
             attendanceStatusFilter: attendanceStatusFilter,

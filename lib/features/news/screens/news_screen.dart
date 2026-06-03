@@ -64,28 +64,28 @@ class _NewsScreenState extends State<NewsScreen> {
   Widget build(BuildContext context) {
     final categories = widget.news.categories();
 
-    final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', selected: _query);
+    final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', current: _query);
     final bookmarkFilter = FilterModel(
       update: (showBookmarked) => setState(() => _showBookmarked = showBookmarked),
       initial: false,
-      selected: _showBookmarked,
+      current: _showBookmarked,
     );
-    final divisionFilter = FilterModel(
+    final divisionFilter = SelectionFilterModel(
       update: (divisions) => setState(() => _selectedDivisions = divisions),
-      initial: [widget.divisions.bundesverband()],
-      selected: _selectedDivisions,
+      initial: [widget.divisions.bundesverband],
+      current: _selectedDivisions,
       values: widget.divisions,
     );
-    final categoryFilter = FilterModel<List<NewsCategory>>(
+    final categoryFilter = SelectionFilterModel<List<NewsCategory>, List<NewsCategory>>(
       update: (categories) => setState(() => _selectedCategories = categories),
       initial: [],
-      selected: _selectedCategories,
+      current: _selectedCategories,
       values: categories,
     );
     final dateRangeFilter = FilterModel(
       update: (dateRange) => setState(() => _dateRange = dateRange),
       initial: null,
-      selected: _dateRange,
+      current: _dateRange,
     );
 
     return Container(
@@ -98,7 +98,7 @@ class _NewsScreenState extends State<NewsScreen> {
           FilterBar(
             searchFilter: searchFilter,
             bookmarkFilter: bookmarkFilter,
-            modified: [divisionFilter, categoryFilter, dateRangeFilter].modified(),
+            modified: <FilterModel<dynamic>>[divisionFilter, categoryFilter, dateRangeFilter].modified(),
             filterDialog: NewsFilterDialog(
               divisionFilter: divisionFilter,
               categoryFilter: categoryFilter,

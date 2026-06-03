@@ -14,8 +14,8 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 const prominentCategoryIds = ['2680259', '88764', '653'];
 
 class NewsFilterDialog extends StatefulWidget {
-  final FilterModel<List<Division>> divisionFilter;
-  final FilterModel<List<NewsCategory>> categoryFilter;
+  final SelectionFilterModel<List<Division>, List<Division>> divisionFilter;
+  final SelectionFilterModel<List<NewsCategory>, List<NewsCategory>> categoryFilter;
   final FilterModel<DateTimeRange?> dateRangeFilter;
   final String Function(Division division) getDivisionLabel;
 
@@ -41,9 +41,9 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   @override
   void initState() {
     super.initState();
-    _localSelectedDivisions = widget.divisionFilter.selected;
-    _localSelectedCategories = widget.categoryFilter.selected;
-    _localDateRange = widget.dateRangeFilter.selected;
+    _localSelectedDivisions = widget.divisionFilter.current;
+    _localSelectedCategories = widget.categoryFilter.current;
+    _localDateRange = widget.dateRangeFilter.current;
   }
 
   void setDivisions(List<Division> divisions) {

@@ -3,11 +3,9 @@ import 'package:flutter/foundation.dart';
 class FilterModel<T> {
   void Function(T newValue) update;
   T initial;
-  T selected;
-  T values;
+  T current;
 
-  FilterModel({required this.update, required this.initial, required this.selected, T? values})
-    : values = values ?? initial;
+  FilterModel({required this.update, required this.initial, required this.current});
 
   void reset() {
     update(initial);
@@ -15,7 +13,7 @@ class FilterModel<T> {
 
   bool modified([T? other]) {
     final localInitial = initial;
-    final localSelected = other ?? selected;
+    final localSelected = other ?? current;
     if (localInitial is List && localSelected is List) {
       return !setEquals(localInitial.toSet(), localSelected.toSet());
     }
@@ -24,6 +22,12 @@ class FilterModel<T> {
     }
     return localInitial != localSelected;
   }
+}
+
+class SelectionFilterModel<T, P> extends FilterModel<T> {
+  P values;
+
+  SelectionFilterModel({required super.update, required super.initial, required super.current, required this.values});
 }
 
 extension FilterModelListExtension on List<FilterModel<dynamic>> {
