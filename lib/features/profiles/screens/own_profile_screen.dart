@@ -42,6 +42,10 @@ class OwnProfileScreen extends StatelessWidget {
                 Column(
                   children: [
                     TextListItem(
+                      title: t.profiles.search,
+                      onPress: () => context.pushNested(Routes.profileSearch.path),
+                    ),
+                    TextListItem(
                       title: t.profiles.myMembershipCard,
                       onPress: () => context.pushNested(Routes.membershipCard.path),
                     ),

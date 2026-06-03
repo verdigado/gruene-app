@@ -42,6 +42,10 @@
     }
   },
   "divisions": {
+    "divisions": "Verbände",
+    "searchDivisions": "Verbände suchen",
+    "division": "Verband",
+    "searchDivision": "Verband suchen",
     "level": {
       "ov": {
         "label": "Ortsverband",
@@ -77,8 +81,6 @@
     "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden.",
     "latest": "Aktuelles",
     "bookmarked": "Gespeichert",
-    "divisions": "Verbände",
-    "searchDivisions": "Verbände suchen",
     "categories": "Schlagworte",
     "searchCategories": "Schlagworte suchen",
     "publicationDate": "Veröffentlichungsdatum"
@@ -379,6 +381,9 @@
     "profiles": "Mitglieder",
     "label": "Mitglieder",
     "noResult": "Leider gab es einen Fehler beim Laden des Profils.",
+    "profileNotFound": "Dieses Profil wurde leider nicht gefunden",
+    "search": "Mitgliedersuche",
+    "noResults": "Keine Mitglieder gefunden",
     "profileImage": {
       "edit": "Profilbild bearbeiten",
       "delete": "Profilbild löschen",
@@ -408,7 +413,9 @@
     "mandates": "Parteifunktionen / Mandate",
     "sherpaRole": "Sherpa-Rolle",
     "skills": "Kompetenzen",
-    "myKreisverband": "Mein Kreisverband",
+    "searchSkills": "Kompetenzen suchen",
+    "interests": "Interessen",
+    "searchInterests": "Interessen suchen",
     "socialMedia": "Social Media",
     "socialMediaType": {
       "facebook": "Facebook",

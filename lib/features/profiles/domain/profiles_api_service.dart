@@ -1,7 +1,18 @@
 import 'package:gruene_app/app/services/gruene_api_core.dart';
+import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
+
+Future<List<PublicProfile>> fetchProfiles({String? query, Division? division}) async => getFromApi(
+  request: (api) => api.v1ProfilesGet(search: query, division: division?.implicitMembersDivisionKey, limit: 1000),
+  map: (data) => data.data,
+);
+
+Future<PublicProfile> fetchProfile(String profileId) async => getFromApi(
+  request: (api) => api.v1ProfilesProfileIdGet(profileId: profileId),
+  map: (data) => data,
+);
 
 Future<Profile> fetchOwnProfile() async => getFromApi(request: (api) => api.v1ProfilesSelfGet(), map: (data) => data);
 

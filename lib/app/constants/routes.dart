@@ -18,6 +18,8 @@ import 'package:gruene_app/features/news/screens/news_detail_screen.dart';
 import 'package:gruene_app/features/news/screens/news_screen.dart';
 import 'package:gruene_app/features/profiles/screens/membership_card_screen.dart';
 import 'package:gruene_app/features/profiles/screens/own_profile_screen.dart';
+import 'package:gruene_app/features/profiles/screens/profile_detail_screen.dart';
+import 'package:gruene_app/features/profiles/screens/profile_search_screen.dart';
 import 'package:gruene_app/features/settings/screens/push_notifications_screen.dart';
 import 'package:gruene_app/features/settings/screens/settings_screen.dart';
 import 'package:gruene_app/features/tools/screens/tools_screen.dart';
@@ -96,10 +98,23 @@ class Routes {
     },
   );
   static GoRoute membershipCard = buildRoute(RouteLocations.membershipCard, MembershipCardScreen());
+  static GoRoute profileDetail = GoRoute(
+    path: ':profileId',
+    pageBuilder: (context, state) => buildPageWithoutAnimation(
+      context: context,
+      state: state,
+      child: ProfileDetailScreen(profileId: state.pathParameters['profileId']!),
+    ),
+  );
+  static GoRoute profileSearch = buildRoute(
+    RouteLocations.profileSearch,
+    ProfileSearchScreenContainer(),
+    routes: [profileDetail],
+  );
   static GoRoute profiles = buildRoute(
     RouteLocations.getRoute([RouteLocations.profiles]),
     OwnProfileScreen(),
-    routes: [membershipCard],
+    routes: [membershipCard, profileSearch, profileDetail],
   );
   static GoRoute mfaTokenInput = buildRoute(RouteLocations.tokenInput, TokenInputScreen());
   static GoRoute mfaTokenScan = buildRoute(RouteLocations.tokenScan, TokenScanScreen(), routes: [mfaTokenInput]);

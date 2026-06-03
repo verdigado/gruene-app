@@ -13,6 +13,7 @@ class RouteLocations {
   static const String tokenScan = 'token-scan';
   static const String pushNotifications = 'push-notifications';
   static const String membershipCard = 'membership-card';
+  static const String profileSearch = 'profile-search';
 
   static const String campaignDoorDetail = 'door';
   static const String campaignPosterDetail = 'poster';
