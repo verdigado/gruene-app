@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
-import 'package:gruene_app/features/profiles/utils/social_media_type_translation.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card_list_item.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -20,7 +19,7 @@ class ProfileDetails extends StatelessWidget {
     final sherpaRoles = profile.displayRoles([ProfileRoleType.role]);
     final skills = profile.displayTags(ProfileTagType.skill);
     final interests = profile.displayTags(ProfileTagType.interest);
-    final partyDivision = profile.partyDivision;
+    final divisions = profile.divisions;
 
     return Column(
       spacing: 16,
@@ -33,54 +32,44 @@ class ProfileDetails extends StatelessWidget {
             ProfileCardListItem(title: t.profiles.personalId, value: profile.personalId, copyOnTap: true),
           ],
         ),
-        if (profile.memberships?.isNotEmpty ?? false)
+        if (divisions.isNotEmpty)
           ProfileCard(
             title: t.profiles.memberships,
-            children: profile.memberships!
-                .map((membership) => ProfileCardListItem(value: membership.division.displayName))
-                .toList(),
+            children: divisions.map(
+              (division) => ProfileCardListItem(value: division.shortDisplayName, url: division.urls.firstOrNull),
+            ),
           ),
         if (mandateRoles.isNotEmpty)
           ProfileCard(
             title: t.profiles.mandateRoles,
-            children: mandateRoles.map((role) => ProfileCardListItem(value: role)).toList(),
+            children: mandateRoles.map((role) => ProfileCardListItem(value: role)),
           ),
         if (officeRoles.isNotEmpty)
           ProfileCard(
             title: t.profiles.officeRoles,
-            children: officeRoles.map((role) => ProfileCardListItem(value: role)).toList(),
+            children: officeRoles.map((role) => ProfileCardListItem(value: role)),
           ),
         if (sherpaRoles.isNotEmpty)
           ProfileCard(
             title: t.profiles.sherpaRoles,
-            children: sherpaRoles.map((role) => ProfileCardListItem(value: role)).toList(),
+            children: sherpaRoles.map((role) => ProfileCardListItem(value: role)),
           ),
         if (skills.isNotEmpty)
           ProfileCard(
             title: t.profiles.skills,
-            children: skills.map((tag) => ProfileCardListItem(value: tag)).toList(),
+            children: skills.map((tag) => ProfileCardListItem(value: tag)),
           ),
         if (interests.isNotEmpty)
           ProfileCard(
             title: t.profiles.interests,
-            children: interests.map((tag) => ProfileCardListItem(value: tag)).toList(),
-          ),
-        if (partyDivision != null && partyDivision.urls.isNotEmpty)
-          ProfileCard(
-            title: t.profiles.myDivision,
-            children: partyDivision.urls
-                .map((url) => ProfileCardListItem(value: t.profiles.homepage, url: url))
-                .toList(),
+            children: interests.map((tag) => ProfileCardListItem(value: tag)),
           ),
         if (profile.socialMedia.isNotEmpty)
           ProfileCard(
             title: t.profiles.socialMedia,
-            children: profile.socialMedia
-                .map(
-                  (socialMedia) =>
-                      ProfileCardListItem(value: getSocialMediaTypeTranslation(socialMedia.type), url: socialMedia.url),
-                )
-                .toList(),
+            children: profile.socialMedia.map(
+              (platform) => ProfileCardListItem(value: platform.label, url: platform.url),
+            ),
           ),
       ],
     );

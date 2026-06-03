@@ -1,4 +1,5 @@
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 extension ProfileExtension on Profile {
@@ -78,5 +79,16 @@ extension PublicProfileExtension on PublicProfile {
 
 extension ProfileRoleExtension on ProfileRole {
   // Extract the actual role, e..g `Kreisvorsitzende` from `Kreisvorstand GR - Kreisvorsitzende`
-  String get shortName => name.substring(name.indexOf('-') + 2);
+  String get shortName => name.contains('-') ? name.substring(name.indexOf('-') + 2) : name;
+}
+
+extension SocialMediaEntryExtension on SocialMediaEntry {
+  String get label => switch (type) {
+    SocialMediaType.facebook => t.profiles.socialMediaType.facebook,
+    SocialMediaType.instagram => t.profiles.socialMediaType.instagram,
+    SocialMediaType.mastodon => t.profiles.socialMediaType.mastodon,
+    SocialMediaType.twitter => t.profiles.socialMediaType.twitter,
+    SocialMediaType.chatbegruenung => t.profiles.socialMediaType.chatbegruenung,
+    SocialMediaType.swaggerGeneratedUnknown => '',
+  };
 }

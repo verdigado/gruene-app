@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 
 class ProfileCard extends StatelessWidget {
-  final List<Widget> children;
+  final Iterable<Widget> children;
   final String? title;
 
   const ProfileCard({super.key, required this.children, this.title});
