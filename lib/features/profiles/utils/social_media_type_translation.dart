@@ -1,17 +1,17 @@
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.enums.swagger.dart';
 
-String getSocialMediaTypeTranslation(SocialMediaEntryType type) {
+String getSocialMediaTypeTranslation(SocialMediaType type) {
   switch (type) {
-    case SocialMediaEntryType.facebook:
+    case SocialMediaType.facebook:
       return t.profiles.socialMediaType.facebook;
-    case SocialMediaEntryType.instagram:
+    case SocialMediaType.instagram:
       return t.profiles.socialMediaType.instagram;
-    case SocialMediaEntryType.mastodon:
+    case SocialMediaType.mastodon:
       return t.profiles.socialMediaType.mastodon;
-    case SocialMediaEntryType.twitter:
+    case SocialMediaType.twitter:
       return t.profiles.socialMediaType.twitter;
-    case SocialMediaEntryType.chatbegruenung:
+    case SocialMediaType.chatbegruenung:
       return t.profiles.socialMediaType.chatbegruenung;
     default:
       return type.value ?? '';

@@ -7,7 +7,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 part 'poster_detail_model.g.dart';
 
-enum PosterStatus {
+enum PosterModelStatus {
   @JsonValue(100)
   ok,
   @JsonValue(200)
@@ -29,7 +29,7 @@ class PosterDetailModel implements BasicPoi {
   @override
   final AddressModel address;
   final String comment;
-  final PosterStatus status;
+  final PosterModelStatus status;
   final String createdAt;
   final bool isCached;
   @LatLongConverter()
@@ -51,7 +51,7 @@ class PosterDetailModel implements BasicPoi {
     List<PosterPhotoModel>? photos,
     AddressModel? address,
     String? comment,
-    PosterStatus? status,
+    PosterModelStatus? status,
     String? createdAt,
     bool? isCached,
     LatLng? location,

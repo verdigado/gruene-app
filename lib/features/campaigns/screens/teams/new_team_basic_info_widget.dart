@@ -115,6 +115,7 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
         tags: [],
         roles: [],
         achievements: [],
+        memberships: [],
       );
     } catch (e) {
       var userService = GetIt.I<GrueneApiUserService>();
@@ -132,6 +133,7 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
         tags: [],
         roles: [],
         achievements: [],
+        memberships: [],
       );
     }
   }

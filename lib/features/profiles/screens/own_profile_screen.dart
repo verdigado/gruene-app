@@ -63,10 +63,10 @@ class OwnProfileScreen extends StatelessWidget {
                     ProfileCardListItem(title: t.profiles.personalId, value: profile.personalId, copyOnTap: true),
                   ],
                 ),
-                if (profile.memberships?.isNotEmpty ?? false)
+                if (profile.memberships.isNotEmpty)
                   ProfileCard(
                     title: t.profiles.memberships,
-                    children: profile.memberships!
+                    children: profile.memberships
                         .map(
                           (membership) =>
                               ProfileCardListItem(value: '${membership.division.name1} ${membership.division.name2}'),

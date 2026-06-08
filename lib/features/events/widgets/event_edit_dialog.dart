@@ -17,7 +17,7 @@ import 'package:gruene_app/features/events/domain/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_recurrence_form.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Visibility;
 import 'package:intl/intl.dart';
 import 'package:rrule/rrule.dart';
 

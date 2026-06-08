@@ -6,7 +6,7 @@ Future<List<Bookmark>> fetchBookmarks() async =>
 
 Future<void> createBookmark(String newsId) async => postToApi(
   request: (api) => api.v1BookmarksPost(
-    body: CreateBookmark(type: createBookmarkTypeFromJson(BookmarkType.news.value), itemId: newsId),
+    body: CreateBookmark(type: BookmarkType.news, itemId: newsId),
   ),
 );
 

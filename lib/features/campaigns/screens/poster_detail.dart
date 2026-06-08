@@ -21,24 +21,24 @@ class PosterDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     getStatusColor() {
       switch (poi.status) {
-        case PosterStatus.ok:
+        case PosterModelStatus.ok:
           return ThemeColors.secondary;
-        case PosterStatus.damaged:
-        case PosterStatus.missing:
-        case PosterStatus.toBeMoved:
+        case PosterModelStatus.damaged:
+        case PosterModelStatus.missing:
+        case PosterModelStatus.toBeMoved:
           return Colors.red;
-        case PosterStatus.removed:
+        case PosterModelStatus.removed:
           return ThemeColors.textDisabled;
       }
     }
 
     getStatusText() {
       return switch (poi.status) {
-        PosterStatus.ok => t.campaigns.poster.status.ok.description,
-        PosterStatus.damaged => t.campaigns.poster.status.damaged.description,
-        PosterStatus.missing => t.campaigns.poster.status.missing.description,
-        PosterStatus.toBeMoved => t.campaigns.poster.status.to_be_moved.description,
-        PosterStatus.removed => t.campaigns.poster.status.removed.description,
+        PosterModelStatus.ok => t.campaigns.poster.status.ok.description,
+        PosterModelStatus.damaged => t.campaigns.poster.status.damaged.description,
+        PosterModelStatus.missing => t.campaigns.poster.status.missing.description,
+        PosterModelStatus.toBeMoved => t.campaigns.poster.status.to_be_moved.description,
+        PosterModelStatus.removed => t.campaigns.poster.status.removed.description,
       };
     }
 
@@ -46,7 +46,7 @@ class PosterDetail extends StatelessWidget {
 
     var widgetHeight = 250.0;
     var extraRows = <Widget>[];
-    if (poi.status != PosterStatus.removed) {
+    if (poi.status != PosterModelStatus.removed) {
       // set extra height for additional button
       widgetHeight += 55;
       extraRows.add(
@@ -153,7 +153,7 @@ class PosterDetail extends StatelessWidget {
 
   void onPosterRemoved(BuildContext context) {
     var oldStatus = poi.status;
-    var poiUpdate = poi.asPosterUpdate().copyWith(status: PosterStatus.removed);
+    var poiUpdate = poi.asPosterUpdate().copyWith(status: PosterModelStatus.removed);
     onSave(poiUpdate);
     _closeDialog(context);
 

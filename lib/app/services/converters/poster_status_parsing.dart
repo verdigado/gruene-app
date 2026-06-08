@@ -1,13 +1,13 @@
 part of '../converters.dart';
 
-extension PosterStatusParsing on PosterStatus {
-  PoiPosterStatus transformToPoiPosterStatus() {
+extension PosterStatusParsing on PosterModelStatus {
+  PosterStatus transformToPoiPosterStatus() {
     return switch (this) {
-      PosterStatus.ok => PoiPosterStatus.ok,
-      PosterStatus.damaged => PoiPosterStatus.damaged,
-      PosterStatus.missing => PoiPosterStatus.missing,
-      PosterStatus.removed => PoiPosterStatus.removed,
-      PosterStatus.toBeMoved => PoiPosterStatus.toBeMoved,
+      PosterModelStatus.ok => PosterStatus.ok,
+      PosterModelStatus.damaged => PosterStatus.damaged,
+      PosterModelStatus.missing => PosterStatus.missing,
+      PosterModelStatus.removed => PosterStatus.removed,
+      PosterModelStatus.toBeMoved => PosterStatus.toBeMoved,
     };
   }
 

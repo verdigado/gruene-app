@@ -11,14 +11,14 @@ extension TeamRouteTypeParsing on RouteType {
     return '$typeLabel-${t.campaigns.route.label}';
   }
 
-  UpdateRouteType asUpdateRouteType() {
+  RouteType asUpdateRouteType() {
     switch (this) {
       case RouteType.flyerSpot:
-        return UpdateRouteType.flyerSpot;
+        return RouteType.flyerSpot;
       case RouteType.poster:
-        return UpdateRouteType.poster;
+        return RouteType.poster;
       case RouteType.house:
-        return UpdateRouteType.house;
+        return RouteType.house;
 
       case RouteType.swaggerGeneratedUnknown:
         throw UnimplementedError();
@@ -27,12 +27,12 @@ extension TeamRouteTypeParsing on RouteType {
 }
 
 extension TeamRouteStatusParsing on RouteStatus {
-  api_enums.UpdateRouteStatusStatus asUpdateRouteStatusStatus() {
+  RouteStatus asUpdateRouteStatusStatus() {
     switch (this) {
       case RouteStatus.open:
-        return api_enums.UpdateRouteStatusStatus.open;
+        return RouteStatus.open;
       case RouteStatus.closed:
-        return api_enums.UpdateRouteStatusStatus.closed;
+        return RouteStatus.closed;
 
       case RouteStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();

@@ -7,7 +7,7 @@ import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/main.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Visibility;
 import 'package:intl/intl.dart';
 import 'package:rrule/rrule.dart';
 

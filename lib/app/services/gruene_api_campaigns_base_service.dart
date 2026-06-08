@@ -95,7 +95,7 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
 
     if (poi.createdAt.millisecondsSinceEpoch > Config.poiFilterCutOffDate!.millisecondsSinceEpoch) return true;
 
-    if (poi.type == PoiType.poster && poi.poster!.status == PoiPosterStatus.ok) {
+    if (poi.type == PoiType.poster && poi.poster!.status == PosterStatus.ok) {
       return true;
     }
 

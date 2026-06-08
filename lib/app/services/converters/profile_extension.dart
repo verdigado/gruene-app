@@ -3,22 +3,22 @@ part of '../converters.dart';
 extension ProfileExtension on Profile {
   bool isVisibleInKV() {
     switch (privacy.overall) {
-      case ProfilePrivacySettingsOverall.private:
-      case ProfilePrivacySettingsOverall.ovWide:
+      case Visibility.private:
+      case Visibility.ovWide:
         return false;
-      case ProfilePrivacySettingsOverall.kvWide:
-      case ProfilePrivacySettingsOverall.public:
-      case ProfilePrivacySettingsOverall.lvWide:
-      case ProfilePrivacySettingsOverall.bvWide:
+      case Visibility.kvWide:
+      case Visibility.public:
+      case Visibility.lvWide:
+      case Visibility.bvWide:
         return true;
-      case ProfilePrivacySettingsOverall.swaggerGeneratedUnknown:
+      case Visibility.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }
 
   Future<Division?> getOwnKV() async {
     var division = memberships
-        ?.firstWhereOrNull((d) => [DivisionLevel.kv, DivisionLevel.ov].contains(d.division.level))
+        .firstWhereOrNull((d) => [DivisionLevel.kv, DivisionLevel.ov].contains(d.division.level))
         ?.division;
 
     switch (division?.level) {
