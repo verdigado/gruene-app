@@ -33,7 +33,7 @@ class OwnProfileScreen extends StatelessWidget {
           Division? partyDivision = profile.partyDivision();
 
           return SingleChildScrollView(
-            padding: defaultScreenPadding.copyWith(left: 0, right: 0),
+            padding: verticalScreenPadding,
             child: Column(
               spacing: 16,
               children: [

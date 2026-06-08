@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 
 class TextListItem extends StatelessWidget {
   final void Function() onPress;
@@ -24,7 +25,7 @@ class TextListItem extends StatelessWidget {
               Icon(isExternal ? Icons.arrow_outward : Icons.chevron_right_outlined, color: theme.disabledColor),
         ),
         tileColor: theme.colorScheme.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+        contentPadding: horizontalScreenPadding,
       ),
     );
   }

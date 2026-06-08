@@ -16,7 +16,7 @@ class ToolsList extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListView(
-      padding: defaultScreenPadding,
+      padding: screenPadding,
       children: tools.map((tool) {
         final icon = tool.icon;
         final url = tool.url;

@@ -88,7 +88,7 @@ class _NewsScreenState extends State<NewsScreen> {
     );
 
     return Container(
-      padding: defaultScreenPadding.copyWith(bottom: 0),
+      padding: screenPadding.copyWith(bottom: 0),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,

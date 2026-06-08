@@ -79,7 +79,7 @@ class EventDetailScreen extends StatelessWidget {
               children: [
                 if (image != null) FullWidthImage(image: image),
                 Padding(
-                  padding: defaultScreenPadding,
+                  padding: screenPadding,
                   child: EventDetail(event: event, recurrence: recurrence, calendar: calendar),
                 ),
               ],

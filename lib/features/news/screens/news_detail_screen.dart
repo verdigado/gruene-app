@@ -44,7 +44,7 @@ class NewsDetailScreen extends StatelessWidget {
                 Stack(
                   children: [
                     Container(
-                      padding: defaultScreenPadding,
+                      padding: screenPadding,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

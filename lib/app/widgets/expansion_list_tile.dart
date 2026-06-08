@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 
@@ -16,7 +17,7 @@ class ExpansionListTile extends StatelessWidget {
     required this.children,
     this.titleText,
     this.title,
-    this.titlePadding = const EdgeInsets.symmetric(horizontal: 24),
+    this.titlePadding = horizontalScreenPadding,
     this.backgroundColor,
     this.icon,
     this.iconColor,
