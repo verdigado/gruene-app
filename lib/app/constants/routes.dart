@@ -95,11 +95,11 @@ class Routes {
       return null;
     },
   );
-  static GoRoute digitalMembershipCard = buildRoute(RouteLocations.digitalMembershipCard, MembershipCardScreen());
+  static GoRoute membershipCard = buildRoute(RouteLocations.membershipCard, MembershipCardScreen());
   static GoRoute profiles = buildRoute(
     RouteLocations.getRoute([RouteLocations.profiles]),
     OwnProfileScreen(),
-    routes: [digitalMembershipCard],
+    routes: [membershipCard],
   );
   static GoRoute mfaTokenInput = buildRoute(RouteLocations.tokenInput, TokenInputScreen());
   static GoRoute mfaTokenScan = buildRoute(RouteLocations.tokenScan, TokenScanScreen(), routes: [mfaTokenInput]);
