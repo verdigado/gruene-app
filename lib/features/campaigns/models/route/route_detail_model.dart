@@ -47,6 +47,7 @@ class RouteDetailModel {
     String? id,
     RouteType? type,
     String? name,
+    String? description,
     RouteStatus? status,
     LineString? lineString,
     String? createdAt,
