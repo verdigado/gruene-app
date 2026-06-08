@@ -10,6 +10,7 @@ class RouteDetailModel {
   final String id;
   final RouteType type;
   final String? name;
+  final String? description;
   final RouteStatus status;
   final LineString lineString;
   final String createdAt;
@@ -20,6 +21,7 @@ class RouteDetailModel {
     required this.id,
     required this.type,
     required this.name,
+    required this.description,
     required this.status,
     required this.lineString,
     required this.createdAt,
@@ -30,6 +32,7 @@ class RouteDetailModel {
     required this.id,
     required this.type,
     required this.name,
+    required this.description,
     required this.status,
     required this.lineString,
     required this.createdAt,
@@ -55,6 +58,7 @@ class RouteDetailModel {
         id: id ?? this.id,
         type: type ?? this.type,
         name: name ?? this.name,
+        description: description ?? this.description,
         status: status ?? this.status,
         lineString: lineString ?? this.lineString,
         createdAt: createdAt ?? this.createdAt,
@@ -65,6 +69,7 @@ class RouteDetailModel {
         id: id ?? this.id,
         type: type ?? this.type,
         name: name ?? this.name,
+        description: description ?? this.description,
         status: status ?? this.status,
         lineString: lineString ?? this.lineString,
         createdAt: createdAt ?? this.createdAt,

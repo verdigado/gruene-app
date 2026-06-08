@@ -87,16 +87,26 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
               padding: EdgeInsets.symmetric(horizontal: 27),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        widget.actionAreaDetail.name ?? '-',
-                        style: theme.textTheme.labelLarge!.copyWith(
-                          color: ThemeColors.textDark,
-                          fontWeight: FontWeight.w700,
-                        ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.actionAreaDetail.name ?? '-',
+                      style: theme.textTheme.labelLarge!.copyWith(
+                        color: ThemeColors.textDark,
+                        fontWeight: FontWeight.w700,
                       ),
-                    ],
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.actionAreaDetail.comment ?? '-',
+                      style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                   SizedBox(height: 4),
                   Row(
