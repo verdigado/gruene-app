@@ -90,16 +90,26 @@ class _RouteDetailState extends State<RouteDetail> {
               ),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        _currentRouteDetail.name ?? '-',
-                        style: theme.textTheme.labelLarge!.copyWith(
-                          color: ThemeColors.textDark,
-                          fontWeight: FontWeight.w700,
-                        ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _currentRouteDetail.name ?? '-',
+                      style: theme.textTheme.labelLarge!.copyWith(
+                        color: ThemeColors.textDark,
+                        fontWeight: FontWeight.w700,
                       ),
-                    ],
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _currentRouteDetail.description ?? '-',
+                      style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   SizedBox(height: 4),
                   Row(
@@ -121,7 +131,7 @@ class _RouteDetailState extends State<RouteDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.general.createdAt}1: ${_currentRouteDetail.createdAt}',
+                        '${t.campaigns.general.createdAt}: ${_currentRouteDetail.createdAt}',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],

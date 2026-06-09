@@ -6,6 +6,7 @@ extension TeamRouteParsing on Route {
       id: id,
       type: type,
       name: name,
+      description: description,
       status: status,
       lineString: lineString,
       createdAt: createdAt.getAsLocalDateString(),
