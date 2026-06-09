@@ -12,10 +12,17 @@ class CampaignSelectButton extends StatefulWidget {
 
 class _CampaignSelectButtonState extends State<CampaignSelectButton> {
   final _newCampaignNotifier = GetIt.I<NewCampaignNotifier>();
+
   @override
   void initState() {
     super.initState();
     _newCampaignNotifier.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _newCampaignNotifier.removeListener(() => setState(() {}));
+    super.dispose();
   }
 
   @override
