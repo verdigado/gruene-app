@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
@@ -27,6 +29,14 @@ class AppTimers {
     );
   }
 
+  static BackgroundTimer getCheckForNewCampaignsTimer() {
+    return BackgroundTimer(
+      onTimer: _checkForNewCampaigns,
+      runEvery: Duration(minutes: 5),
+      initialRunDelay: Duration(seconds: 15),
+    );
+  }
+
   static void _flushCacheData() async {
     var authRepo = AuthRepository();
     if (await authRepo.getAccessToken() != null) {
@@ -45,6 +55,13 @@ class AppTimers {
     var authRepo = AuthRepository();
     if (await authRepo.getAccessToken() != null) {
       GetIt.I<ActiveCampaignNotifier>().checkCurrentCampaignIsActive();
+    }
+  }
+
+  static void _checkForNewCampaigns() async {
+    var authRepo = AuthRepository();
+    if (await authRepo.getAccessToken() != null) {
+      GetIt.I<NewCampaignNotifier>().checkNewCampaignsAvailable();
     }
   }
 }
@@ -92,5 +109,30 @@ class ActiveCampaignNotifier extends ChangeNotifier {
 
   void reset() {
     _isCurrentCampaignActive = true;
+  }
+}
+
+class NewCampaignNotifier extends ChangeNotifier {
+  bool _newCampaignsAvailable = false;
+  bool get newCampaignsAvailable => _newCampaignsAvailable;
+
+  void checkNewCampaignsAvailable() async {
+    try {
+      var allCampaigns = (await GetIt.I<GrueneApiCampaignService>().findCampaigns()).activeCampaigns();
+      var recentlySeenCampaignIds = GetIt.I<AppSettings>().campaign.activeCampaign.recentlySeenCampaignIds ?? [];
+
+      var newCampaigns = allCampaigns.where((c) => !recentlySeenCampaignIds.contains(c.id)).toList();
+      var valueChanged = newCampaignsAvailable != newCampaigns.isNotEmpty;
+
+      _newCampaignsAvailable = newCampaigns.isNotEmpty;
+      if (valueChanged) notifyListeners();
+    } on ClientException {
+      // Don't crash the app on network errors
+    }
+  }
+
+  void reset() {
+    _newCampaignsAvailable = false;
+    notifyListeners();
   }
 }

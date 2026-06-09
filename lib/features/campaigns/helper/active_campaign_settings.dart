@@ -16,11 +16,19 @@ class ActiveCampaignSettings extends ChangeNotifier {
   String? _recentSelectedCampaignId;
   String? get recentSelectedCampaignId => _recentSelectedCampaignId;
 
+  List<String>? _recentlySeenCampaignIds;
+  List<String>? get recentlySeenCampaignIds => _recentlySeenCampaignIds;
+
   set recentSelectedCampaignId(String? recentSelectedCampaignId) {
     _recentSelectedCampaignId = recentSelectedCampaignId;
     GetIt.I<AppSettings>().campaign.recentPoiStatisticsCampaignId = null;
     save();
     notifyListeners();
+  }
+
+  set recentlySeenCampaignIds(List<String>? recentlySeenCampaignIds) {
+    _recentlySeenCampaignIds = recentlySeenCampaignIds;
+    save();
   }
 
   ActiveCampaignSettings({String? recentSelectedCampaignId}) : _recentSelectedCampaignId = recentSelectedCampaignId;
