@@ -50,6 +50,8 @@ class ThemeColors {
   static const Color sun = Color(0xFFFFF17A);
 
   static const Color disabledShadow = Color(0xFFFBFCFC);
+
+  static const Color himmel600 = Color(0xFF0BA1DD);
 }
 
 class _ThemeTextStyles {
