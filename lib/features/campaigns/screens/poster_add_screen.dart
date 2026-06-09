@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
@@ -33,12 +36,30 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
   @override
   TextEditingController cityTextController = TextEditingController();
   File? _currentPhoto;
+  var appSettings = GetIt.I<AppSettings>();
+  String _campaignName = '';
 
   @override
   void initState() {
     setAddress(widget.address);
     _currentPhoto = widget.photo;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+
     super.initState();
+  }
+
+  Future<void> _loadData() async {
+    var activeCampaign = appSettings.campaign.activeCampaign.recentSelectedCampaignId;
+    if (activeCampaign != null) {
+      var campaignService = GetIt.I<GrueneApiCampaignService>();
+      var campaign = await campaignService.getCampaign(activeCampaign);
+      setState(() {
+        _campaignName = campaign.name;
+      });
+    }
   }
 
   @override
@@ -59,9 +80,19 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  t.campaigns.poster.addPoster,
-                  style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      t.campaigns.poster.addPoster,
+                      style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
+                    ),
+                    Text(
+                      _campaignName,
+                      style: theme.textTheme.displayMedium!.apply(color: ThemeColors.grey200, fontSizeDelta: -4),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
               _hasPhoto
