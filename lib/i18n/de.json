@@ -126,6 +126,7 @@
       "routes_deactivated": "Routen deaktiviert",
       "routes_aboutTitle": "Über Routen",
       "routes_aboutText": "Routen zeigen Dir, welche Wege Du am besten ablaufen kannst, um Haustüren zu besuchen, Plakate aufzuhängen oder Flyer zu verteilen. Die Routen werden von Wahlkampfkoordinator*innen im Grünen Atlas erstellt. Für mehr Informationen wende Dich bitte an Deinen Orts- oder Kreisverband.",
+      "campaigns_changed": "Kampagne geändert: ${campaignName}",
       "more": "mehr Info"
     },
     "pollingStation": {

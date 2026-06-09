@@ -211,7 +211,9 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       var currentCampaign = _activeCampaigns.singleWhere((c) => c.id == currentSelectedCampaign);
       var targetCampaign = _activeCampaigns.singleWhere((c) => c.id == assignedElement.campaignId);
       if (await _confirmCampaignSwitch(currentCampaign, targetCampaign)) {
-        switchCampaign(targetCampaign.id);
+        var currentContext = context;
+        if (!currentContext.mounted) return;
+        switchCampaign(targetCampaign, currentContext);
       } else {
         return;
       }

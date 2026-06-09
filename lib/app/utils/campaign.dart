@@ -1,6 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 String? getCurrentCampaignId() {
   var appSettings = GetIt.I<AppSettings>();
@@ -15,8 +19,9 @@ String? getCurrentPoiStatisticsCampaignId() {
   return currentCampaignId;
 }
 
-void switchCampaign(String? campaignId) {
+void switchCampaign(Campaign? campaign, BuildContext context) {
   var appSettings = GetIt.I<AppSettings>();
-  appSettings.campaign.activeCampaign.recentSelectedCampaignId = campaignId;
+  appSettings.campaign.activeCampaign.recentSelectedCampaignId = campaign?.id;
+  showSnackBar(context, t.campaigns.infoToast.campaigns_changed(campaignName: campaign?.name ?? t.common.notAvailable));
   GetIt.I<ActiveCampaignNotifier>().reset();
 }
