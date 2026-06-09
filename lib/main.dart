@@ -96,6 +96,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<CampaignActionCache>(CampaignActionCache());
   GetIt.I.registerSingleton<OpenInvitationCampaignValueStore>(OpenInvitationCampaignValueStore());
   GetIt.I.registerSingleton<ActiveCampaignNotifier>(ActiveCampaignNotifier());
+  GetIt.I.registerSingleton<NewCampaignNotifier>(NewCampaignNotifier());
   GetIt.I.registerSingleton<BackgroundTimer>(
     AppTimers.getCampaignActionCacheTimer(),
     instanceName: 'campaignActionCacheTimer',
@@ -104,6 +105,10 @@ Future<void> main() async {
   GetIt.I.registerSingleton<BackgroundTimer>(
     AppTimers.getEnforceActiveCampaignTimer(),
     instanceName: 'enforceActiveCampaignTimer',
+  );
+  GetIt.I.registerSingleton<BackgroundTimer>(
+    AppTimers.getCheckForNewCampaignsTimer(),
+    instanceName: 'checkForNewCampaignsTimer',
   );
   GetIt.I.registerSingleton<FileManager>(FileManager());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.poster.toString());

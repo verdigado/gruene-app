@@ -7,18 +7,21 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
+import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class CampaignSelectWidget extends StatefulWidget {
   final CampaignSelectMode mode;
+  final bool storeRecentSeenCampaigns;
   static int showCounter = 0;
 
-  const CampaignSelectWidget({super.key, this.mode = CampaignSelectMode.normal});
+  const CampaignSelectWidget({super.key, this.mode = CampaignSelectMode.normal, this.storeRecentSeenCampaigns = false});
 
   @override
   State<CampaignSelectWidget> createState() => _CampaignSelectWidgetState();
@@ -30,6 +33,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
   List<Campaign> _activeCampaigns = [];
   List<Division> _activeCampaignDivisions = [];
   String _previousCampaignName = t.common.unknown;
+  List<String> _previouslySeenCampaignIds = [];
 
   @override
   void initState() {
@@ -70,12 +74,23 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
         ? allCampaigns.firstWhereOrNull((c) => c.id == selectedCampaignId)?.name ?? t.common.unknown
         : t.common.unknown;
 
+    var recentCampaigns = selectableCampaigns.map((c) => c.id).toList();
+    var previouslySeenCampaignIds = recentCampaigns;
+    if (widget.storeRecentSeenCampaigns) {
+      var appSettings = GetIt.I<AppSettings>();
+      previouslySeenCampaignIds = appSettings.campaign.activeCampaign.recentlySeenCampaignIds ?? [];
+
+      appSettings.campaign.activeCampaign.recentlySeenCampaignIds = recentCampaigns;
+      GetIt.I<NewCampaignNotifier>().reset();
+    }
+
     setState(() {
       _loading = false;
       _activeCampaigns = selectableCampaigns;
       _activeCampaignDivisions = activeCampaignDivisions;
       _selectedCampaignId = selectedCampaignId;
       _previousCampaignName = previousCampaignName;
+      _previouslySeenCampaignIds = previouslySeenCampaignIds;
     });
   }
 
@@ -162,6 +177,12 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
           '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == campaign.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${campaign.electionDate.getAsLocalDateString()}';
     }
 
+    Widget asBadge(bool doBadge, Widget child) => doBadge
+        ? Badge(
+            child: Container(padding: EdgeInsets.only(right: 8), child: child),
+          )
+        : child;
+
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
@@ -189,7 +210,10 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(campaignName, style: theme.textTheme.labelLarge),
+                asBadge(
+                  !_previouslySeenCampaignIds.contains(campaignId),
+                  Text(campaignName, style: theme.textTheme.labelLarge),
+                ),
                 Text(campaignSubtitle, style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled)),
               ],
             ),
@@ -215,7 +239,10 @@ Future<void> showCampaignSelectDialog(BuildContext context, {bool enforceSelect 
       context: context,
       builder: (context) => Padding(
         padding: EdgeInsets.only(bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding)),
-        child: CampaignSelectWidget(mode: enforceSelect ? CampaignSelectMode.enforceSelect : CampaignSelectMode.normal),
+        child: CampaignSelectWidget(
+          mode: enforceSelect ? CampaignSelectMode.enforceSelect : CampaignSelectMode.normal,
+          storeRecentSeenCampaigns: true,
+        ),
       ),
       isScrollControlled: true,
       isDismissible: isDismissible,
