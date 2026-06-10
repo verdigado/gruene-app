@@ -8,6 +8,7 @@ import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
@@ -237,7 +238,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   }
 
   Future<List<PosterListItemModel>> getAllMyPosters() async {
-    var myPosters = await campaignService.getMyPosters();
+    var myPosters = await campaignService.getMyPosters(getCurrentCampaignId() ?? '-1');
     await campaignActionCache.replaceAndFillUpMyPosterList(myPosters);
     return myPosters;
   }
