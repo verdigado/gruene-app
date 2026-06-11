@@ -15,7 +15,7 @@ class GrueneApiFlyerService extends GrueneApiCampaignsPoiBaseService {
       body: CreatePoi(
         campaignId: newFlyer.campaignId,
         coords: newFlyer.location.transformToGeoJsonCoords(),
-        type: poiType.transformToApiCreatePoiType(),
+        type: poiType.transformToApiPoisType(),
         address: newFlyer.address.transformToPoiAddress(),
         flyerSpot: PoiFlyerSpot(flyerCount: newFlyer.flyerCount.toDouble()),
       ),

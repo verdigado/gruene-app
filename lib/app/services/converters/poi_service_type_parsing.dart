@@ -45,29 +45,7 @@ extension PoiCacheTypeParsing on PoiCacheType {
 }
 
 extension PoiServiceTypeParsing on PoiServiceType {
-  PoiType transformToApiPoisGetType() {
-    switch (this) {
-      case PoiServiceType.poster:
-        return PoiType.poster;
-      case PoiServiceType.door:
-        return PoiType.house;
-      case PoiServiceType.flyer:
-        return PoiType.flyerSpot;
-    }
-  }
-
-  PoiType transformToApiPoisSelfGetType() {
-    switch (this) {
-      case PoiServiceType.poster:
-        return PoiType.poster;
-      case PoiServiceType.door:
-        return PoiType.house;
-      case PoiServiceType.flyer:
-        return PoiType.flyerSpot;
-    }
-  }
-
-  PoiType transformToApiCreatePoiType() {
+  PoiType transformToApiPoisType() {
     switch (this) {
       case PoiServiceType.poster:
         return PoiType.poster;
