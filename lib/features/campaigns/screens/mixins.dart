@@ -15,6 +15,7 @@ import 'package:gruene_app/features/campaigns/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/widgets/search_bar_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:turf/circle.dart';
 import 'package:turf/turf.dart' as turf;
 
 part 'mixins/address_extension.dart';

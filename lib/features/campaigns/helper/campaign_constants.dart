@@ -10,6 +10,7 @@ class CampaignConstants {
   static const addMarkerAssetName = 'assets/symbols/add_marker.svg';
 
   static const pollingStationAssetName = 'assets/symbols/polling_stations/pollingstation.png';
+  static const pollingStationShieldAssetName = 'assets/symbols/polling_stations/polling_station_shield.png';
   static const actionAreaAssignemntAssetName = 'assets/symbols/action_areas/assigned-marker_24x24.png';
 
   static const experienceAreaFillPatternAssetName = 'assets/maps/layer_styles/experience_area_16x16.png';
@@ -30,6 +31,7 @@ class CampaignConstants {
   static const pollingStationSelectedSourceName = 'pollingStation_selected';
   static const pollingStationSymbolLayerId = 'pollingStation_layer';
   static const pollingStationSymbolSelectedLayerId = 'pollingStation_layer_selected';
+  static const pollingStationShieldAssetId = 'pollingStation_shield';
 
   static const routesSourceName = 'routes';
   static const routesSelectedSourceName = 'routes_selected';
