@@ -65,8 +65,8 @@ extension CampaignActionParsing on CampaignAction {
     var lastPhoto = createModel.latestPhoto();
     return PosterListItemModel(
       id: createModel.id,
-      thumbnailUrl: lastPhoto!.thumbnailUrl,
-      imageUrl: lastPhoto.imageUrl,
+      thumbnailUrl: lastPhoto?.thumbnailUrl,
+      imageUrl: lastPhoto?.imageUrl,
       address: createModel.address,
       status: createModel.status.translatePosterStatus(),
       lastChangeStatus: t.campaigns.poster.updated,
