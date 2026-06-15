@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_create_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
@@ -30,6 +33,8 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
   @override
   TextEditingController cityTextController = TextEditingController();
   TextEditingController flyerCountTextController = TextEditingController();
+  var appSettings = GetIt.I<AppSettings>();
+  String _campaignName = '';
 
   @override
   void dispose() {
@@ -42,7 +47,23 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
   void initState() {
     setAddress(widget.address);
     flyerCountTextController.text = '1';
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+
     super.initState();
+  }
+
+  Future<void> _loadData() async {
+    var activeCampaign = appSettings.campaign.activeCampaign.recentSelectedCampaignId;
+    if (activeCampaign != null) {
+      var campaignService = GetIt.I<GrueneApiCampaignService>();
+      var campaign = await campaignService.getCampaign(activeCampaign);
+      setState(() {
+        _campaignName = campaign.name;
+      });
+    }
   }
 
   @override
@@ -57,9 +78,19 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
           Row(
             children: [
               Expanded(
-                child: Text(
-                  t.campaigns.flyer.addFlyer,
-                  style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      t.campaigns.flyer.addFlyer,
+                      style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
+                    ),
+                    Text(
+                      _campaignName,
+                      style: theme.textTheme.displayMedium!.apply(color: ThemeColors.grey200, fontSizeDelta: -4),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
             ],
