@@ -27,7 +27,7 @@ class FilterBar extends StatelessWidget {
     final bookmarkFilter = this.bookmarkFilter;
 
     return SizedBox(
-      height: 48,
+      height: 40,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         spacing: 8,
@@ -40,7 +40,6 @@ class FilterBar extends StatelessWidget {
               iconColor: ThemeColors.textDisabled,
               backgroundColor: theme.colorScheme.surface,
               selected: bookmarkFilter.current,
-              width: 40,
             ),
           loading
               ? CircularProgressIndicator()
@@ -48,7 +47,6 @@ class FilterBar extends StatelessWidget {
                   icon: Icons.filter_list,
                   iconColor: modified ? theme.colorScheme.secondary : ThemeColors.textDisabled,
                   backgroundColor: theme.colorScheme.surface,
-                  width: 40,
                   onPressed: () => showFullScreenDialog(context, (_) => filterDialog),
                 ),
         ],
