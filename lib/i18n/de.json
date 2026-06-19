@@ -349,9 +349,9 @@
       "recorded_flyer": "Flyer",
       "as_at": "Stand",
       "no_teams": {
-        "kv": "In deinem KV existieren noch keine Teams mit Wahlkampfaktivitäten.",
-        "lv": "In deinem LV existieren noch keine Teams mit Wahlkampfaktivitäten.",
-        "bv": "In deinem BV existieren noch keine Teams mit Wahlkampfaktivitäten."
+        "kv": "In deinem KV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne.",
+        "lv": "In deinem LV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne.",
+        "bv": "In deinem BV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
       }
     },
     "address": {
