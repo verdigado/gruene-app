@@ -105,7 +105,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
             compare: (category1, category2) => category1 == category2,
             filter: (category, query) => category.matches(query),
             itemAsString: (category) => category,
-            hint: t.events.searchCategories,
+            label: t.events.categories,
           ),
         ),
         Column(

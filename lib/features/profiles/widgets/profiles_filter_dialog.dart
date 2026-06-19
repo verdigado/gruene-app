@@ -79,7 +79,7 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
             compare: (division1, division2) => division1.id == division2.id,
             filter: (division, query) => division.matches(query),
             itemAsString: (division) => division.shortDisplayName,
-            hint: t.divisions.searchDivision,
+            label: t.divisions.division,
           ),
         ),
         FilterSection(
@@ -91,7 +91,7 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
             compare: (skill1, skill2) => skill1.id == skill2.id,
             filter: (skill, query) => skill.label.matches(query),
             itemAsString: (skill) => skill.label,
-            hint: t.profiles.searchSkills,
+            label: t.profiles.search,
           ),
         ),
         FilterSection(
@@ -103,7 +103,7 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
             compare: (interest1, interest2) => interest1.id == interest2.id,
             filter: (interest, query) => interest.label.matches(query),
             itemAsString: (interest) => interest.label,
-            hint: t.profiles.searchInterests,
+            label: t.profiles.interests,
           ),
         ),
       ],

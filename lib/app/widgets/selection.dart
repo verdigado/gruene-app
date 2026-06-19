@@ -15,7 +15,7 @@ class Selection<T> extends StatelessWidget {
   final String Function(T item) itemAsString;
   final List<T> items;
   final T? selected;
-  final String hint;
+  final String label;
 
   const Selection({
     super.key,
@@ -25,12 +25,12 @@ class Selection<T> extends StatelessWidget {
     required this.filter,
     required this.items,
     required this.selected,
-    required this.hint,
+    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
-    final searchFieldProps = TextFieldProps(decoration: InputDecoration(hintText: hint), autofocus: true);
+    final searchFieldProps = TextFieldProps(decoration: InputDecoration(label: Text(label)), autofocus: true);
     final decoratorProps = DropDownDecoratorProps(decoration: InputDecoration(hintText: t.common.actions.select));
     final theme = Theme.of(context);
 
@@ -60,7 +60,7 @@ class MultiSelection<T> extends StatelessWidget {
   final String Function(T item) itemAsString;
   final List<T> items;
   final List<T> selected;
-  final String hint;
+  final String label;
 
   const MultiSelection({
     super.key,
@@ -70,12 +70,12 @@ class MultiSelection<T> extends StatelessWidget {
     required this.filter,
     required this.items,
     required this.selected,
-    required this.hint,
+    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
-    final searchFieldProps = TextFieldProps(decoration: InputDecoration(hintText: hint), autofocus: true);
+    final searchFieldProps = TextFieldProps(decoration: InputDecoration(label: Text(label)), autofocus: true);
     final decoratorProps = DropDownDecoratorProps(
       decoration: InputDecoration(
         hintText: t.common.actions.select,

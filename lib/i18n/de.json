@@ -43,9 +43,7 @@
   },
   "divisions": {
     "divisions": "Verbände",
-    "searchDivisions": "Verbände suchen",
     "division": "Verband",
-    "searchDivision": "Verband suchen",
     "level": {
       "ov": {
         "label": "Ortsverband",
@@ -82,7 +80,6 @@
     "latest": "Aktuelles",
     "bookmarked": "Gespeichert",
     "categories": "Schlagworte",
-    "searchCategories": "Schlagworte suchen",
     "publicationDate": "Veröffentlichungsdatum"
   },
   "campaigns": {
@@ -414,9 +411,7 @@
     "mandateRoles": "Mandate",
     "sherpaRoles": "Sherpa-Rollen",
     "skills": "Kompetenzen",
-    "searchSkills": "Kompetenzen suchen",
     "interests": "Interessen",
-    "searchInterests": "Interessen suchen",
     "socialMedia": "Social Media",
     "socialMediaType": {
       "facebook": "Facebook",
