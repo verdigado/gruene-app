@@ -33,14 +33,6 @@ class FilterBar extends StatelessWidget {
         spacing: 8,
         children: [
           Flexible(child: CustomSearchBar(searchFilter: searchFilter)),
-          if (bookmarkFilter != null)
-            RoundedIconButton(
-              onPressed: () => bookmarkFilter.update(!bookmarkFilter.current),
-              icon: Icons.bookmark_outline,
-              iconColor: ThemeColors.textDisabled,
-              backgroundColor: theme.colorScheme.surface,
-              selected: bookmarkFilter.current,
-            ),
           loading
               ? CircularProgressIndicator()
               : RoundedIconButton(
@@ -49,6 +41,14 @@ class FilterBar extends StatelessWidget {
                   backgroundColor: theme.colorScheme.surface,
                   onPressed: () => showFullScreenDialog(context, (_) => filterDialog),
                 ),
+          if (bookmarkFilter != null)
+            RoundedIconButton(
+              onPressed: () => bookmarkFilter.update(!bookmarkFilter.current),
+              icon: Icons.bookmark_outline,
+              iconColor: ThemeColors.textDisabled,
+              backgroundColor: theme.colorScheme.surface,
+              selected: bookmarkFilter.current,
+            ),
         ],
       ),
     );
