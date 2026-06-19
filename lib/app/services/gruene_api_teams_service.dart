@@ -26,21 +26,21 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
   Future<Team> acceptTeamMembership(String teamId) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
-      body: UpdateTeamMembershipStatus(type: UpdateTeamMembershipStatusType.accept),
+      body: UpdateTeamMembershipStatus(type: TeamMembershipStatusUpdateType.accept),
     ),
   );
 
   Future<Team> rejectTeamMembership(String teamId) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
-      body: UpdateTeamMembershipStatus(type: UpdateTeamMembershipStatusType.reject),
+      body: UpdateTeamMembershipStatus(type: TeamMembershipStatusUpdateType.reject),
     ),
   );
 
   Future<Team> leaveTeam(String teamId) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
-      body: UpdateTeamMembershipStatus(type: UpdateTeamMembershipStatusType.resign),
+      body: UpdateTeamMembershipStatus(type: TeamMembershipStatusUpdateType.resign),
     ),
   );
 
@@ -50,7 +50,7 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
   Future<Team> addTeamMembership({required String teamId, required String userId}) => getFromApi(
     apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipPost(
       teamId: teamId,
-      body: CreateTeamMembership(type: CreateTeamMembershipType.member, userId: userId),
+      body: CreateTeamMembership(type: TeamMembershipType.member, userId: userId),
     ),
   );
 

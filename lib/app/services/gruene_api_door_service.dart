@@ -15,7 +15,7 @@ class GrueneApiDoorService extends GrueneApiCampaignsPoiBaseService {
       body: CreatePoi(
         campaignId: newDoor.campaignId,
         coords: newDoor.location.transformToGeoJsonCoords(),
-        type: poiType.transformToApiCreatePoiType(),
+        type: poiType.transformToApiPoisType(),
         address: newDoor.address.transformToPoiAddress(),
         house: PoiHouse(
           countOpenedDoors: newDoor.openedDoors.toDouble(),

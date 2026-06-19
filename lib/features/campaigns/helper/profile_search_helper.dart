@@ -84,7 +84,7 @@ class ProfileSearchHelper {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          item.memberships!.map((m) => m.division.shortName).join(', '),
+                          item.memberships.map((m) => m.division.shortName).join(', '),
                           style: theme.textTheme.bodyMedium,
                         ),
                       ),

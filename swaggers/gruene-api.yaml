@@ -379,35 +379,24 @@ paths:
             minimum: 1
             default: 20
             type: number
+        - name: hierarchy
+          required: false
+          in: query
+          description: Filter by hierarchy
+          schema:
+            $ref: '#/components/schemas/HierarchyType'
+        - name: level
+          required: false
+          in: query
+          description: Filter by hierarchy level
+          schema:
+            $ref: '#/components/schemas/HierarchyLevel'
         - name: offset
           required: false
           in: query
           schema:
             minimum: 0
             type: number
-        - name: hierarchy
-          required: false
-          in: query
-          description: Filter by hierarchy
-          schema:
-            example: GR
-            type: string
-            enum:
-              - GR
-              - GJ
-              - KPV
-        - name: level
-          required: false
-          in: query
-          description: Filter by hierarchy level
-          schema:
-            example: BV
-            type: string
-            enum:
-              - BV
-              - LV
-              - KV
-              - OV
         - name: division_key
           required: false
           in: query
@@ -724,6 +713,12 @@ paths:
             minimum: 1
             default: 20
             type: number
+        - name: type
+          required: false
+          in: query
+          description: Filter by type
+          schema:
+            $ref: '#/components/schemas/TagType'
         - name: offset
           required: false
           in: query
@@ -736,16 +731,6 @@ paths:
           description: Search label attributes for substring
           schema:
             type: string
-        - name: type
-          required: false
-          in: query
-          description: Filter by type
-          schema:
-            example: interest
-            type: string
-            enum:
-              - skill
-              - interest
       responses:
         '200':
           description: ''
@@ -1395,12 +1380,7 @@ paths:
           in: query
           description: filter by POI type
           schema:
-            example: POSTER
-            type: string
-            enum:
-              - FLYER_SPOT
-              - POSTER
-              - HOUSE
+            $ref: '#/components/schemas/PoiType'
         - name: campaignId
           required: false
           in: query
@@ -1502,12 +1482,7 @@ paths:
           in: query
           description: filter by POI type
           schema:
-            example: POSTER
-            type: string
-            enum:
-              - FLYER_SPOT
-              - POSTER
-              - HOUSE
+            $ref: '#/components/schemas/PoiType'
         - name: campaignId
           required: false
           in: query
@@ -2387,6 +2362,20 @@ paths:
             minimum: 1
             maximum: 50
             type: number
+        - name: start
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-03-20T06:03:50.427'
+            type: string
+        - name: end
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-04-23T12:15:59.123'
+            type: string
         - name: offset
           required: false
           in: query
@@ -2634,6 +2623,26 @@ paths:
             minimum: 1
             default: 20
             type: number
+        - name: assignment_status
+          required: false
+          in: query
+          description: >-
+            Filter by assignment status - is the role currently assigned to any
+            user or to none
+          schema:
+            $ref: '#/components/schemas/RoleAssignmentStatus'
+        - name: hierarchy
+          required: false
+          in: query
+          description: Filter by hierarchy type
+          schema:
+            $ref: '#/components/schemas/HierarchyType'
+        - name: level
+          required: false
+          in: query
+          description: Filter by hierarchy level
+          schema:
+            $ref: '#/components/schemas/RoleLevel'
         - name: offset
           required: false
           in: query
@@ -2662,17 +2671,6 @@ paths:
             type: array
             items:
               type: string
-        - name: assignment_status
-          required: false
-          in: query
-          description: >-
-            Filter by assignment status - is the role currently assigned to any
-            user or to none
-          schema:
-            type: string
-            enum:
-              - assigned
-              - unassigned
         - name: assignment_status_in
           required: false
           in: query
@@ -2681,29 +2679,6 @@ paths:
             type: array
             items:
               type: string
-        - name: hierarchy
-          required: false
-          in: query
-          description: Filter by hierarchy type
-          schema:
-            type: string
-            enum:
-              - GR
-              - GJ
-              - KPV
-        - name: level
-          required: false
-          in: query
-          description: Filter by hierarchy level
-          schema:
-            type: string
-            enum:
-              - ALL
-              - BV
-              - LV
-              - KV
-              - OV
-              - BEZV
       responses:
         '200':
           description: ''
@@ -3034,30 +3009,13 @@ paths:
           in: query
           description: filter by record type
           schema:
-            example: REGIONAL_CHAPTER
-            type: string
-            enum:
-              - PARTY
-              - REGIONAL_CHAPTER
-              - COMMITTEE
-              - YOUTH_ORGANIZATION
-              - SUB_ORGANIZATION
-              - PERSON
-              - PARLIAMENTARY_GROUP
+            $ref: '#/components/schemas/GreenDirectoryRecordType'
         - name: level
           required: false
           in: query
           description: filter by location level
           schema:
-            example: DE:KREISVERBAND
-            type: string
-            enum:
-              - DE:BUNDESVERBAND
-              - DE:LANDESVERBAND
-              - DE:BEZIRKSVERBAND
-              - DE:KREISVERBAND
-              - DE:REGIONALVERBAND
-              - DE:ORTSVERBAND
+            $ref: '#/components/schemas/GreenDirectoryLocationLevel'
         - name: divisionKey
           required: false
           in: query
@@ -3201,15 +3159,7 @@ paths:
           in: query
           description: filter by location level
           schema:
-            example: DE:KREISVERBAND
-            type: string
-            enum:
-              - DE:BUNDESVERBAND
-              - DE:LANDESVERBAND
-              - DE:BEZIRKSVERBAND
-              - DE:KREISVERBAND
-              - DE:REGIONALVERBAND
-              - DE:ORTSVERBAND
+            $ref: '#/components/schemas/GreenDirectoryLocationLevel'
         - name: offset
           required: false
           in: query
@@ -3604,10 +3554,10 @@ info:
   contact: {}
 tags: []
 servers:
+  - url: http://0.0.0.0:5000
+    description: localhost
   - url: https://api.gruene.de
     description: Production
-  - url: http://192.168.178.35:5000
-    description: Development
 components:
   securitySchemes:
     basic:
@@ -3821,17 +3771,20 @@ components:
           $ref: '#/components/schemas/NotificationChannelSettings'
       required:
         - inApp
+    NotificationType:
+      type: string
+      enum:
+        - campaigns.teamMembership.updated
+        - campaigns.team-top10.updated
+        - campaigns.routeAssignment.updated
+        - campaigns.areaAssignment.updated
+        - news.published
     NotificationDeliveryRule:
       type: object
       properties:
         type:
-          type: string
-          enum:
-            - campaigns.teamMembership.updated
-            - campaigns.team-top10.updated
-            - campaigns.routeAssignment.updated
-            - campaigns.areaAssignment.updated
-            - news.published
+          allOf:
+            - $ref: '#/components/schemas/NotificationType'
         inApp:
           $ref: '#/components/schemas/NotificationChannelSettings'
       required:
@@ -3882,27 +3835,35 @@ components:
       required:
         - items
         - count
+    NbExternalRefType:
+      type: string
+      enum:
+        - SHERPA
+      description: Filter by external reference type
+    NbGroupLevel:
+      type: string
+      enum:
+        - DE:BUNDESVERBAND
+        - DE:LANDESVERBAND
+        - DE:KREISVERBAND
+        - DE:ORTSVERBAND
+      description: Filter by role level
     NbGroupFilter:
       type: object
       properties:
         filter[external_refs.type]:
-          type: string
           description: Filter by external reference type
           example: SHERPA
-          enum:
-            - SHERPA
+          allOf:
+            - $ref: '#/components/schemas/NbExternalRefType'
         filter[external_refs.key]:
           type: string
           description: Filter by external reference ID (sherpa role id)
           example: '12345678'
         filter[level]:
           description: Filter by role level
-          enum:
-            - DE:BUNDESVERBAND
-            - DE:LANDESVERBAND
-            - DE:KREISVERBAND
-            - DE:ORTSVERBAND
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/NbGroupLevel'
         filter[type]:
           type: string
           description: Filter by role type
@@ -3966,6 +3927,14 @@ components:
             $ref: '#/components/schemas/NbGroup'
       required:
         - items
+    NbRegionalChapterType:
+      type: string
+      enum:
+        - BV
+        - LV
+        - KV
+        - OV
+      description: Filter by type
     NbRegionalChapterFilter:
       type: object
       properties:
@@ -3978,12 +3947,8 @@ components:
           maxLength: 8
         filter[type]:
           description: Filter by type
-          enum:
-            - BV
-            - LV
-            - KV
-            - OV
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/NbRegionalChapterType'
     NbRegionalChapter:
       type: object
       properties:
@@ -4030,6 +3995,19 @@ components:
       required:
         - count
         - items
+    HierarchyType:
+      type: string
+      enum:
+        - GR
+        - GJ
+        - KPV
+    HierarchyLevel:
+      type: string
+      enum:
+        - BV
+        - LV
+        - KV
+        - OV
     Address:
       type: object
       properties:
@@ -4229,47 +4207,53 @@ components:
         - id
         - country
         - number
+    MessengerType:
+      type: string
+      enum:
+        - threema
     MessengerEntry:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/MessengerType'
         id:
           type: string
           example: '123'
-        type:
-          type: string
-          example: threema
-          enum:
-            - threema
         externalId:
           type: string
           example: 822d7a5a
       required:
-        - id
         - type
+        - id
         - externalId
+    SocialMediaType:
+      type: string
+      enum:
+        - facebook
+        - instagram
+        - mastodon
+        - twitter
+        - chatbegruenung
+      description: Type of social media entry
     SocialMediaEntry:
       type: object
       properties:
-        id:
-          type: string
-          example: '123'
         type:
           description: Type of social media entry
           example: mastodon
-          enum:
-            - facebook
-            - instagram
-            - mastodon
-            - twitter
-            - chatbegruenung
+          allOf:
+            - $ref: '#/components/schemas/SocialMediaType'
+        id:
           type: string
+          example: '123'
         url:
           type: string
           description: Url to the platform account
           example: https://mastodon.online/@saxgruen
       required:
-        - id
         - type
+        - id
         - url
     ProfileTag:
       type: object
@@ -4405,6 +4389,7 @@ components:
         - messengers
         - socialMedia
         - tags
+        - memberships
         - roles
         - achievements
     FindProfilesResponse:
@@ -4426,39 +4411,30 @@ components:
           type: string
       required:
         - userId
+    Visibility:
+      type: string
+      enum:
+        - PRIVATE
+        - PUBLIC
+        - BV_WIDE
+        - LV_WIDE
+        - KV_WIDE
+        - OV_WIDE
     ProfilePrivacySettings:
       type: object
       properties:
         overall:
           example: BV_WIDE
-          enum:
-            - PRIVATE
-            - PUBLIC
-            - BV_WIDE
-            - LV_WIDE
-            - KV_WIDE
-            - OV_WIDE
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/Visibility'
         email:
           example: PRIVATE
-          enum:
-            - PRIVATE
-            - PUBLIC
-            - BV_WIDE
-            - LV_WIDE
-            - KV_WIDE
-            - OV_WIDE
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/Visibility'
         chatbegruenung:
           example: PUBLIC
-          enum:
-            - PRIVATE
-            - PUBLIC
-            - BV_WIDE
-            - LV_WIDE
-            - KV_WIDE
-            - OV_WIDE
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/Visibility'
       required:
         - overall
         - email
@@ -4539,6 +4515,7 @@ components:
         - messengers
         - socialMedia
         - tags
+        - memberships
         - roles
         - achievements
         - privacy
@@ -4563,10 +4540,8 @@ components:
       type: object
       properties:
         type:
-          type: string
-          example: threema
-          enum:
-            - threema
+          allOf:
+            - $ref: '#/components/schemas/MessengerType'
         externalId:
           type: string
           example: 822d7a5a
@@ -4580,15 +4555,10 @@ components:
       type: object
       properties:
         type:
-          type: string
           description: Type of social media entry
           example: mastodon
-          enum:
-            - facebook
-            - instagram
-            - mastodon
-            - twitter
-            - chatbegruenung
+          allOf:
+            - $ref: '#/components/schemas/SocialMediaType'
         url:
           type: string
           description: Url to the platform account
@@ -4634,6 +4604,11 @@ components:
         - socialMedia
         - tags
         - privacy
+    TagType:
+      type: string
+      enum:
+        - skill
+        - interest
     FindProfileTagsResponse:
       type: object
       properties:
@@ -4681,22 +4656,25 @@ components:
       required:
         - data
         - meta
+    OffboardingServiceUserStatus:
+      type: string
+      enum:
+        - deleted
+        - not_found
+        - anonymized
     UpsertOffboardingServiceUser:
       type: object
       properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/OffboardingServiceUserStatus'
         id:
           type: string
           description: The user's id.
           example: '12345678'
-        status:
-          enum:
-            - deleted
-            - not_found
-            - anonymized
-          type: string
       required:
-        - id
         - status
+        - id
     BatchUpdateOffboardingServiceUsers:
       type: object
       properties:
@@ -4705,6 +4683,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UpsertOffboardingServiceUser'
+    AreaType:
+      type: string
+      enum:
+        - FLYER_SPOT
+        - POSTER
+        - HOUSE
+    AreaStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
     Polygon:
       type: object
       properties:
@@ -4731,17 +4720,12 @@ components:
     UpdateArea:
       type: object
       properties:
-        status:
-          enum:
-            - OPEN
-            - CLOSED
-          type: string
         type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/AreaType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/AreaStatus'
         comment:
           type: string
           nullable: true
@@ -4751,8 +4735,8 @@ components:
         polygon:
           $ref: '#/components/schemas/Polygon'
       required:
-        - status
         - type
+        - status
         - comment
         - name
         - polygon
@@ -4760,11 +4744,8 @@ components:
       type: object
       properties:
         type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/AreaType'
         campaignId:
           type: string
           nullable: true
@@ -4848,17 +4829,6 @@ components:
         - comment
         - name
         - polygon
-    AreaStatus:
-      type: string
-      enum:
-        - OPEN
-        - CLOSED
-    AreaType:
-      type: string
-      enum:
-        - FLYER_SPOT
-        - POSTER
-        - HOUSE
     FindAreasResponse:
       type: object
       properties:
@@ -4872,10 +4842,8 @@ components:
       type: object
       properties:
         status:
-          enum:
-            - OPEN
-            - CLOSED
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/AreaStatus'
       required:
         - status
     AreaAssignTeam:
@@ -4885,6 +4853,27 @@ components:
           type: string
           nullable: true
           description: If null => unassign, if string => assign.
+    CampaignScope:
+      type: string
+      enum:
+        - EU
+        - FEDERAL
+        - STATE
+        - DISTRICT
+        - MIXED
+    CampaignType:
+      type: string
+      enum:
+        - ELECTION
+        - INITIATIVE
+    CampaignStatus:
+      type: string
+      enum:
+        - DRAFT
+        - ACTIVE
+        - PAUSED
+        - CLOSED
+        - ARCHIVED
     UpdateCampaign:
       type: object
       properties:
@@ -4895,6 +4884,15 @@ components:
           type: string
           nullable: true
           format: date-time
+        scope:
+          allOf:
+            - $ref: '#/components/schemas/CampaignScope'
+        type:
+          allOf:
+            - $ref: '#/components/schemas/CampaignType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/CampaignStatus'
         end:
           type: string
           nullable: true
@@ -4904,35 +4902,14 @@ components:
           format: date-time
         name:
           type: string
-        scope:
-          enum:
-            - EU
-            - FEDERAL
-            - STATE
-            - DISTRICT
-            - MIXED
-          type: string
-        type:
-          enum:
-            - ELECTION
-            - INITIATIVE
-          type: string
-        status:
-          enum:
-            - DRAFT
-            - ACTIVE
-            - PAUSED
-            - CLOSED
-            - ARCHIVED
-          type: string
         divisionKey:
           type: string
       required:
-        - electionDate
-        - name
         - scope
         - type
         - status
+        - electionDate
+        - name
         - divisionKey
     CreateCampaign:
       type: object
@@ -4944,6 +4921,15 @@ components:
           type: string
           nullable: true
           format: date-time
+        scope:
+          allOf:
+            - $ref: '#/components/schemas/CampaignScope'
+        type:
+          allOf:
+            - $ref: '#/components/schemas/CampaignType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/CampaignStatus'
         end:
           type: string
           nullable: true
@@ -4953,35 +4939,14 @@ components:
           format: date-time
         name:
           type: string
-        scope:
-          enum:
-            - EU
-            - FEDERAL
-            - STATE
-            - DISTRICT
-            - MIXED
-          type: string
-        type:
-          enum:
-            - ELECTION
-            - INITIATIVE
-          type: string
-        status:
-          enum:
-            - DRAFT
-            - ACTIVE
-            - PAUSED
-            - CLOSED
-            - ARCHIVED
-          type: string
         divisionKey:
           type: string
       required:
-        - electionDate
-        - name
         - scope
         - type
         - status
+        - electionDate
+        - name
         - divisionKey
     Campaign:
       type: object
@@ -5175,19 +5140,23 @@ components:
         - zip
         - street
         - houseNumber
+    PosterStatus:
+      type: string
+      enum:
+        - OK
+        - DAMAGED
+        - REMOVED
+        - MISSING
+        - TO_BE_MOVED
+      description: Current status of the poster.
     PoiPoster:
       type: object
       properties:
         status:
           description: Current status of the poster.
           example: OK
-          enum:
-            - OK
-            - DAMAGED
-            - REMOVED
-            - MISSING
-            - TO_BE_MOVED
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/PosterStatus'
         comment:
           type: string
           nullable: true
@@ -5238,9 +5207,18 @@ components:
             - $ref: '#/components/schemas/PoiHouse'
       required:
         - address
+    PoiType:
+      type: string
+      enum:
+        - FLYER_SPOT
+        - POSTER
+        - HOUSE
     CreatePoi:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/PoiType'
         coords:
           description: Coordinates represented in GeoJSON [longitude, latitude]
           example:
@@ -5251,12 +5229,6 @@ components:
           type: array
           items:
             type: number
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
           nullable: true
@@ -5275,8 +5247,8 @@ components:
           allOf:
             - $ref: '#/components/schemas/PoiHouse'
       required:
-        - coords
         - type
+        - coords
         - address
     Image:
       type: object
@@ -5415,6 +5387,17 @@ components:
         - total
         - offset
         - limit
+    RouteType:
+      type: string
+      enum:
+        - FLYER_SPOT
+        - POSTER
+        - HOUSE
+    RouteStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
     LineString:
       type: object
       properties:
@@ -5443,17 +5426,12 @@ components:
     UpdateRoute:
       type: object
       properties:
-        status:
-          enum:
-            - OPEN
-            - CLOSED
-          type: string
         type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/RouteType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/RouteStatus'
         name:
           type: string
           nullable: true
@@ -5464,23 +5442,20 @@ components:
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
-        - status
         - type
+        - status
         - name
         - description
         - lineString
     CreateRoute:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/RouteType'
         campaignId:
           type: string
           nullable: true
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         name:
           type: string
           nullable: true
@@ -5545,17 +5520,6 @@ components:
         - name
         - description
         - lineString
-    RouteType:
-      type: string
-      enum:
-        - FLYER_SPOT
-        - POSTER
-        - HOUSE
-    RouteStatus:
-      type: string
-      enum:
-        - OPEN
-        - CLOSED
     FindRoutesResponse:
       type: object
       properties:
@@ -5569,10 +5533,8 @@ components:
       type: object
       properties:
         status:
-          enum:
-            - OPEN
-            - CLOSED
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/RouteStatus'
       required:
         - status
     RouteAssignTeam:
@@ -5787,15 +5749,8 @@ components:
       type: object
       properties:
         status:
-          enum:
-            - OK
-            - DAMAGED
-            - REMOVED
-            - MISSING
-            - TO_BE_MOVED
-            - OPENED_DOORS
-            - CLOSED_DOORS
-          type: string
+          allOf:
+            - $ref: '#/components/schemas/PoiStatus'
         own:
           type: number
           description: Total number of POIs created or owned by the current user.
@@ -5874,19 +5829,22 @@ components:
         - poster
         - flyer
         - house
+    TeamMembershipType:
+      type: string
+      enum:
+        - LEAD
+        - MEMBER
     CreateTeamMembership:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipType'
         userId:
           type: string
-        type:
-          enum:
-            - LEAD
-            - MEMBER
-          type: string
       required:
-        - userId
         - type
+        - userId
     CreateTeam:
       type: object
       properties:
@@ -6131,25 +6089,26 @@ components:
     UpdateTeamMembership:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipType'
         userId:
           type: object
-        type:
-          type: string
-          enum:
-            - LEAD
-            - MEMBER
       required:
-        - userId
         - type
+        - userId
+    TeamMembershipStatusUpdateType:
+      type: string
+      enum:
+        - ACCEPT
+        - REJECT
+        - RESIGN
     UpdateTeamMembershipStatus:
       type: object
       properties:
         type:
-          type: string
-          enum:
-            - ACCEPT
-            - REJECT
-            - RESIGN
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipStatusUpdateType'
       required:
         - type
     UpdateTeam:
@@ -6321,6 +6280,20 @@ components:
       required:
         - areas
         - routes
+    RoleAssignmentStatus:
+      type: string
+      enum:
+        - assigned
+        - unassigned
+    RoleLevel:
+      type: string
+      enum:
+        - ALL
+        - BV
+        - LV
+        - KV
+        - OV
+        - BEZV
     RoleAlias:
       type: object
       properties:
@@ -6703,33 +6676,49 @@ components:
             $ref: '#/components/schemas/Bookmark'
       required:
         - data
+    BookmarkType:
+      type: string
+      enum:
+        - NEWS
     CreateBookmark:
       type: object
       properties:
         type:
-          type: string
-          enum:
-            - NEWS
+          allOf:
+            - $ref: '#/components/schemas/BookmarkType'
         itemId:
           type: string
       required:
         - type
         - itemId
+    GreenDirectoryRecordType:
+      type: string
+      enum:
+        - PARTY
+        - REGIONAL_CHAPTER
+        - COMMITTEE
+        - YOUTH_ORGANIZATION
+        - SUB_ORGANIZATION
+        - PERSON
+        - PARLIAMENTARY_GROUP
+    GreenDirectoryRecordUrlType:
+      type: string
+      enum:
+        - WEBSITE
+        - FACEBOOK
+        - TWITTER
+        - INSTAGRAM
+        - BLUESKY
+        - MASTODON
+        - LOOPS
+        - YOUTUBE
+        - MAILINGLIST
     GreenDirectoryUrl:
       type: object
       properties:
         type:
-          type: string
-          enum:
-            - WEBSITE
-            - FACEBOOK
-            - TWITTER
-            - INSTAGRAM
-            - BLUESKY
-            - MASTODON
-            - LOOPS
-            - YOUTUBE
-            - MAILINGLIST
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryRecordUrlType'
         url:
           type: string
           format: uri
@@ -6749,14 +6738,17 @@ components:
       required:
         - purpose
         - address
+    GreenDirectoryRecordExternalRefType:
+      type: string
+      enum:
+        - WIKIDATA
+        - WIKIPEDIA
     GreenDirectoryExternalRef:
       type: object
       properties:
         type:
-          type: string
-          enum:
-            - WIKIDATA
-            - WIKIPEDIA
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryRecordExternalRefType'
         value:
           type: string
           minLength: 1
@@ -6779,15 +6771,8 @@ components:
       type: object
       properties:
         type:
-          type: string
-          enum:
-            - PARTY
-            - REGIONAL_CHAPTER
-            - COMMITTEE
-            - YOUTH_ORGANIZATION
-            - SUB_ORGANIZATION
-            - PERSON
-            - PARLIAMENTARY_GROUP
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryRecordType'
         divisionKey:
           type: string
           nullable: true
@@ -6907,6 +6892,15 @@ components:
         - externalRefs
         - name
         - person
+    GreenDirectoryLocationLevel:
+      type: string
+      enum:
+        - DE:BUNDESVERBAND
+        - DE:LANDESVERBAND
+        - DE:BEZIRKSVERBAND
+        - DE:KREISVERBAND
+        - DE:REGIONALVERBAND
+        - DE:ORTSVERBAND
     FindGreenDirectoryRecordsResponse:
       type: object
       properties:
@@ -6952,6 +6946,9 @@ components:
     CreateGreenDirectoryLocation:
       type: object
       properties:
+        level:
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryLocationLevel'
         country:
           type: string
           minLength: 2
@@ -6960,15 +6957,6 @@ components:
           type: string
           nullable: true
           minLength: 1
-        level:
-          type: string
-          enum:
-            - DE:BUNDESVERBAND
-            - DE:LANDESVERBAND
-            - DE:BEZIRKSVERBAND
-            - DE:KREISVERBAND
-            - DE:REGIONALVERBAND
-            - DE:ORTSVERBAND
         region:
           type: string
           nullable: true
@@ -6982,8 +6970,8 @@ components:
           nullable: true
           minLength: 1
       required:
-        - country
         - level
+        - country
     FindGreenDirectoryLocationsResponse:
       type: object
       properties:
@@ -6999,6 +6987,9 @@ components:
     UpdateGreenDirectoryLocation:
       type: object
       properties:
+        level:
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryLocationLevel'
         country:
           type: string
           minLength: 2
@@ -7007,15 +6998,6 @@ components:
           type: string
           nullable: true
           minLength: 1
-        level:
-          enum:
-            - DE:BUNDESVERBAND
-            - DE:LANDESVERBAND
-            - DE:BEZIRKSVERBAND
-            - DE:KREISVERBAND
-            - DE:REGIONALVERBAND
-            - DE:ORTSVERBAND
-          type: string
         region:
           type: string
           nullable: true
@@ -7029,8 +7011,8 @@ components:
           nullable: true
           minLength: 1
       required:
-        - country
         - level
+        - country
     CalendarSelection:
       type: string
       enum:

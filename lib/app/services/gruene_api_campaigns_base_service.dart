@@ -16,7 +16,7 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
   Future<List<PoiDetailModel>> loadPoisInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async =>
       getFromApi(
         apiRequest: (api) => api.v1CampaignsPoisGet(
-          type: poiType.transformToApiPoisGetType(),
+          type: poiType.transformToApiPoisType(),
           bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
           campaignId: [campaignId],
         ),
@@ -95,7 +95,7 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
 
     if (poi.createdAt.millisecondsSinceEpoch > Config.poiFilterCutOffDate!.millisecondsSinceEpoch) return true;
 
-    if (poi.type == PoiType.poster && poi.poster!.status == PoiPosterStatus.ok) {
+    if (poi.type == PoiType.poster && poi.poster!.status == PosterStatus.ok) {
       return true;
     }
 

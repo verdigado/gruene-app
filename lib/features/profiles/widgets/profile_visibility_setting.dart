@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Visibility;
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
@@ -9,6 +8,7 @@ import 'package:gruene_app/app/utils/profile.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';
+import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/utils/profile_visibility.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -24,7 +24,7 @@ class ProfileVisibilitySetting extends StatefulWidget {
 }
 
 class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
-  late ProfilePrivacySettingsOverall _selectedVisibility;
+  late Visibility _selectedVisibility;
 
   @override
   void initState() {
@@ -39,19 +39,18 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
     }
 
     final teamsService = GetIt.I<GrueneApiTeamsService>();
-    final profileService = GetIt.I<GrueneApiProfileService>();
     final newProfile = widget.profile.copyWith(privacy: widget.profile.privacy.copyWith(overall: _selectedVisibility));
 
     final team = await tryAndNotify(
       function: () async {
-        await profileService.updateProfile(newProfile);
+        await updateProfile(newProfile);
         return await teamsService.getOwnTeam();
       },
       context: context,
       successMessage: t.profiles.visibility.updated,
     );
 
-    if (_selectedVisibility == ProfilePrivacySettingsOverall.private && team != null && mounted) {
+    if (_selectedVisibility == Visibility.private && team != null && mounted) {
       await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
@@ -116,7 +115,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
                 ),
                 StableHeightText(
                   text: visibilityHint(_selectedVisibility),
-                  longestText: visibilityHint(ProfilePrivacySettingsOverall.private),
+                  longestText: visibilityHint(Visibility.private),
                   style: theme.textTheme.bodyMedium!,
                 ),
                 OptionSlider(
@@ -138,12 +137,8 @@ Future<Profile?> showProfileVisibilitySetting(
   BuildContext context,
   Profile profile, {
   bool explicitTeamHint = false,
-}) async {
-  if (profile.memberships == null) return null;
-
-  return await showModalBottomSheet<Profile>(
-    context: context,
-    useRootNavigator: true,
-    builder: (context) => ProfileVisibilitySetting(profile: profile, explicitTeamHint: explicitTeamHint),
-  );
-}
+}) async => await showModalBottomSheet<Profile>(
+  context: context,
+  useRootNavigator: true,
+  builder: (context) => ProfileVisibilitySetting(profile: profile, explicitTeamHint: explicitTeamHint),
+);

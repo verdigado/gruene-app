@@ -45,36 +45,14 @@ extension PoiCacheTypeParsing on PoiCacheType {
 }
 
 extension PoiServiceTypeParsing on PoiServiceType {
-  V1CampaignsPoisGetType transformToApiPoisGetType() {
+  PoiType transformToApiPoisType() {
     switch (this) {
       case PoiServiceType.poster:
-        return V1CampaignsPoisGetType.poster;
+        return PoiType.poster;
       case PoiServiceType.door:
-        return V1CampaignsPoisGetType.house;
+        return PoiType.house;
       case PoiServiceType.flyer:
-        return V1CampaignsPoisGetType.flyerSpot;
-    }
-  }
-
-  V1CampaignsPoisSelfGetType transformToApiPoisSelfGetType() {
-    switch (this) {
-      case PoiServiceType.poster:
-        return V1CampaignsPoisSelfGetType.poster;
-      case PoiServiceType.door:
-        return V1CampaignsPoisSelfGetType.house;
-      case PoiServiceType.flyer:
-        return V1CampaignsPoisSelfGetType.flyerSpot;
-    }
-  }
-
-  CreatePoiType transformToApiCreatePoiType() {
-    switch (this) {
-      case PoiServiceType.poster:
-        return CreatePoiType.poster;
-      case PoiServiceType.door:
-        return CreatePoiType.house;
-      case PoiServiceType.flyer:
-        return CreatePoiType.flyerSpot;
+        return PoiType.flyerSpot;
     }
   }
 
@@ -89,7 +67,7 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  String getAsMarkerItemStatus(PosterStatus? posterStatus) {
+  String getAsMarkerItemStatus(PosterModelStatus? posterStatus) {
     var typeName = name;
     switch (this) {
       case PoiServiceType.poster:

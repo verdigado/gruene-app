@@ -21,7 +21,7 @@ class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
     final requestParam = CreatePoi(
       campaignId: newPoster.campaignId,
       coords: newPoster.location.transformToGeoJsonCoords(),
-      type: poiType.transformToApiCreatePoiType(),
+      type: poiType.transformToApiPoisType(),
       address: newPoster.address.transformToPoiAddress(),
     );
     // saving POI
@@ -89,8 +89,7 @@ class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
   }
 
   Future<List<PosterListItemModel>> getMyPosters(String campaignId) async => getFromApi(
-    apiRequest: (api) =>
-        api.v1CampaignsPoisSelfGet(type: poiType.transformToApiPoisSelfGetType(), campaignId: [campaignId]),
+    apiRequest: (api) => api.v1CampaignsPoisSelfGet(type: poiType.transformToApiPoisType(), campaignId: [campaignId]),
     map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToPosterListItem()).toList(),
   );
 }

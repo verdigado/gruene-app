@@ -4,7 +4,7 @@ extension PosterCreateModelParsing on PosterCreateModel {
   PoiDetailModel transformToVirtualPoiDetailModel(int temporaryId) {
     return PoiDetailModel.virtual(
       id: temporaryId,
-      status: PoiServiceType.poster.getAsMarkerItemStatus(PosterStatus.ok),
+      status: PoiServiceType.poster.getAsMarkerItemStatus(PosterModelStatus.ok),
       location: location,
     );
   }
@@ -12,7 +12,7 @@ extension PosterCreateModelParsing on PosterCreateModel {
   PosterDetailModel transformToPosterDetailModel(String temporaryId) {
     return PosterDetailModel(
       id: temporaryId,
-      status: PosterStatus.ok,
+      status: PosterModelStatus.ok,
       address: address,
       photos: imageFileLocation == null
           ? []

@@ -11,7 +11,7 @@ part 'poster_update_model.g.dart';
 class PosterUpdateModel {
   final String id;
   final AddressModel address;
-  final PosterStatus status;
+  final PosterModelStatus status;
   final String comment;
   @LatLongConverter()
   final LatLng location;
@@ -37,7 +37,7 @@ class PosterUpdateModel {
   PosterUpdateModel copyWith({
     String? id,
     AddressModel? address,
-    PosterStatus? status,
+    PosterModelStatus? status,
     String? comment,
     LatLng? location,
     List<String>? deletedPhotoIds,

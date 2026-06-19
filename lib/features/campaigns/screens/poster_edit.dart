@@ -427,11 +427,11 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
     });
   }
 
-  PosterStatus _selectedPosterStatus = PosterStatus.ok;
+  PosterModelStatus _selectedPosterStatus = PosterModelStatus.ok;
 
-  Widget _getRadioItem((PosterStatus, String) item) {
+  Widget _getRadioItem((PosterModelStatus, String) item) {
     var theme = Theme.of(context);
-    return RadioListTile<PosterStatus>(
+    return RadioListTile<PosterModelStatus>(
       value: item.$1,
       fillColor: WidgetStatePropertyAll(ThemeColors.primary),
       title: Text(item.$2, style: theme.textTheme.bodyMedium),
