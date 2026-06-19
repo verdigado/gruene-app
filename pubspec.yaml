@@ -53,8 +53,7 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   package_info_plus: ^9.0.0
   motion_toast: ^2.11.0
-  keycloak_authenticator:
-    path: ./packages/keycloak_authenticator
+  flutter_keycloak_authenticator: ^0.1.1
   mobile_scanner: ^7.0.0-beta.3
   timeago: ^3.7.0
   local_auth: ^3.0.1

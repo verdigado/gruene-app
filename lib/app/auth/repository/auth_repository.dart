@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
@@ -10,7 +11,6 @@ import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:keycloak_authenticator/api.dart';
 import 'package:uuid/uuid.dart';
 
 class AuthRepository {

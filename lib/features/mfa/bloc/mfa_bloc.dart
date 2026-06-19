@@ -1,10 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
 import 'package:gruene_app/features/mfa/dtos/login_attempt_dto.dart';
-import 'package:keycloak_authenticator/api.dart';
 
 class MfaBloc extends Bloc<MfaEvent, MfaState> {
   final AuthenticatorService _service = GetIt.I<AuthenticatorService>();
