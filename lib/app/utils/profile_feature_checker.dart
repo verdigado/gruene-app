@@ -5,12 +5,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:http/http.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ProfileFeatureChecker {
   ProfileCheckSettings? latestProfileCheckSettings;
@@ -36,7 +36,7 @@ class ProfileFeatureChecker {
 
   void check(BuildContext context) async {
     final FlutterSecureStorage secureStorage = GetIt.instance<FlutterSecureStorage>();
-    var currentUserId = await _getCurrentUserId(await secureStorage.read(key: SecureStorageKeys.accessToken));
+    var currentUserId = await AuthRepository().getCurrentUserId();
     if (latestProfileCheckSettings == null) {
       await _loadProfileCheckSettings(secureStorage, ProfileCheckSettings(userId: currentUserId!));
     }
@@ -56,14 +56,6 @@ class ProfileFeatureChecker {
         // Don't crash the app on network errors
       }
     }
-  }
-
-  Future<String?> _getCurrentUserId(String? currentAccessToken) async {
-    final jwtToken = currentAccessToken != null ? JwtDecoder.decode(currentAccessToken) : null;
-    if (jwtToken != null && jwtToken.containsKey('uidnumber')) {
-      return jwtToken['uidnumber'].toString();
-    }
-    return null;
   }
 }
 

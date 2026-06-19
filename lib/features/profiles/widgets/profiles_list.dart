@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
@@ -26,14 +27,20 @@ class ProfilesList extends StatelessWidget {
     final tags = [...skillsFilter.current, ...interestsFilter.current];
 
     return FutureLoadingScreen(
-      load: () => fetchProfiles(query: searchFilter.current, division: divisionFilter.current, tags: tags),
-      buildChild: (profiles, extra) {
-        if (profiles.isEmpty) {
+      load: () async => (
+        profiles: await fetchProfiles(query: searchFilter.current, division: divisionFilter.current, tags: tags),
+        userId: await AuthRepository().getCurrentUserId(),
+      ),
+      buildChild: (data, extra) {
+        if (data.profiles.isEmpty) {
           return ErrorScreen(errorMessage: t.profiles.noResults, retry: extra.refresh);
         }
         return ListView.builder(
-          itemCount: profiles.length,
-          itemBuilder: (context, index) => ProfileListItem(profile: profiles[index]),
+          itemCount: data.profiles.length,
+          itemBuilder: (context, index) {
+            final profile = data.profiles[index];
+            return ProfileListItem(profile: profile, isUser: profile.userId == data.userId);
+          },
         );
       },
     );
