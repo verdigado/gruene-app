@@ -27,8 +27,8 @@ class NewsScreenContainer extends StatelessWidget {
         buildChild: (params, _) {
           final (news, divisions, divisionFilterKeys) = params;
           final initialDivisionFilters = divisionFilterKeys == null
-              ? [news.divisions().bundesverband]
-              : news.divisions().where((division) => divisionFilterKeys.contains(division.divisionKey)).toList();
+              ? [divisions.bundesverband]
+              : divisions.where((division) => divisionFilterKeys.contains(division.divisionKey)).toList();
           return NewsScreen(news: news, divisions: divisions, initialDivisionFilters: initialDivisionFilters);
         },
       ),

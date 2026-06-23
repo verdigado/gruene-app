@@ -9,10 +9,6 @@ import 'package:gruene_app/features/news/repository/news_repository.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-// TODO Temporary workaround for the categories prominently highlighted in the filter dialog
-// The categories are Bundesvorstand, Digitalisierung and Wahlen & Wahlkampf
-const prominentCategoryIds = ['2680259', '88764', '653'];
-
 class NewsFilterDialog extends StatefulWidget {
   final SelectionFilterModel<List<Division>, List<Division>> divisionFilter;
   final SelectionFilterModel<List<NewsCategory>, List<NewsCategory>> categoryFilter;
@@ -65,15 +61,6 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final categories = widget.categoryFilter.values;
-    categories.sort((a, b) {
-      if (prominentCategoryIds.contains(a.id) && !prominentCategoryIds.contains(b.id)) {
-        return -1;
-      }
-      if (prominentCategoryIds.contains(b.id) && !prominentCategoryIds.contains(a.id)) {
-        return 1;
-      }
-      return a.label.compareTo(b.label);
-    });
 
     final filtersModified =
         widget.divisionFilter.modified(_localSelectedDivisions) ||
@@ -92,7 +79,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
             items: widget.divisionFilter.values.sortByLevel(),
             compare: (division1, division2) => division1.id == division2.id,
             filter: (division, query) => division.matches(query),
-            itemAsString: (division) => division.shortDisplayName,
+            itemAsString: widget.getDivisionLabel,
             hint: t.news.searchDivisions,
           ),
         ),

@@ -19,7 +19,8 @@ extension DivisionExtension on Division {
 
 extension SortExtension on List<Division> {
   List<Division> sortByLevel() {
-    sort((a, b) {
+    final divisions = this;
+    divisions.sort((a, b) {
       if (a.hierarchy != b.hierarchy) {
         // Sort party > GJ > KPV
         return int.parse(a.divisionKey[0]) - int.parse(b.divisionKey[0]);
@@ -31,7 +32,7 @@ extension SortExtension on List<Division> {
       // Sort alphabetical
       return a.name2.compareTo(b.name2);
     });
-    return this;
+    return divisions;
   }
 }
 
@@ -53,7 +54,7 @@ extension DivisionLevelExtension on DivisionLevel {
     DivisionLevel.lv => 1,
     DivisionLevel.kv => 2,
     DivisionLevel.ov => 3,
-    DivisionLevel.swaggerGeneratedUnknown => throw UnimplementedError(),
+    DivisionLevel.swaggerGeneratedUnknown => 99,
   };
 
   int get segmentLength => switch (this) {
@@ -61,6 +62,6 @@ extension DivisionLevelExtension on DivisionLevel {
     DivisionLevel.lv => 3,
     DivisionLevel.kv => 6,
     DivisionLevel.ov => 8,
-    DivisionLevel.swaggerGeneratedUnknown => throw UnimplementedError(),
+    DivisionLevel.swaggerGeneratedUnknown => 8,
   };
 }
