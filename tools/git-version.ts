@@ -3,7 +3,7 @@ import { program } from 'commander'
 
 import { VERSION_FILE, tagId } from './constants.js'
 import authenticate from './github-authentication.js'
-import jsYaml from 'js-yaml'
+import { dump } from 'js-yaml'
 
 type TagOptions = {
   versionName: string
@@ -57,7 +57,7 @@ const commitAndTag = async (
     throw new Error(`Failed to parse version code string: ${versionCodeString}`)
   }
 
-  const contentBase64 = Buffer.from(jsYaml.dump({ versionName, versionCode })).toString('base64')
+  const contentBase64 = Buffer.from(dump({ versionName, versionCode })).toString('base64')
 
   const commitMessage = `Bump version name to ${versionName} and version code to ${versionCode}\n[skip ci]`
 

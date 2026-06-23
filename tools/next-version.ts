@@ -1,5 +1,5 @@
 import { program } from 'commander'
-import jsYaml from 'js-yaml'
+import { load } from 'js-yaml'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -9,7 +9,7 @@ import { VERSION_FILE } from './constants.js'
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 const calculateNewVersion = () => {
-  const versions = jsYaml.load(fs.readFileSync(path.resolve(__dirname, '..', VERSION_FILE), 'utf-8'))
+  const versions = load(fs.readFileSync(path.resolve(__dirname, '..', VERSION_FILE), 'utf-8'))
   const { versionCode, versionName } = versions as { versionCode: unknown, versionName: string }
   const versionNameParts = versionName.split('.').map((it: string) => parseInt(it, 10))
 
