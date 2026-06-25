@@ -20,14 +20,14 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SearchBar(
-      controller: TextEditingController(text: widget.searchFilter.selected)
-        ..selection = TextSelection.fromPosition(TextPosition(offset: widget.searchFilter.selected.length)),
+      controller: TextEditingController(text: widget.searchFilter.current)
+        ..selection = TextSelection.fromPosition(TextPosition(offset: widget.searchFilter.current.length)),
       onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       onChanged: (query) => _debouncer.run(() => widget.searchFilter.update(query)),
       leading: Icon(Icons.search_outlined, color: ThemeColors.textDisabled),
       hintText: t.common.search,
       hintStyle: WidgetStatePropertyAll(const TextStyle(color: ThemeColors.textDisabled)),
-      trailing: widget.searchFilter.selected.isNotEmpty
+      trailing: widget.searchFilter.current.isNotEmpty
           ? [
               IconButton(
                 onPressed: () => widget.searchFilter.reset(),

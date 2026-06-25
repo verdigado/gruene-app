@@ -8,6 +8,7 @@ Future<NewsModel> fetchNewsById(String newsId) async => getFromApi(
 );
 
 Future<List<NewsModel>> fetchNews({String? query, bool bookmarked = false}) async => getFromApi(
-  request: (api) => api.v1NewsGet(search: query, limit: 100, bookmarked: bookmarked ? V1NewsGetBookmarked.$true : null),
+  request: (api) =>
+      api.v1NewsGet(search: query, limit: 1000, bookmarked: bookmarked ? V1NewsGetBookmarked.$true : null),
   map: (data) => data.data.map(NewsModel.fromApi).toList(),
 );

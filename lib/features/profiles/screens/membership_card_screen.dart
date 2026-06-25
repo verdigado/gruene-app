@@ -3,7 +3,7 @@ import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
-import 'package:gruene_app/app/utils/profile.dart';
+import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
@@ -22,8 +22,8 @@ class MembershipCardScreen extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.myMembershipCard),
       body: FutureLoadingScreen(
         load: fetchOwnProfile,
-        buildChild: (Profile profile, _) {
-          Division? partyDivision = profile.partyDivision();
+        buildChild: (profile, _) {
+          Division? partyDivision = profile.partyDivision;
 
           return ConstrainedBox(
             constraints: BoxConstraints(maxHeight: 640),
@@ -53,7 +53,7 @@ class MembershipCardScreen extends StatelessWidget {
                   ),
                   if (partyDivision != null)
                     Text(
-                      partyDivision.displayName(),
+                      partyDivision.displayName,
                       style: theme.textTheme.titleSmall?.copyWith(color: ThemeColors.background),
                     ),
                   Spacer(),

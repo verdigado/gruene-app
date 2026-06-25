@@ -27,30 +27,28 @@ class FilterBar extends StatelessWidget {
     final bookmarkFilter = this.bookmarkFilter;
 
     return SizedBox(
-      height: 48,
+      height: 40,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         spacing: 8,
         children: [
           Flexible(child: CustomSearchBar(searchFilter: searchFilter)),
-          if (bookmarkFilter != null)
-            RoundedIconButton(
-              onPressed: () => bookmarkFilter.update(!bookmarkFilter.selected),
-              icon: Icons.bookmark_outline,
-              iconColor: ThemeColors.textDisabled,
-              backgroundColor: theme.colorScheme.surface,
-              selected: bookmarkFilter.selected,
-              width: 40,
-            ),
           loading
               ? CircularProgressIndicator()
               : RoundedIconButton(
                   icon: Icons.filter_list,
                   iconColor: modified ? theme.colorScheme.secondary : ThemeColors.textDisabled,
                   backgroundColor: theme.colorScheme.surface,
-                  width: 40,
                   onPressed: () => showFullScreenDialog(context, (_) => filterDialog),
                 ),
+          if (bookmarkFilter != null)
+            RoundedIconButton(
+              onPressed: () => bookmarkFilter.update(!bookmarkFilter.current),
+              icon: Icons.bookmark_outline,
+              iconColor: ThemeColors.textDisabled,
+              backgroundColor: theme.colorScheme.surface,
+              selected: bookmarkFilter.current,
+            ),
         ],
       ),
     );

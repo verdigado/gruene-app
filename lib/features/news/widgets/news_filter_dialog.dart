@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/date_range_filter.dart';
 import 'package:gruene_app/app/widgets/filter_dialog.dart';
-import 'package:gruene_app/app/widgets/selection_view.dart';
+import 'package:gruene_app/app/widgets/selection.dart';
 import 'package:gruene_app/features/news/repository/news_repository.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-// TODO Temporary workaround for the categories prominently highlighted in the filter dialog
-// The categories are Bundesvorstand, Digitalisierung and Wahlen & Wahlkampf
-const prominentCategoryIds = ['2680259', '88764', '653'];
-
 class NewsFilterDialog extends StatefulWidget {
-  final FilterModel<List<Division>> divisionFilter;
-  final FilterModel<List<NewsCategory>> categoryFilter;
+  final SelectionFilterModel<List<Division>, List<Division>> divisionFilter;
+  final SelectionFilterModel<List<NewsCategory>, List<NewsCategory>> categoryFilter;
   final FilterModel<DateTimeRange?> dateRangeFilter;
+  final String Function(Division division) getDivisionLabel;
 
   const NewsFilterDialog({
     super.key,
     required this.divisionFilter,
     required this.categoryFilter,
     required this.dateRangeFilter,
+    required this.getDivisionLabel,
   });
 
   @override
@@ -38,9 +37,9 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
   @override
   void initState() {
     super.initState();
-    _localSelectedDivisions = widget.divisionFilter.selected;
-    _localSelectedCategories = widget.categoryFilter.selected;
-    _localDateRange = widget.dateRangeFilter.selected;
+    _localSelectedDivisions = widget.divisionFilter.current;
+    _localSelectedCategories = widget.categoryFilter.current;
+    _localDateRange = widget.dateRangeFilter.current;
   }
 
   void setDivisions(List<Division> divisions) {
@@ -61,14 +60,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final divisions = widget.divisionFilter.values;
-    final divisionBundesverband = divisions.bundesverband();
-    final divisionsLandesverband = divisions.filterByLevel(DivisionLevel.lv);
-    final divisionsKreisverband = divisions.filterByLevel(DivisionLevel.kv);
-
     final categories = widget.categoryFilter.values;
-    final prominentCategories = categories.where((it) => prominentCategoryIds.contains(it.id)).toList();
-    final moreCategories = categories.where((it) => !prominentCategoryIds.contains(it.id)).toList();
 
     final filtersModified =
         widget.divisionFilter.modified(_localSelectedDivisions) ||
@@ -79,26 +71,32 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
       resetFilters: resetFilters,
       modified: filtersModified,
       children: [
-        SelectionView(
-          setSelectedOptions: setDivisions,
+        FilterSection(
           title: t.news.divisions,
-          options: [divisionBundesverband, ...divisionsLandesverband],
-          moreOptionsTitle: t.news.moreDivisions,
-          moreOptions: divisionsKreisverband,
-          selectedOptions: _localSelectedDivisions,
-          getLabel: (division) => division.level.value == 'BV' ? division.name2 : '${division.name1} ${division.name2}',
+          child: MultiSelection(
+            selected: _localSelectedDivisions,
+            setSelected: setDivisions,
+            items: widget.divisionFilter.values.sortByLevel(),
+            compare: (division1, division2) => division1.id == division2.id,
+            filter: (division, query) => division.matches(query),
+            itemAsString: widget.getDivisionLabel,
+            hint: t.news.searchDivisions,
+          ),
         ),
-        SelectionView(
-          setSelectedOptions: (categories) {
-            setState(() => _localSelectedCategories = categories);
-            widget.categoryFilter.update(categories);
-          },
+        FilterSection(
           title: t.news.categories,
-          options: prominentCategories,
-          moreOptionsTitle: t.news.moreCategories,
-          moreOptions: moreCategories,
-          selectedOptions: _localSelectedCategories,
-          getLabel: (category) => category.label,
+          child: MultiSelection(
+            selected: _localSelectedCategories,
+            setSelected: (categories) {
+              setState(() => _localSelectedCategories = categories);
+              widget.categoryFilter.update(categories);
+            },
+            items: categories,
+            compare: (category1, category2) => category1.id == category2.id,
+            filter: (category, query) => category.label.matches(query),
+            itemAsString: (category) => category.label,
+            hint: t.news.searchCategories,
+          ),
         ),
         DateRangeFilter(
           title: t.news.publicationDate,

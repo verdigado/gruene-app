@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/profile.dart';
+import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/features/profiles/utils/profile_visibility.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
