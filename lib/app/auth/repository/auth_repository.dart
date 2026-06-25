@@ -20,7 +20,17 @@ class AuthRepository {
   final IpService _ipService = GetIt.I<IpService>();
 
   Future<String?> getAccessToken() async => await _secureStorage.read(key: SecureStorageKeys.accessToken);
+
   Future<String?> getRefreshToken() async => await _secureStorage.read(key: SecureStorageKeys.refreshToken);
+
+  Future<String?> getCurrentUserId() async {
+    final accessToken = await getAccessToken();
+    final jwtToken = accessToken != null ? JwtDecoder.decode(accessToken) : null;
+    if (jwtToken != null && jwtToken.containsKey('uidnumber')) {
+      return jwtToken['uidnumber'].toString();
+    }
+    return null;
+  }
 
   Future<bool> login() async {
     final authenticator = await _authenticatorService.getFirst();

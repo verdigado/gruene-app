@@ -72,7 +72,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
       modified: filtersModified,
       children: [
         FilterSection(
-          title: t.news.divisions,
+          title: t.divisions.divisions,
           child: MultiSelection(
             selected: _localSelectedDivisions,
             setSelected: setDivisions,
@@ -80,7 +80,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
             compare: (division1, division2) => division1.id == division2.id,
             filter: (division, query) => division.matches(query),
             itemAsString: widget.getDivisionLabel,
-            hint: t.news.searchDivisions,
+            label: t.divisions.divisions,
           ),
         ),
         FilterSection(
@@ -95,7 +95,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
             compare: (category1, category2) => category1.id == category2.id,
             filter: (category, query) => category.label.matches(query),
             itemAsString: (category) => category.label,
-            hint: t.news.searchCategories,
+            label: t.news.categories,
           ),
         ),
         DateRangeFilter(

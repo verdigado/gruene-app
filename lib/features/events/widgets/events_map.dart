@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/map.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
@@ -151,7 +152,7 @@ class _EventsMapState extends State<EventsMap> {
             attributionButtonMargins: const math.Point(-100, -100),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+            padding: screenPadding.copyWith(bottom: 0),
             child: EventsFilterBar(calendars: widget.calendars),
           ),
           MapAttribution(),

@@ -4,6 +4,55 @@ import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
+Widget emptyBuilder(_, _) => Container(height: 64, alignment: Alignment.center, child: Text(t.common.noResults));
+
+Widget containerBuilder(_, Widget child) => Padding(padding: screenPadding.copyWith(bottom: 0), child: child);
+
+class Selection<T> extends StatelessWidget {
+  final void Function(T? selectedItems) setSelected;
+  final bool Function(T item1, T item2) compare;
+  final bool Function(T item, String query) filter;
+  final String Function(T item) itemAsString;
+  final List<T> items;
+  final T? selected;
+  final String label;
+
+  const Selection({
+    super.key,
+    required this.setSelected,
+    required this.itemAsString,
+    required this.compare,
+    required this.filter,
+    required this.items,
+    required this.selected,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final searchFieldProps = TextFieldProps(decoration: InputDecoration(label: Text(label)), autofocus: true);
+    final decoratorProps = DropDownDecoratorProps(decoration: InputDecoration(hintText: t.common.actions.select));
+    final theme = Theme.of(context);
+
+    return DropdownSearch<T>(
+      selectedItem: selected,
+      onSelected: setSelected,
+      items: (query, _) => items,
+      compareFn: compare,
+      filterFn: filter,
+      itemAsString: itemAsString,
+      textProps: TextProps(style: theme.textTheme.bodyLarge),
+      popupProps: PopupProps.modalBottomSheet(
+        showSearchBox: true,
+        searchFieldProps: searchFieldProps,
+        containerBuilder: containerBuilder,
+        emptyBuilder: emptyBuilder,
+      ),
+      decoratorProps: decoratorProps,
+    );
+  }
+}
+
 class MultiSelection<T> extends StatelessWidget {
   final void Function(List<T> selectedItems) setSelected;
   final bool Function(T item1, T item2) compare;
@@ -11,7 +60,7 @@ class MultiSelection<T> extends StatelessWidget {
   final String Function(T item) itemAsString;
   final List<T> items;
   final List<T> selected;
-  final String hint;
+  final String label;
 
   const MultiSelection({
     super.key,
@@ -21,16 +70,31 @@ class MultiSelection<T> extends StatelessWidget {
     required this.filter,
     required this.items,
     required this.selected,
-    required this.hint,
+    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
-    final searchFieldProps = TextFieldProps(decoration: InputDecoration(hintText: hint), autofocus: true);
+    final searchFieldProps = TextFieldProps(decoration: InputDecoration(label: Text(label)), autofocus: true);
     final decoratorProps = DropDownDecoratorProps(
       decoration: InputDecoration(
         hintText: t.common.actions.select,
         contentPadding: selected.isNotEmpty ? EdgeInsets.only(left: 4) : null,
+      ),
+    );
+
+    Widget validationBuilder(BuildContext context, List<T> selectedItems) => Container(
+      alignment: Alignment.centerRight,
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(width: 0.5, color: ThemeColors.textDisabled)),
+      ),
+      child: TextButton(
+        onPressed: () {
+          setSelected(selectedItems);
+          Navigator.of(context).pop();
+        },
+        child: Text(t.common.actions.done),
       ),
     );
 
@@ -45,22 +109,9 @@ class MultiSelection<T> extends StatelessWidget {
       popupProps: MultiSelectionPopupProps.modalBottomSheet(
         showSearchBox: true,
         searchFieldProps: searchFieldProps,
-        containerBuilder: (_, child) => Padding(padding: screenPadding.copyWith(bottom: 0), child: child),
-        validationBuilder: (_, selectedItems) => Container(
-          alignment: Alignment.centerRight,
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(width: 0.5, color: ThemeColors.textDisabled)),
-          ),
-          child: TextButton(
-            onPressed: () {
-              setSelected(selectedItems);
-              Navigator.of(context).pop();
-            },
-            child: Text(t.common.actions.done),
-          ),
-        ),
-        emptyBuilder: (_, _) => Container(height: 64, alignment: Alignment.center, child: Text(t.common.noResults)),
+        containerBuilder: containerBuilder,
+        validationBuilder: validationBuilder,
+        emptyBuilder: emptyBuilder,
       ),
       decoratorProps: decoratorProps,
       chipProps: ChipProps(

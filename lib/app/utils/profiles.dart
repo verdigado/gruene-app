@@ -1,20 +1,17 @@
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 extension ProfileExtension on Profile {
   String get fullName => '$firstName $lastName';
 
-  List<Division> get divisions => memberships.map((membership) => membership.division).toList();
+  List<Division> get divisions => publicProfile.divisions;
 
-  Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GR');
+  Division? get partyDivision => publicProfile.partyDivision;
 
-  Division? get gjDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GJ');
+  List<String> displayRoles(List<ProfileRoleType>? types) => publicProfile.displayRoles(types);
 
-  Division? get kpvDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'KPV');
-
-  ProfileRole? get partyRole => roles.firstWhereOrNull((role) => role.type == ProfileRoleType.role);
-
-  ProfileRole? get mandate => roles.firstWhereOrNull((role) => role.type == ProfileRoleType.mandate);
+  List<String> displayTags(ProfileTagType? type) => publicProfile.displayTags(type);
 
   // TODO #1065: Adjust to OV if teams are available for OVs and user is in an OV
   // ProfilePrivacySettingsOverall minTeamVisibilityOption() => profileVisibilityOptions()[2];
@@ -28,6 +25,25 @@ extension ProfileExtension on Profile {
     Visibility.bvWide,
     Visibility.public,
   ];
+
+  PublicProfile get publicProfile => PublicProfile(
+    id: id,
+    userId: userId,
+    personalId: personalId,
+    username: username,
+    firstName: firstName,
+    lastName: lastName,
+    image: image,
+    phoneNumbers: phoneNumbers,
+    messengers: messengers,
+    socialMedia: socialMedia,
+    tags: tags,
+    joinedAt: joinedAt,
+    memberships: memberships,
+    roles: roles,
+    achievements: achievements,
+    email: email,
+  );
 
   UpdateProfile get updateProfile => UpdateProfile(
     email: email,
@@ -54,16 +70,25 @@ extension PublicProfileExtension on PublicProfile {
 
   Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GR');
 
-  Division? get gjDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GJ');
+  List<String> displayRoles(List<ProfileRoleType>? types) =>
+      roles.where((role) => types == null || types.contains(role.type)).map((role) => role.shortName).toSet().toList();
 
-  Division? get kpvDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'KPV');
-
-  ProfileRole? get partyRole => roles.firstWhereOrNull((role) => role.type == ProfileRoleType.office);
-
-  ProfileRole? get mandate => roles.firstWhereOrNull((role) => role.type == ProfileRoleType.mandate);
+  List<String> displayTags(ProfileTagType? type) =>
+      tags.where((tag) => type == null || tag.type == type).map((tag) => tag.label).toSet().toList();
 }
 
 extension ProfileRoleExtension on ProfileRole {
   // Extract the actual role, e..g `Kreisvorsitzende` from `Kreisvorstand GR - Kreisvorsitzende`
-  String get shortName => name.substring(name.indexOf('-') + 2);
+  String get shortName => name.contains('-') ? name.substring(name.indexOf('-') + 2) : name;
+}
+
+extension SocialMediaEntryExtension on SocialMediaEntry {
+  String get label => switch (type) {
+    SocialMediaType.facebook => t.profiles.socialMediaType.facebook,
+    SocialMediaType.instagram => t.profiles.socialMediaType.instagram,
+    SocialMediaType.mastodon => t.profiles.socialMediaType.mastodon,
+    SocialMediaType.twitter => t.profiles.socialMediaType.twitter,
+    SocialMediaType.chatbegruenung => t.profiles.socialMediaType.chatbegruenung,
+    SocialMediaType.swaggerGeneratedUnknown => '',
+  };
 }
