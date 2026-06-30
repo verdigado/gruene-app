@@ -381,6 +381,7 @@
     "profileNotFound": "Dieses Profil wurde leider nicht gefunden",
     "search": "Mitgliedersuche",
     "noResults": "Keine Mitglieder gefunden",
+    "moreMembers": "Weitere Mitglieder finden",
     "profileImage": {
       "edit": "Profilbild bearbeiten",
       "delete": "Profilbild löschen",
