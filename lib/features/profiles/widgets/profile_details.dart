@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/domain/divisions_api_service.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
@@ -7,8 +9,9 @@ import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/section_card.dart';
+import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide ProfileImage, Image;
 
 class ProfileDetails extends StatelessWidget {
   final PublicProfile profile;
@@ -63,16 +66,37 @@ class ProfileDetails extends StatelessWidget {
                       .sortByLevel(reverseLevel: true)
                       .map((division) {
                         final email = division.emails.firstOrNull?.address;
-                        return SectionCardListItem(
-                          value: division.shortDisplayName,
-                          url: division.urls.firstOrNull,
-                          extraTrailing: email != null
-                              ? IconButton(
-                                  onPressed: () => openMail(email, context),
-                                  onLongPress: () => Clipboard.setData(ClipboardData(text: email)),
-                                  icon: Icon(Icons.email_outlined, color: theme.primaryColor),
-                                )
-                              : null,
+                        return Column(
+                          children: [
+                            SectionCardListItem(
+                              value: division.shortDisplayName,
+                              url: division.urls.firstOrNull,
+                              extraTrailing: email != null
+                                  ? IconButton(
+                                      onPressed: () => openMail(email, context),
+                                      onLongPress: () => Clipboard.setData(ClipboardData(text: email)),
+                                      icon: Icon(Icons.email_outlined, color: theme.primaryColor),
+                                    )
+                                  : null,
+                            ),
+                            if (division.divisionKey == partyDivision?.divisionKey)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: Column(
+                                  children: [
+                                    DivisionProfileCards(division: division, userId: profile.userId),
+                                    TextButton.icon(
+                                      onPressed: () => context.push(
+                                        '${Routes.profiles.path}/${Routes.profileSearch.path}',
+                                        extra: division,
+                                      ),
+                                      label: Text(t.profiles.search),
+                                      icon: Icon(Icons.search),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
                         );
                       })
                       .withDividers(Divider(indent: 16, endIndent: 16)),
