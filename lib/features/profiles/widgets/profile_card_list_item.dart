@@ -8,8 +8,17 @@ class ProfileCardListItem extends StatelessWidget {
   final String? url;
   final void Function()? onTap;
   final bool copyOnTap;
+  final Widget? extraTrailing;
 
-  const ProfileCardListItem({super.key, this.title, required this.value, this.url, this.copyOnTap = false, this.onTap});
+  const ProfileCardListItem({
+    super.key,
+    this.title,
+    required this.value,
+    this.url,
+    this.copyOnTap = false,
+    this.extraTrailing,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +44,13 @@ class ProfileCardListItem extends StatelessWidget {
           : null,
       onTap: onTap ?? (url != null ? () => openUrl(url, context) : copyOnTap),
       onLongPress: () => Clipboard.setData(ClipboardData(text: url ?? value)),
-      trailing: url != null ? Icon(Icons.arrow_outward, color: theme.primaryColor) : copyIcon,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          extraTrailing,
+          url != null ? Icon(Icons.arrow_outward, color: theme.primaryColor) : copyIcon,
+        ].nonNulls.toList(),
+      ),
     );
   }
 }
