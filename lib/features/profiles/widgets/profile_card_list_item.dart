@@ -6,9 +6,10 @@ class ProfileCardListItem extends StatelessWidget {
   final String value;
   final String? title;
   final String? url;
+  final void Function()? onTap;
   final bool copyOnTap;
 
-  const ProfileCardListItem({super.key, this.title, required this.value, this.url, this.copyOnTap = false});
+  const ProfileCardListItem({super.key, this.title, required this.value, this.url, this.copyOnTap = false, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class ProfileCardListItem extends StatelessWidget {
               child: Text(value, style: theme.textTheme.bodyLarge?.apply(color: theme.colorScheme.primary)),
             )
           : null,
-      onTap: url != null ? () => openUrl(url, context) : copyOnTap,
+      onTap: onTap ?? (url != null ? () => openUrl(url, context) : copyOnTap),
       onLongPress: () => Clipboard.setData(ClipboardData(text: url ?? value)),
       trailing: url != null ? Icon(Icons.arrow_outward, color: theme.primaryColor) : copyIcon,
     );
