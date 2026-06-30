@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
@@ -92,7 +93,7 @@ class EventDetail extends StatelessWidget {
                   }
                 },
                 context: context,
-                successMessage: t.common.saved,
+                onSuccess: (_) => showSnackBar(context, t.common.saved),
               ),
             ),
           ],
