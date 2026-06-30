@@ -5,6 +5,7 @@ import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';
@@ -47,7 +48,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
         return await teamsService.getOwnTeam();
       },
       context: context,
-      successMessage: t.profiles.visibility.updated,
+      onSuccess: (_) => showSnackBar(context, t.profiles.visibility.updated),
     );
 
     if (_selectedVisibility == Visibility.private && team != null && mounted) {
