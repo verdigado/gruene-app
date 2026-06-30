@@ -34,10 +34,18 @@ class Selection<T> extends StatelessWidget {
     final decoratorProps = DropDownDecoratorProps(decoration: InputDecoration(hintText: t.common.actions.select));
     final theme = Theme.of(context);
 
+    final selectedValue = selected;
+    final sortedItems = selectedValue == null
+        ? items
+        : [
+            ...items.where((item) => compare(item, selectedValue)),
+            ...items.where((item) => !compare(item, selectedValue)),
+          ];
+
     return DropdownSearch<T>(
       selectedItem: selected,
       onSelected: setSelected,
-      items: (query, _) => items,
+      items: (query, _) => sortedItems,
       compareFn: compare,
       filterFn: filter,
       itemAsString: itemAsString,
@@ -98,10 +106,17 @@ class MultiSelection<T> extends StatelessWidget {
       ),
     );
 
+    final sortedItems = selected.isEmpty
+        ? items
+        : [
+            ...items.where((item) => selected.any((selectedItem) => compare(item, selectedItem))),
+            ...items.where((item) => !selected.any((selectedItem) => compare(item, selectedItem))),
+          ];
+
     return DropdownSearch<T>.multiSelection(
       selectedItems: selected,
       onSelected: setSelected,
-      items: (query, _) => items,
+      items: (query, _) => sortedItems,
       compareFn: compare,
       filterFn: filter,
       itemAsString: itemAsString,
