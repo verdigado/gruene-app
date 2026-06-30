@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
+import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card_list_item.dart';
@@ -28,7 +29,12 @@ class ProfileDetails extends StatelessWidget {
         if (email != null || profile.phoneNumbers.isNotEmpty || isOwnProfile)
           ProfileCard(
             children: [
-              if (email != null) ProfileCardListItem(title: t.profiles.email, value: email),
+              if (email != null)
+                ProfileCardListItem(
+                  title: t.profiles.email,
+                  value: email,
+                  onTap: isOwnProfile ? null : () => openMail(email, context),
+                ),
               if (profile.phoneNumbers.isNotEmpty)
                 ProfileCardListItem(title: t.profiles.phoneNumber, value: profile.phoneNumbers.first.number),
               if (isOwnProfile)
