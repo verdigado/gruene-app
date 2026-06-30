@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/image.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:http/http.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class ProfileImageEditButton extends StatelessWidget {
@@ -13,12 +15,13 @@ class ProfileImageEditButton extends StatelessWidget {
 
   const ProfileImageEditButton({super.key, required this.profile, required this.update, required this.setLoading});
 
-  Future<void> _editProfileImage(BuildContext context) async {
+  Future<MultipartFile?> _editProfileImage(BuildContext context) async {
     final imageFile = await pickImage(context, CropAspectRatio(ratioX: 1, ratioY: 1));
-    if (imageFile == null) return;
+    if (imageFile == null) return null;
     final image = await multipartImage(imageFile, 'profileImage');
     final newProfile = await updateProfileImage(profileId: profile.id, profileImage: image);
     update(newProfile);
+    return image;
   }
 
   @override
@@ -28,7 +31,7 @@ class ProfileImageEditButton extends StatelessWidget {
       onPressed: () => tryAndNotify(
         function: () async => _editProfileImage(context),
         context: context,
-        successMessage: t.profiles.profileImage.updated,
+        onSuccess: (context, image) => image != null ? showSnackBar(context, t.profiles.profileImage.updated) : null,
         setLoading: setLoading,
       ),
       style: TextButton.styleFrom(

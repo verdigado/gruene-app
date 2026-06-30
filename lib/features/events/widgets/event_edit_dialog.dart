@@ -8,6 +8,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/image.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
@@ -319,7 +320,7 @@ Future<CalendarEvent?> save({
       return event;
     },
     context: context,
-    successMessage: t.events.updated,
+    onSuccess: (context, _) => showSnackBar(context, t.events.updated),
   );
 }
 

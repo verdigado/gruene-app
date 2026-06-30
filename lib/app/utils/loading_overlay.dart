@@ -25,16 +25,16 @@ void hideLoadingOverlay() {
 Future<T?> tryAndNotify<T>({
   required Future<T> Function() function,
   required BuildContext context,
-  String? successMessage,
   String? errorMessage,
+  void Function(BuildContext rootContext, T value)? onSuccess,
   void Function(bool loading)? setLoading,
 }) async {
   final rootContext = Navigator.of(context, rootNavigator: true).context;
   setLoading != null ? setLoading(true) : showLoadingOverlay(context);
   try {
     final value = await function();
-    if (successMessage != null && rootContext.mounted) {
-      showSnackBar(rootContext, successMessage);
+    if (onSuccess != null && rootContext.mounted) {
+      onSuccess(rootContext, value);
     }
     return value;
   } catch (error) {

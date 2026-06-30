@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
@@ -122,7 +123,7 @@ class EventDeletionConfirmationDialog extends StatelessWidget {
               await deleteEvent(event);
             },
             context: context,
-            successMessage: t.events.deleted,
+            onSuccess: (context, _) => showSnackBar(context, t.events.deleted),
           ),
         ),
       ],
