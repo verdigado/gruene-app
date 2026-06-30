@@ -19,9 +19,9 @@ class ProfileDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final email = profile.email;
-    final mandateRoles = profile.displayRoles([ProfileRoleType.mandate]);
-    final officeRoles = profile.displayRoles([ProfileRoleType.office]);
-    final sherpaRoles = profile.displayRoles([ProfileRoleType.role]);
+    final mandateRoles = profile.displayRoles(types: [ProfileRoleType.mandate]);
+    final officeRoles = profile.displayRoles(types: [ProfileRoleType.office]);
+    final sherpaRoles = profile.displayRoles(types: [ProfileRoleType.role]);
     final skills = profile.displayTags(ProfileTagType.skill);
     final interests = profile.displayTags(ProfileTagType.interest);
     final divisions = profile.divisions;
