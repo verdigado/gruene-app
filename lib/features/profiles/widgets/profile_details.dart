@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gruene_app/app/domain/divisions_api_service.dart';
+import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card_list_item.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -23,6 +26,11 @@ class ProfileDetails extends StatelessWidget {
     final skills = profile.displayTags(ProfileTagType.skill);
     final interests = profile.displayTags(ProfileTagType.interest);
     final divisions = profile.divisions;
+    final partyDivision = profile.partyDivision;
+    final parentDivisionKeys = [
+      partyDivision?.parentDivisionKey(DivisionLevel.kv),
+      partyDivision?.parentDivisionKey(DivisionLevel.lv),
+    ].where((divisionKey) => divisionKey != partyDivision?.divisionKey).nonNulls.toList();
     final theme = Theme.of(context);
 
     return Column(
@@ -46,20 +54,29 @@ class ProfileDetails extends StatelessWidget {
         if (divisions.isNotEmpty)
           ProfileCard(
             title: t.profiles.memberships,
-            children: divisions.map((division) {
-              final email = division.emails.firstOrNull?.address;
-              return ProfileCardListItem(
-                value: division.shortDisplayName,
-                url: division.urls.firstOrNull,
-                extraTrailing: email != null
-                    ? IconButton(
-                        onPressed: () => openMail(email, context),
-                        onLongPress: () => Clipboard.setData(ClipboardData(text: email)),
-                        icon: Icon(Icons.email_outlined, color: theme.primaryColor),
-                      )
-                    : null,
-              );
-            }),
+            children: [
+              FutureLoadingScreen(
+                load: parentDivisionKeys.isNotEmpty
+                    ? () => loadDivisions(parentDivisionKeys)
+                    : () async => <Division>[],
+                buildChild: (data, _) => Column(
+                  children: [...divisions, ...data].sortByLevel(reverseLevel: true).map((division) {
+                    final email = division.emails.firstOrNull?.address;
+                    return ProfileCardListItem(
+                      value: division.shortDisplayName,
+                      url: division.urls.firstOrNull,
+                      extraTrailing: email != null
+                          ? IconButton(
+                              onPressed: () => openMail(email, context),
+                              onLongPress: () => Clipboard.setData(ClipboardData(text: email)),
+                              icon: Icon(Icons.email_outlined, color: theme.primaryColor),
+                            )
+                          : null,
+                    );
+                  }).withDividers(Divider(indent: 16, endIndent: 16)),
+                ),
+              ),
+            ],
           ),
         if (mandateRoles.isNotEmpty)
           ProfileCard(
