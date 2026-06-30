@@ -9,10 +9,6 @@ extension ProfileExtension on Profile {
 
   Division? get partyDivision => publicProfile.partyDivision;
 
-  List<String> displayRoles(List<ProfileRoleType>? types) => publicProfile.displayRoles(types);
-
-  List<String> displayTags(ProfileTagType? type) => publicProfile.displayTags(type);
-
   // TODO #1065: Adjust to OV if teams are available for OVs and user is in an OV
   // ProfilePrivacySettingsOverall minTeamVisibilityOption() => profileVisibilityOptions()[2];
   Visibility minTeamVisibilityOption() => Visibility.kvWide;
@@ -70,7 +66,7 @@ extension PublicProfileExtension on PublicProfile {
 
   Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GR');
 
-  List<String> displayRoles(List<ProfileRoleType>? types) =>
+  List<String> displayRoles({List<ProfileRoleType>? types}) =>
       roles.where((role) => types == null || types.contains(role.type)).map((role) => role.shortName).toSet().toList();
 
   List<String> displayTags(ProfileTagType? type) =>

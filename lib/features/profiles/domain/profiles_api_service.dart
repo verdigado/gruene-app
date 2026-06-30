@@ -8,12 +8,13 @@ Future<List<PublicProfile>> fetchProfiles({
   String? query,
   Division? division,
   List<ProfileTag>? tags = const [],
+  int? limit = 100,
 }) async => getFromApi(
   request: (api) => api.v1ProfilesGet(
     search: query,
     division: division?.implicitMembersDivisionKey,
     tags: tags?.map((tag) => tag.externalId!).toList(),
-    limit: 1000,
+    limit: limit,
   ),
   map: (data) => data.data,
 );

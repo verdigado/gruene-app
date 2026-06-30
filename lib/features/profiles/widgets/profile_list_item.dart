@@ -34,7 +34,7 @@ class ProfileListItem extends StatelessWidget {
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               children: profile
-                  .displayRoles([ProfileRoleType.office, ProfileRoleType.mandate])
+                  .displayRoles()
                   .map((role) => Text(role))
                   .withDividers(HorizontalDivider(color: ThemeColors.textDisabled)),
             ),
