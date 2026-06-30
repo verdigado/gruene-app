@@ -56,6 +56,7 @@ class Selection<T> extends StatelessWidget {
         containerBuilder: containerBuilder,
         emptyBuilder: emptyBuilder,
       ),
+      suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
       decoratorProps: decoratorProps,
     );
   }
