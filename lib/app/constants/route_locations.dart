@@ -19,6 +19,7 @@ class RouteLocations {
   static const String campaignPosterDetail = 'poster';
   static const String campaignFlyerDetail = 'flyer';
   static const String campaignTeamDetail = 'team';
+  static const String campaignChallengesDetail = 'challenges';
   static const String campaignStatisticsDetail = 'statistics';
 
   static String getRoute(Iterable<String> locations) {

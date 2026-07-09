@@ -110,7 +110,7 @@
       "experience_areas": "Erfahrungsgebiete",
       "action_areas": "Einsatzgebiete"
     },
-    "select":{
+    "select": {
       "title": "Kampagne auswählen",
       "hint": "In welcher Kampagne bist du gerade aktiv? Du kannst die Kampagne jederzeit in deinen Einstellungen ändern.",
       "enforceSelectHint": "Deine bisherige Kampagne '${previousCampaignName}' ist beendet. Bitte wähle eine neue Kampagne aus!",
@@ -322,6 +322,10 @@
       "select_team": "Team auswählen",
       "select_team_hint_route": "Wähle das Team aus, dem du diese Route zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
       "select_team_hint_area": "Wähle das Team aus, dem du dieses Einsatzgebiet zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen"
+    },
+    "challenges": {
+      "label": "Challenges",
+      "myChallengeLabel": "Meine Challenges"
     },
     "statistic": {
       "label": "Statistik",
