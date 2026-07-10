@@ -37,17 +37,17 @@ extension RouteAssignmentParsing on RouteAssignment {
   }
 }
 
-extension on RouteAssignmentType {
+extension on RouteType {
   TeamAssignmentType asTeamAssignmentType() {
     switch (this) {
-      case RouteAssignmentType.flyerSpot:
+      case RouteType.flyerSpot:
         return TeamAssignmentType.flyer;
-      case RouteAssignmentType.poster:
+      case RouteType.poster:
         return TeamAssignmentType.poster;
-      case RouteAssignmentType.house:
+      case RouteType.house:
         return TeamAssignmentType.door;
 
-      case RouteAssignmentType.swaggerGeneratedUnknown:
+      case RouteType.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }

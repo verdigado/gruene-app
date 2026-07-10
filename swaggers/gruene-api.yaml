@@ -5032,18 +5032,15 @@ components:
     Area:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/AreaType'
         status:
           allOf:
             - $ref: '#/components/schemas/AreaStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
         createdAt:
@@ -5072,9 +5069,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/TeamInfo'
       required:
+        - type
         - status
         - id
-        - type
         - campaignId
         - createdAt
         - updatedAt
@@ -5765,18 +5762,15 @@ components:
     Route:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/RouteType'
         status:
           allOf:
             - $ref: '#/components/schemas/RouteStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
         createdAt:
@@ -5808,9 +5802,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/TeamInfo'
       required:
+        - type
         - status
         - id
-        - type
         - campaignId
         - createdAt
         - updatedAt
@@ -6485,18 +6479,15 @@ components:
     AreaAssignment:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/AreaType'
         status:
           allOf:
             - $ref: '#/components/schemas/AreaStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
         createdAt:
@@ -6523,9 +6514,9 @@ components:
         assigningUser:
           type: string
       required:
+        - type
         - status
         - id
-        - type
         - campaignId
         - createdAt
         - updatedAt
@@ -6536,18 +6527,15 @@ components:
     RouteAssignment:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/RouteType'
         status:
           allOf:
             - $ref: '#/components/schemas/RouteStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
         createdAt:
@@ -6574,9 +6562,9 @@ components:
         assigningUser:
           type: string
       required:
+        - type
         - status
         - id
-        - type
         - campaignId
         - createdAt
         - updatedAt

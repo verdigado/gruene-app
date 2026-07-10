@@ -51,17 +51,17 @@ extension on AreaStatus {
   }
 }
 
-extension on AreaAssignmentType {
+extension on AreaType {
   TeamAssignmentType asTeamAssignmentType() {
     switch (this) {
-      case AreaAssignmentType.flyerSpot:
+      case AreaType.flyerSpot:
         return TeamAssignmentType.flyer;
-      case AreaAssignmentType.poster:
+      case AreaType.poster:
         return TeamAssignmentType.poster;
-      case AreaAssignmentType.house:
+      case AreaType.house:
         return TeamAssignmentType.door;
 
-      case AreaAssignmentType.swaggerGeneratedUnknown:
+      case AreaType.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }
