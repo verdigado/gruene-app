@@ -28,6 +28,7 @@ class NewsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureLoadingScreen(
+      refetchKey: (query, showBookmarked),
       load: query.isNotEmpty || showBookmarked
           ? () => fetchNews(query: query, bookmarked: showBookmarked)
           : () async => allNews,

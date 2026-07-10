@@ -5,8 +5,15 @@ class FutureLoadingScreen<T> extends StatefulWidget {
   final Future<T> Function() load;
   final Widget Function(T data, ({void Function(T newData) update, void Function() refresh})) buildChild;
   final Widget Function(Widget child)? loadingLayoutBuilder;
+  final Object? refetchKey;
 
-  const FutureLoadingScreen({super.key, required this.load, required this.buildChild, this.loadingLayoutBuilder});
+  const FutureLoadingScreen({
+    super.key,
+    required this.load,
+    required this.buildChild,
+    this.loadingLayoutBuilder,
+    this.refetchKey,
+  });
 
   @override
   State<FutureLoadingScreen<T>> createState() => _FutureLoadingScreenState<T>();
@@ -24,7 +31,7 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
   @override
   void didUpdateWidget(covariant FutureLoadingScreen<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.load != oldWidget.load) {
+    if (widget.refetchKey != oldWidget.refetchKey) {
       setState(() {});
       _data = widget.load();
     }

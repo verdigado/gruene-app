@@ -27,6 +27,7 @@ class ProfilesList extends StatelessWidget {
     final tags = [...skillsFilter.current, ...interestsFilter.current];
 
     return FutureLoadingScreen(
+      refetchKey: (searchFilter.current, divisionFilter.current, skillsFilter.current, interestsFilter.current),
       load: () async => (
         profiles: await fetchProfiles(query: searchFilter.current, division: divisionFilter.current, tags: tags),
         userId: await AuthRepository().getCurrentUserId(),
