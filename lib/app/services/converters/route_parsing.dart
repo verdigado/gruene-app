@@ -37,31 +37,31 @@ extension RouteAssignmentParsing on RouteAssignment {
   }
 }
 
-extension on RouteAssignmentType {
+extension on RouteType {
   TeamAssignmentType asTeamAssignmentType() {
     switch (this) {
-      case RouteAssignmentType.flyerSpot:
+      case RouteType.flyerSpot:
         return TeamAssignmentType.flyer;
-      case RouteAssignmentType.poster:
+      case RouteType.poster:
         return TeamAssignmentType.poster;
-      case RouteAssignmentType.house:
+      case RouteType.house:
         return TeamAssignmentType.door;
 
-      case RouteAssignmentType.swaggerGeneratedUnknown:
+      case RouteType.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }
 }
 
-extension on RouteAssignmentStatus {
+extension on RouteStatus {
   TeamAssignmentStatus asTeamAsssignmentStatus() {
     switch (this) {
-      case RouteAssignmentStatus.open:
+      case RouteStatus.open:
         return TeamAssignmentStatus.open;
-      case RouteAssignmentStatus.closed:
+      case RouteStatus.closed:
         return TeamAssignmentStatus.closed;
 
-      case RouteAssignmentStatus.swaggerGeneratedUnknown:
+      case RouteStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }

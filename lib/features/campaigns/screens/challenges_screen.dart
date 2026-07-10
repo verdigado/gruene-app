@@ -156,7 +156,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
 class MyChallengesWidget extends StatelessWidget {
   final List<Challenge> joinedChallenges;
 
-  MyChallengesWidget({required this.joinedChallenges});
+  const MyChallengesWidget({super.key, required this.joinedChallenges});
 
   @override
   Widget build(BuildContext context) {

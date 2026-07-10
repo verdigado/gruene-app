@@ -3882,7 +3882,7 @@ info:
     removed.
 
     API tokens can be obtained from `technik@verdigado.com`.
-  version: 0.1.1
+  version: 0.1.2
   contact: {}
 tags: []
 servers:
@@ -4586,7 +4586,6 @@ components:
         officeAddress:
           nullable: true
           description: Office address
-          type: object
           allOf:
             - $ref: '#/components/schemas/Address'
         emails:
@@ -5115,6 +5114,11 @@ components:
         - comment
         - name
         - polygon
+    AreaStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
     TeamInfo:
       type: object
       properties:
@@ -5135,23 +5139,21 @@ components:
     Area:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/AreaType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/AreaStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
-        status:
-          enum:
-            - OPEN
-            - CLOSED
-          type: string
         campaignId:
           type: string
         createdAt:
+          format: date-time
+          type: string
+        updatedAt:
           format: date-time
           type: string
         comment:
@@ -5171,15 +5173,15 @@ components:
           nullable: true
         team:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/TeamInfo'
       required:
-        - id
         - type
         - status
+        - id
         - campaignId
         - createdAt
+        - updatedAt
         - comment
         - name
         - polygon
@@ -5201,11 +5203,6 @@ components:
       required:
         - ids
         - targetCampaignId
-    AreaStatus:
-      type: string
-      enum:
-        - OPEN
-        - CLOSED
     AreaAssignmentStatus:
       type: string
       enum:
@@ -5741,17 +5738,14 @@ components:
           $ref: '#/components/schemas/PoiAddress'
         poster:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/PoiPoster'
         flyerSpot:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/PoiFlyerSpot'
         house:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/PoiHouse'
       required:
@@ -5785,17 +5779,14 @@ components:
           $ref: '#/components/schemas/PoiAddress'
         poster:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/PoiPoster'
         flyerSpot:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/PoiFlyerSpot'
         house:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/PoiHouse'
       required:
@@ -6019,27 +6010,30 @@ components:
         - name
         - description
         - lineString
+    RouteStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
     Route:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/RouteType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/RouteStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
         createdAt:
           format: date-time
           type: string
-        status:
-          enum:
-            - OPEN
-            - CLOSED
+        updatedAt:
+          format: date-time
           type: string
         name:
           type: string
@@ -6061,23 +6055,18 @@ components:
           nullable: true
         team:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/TeamInfo'
       required:
-        - id
         - type
+        - status
+        - id
         - campaignId
         - createdAt
-        - status
+        - updatedAt
         - name
         - description
         - lineString
-    RouteStatus:
-      type: string
-      enum:
-        - OPEN
-        - CLOSED
     RouteAssignmentStatus:
       type: string
       enum:
@@ -6487,7 +6476,6 @@ components:
           type: string
         division:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/Division'
         createdAt:
@@ -6639,7 +6627,6 @@ components:
           nullable: true
         teamDivision:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/Division'
         type:
@@ -6748,23 +6735,21 @@ components:
     AreaAssignment:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/AreaType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/AreaStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
-        status:
-          enum:
-            - OPEN
-            - CLOSED
-          type: string
         campaignId:
           type: string
         createdAt:
+          format: date-time
+          type: string
+        updatedAt:
           format: date-time
           type: string
         comment:
@@ -6785,11 +6770,12 @@ components:
         assigningUser:
           type: string
       required:
-        - id
         - type
         - status
+        - id
         - campaignId
         - createdAt
+        - updatedAt
         - comment
         - name
         - polygon
@@ -6797,24 +6783,22 @@ components:
     RouteAssignment:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/RouteType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/RouteStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
         createdAt:
           format: date-time
           type: string
-        status:
-          enum:
-            - OPEN
-            - CLOSED
+        updatedAt:
+          format: date-time
           type: string
         name:
           type: string
@@ -6834,11 +6818,12 @@ components:
         assigningUser:
           type: string
       required:
-        - id
         - type
+        - status
+        - id
         - campaignId
         - createdAt
-        - status
+        - updatedAt
         - name
         - description
         - lineString
@@ -7093,7 +7078,6 @@ components:
           type: string
         division:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/Division'
         categories:
@@ -7105,14 +7089,12 @@ components:
           nullable: true
         featuredImage:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/ImageSrcSet'
         body:
           $ref: '#/components/schemas/NewsBody'
         bookmark:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/Bookmark'
       required:
@@ -7381,7 +7363,6 @@ components:
           minLength: 1
         person:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/GreenDirectoryRecordPerson'
       required:
@@ -7464,7 +7445,6 @@ components:
           nullable: true
         person:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/GreenDirectoryRecordPerson'
       required:
@@ -7526,7 +7506,6 @@ components:
           minLength: 1
         person:
           nullable: true
-          type: object
           allOf:
             - $ref: '#/components/schemas/GreenDirectoryRecordPerson'
     CreateGreenDirectoryLocation:
@@ -7621,7 +7600,6 @@ components:
         division:
           nullable: true
           description: Associated division
-          type: object
           allOf:
             - $ref: '#/components/schemas/Division'
         url:
