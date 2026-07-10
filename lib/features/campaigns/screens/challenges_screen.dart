@@ -108,7 +108,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    await Future.delayed(Duration(seconds: 2), () {});
+    await Future.delayed(Duration(milliseconds: 500), () {});
 
     setState(() {
       _loading = false;
@@ -160,13 +160,42 @@ class MyChallengesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(t.campaigns.challenges.myChallengeLabel, style: Theme.of(context).textTheme.headlineSmall),
-        ...joinedChallenges.map(
-          (challenge) => ListTile(title: Text(challenge.title), subtitle: Text(challenge.description ?? '')),
+    return Container(
+      padding: EdgeInsets.only(top: 20, left: 16),
+      child: Column(
+        children: [
+          Row(
+            children: [Text(t.campaigns.challenges.myChallengeLabel, style: Theme.of(context).textTheme.labelMedium)],
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: [...joinedChallenges.map((challenge) => getActiveChallengeCard(challenge, context))]),
+          ),
+          // ...joinedChallenges.map(
+          //   (challenge) => ListTile(title: Text(challenge.title), subtitle: Text(challenge.description ?? '')),
+          // ),
+        ],
+      ),
+    );
+  }
+
+  Widget getActiveChallengeCard(Challenge challenge, BuildContext context) {
+    return Card(
+      child: Container(
+        // margin: EdgeInsets.only(right: 8),
+        width: 200,
+        decoration: BoxDecoration(
+          color: ThemeColors.sun,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
         ),
-      ],
+        child: Column(
+          children: [
+            Text(challenge.title, style: Theme.of(context).textTheme.labelMedium),
+            SizedBox(height: 4),
+            Text(challenge.description ?? '', style: Theme.of(context).textTheme.bodySmall),
+          ],
+        ),
+      ),
     );
   }
 }
