@@ -37,15 +37,15 @@ extension AreaAssignmentParsing on AreaAssignment {
   }
 }
 
-extension on AreaAssignmentStatus {
+extension on AreaStatus {
   TeamAssignmentStatus asTeamAsssignmentStatus() {
     switch (this) {
-      case AreaAssignmentStatus.open:
+      case AreaStatus.open:
         return TeamAssignmentStatus.open;
-      case AreaAssignmentStatus.closed:
+      case AreaStatus.closed:
         return TeamAssignmentStatus.closed;
 
-      case AreaAssignmentStatus.swaggerGeneratedUnknown:
+      case AreaStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }

@@ -53,15 +53,15 @@ extension on RouteAssignmentType {
   }
 }
 
-extension on RouteAssignmentStatus {
+extension on RouteStatus {
   TeamAssignmentStatus asTeamAsssignmentStatus() {
     switch (this) {
-      case RouteAssignmentStatus.open:
+      case RouteStatus.open:
         return TeamAssignmentStatus.open;
-      case RouteAssignmentStatus.closed:
+      case RouteStatus.closed:
         return TeamAssignmentStatus.closed;
 
-      case RouteAssignmentStatus.swaggerGeneratedUnknown:
+      case RouteStatus.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }
