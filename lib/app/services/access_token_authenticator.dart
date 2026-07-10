@@ -27,16 +27,21 @@ class AccessTokenAuthenticator implements Authenticator {
         return null;
       }
 
-      final newAccessToken = await _authRepository.refreshAccessToken();
-      if (newAccessToken == null) {
-        logger.w('Failed to refresh access token');
+      try {
+        final newAccessToken = await _authRepository.refreshAccessToken();
+        if (newAccessToken == null) {
+          logger.w('Failed to refresh access token');
+          return null;
+        }
+
+        return applyHeaders(request, {
+          HttpHeaders.authorizationHeader: '$bearerPrefix $newAccessToken',
+          retryCountHeader: '1',
+        });
+      } catch (e) {
+        logger.w('Failed to refresh access token: $e');
         return null;
       }
-
-      return applyHeaders(request, {
-        HttpHeaders.authorizationHeader: '$bearerPrefix $newAccessToken',
-        retryCountHeader: '1',
-      });
     }
 
     return null;

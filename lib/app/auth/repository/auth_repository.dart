@@ -119,6 +119,9 @@ class AuthRepository {
 
     final completer = Completer<String?>();
     _refreshCompleter = completer;
+    // Ensure the future always has a listener so a completeError in the single-caller
+    // case is not surfaced as an unhandled async error.
+    completer.future.ignore();
 
     try {
       final result = await _refreshAccessToken();
@@ -127,6 +130,8 @@ class AuthRepository {
     } catch (e, stackTrace) {
       completer.completeError(e, stackTrace);
       rethrow;
+    } finally {
+      _refreshCompleter = null;
     }
   }
 
@@ -138,15 +143,17 @@ class AuthRepository {
     }
 
     try {
-      final TokenResponse result = await _appAuth.token(
-        TokenRequest(
-          Config.oidcClientId,
-          Config.oidcCallbackPath,
-          allowInsecureConnections: Config.isDevelopment,
-          refreshToken: refreshToken,
-          issuer: Config.oidcIssuer,
-        ),
-      );
+      final TokenResponse result = await _appAuth
+          .token(
+            TokenRequest(
+              Config.oidcClientId,
+              Config.oidcCallbackPath,
+              allowInsecureConnections: Config.isDevelopment,
+              refreshToken: refreshToken,
+              issuer: Config.oidcIssuer,
+            ),
+          )
+          .timeout(const Duration(seconds: 30));
 
       await _secureStorage.write(key: SecureStorageKeys.accessToken, value: result.accessToken);
       await _secureStorage.write(key: SecureStorageKeys.idToken, value: result.idToken);
@@ -155,8 +162,10 @@ class AuthRepository {
       return result.accessToken;
     } catch (e) {
       logger.w('Token refresh failed: $e');
-      if (e is PlatformException && (e.message?.contains('Unable to resolve host') ?? false)) {
-        // Continue with the existing access token if the app is offline
+      final isOffline =
+          (e is PlatformException && (e.message?.contains('Unable to resolve host') ?? false)) || e is TimeoutException;
+      if (isOffline) {
+        // Continue with the existing access token if the app is offline or the refresh timed out
         return getAccessToken();
       }
     }
