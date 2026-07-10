@@ -220,7 +220,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
         ],
       ),
     );
-    if (item.status == TeamMembershipStatisticsItemStatus.resigned) {
+    if (item.status == TeamMembershipStatus.resigned) {
       memberItemWidget = Stack(
         children: [
           memberItemWidget,

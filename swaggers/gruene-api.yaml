@@ -4,6 +4,13 @@ paths:
     get:
       operationId: findUsers
       parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 200
+            type: number
         - name: search
           required: false
           in: query
@@ -26,13 +33,6 @@ paths:
             type: array
             items:
               type: string
-        - name: limit
-          required: false
-          in: query
-          schema:
-            minimum: 1
-            maximum: 200
-            type: number
       responses:
         '200':
           description: ''
@@ -47,6 +47,26 @@ paths:
         - basic: []
         - api_key: []
       summary: Find users
+      tags:
+        - users
+  /v1/users/division-accounts:
+    get:
+      operationId: findDivisionAccounts
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindDivisionAccountsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Find all division accounts with their division
       tags:
         - users
   /v1/users/self:
@@ -265,6 +285,7 @@ paths:
         - users
   /v1/party/organizations:
     get:
+      deprecated: true
       operationId: findOrganizations
       parameters: []
       responses:
@@ -284,6 +305,7 @@ paths:
         - nb-api
   /v1/party/groups:
     get:
+      deprecated: true
       operationId: findGroups
       parameters:
         - name: filter
@@ -308,6 +330,7 @@ paths:
         - nb-api
   /v1/party/regionalchapters:
     get:
+      deprecated: true
       operationId: findRegionalChapters
       parameters:
         - name: limit
@@ -346,6 +369,7 @@ paths:
         - nb-api
   /v1/party/regionalchapters/{divisionKey}:
     get:
+      deprecated: true
       operationId: getRegionalChapter
       parameters:
         - name: divisionKey
@@ -368,92 +392,6 @@ paths:
       summary: Get regional chapter by division key
       tags:
         - nb-api
-  /v1/divisions:
-    get:
-      operationId: findDivisions
-      parameters:
-        - name: limit
-          required: false
-          in: query
-          schema:
-            minimum: 1
-            default: 20
-            type: number
-        - name: hierarchy
-          required: false
-          in: query
-          description: Filter by hierarchy
-          schema:
-            $ref: '#/components/schemas/HierarchyType'
-        - name: level
-          required: false
-          in: query
-          description: Filter by hierarchy level
-          schema:
-            $ref: '#/components/schemas/HierarchyLevel'
-        - name: offset
-          required: false
-          in: query
-          schema:
-            minimum: 0
-            type: number
-        - name: division_key
-          required: false
-          in: query
-          description: Filter by division keys
-          schema:
-            type: array
-            items:
-              type: string
-        - name: search
-          required: false
-          in: query
-          description: Search name attributes for substring
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FindDivisionsResponse'
-        '401':
-          description: ''
-      security:
-        - bearer: []
-        - basic: []
-        - api_key: []
-      summary: Find divisions
-      tags:
-        - divisions
-  /v1/divisions/{divisionId}:
-    get:
-      operationId: getDivision
-      parameters:
-        - name: divisionId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Division'
-        '401':
-          description: ''
-        '404':
-          description: ''
-      security:
-        - bearer: []
-        - basic: []
-        - api_key: []
-      summary: Get division by id
-      tags:
-        - divisions
   /v1/profiles:
     get:
       operationId: findProfiles
@@ -718,7 +656,7 @@ paths:
           in: query
           description: Filter by type
           schema:
-            $ref: '#/components/schemas/TagType'
+            $ref: '#/components/schemas/ProfileTagType'
         - name: offset
           required: false
           in: query
@@ -746,6 +684,92 @@ paths:
       summary: List profile tags
       tags:
         - profiles
+  /v1/divisions:
+    get:
+      operationId: findDivisions
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            default: 20
+            type: number
+        - name: hierarchy
+          required: false
+          in: query
+          description: Filter by hierarchy
+          schema:
+            $ref: '#/components/schemas/HierarchyType'
+        - name: level
+          required: false
+          in: query
+          description: Filter by hierarchy level
+          schema:
+            $ref: '#/components/schemas/HierarchyLevel'
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: division_key
+          required: false
+          in: query
+          description: Filter by division keys
+          schema:
+            type: array
+            items:
+              type: string
+        - name: search
+          required: false
+          in: query
+          description: Search name attributes for substring
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindDivisionsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Find divisions
+      tags:
+        - divisions
+  /v1/divisions/{divisionId}:
+    get:
+      operationId: getDivision
+      parameters:
+        - name: divisionId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Division'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+        - basic: []
+        - api_key: []
+      summary: Get division by id
+      tags:
+        - divisions
   /v1/offboarding/users/self:
     get:
       operationId: findUsersToOffboard
@@ -844,6 +868,12 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/AreaStatus'
+        - name: assignmentStatus
+          required: false
+          in: query
+          description: Filter by area assignment status
+          schema:
+            $ref: '#/components/schemas/AreaAssignmentStatus'
         - name: type
           required: false
           in: query
@@ -852,6 +882,19 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/AreaType'
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 1000
+            type: number
         - name: campaignId
           required: false
           in: query
@@ -869,6 +912,32 @@ paths:
       security:
         - bearer: []
       summary: Find Areas
+      tags:
+        - campaigns
+  /v1/campaigns/areas/move:
+    post:
+      operationId: moveAreas
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveElements'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Area'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Move Areas to a different campaign
       tags:
         - campaigns
   /v1/campaigns/areas/self:
@@ -889,6 +958,12 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/AreaStatus'
+        - name: assignmentStatus
+          required: false
+          in: query
+          description: Filter by area assignment status
+          schema:
+            $ref: '#/components/schemas/AreaAssignmentStatus'
         - name: type
           required: false
           in: query
@@ -897,6 +972,19 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/AreaType'
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 1000
+            type: number
         - name: campaignId
           required: false
           in: query
@@ -1144,9 +1232,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Campaign'
+        '400':
+          description: ''
         '401':
           description: ''
         '404':
+          description: ''
+        '409':
           description: ''
       security:
         - bearer: []
@@ -1264,6 +1356,33 @@ paths:
         - bearer: []
         - oauth2: []
       summary: Find PollingStations
+      tags:
+        - campaigns
+  /v1/campaigns/polling-stations/move:
+    post:
+      operationId: movePollingStations
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveElements'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PollingStation'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - oauth2: []
+      summary: Move PollingStations to a different campaign
       tags:
         - campaigns
   /v1/campaigns/polling-stations/{pollingStationId}:
@@ -1471,6 +1590,32 @@ paths:
       security:
         - bearer: []
       summary: Find POIs
+      tags:
+        - campaigns
+  /v1/campaigns/pois/move:
+    post:
+      operationId: movePois
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveElements'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Poi'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Move POIs to a different campaign
       tags:
         - campaigns
   /v1/campaigns/pois/self:
@@ -1764,12 +1909,31 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/RouteStatus'
+        - name: assignmentStatus
+          required: false
+          in: query
+          description: Filter by route assignment status
+          schema:
+            $ref: '#/components/schemas/RouteAssignmentStatus'
         - name: bbox
           required: false
           in: query
           schema:
             example: 47.695103,7.659684,53.670793, 14.229507
             type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 1000
+            type: number
         - name: campaignId
           required: false
           in: query
@@ -1788,6 +1952,33 @@ paths:
         - bearer: []
         - oauth2: []
       summary: Find Routes
+      tags:
+        - campaigns
+  /v1/campaigns/routes/move:
+    post:
+      operationId: moveRoutes
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveElements'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Route'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+        - oauth2: []
+      summary: Move Routes to a different campaign
       tags:
         - campaigns
   /v1/campaigns/routes/{routeId}:
@@ -1986,6 +2177,32 @@ paths:
       security:
         - bearer: []
       summary: Find ExperienceAreas
+      tags:
+        - campaigns
+  /v1/campaigns/experience-areas/move:
+    post:
+      operationId: moveExperienceAreas
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveElements'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExperienceArea'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Move ExperienceAreas to a different campaign
       tags:
         - campaigns
   /v1/campaigns/experience-areas/{experienceAreaId}:
@@ -2255,6 +2472,10 @@ paths:
                 $ref: '#/components/schemas/Team'
         '401':
           description: ''
+        '409':
+          description: >-
+            An active team with the same name already exists in the same
+            chapter.
       security:
         - bearer: []
       summary: Create a new team
@@ -2578,6 +2799,10 @@ paths:
                 $ref: '#/components/schemas/Team'
         '401':
           description: ''
+        '409':
+          description: >-
+            An active team with the same name already exists in the same
+            chapter.
       security:
         - bearer: []
       summary: Update own team information
@@ -3550,14 +3775,14 @@ info:
     removed.
 
     API tokens can be obtained from `technik@verdigado.com`.
-  version: 0.1.0
+  version: 0.1.2
   contact: {}
 tags: []
 servers:
-  - url: http://0.0.0.0:5000
-    description: localhost
   - url: https://api.gruene.de
     description: Production
+  - url: http://192.168.178.35:5000
+    description: Development
 components:
   securitySchemes:
     basic:
@@ -3619,9 +3844,59 @@ components:
             $ref: '#/components/schemas/User'
       required:
         - data
+    DivisionAccount:
+      type: object
+      properties:
+        username:
+          type: string
+          example: LVBadenW
+        divisionKey:
+          type: string
+          example: '10100000'
+        level:
+          type: string
+          example: LV
+      required:
+        - username
+        - divisionKey
+        - level
+    FindDivisionAccountsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DivisionAccount'
+      required:
+        - data
+    HierarchyType:
+      type: string
+      enum:
+        - GR
+        - GJ
+        - KPV
+      description: The root hierarchy the division belongs to
+    HierarchyLevel:
+      type: string
+      enum:
+        - BV
+        - LV
+        - KV
+        - OV
+      description: Level in the hierarchy
     UserRbacGroup:
       type: object
       properties:
+        hierarchy:
+          description: The root hierarchy the division belongs to
+          example: GR
+          allOf:
+            - $ref: '#/components/schemas/HierarchyType'
+        level:
+          description: Level in the hierarchy
+          example: BV
+          allOf:
+            - $ref: '#/components/schemas/HierarchyLevel'
         id:
           type: string
           description: |-
@@ -3657,32 +3932,15 @@ components:
           type: string
           description: Descriptive name of the division.
           example: Baden-Württemberg LV
-        hierarchy:
-          description: The root hierarchy the division belongs to
-          example: GR
-          enum:
-            - GR
-            - GJ
-            - KPV
-          type: string
-        level:
-          description: Level in the hierarchy
-          example: BV
-          enum:
-            - BV
-            - LV
-            - KV
-            - OV
-          type: string
       required:
+        - hierarchy
+        - level
         - id
         - divisionKey
         - parentKey
         - implicit
         - name
         - displayName
-        - hierarchy
-        - level
     UserRbacRole:
       type: object
       properties:
@@ -3735,10 +3993,10 @@ components:
       type: object
       properties:
         platform:
-          type: string
           enum:
             - ios
             - android
+          type: string
           description: Device platform
           example: ios
         deviceToken:
@@ -3952,6 +4210,13 @@ components:
     NbRegionalChapter:
       type: object
       properties:
+        type:
+          description: |-
+            Regional chapter type
+            Possible values: BV | LV | KV | OV
+          example: OV
+          allOf:
+            - $ref: '#/components/schemas/NbRegionalChapterType'
         id:
           type: string
           description: Id of the regional chapter (division key)
@@ -3960,17 +4225,6 @@ components:
           type: string
           description: Regional chapter name
           example: Neunkirchen-Seelscheid
-        type:
-          description: |-
-            Regional chapter type
-            Possible values: BV | LV | KV | OV
-          example: OV
-          enum:
-            - BV
-            - LV
-            - KV
-            - OV
-          type: string
         organization:
           $ref: '#/components/schemas/NbOrganization'
         zip_code:
@@ -3978,9 +4232,9 @@ components:
           description: Zip code of office location
           example: '53819'
       required:
+        - type
         - id
         - name
-        - type
         - organization
         - zip_code
     FindNbRegionalChaptersResponse:
@@ -3995,163 +4249,6 @@ components:
       required:
         - count
         - items
-    HierarchyType:
-      type: string
-      enum:
-        - GR
-        - GJ
-        - KPV
-    HierarchyLevel:
-      type: string
-      enum:
-        - BV
-        - LV
-        - KV
-        - OV
-    Address:
-      type: object
-      properties:
-        city:
-          type: string
-          description: Location city
-          example: Berlin
-        zip:
-          type: string
-          description: Location zip code
-          example: '10176'
-        line1:
-          type: string
-          description: First address line for street and house number
-          example: Bahnhofstr. 5
-      required:
-        - city
-        - zip
-        - line1
-    DivisionEmail:
-      type: object
-      properties:
-        tags:
-          description: Tags associated with email as string values
-          example:
-            - BV-GRÜNE-Info
-          type: array
-          items:
-            type: string
-        purposes:
-          description: |-
-            Purposes associated with email
-            Occurring values:
-             - privat
-             - grüne
-             - dienstlich
-             - Postanschrift
-             - Rechnungsanschrift
-             - Lieferanschrift
-          example:
-            - privat
-          type: array
-          items:
-            type: string
-        address:
-          type: string
-          description: Email address
-          example: john.doe@example.com
-        isFavorite:
-          type: boolean
-          description: Indicate if this email is preferred for general inquiries
-          example: false
-      required:
-        - tags
-        - purposes
-        - address
-        - isFavorite
-    Division:
-      type: object
-      properties:
-        urls:
-          description: List of internet presences
-          example:
-            - https://example.com
-          type: array
-          items:
-            type: string
-        id:
-          type: string
-          description: The division id
-          example: '123'
-        divisionKey:
-          type: string
-          description: The division key
-          example: '10000000'
-        name1:
-          type: string
-          example: Landesverband
-        name2:
-          type: string
-          example: Baden-Württemberg
-        shortName:
-          type: string
-          description: Descriptive name of the division.
-          example: Baden-Württemberg LV
-        hierarchy:
-          type: object
-          description: The root hierarchy the division belongs to
-          example: GR
-        level:
-          description: Level in the hierarchy
-          example: BV
-          enum:
-            - BV
-            - LV
-            - KV
-            - OV
-          type: string
-        officeAddress:
-          nullable: true
-          description: Office address
-          allOf:
-            - $ref: '#/components/schemas/Address'
-        emails:
-          description: Email Addresses
-          type: array
-          items:
-            $ref: '#/components/schemas/DivisionEmail'
-      required:
-        - urls
-        - id
-        - divisionKey
-        - name1
-        - name2
-        - shortName
-        - hierarchy
-        - level
-        - officeAddress
-        - emails
-    OffsetPaginationMeta:
-      type: object
-      properties:
-        count:
-          type: number
-        total:
-          type: number
-        offset:
-          type: number
-        limit:
-          type: number
-        hasNext:
-          type: boolean
-    FindDivisionsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Division'
-        meta:
-          $ref: '#/components/schemas/OffsetPaginationMeta'
-      required:
-        - data
-        - meta
     ImageLink:
       type: object
       properties:
@@ -4255,20 +4352,24 @@ components:
         - type
         - id
         - url
+    ProfileTagType:
+      type: string
+      enum:
+        - skill
+        - interest
+      description: Tag type
     ProfileTag:
       type: object
       properties:
+        type:
+          description: Tag type
+          example: '"interest'
+          allOf:
+            - $ref: '#/components/schemas/ProfileTagType'
         id:
           type: string
           description: Tag id
           example: '1'
-        type:
-          description: Tag type
-          example: '"interest'
-          enum:
-            - skill
-            - interest
-          type: string
         label:
           type: string
           description: Tag label
@@ -4278,9 +4379,125 @@ components:
           description: External id
           example: '100'
       required:
-        - id
         - type
+        - id
         - label
+    Address:
+      type: object
+      properties:
+        city:
+          type: string
+          description: Location city
+          example: Berlin
+        zip:
+          type: string
+          description: Location zip code
+          example: '10176'
+        line1:
+          type: string
+          description: First address line for street and house number
+          example: Bahnhofstr. 5
+      required:
+        - city
+        - zip
+        - line1
+    DivisionEmail:
+      type: object
+      properties:
+        tags:
+          description: Tags associated with email as string values
+          example:
+            - BV-GRÜNE-Info
+          type: array
+          items:
+            type: string
+        purposes:
+          description: |-
+            Purposes associated with email
+            Occurring values:
+             - privat
+             - grüne
+             - dienstlich
+             - Postanschrift
+             - Rechnungsanschrift
+             - Lieferanschrift
+          example:
+            - privat
+          type: array
+          items:
+            type: string
+        address:
+          type: string
+          description: Email address
+          example: john.doe@example.com
+        isFavorite:
+          type: boolean
+          description: Indicate if this email is preferred for general inquiries
+          example: false
+      required:
+        - tags
+        - purposes
+        - address
+        - isFavorite
+    Division:
+      type: object
+      properties:
+        hierarchy:
+          description: The root hierarchy the division belongs to
+          example: GR
+          allOf:
+            - $ref: '#/components/schemas/HierarchyType'
+        level:
+          description: Level in the hierarchy
+          example: BV
+          allOf:
+            - $ref: '#/components/schemas/HierarchyLevel'
+        urls:
+          description: List of internet presences
+          example:
+            - https://example.com
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+          description: The division id
+          example: '123'
+        divisionKey:
+          type: string
+          description: The division key
+          example: '10000000'
+        name1:
+          type: string
+          example: Landesverband
+        name2:
+          type: string
+          example: Baden-Württemberg
+        shortName:
+          type: string
+          description: Descriptive name of the division.
+          example: Baden-Württemberg LV
+        officeAddress:
+          nullable: true
+          description: Office address
+          allOf:
+            - $ref: '#/components/schemas/Address'
+        emails:
+          description: Email Addresses
+          type: array
+          items:
+            $ref: '#/components/schemas/DivisionEmail'
+      required:
+        - hierarchy
+        - level
+        - urls
+        - id
+        - divisionKey
+        - name1
+        - name2
+        - shortName
+        - officeAddress
+        - emails
     DivisionMembership:
       type: object
       properties:
@@ -4292,19 +4509,22 @@ components:
       required:
         - division
         - joinedAt
+    ProfileRoleType:
+      type: string
+      enum:
+        - role
+        - mandate
+        - office
     ProfileRole:
       type: object
       properties:
+        type:
+          example: role
+          allOf:
+            - $ref: '#/components/schemas/ProfileRoleType'
         id:
           type: string
           example: '12345'
-        type:
-          example: role
-          enum:
-            - role
-            - mandate
-            - office
-          type: string
         name:
           type: string
           example: LAG Verkehr Mitarbeitende
@@ -4312,8 +4532,8 @@ components:
           type: string
           example: LAG Mobilität
       required:
-        - id
         - type
+        - id
         - name
         - alias
     PublicProfile:
@@ -4392,6 +4612,19 @@ components:
         - memberships
         - roles
         - achievements
+    OffsetPaginationMeta:
+      type: object
+      properties:
+        count:
+          type: number
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+        hasNext:
+          type: boolean
     FindProfilesResponse:
       type: object
       properties:
@@ -4604,11 +4837,6 @@ components:
         - socialMedia
         - tags
         - privacy
-    TagType:
-      type: string
-      enum:
-        - skill
-        - interest
     FindProfileTagsResponse:
       type: object
       properties:
@@ -4616,6 +4844,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProfileTag'
+        meta:
+          $ref: '#/components/schemas/OffsetPaginationMeta'
+      required:
+        - data
+        - meta
+    FindDivisionsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Division'
         meta:
           $ref: '#/components/schemas/OffsetPaginationMeta'
       required:
@@ -4689,11 +4929,6 @@ components:
         - FLYER_SPOT
         - POSTER
         - HOUSE
-    AreaStatus:
-      type: string
-      enum:
-        - OPEN
-        - CLOSED
     Polygon:
       type: object
       properties:
@@ -4723,9 +4958,6 @@ components:
         type:
           allOf:
             - $ref: '#/components/schemas/AreaType'
-        status:
-          allOf:
-            - $ref: '#/components/schemas/AreaStatus'
         comment:
           type: string
           nullable: true
@@ -4736,7 +4968,6 @@ components:
           $ref: '#/components/schemas/Polygon'
       required:
         - type
-        - status
         - comment
         - name
         - polygon
@@ -4762,6 +4993,11 @@ components:
         - comment
         - name
         - polygon
+    AreaStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
     TeamInfo:
       type: object
       properties:
@@ -4782,23 +5018,21 @@ components:
     Area:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/AreaType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/AreaStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
-        status:
-          enum:
-            - OPEN
-            - CLOSED
-          type: string
         campaignId:
           type: string
         createdAt:
+          format: date-time
+          type: string
+        updatedAt:
           format: date-time
           type: string
         comment:
@@ -4821,14 +5055,38 @@ components:
           allOf:
             - $ref: '#/components/schemas/TeamInfo'
       required:
-        - id
         - type
         - status
+        - id
         - campaignId
         - createdAt
+        - updatedAt
         - comment
         - name
         - polygon
+    MoveElements:
+      type: object
+      properties:
+        ids:
+          description: >-
+            Ids of the elements to move. Must all belong to the same source
+            campaign.
+          minItems: 1
+          maxItems: 100
+          type: array
+          items:
+            type: string
+        targetCampaignId:
+          type: string
+          description: Id of the campaign the elements should be moved to.
+      required:
+        - ids
+        - targetCampaignId
+    AreaAssignmentStatus:
+      type: string
+      enum:
+        - ASSIGNED
+        - UNASSIGNED
     FindAreasResponse:
       type: object
       properties:
@@ -4836,8 +5094,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Area'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
       required:
         - data
+        - total
+        - offset
+        - limit
     UpdateAreaStatus:
       type: object
       properties:
@@ -4951,6 +5218,15 @@ components:
     Campaign:
       type: object
       properties:
+        scope:
+          allOf:
+            - $ref: '#/components/schemas/CampaignScope'
+        type:
+          allOf:
+            - $ref: '#/components/schemas/CampaignType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/CampaignStatus'
         id:
           type: string
           example: '1'
@@ -4959,27 +5235,6 @@ components:
         description:
           type: string
           nullable: true
-        scope:
-          enum:
-            - EU
-            - FEDERAL
-            - STATE
-            - DISTRICT
-            - MIXED
-          type: string
-        type:
-          enum:
-            - ELECTION
-            - INITIATIVE
-          type: string
-        status:
-          enum:
-            - DRAFT
-            - ACTIVE
-            - PAUSED
-            - CLOSED
-            - ARCHIVED
-          type: string
         divisionKey:
           type: string
         start:
@@ -4994,11 +5249,11 @@ components:
           format: date-time
           type: string
       required:
-        - id
-        - name
         - scope
         - type
         - status
+        - id
+        - name
         - divisionKey
         - electionDate
     FindCampaignsResponse:
@@ -5172,6 +5427,9 @@ components:
           type: number
           description: Number of flyers on this spot.
           minimum: 0
+        comment:
+          type: string
+          nullable: true
       required:
         - flyerCount
     PoiHouse:
@@ -5185,6 +5443,9 @@ components:
           type: number
           description: Number of apartment doors that remained closed.
           minimum: 0
+        comment:
+          type: string
+          nullable: true
       required:
         - countOpenedDoors
         - countClosedDoors
@@ -5315,6 +5576,9 @@ components:
           type: array
           items:
             type: number
+        type:
+          allOf:
+            - $ref: '#/components/schemas/PoiType'
         id:
           type: string
           example: '1'
@@ -5336,12 +5600,6 @@ components:
             $ref: '#/components/schemas/ImageSrcSet'
         address:
           $ref: '#/components/schemas/PoiAddress'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         poster:
           $ref: '#/components/schemas/PoiPoster'
         flyerSpot:
@@ -5350,6 +5608,7 @@ components:
           $ref: '#/components/schemas/PoiHouse'
       required:
         - coords
+        - type
         - id
         - campaignId
         - userId
@@ -5358,7 +5617,6 @@ components:
         - updatedAt
         - photos
         - address
-        - type
     PoiStatus:
       type: string
       enum:
@@ -5393,11 +5651,6 @@ components:
         - FLYER_SPOT
         - POSTER
         - HOUSE
-    RouteStatus:
-      type: string
-      enum:
-        - OPEN
-        - CLOSED
     LineString:
       type: object
       properties:
@@ -5429,9 +5682,6 @@ components:
         type:
           allOf:
             - $ref: '#/components/schemas/RouteType'
-        status:
-          allOf:
-            - $ref: '#/components/schemas/RouteStatus'
         name:
           type: string
           nullable: true
@@ -5439,11 +5689,13 @@ components:
           type: string
           nullable: true
           maxLength: 250
+        comment:
+          type: string
+          nullable: true
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
         - type
-        - status
         - name
         - description
         - lineString
@@ -5463,6 +5715,9 @@ components:
           type: string
           nullable: true
           maxLength: 250
+        comment:
+          type: string
+          nullable: true
         lineString:
           $ref: '#/components/schemas/LineString'
       required:
@@ -5470,32 +5725,38 @@ components:
         - name
         - description
         - lineString
+    RouteStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
     Route:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/RouteType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/RouteStatus'
         id:
           type: string
           example: '1'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         campaignId:
           type: string
         createdAt:
           format: date-time
           type: string
-        status:
-          enum:
-            - OPEN
-            - CLOSED
+        updatedAt:
+          format: date-time
           type: string
         name:
           type: string
           nullable: true
         description:
+          type: string
+          nullable: true
+        comment:
           type: string
           nullable: true
         lineString:
@@ -5512,14 +5773,20 @@ components:
           allOf:
             - $ref: '#/components/schemas/TeamInfo'
       required:
-        - id
         - type
+        - status
+        - id
         - campaignId
         - createdAt
-        - status
+        - updatedAt
         - name
         - description
         - lineString
+    RouteAssignmentStatus:
+      type: string
+      enum:
+        - ASSIGNED
+        - UNASSIGNED
     FindRoutesResponse:
       type: object
       properties:
@@ -5527,8 +5794,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Route'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
       required:
         - data
+        - total
+        - offset
+        - limit
     UpdateRouteStatus:
       type: object
       properties:
@@ -5865,9 +6141,21 @@ components:
         - divisionKey
         - name
         - memberships
+    TeamMembershipStatus:
+      type: string
+      enum:
+        - PENDING
+        - ACCEPTED
+        - RESIGNED
     TeamMembership:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipStatus'
         id:
           type: string
           example: '1'
@@ -5887,24 +6175,13 @@ components:
         end:
           format: date-time
           type: string
-        type:
-          type: string
-          enum:
-            - LEAD
-            - MEMBER
-        status:
-          type: string
-          enum:
-            - PENDING
-            - ACCEPTED
-            - RESIGNED
       required:
+        - type
+        - status
         - id
         - userId
         - invitingUserId
         - createdAt
-        - type
-        - status
     Team:
       type: object
       properties:
@@ -5938,6 +6215,9 @@ components:
     TeamMembershipStatisticsItem:
       type: object
       properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipStatus'
         userName:
           type: string
           nullable: true
@@ -5947,12 +6227,6 @@ components:
         memberSince:
           format: date-time
           type: string
-        status:
-          type: string
-          enum:
-            - PENDING
-            - ACCEPTED
-            - RESIGNED
         posterCount:
           type: number
           minimum: 0
@@ -6048,6 +6322,9 @@ components:
     TeamInvitation:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipType'
         membershipId:
           type: string
           example: '1'
@@ -6068,17 +6345,12 @@ components:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/Division'
-        type:
-          type: string
-          enum:
-            - LEAD
-            - MEMBER
       required:
+        - type
         - membershipId
         - teamId
         - invitationDate
         - teamName
-        - type
     DeleteTeamMembership:
       type: object
       properties:
@@ -6093,7 +6365,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/TeamMembershipType'
         userId:
-          type: object
+          type: string
       required:
         - type
         - userId
@@ -6174,25 +6446,21 @@ components:
     AreaAssignment:
       type: object
       properties:
-        assigningUser:
-          type: string
+        type:
+          allOf:
+            - $ref: '#/components/schemas/AreaType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/AreaStatus'
         id:
           type: string
           example: '1'
-        type:
-          type: string
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-        status:
-          type: string
-          enum:
-            - OPEN
-            - CLOSED
         campaignId:
           type: string
         createdAt:
+          format: date-time
+          type: string
+        updatedAt:
           format: date-time
           type: string
         comment:
@@ -6210,44 +6478,46 @@ components:
           format: date-time
           type: string
           nullable: true
+        assigningUser:
+          type: string
       required:
-        - assigningUser
-        - id
         - type
         - status
+        - id
         - campaignId
         - createdAt
+        - updatedAt
         - comment
         - name
         - polygon
+        - assigningUser
     RouteAssignment:
       type: object
       properties:
-        assigningUser:
-          type: string
+        type:
+          allOf:
+            - $ref: '#/components/schemas/RouteType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/RouteStatus'
         id:
           type: string
           example: '1'
-        type:
-          type: string
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
         campaignId:
           type: string
         createdAt:
           format: date-time
           type: string
-        status:
+        updatedAt:
+          format: date-time
           type: string
-          enum:
-            - OPEN
-            - CLOSED
         name:
           type: string
           nullable: true
         description:
+          type: string
+          nullable: true
+        comment:
           type: string
           nullable: true
         lineString:
@@ -6256,16 +6526,19 @@ components:
           format: date-time
           type: string
           nullable: true
+        assigningUser:
+          type: string
       required:
-        - assigningUser
-        - id
         - type
+        - status
+        - id
         - campaignId
         - createdAt
-        - status
+        - updatedAt
         - name
         - description
         - lineString
+        - assigningUser
     TeamAssignmentResponse:
       type: object
       properties:
@@ -6294,6 +6567,15 @@ components:
         - KV
         - OV
         - BEZV
+    RoleType:
+      type: string
+      enum:
+        - AMT
+        - BEZ
+        - MANDAT
+        - ROLLE
+        - SYSTEM
+      description: Type of role
     RoleAlias:
       type: object
       properties:
@@ -6352,6 +6634,24 @@ components:
     Role:
       type: object
       properties:
+        hierarchy:
+          nullable: true
+          description: >-
+            Hierarchy this role refers to, or null if the role is not scoped to
+            one
+          example: GR
+          allOf:
+            - $ref: '#/components/schemas/HierarchyType'
+        type:
+          description: Type of role
+          example: ROLLE
+          allOf:
+            - $ref: '#/components/schemas/RoleType'
+        level:
+          description: Hierarchy level this role applies to
+          example: LV
+          allOf:
+            - $ref: '#/components/schemas/RoleLevel'
         id:
           type: string
           description: The role id
@@ -6359,24 +6659,6 @@ components:
         name:
           type: string
           description: Name of the role
-        hierarchy:
-          description: Hierarchy this role refers to
-          example: GR
-          enum:
-            - GR
-            - GJ
-            - KPV
-          type: string
-        type:
-          description: Type of role
-          example: ROLLE
-          enum:
-            - AMT
-            - BEZ
-            - MANDAT
-            - ROLLE
-            - SYSTEM
-          type: string
         minAge:
           type: number
           nullable: true
@@ -6386,17 +6668,6 @@ components:
           type: number
           description: Role max age
           example: 99
-        level:
-          description: Hierarchy level this role applies to
-          example: LV
-          enum:
-            - ALL
-            - BV
-            - LV
-            - KV
-            - OV
-            - BEZV
-          type: string
         categories:
           description: Role categories
           type: array
@@ -6413,13 +6684,13 @@ components:
           items:
             $ref: '#/components/schemas/RoleAlias'
       required:
-        - id
-        - name
         - hierarchy
         - type
+        - level
+        - id
+        - name
         - minAge
         - maxAge
-        - level
         - categories
         - tags
         - aliases
@@ -6482,23 +6753,26 @@ components:
       required:
         - type
         - content
+    BookmarkType:
+      type: string
+      enum:
+        - NEWS
     Bookmark:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/BookmarkType'
         id:
           type: string
-        type:
-          type: string
-          enum:
-            - NEWS
         itemId:
           type: string
           description: The id of the item that is being bookmarked.
         url:
           type: string
       required:
-        - id
         - type
+        - id
         - itemId
         - url
     News:
@@ -6551,19 +6825,22 @@ components:
             $ref: '#/components/schemas/News'
       required:
         - data
+    IpVersion:
+      type: string
+      enum:
+        - ivp4
+        - ipv6
     ClientInfo:
       type: object
       properties:
+        clientIpVersion:
+          allOf:
+            - $ref: '#/components/schemas/IpVersion'
         clientIp:
           type: string
-        clientIpVersion:
-          enum:
-            - ivp4
-            - ipv6
-          type: string
       required:
-        - clientIp
         - clientIpVersion
+        - clientIp
     GnetzApplicationCategory:
       type: object
       properties:
@@ -6676,10 +6953,6 @@ components:
             $ref: '#/components/schemas/Bookmark'
       required:
         - data
-    BookmarkType:
-      type: string
-      enum:
-        - NEWS
     CreateBookmark:
       type: object
       properties:
@@ -6807,19 +7080,22 @@ components:
         - emails
         - externalRefs
         - name
+    GreenDirectoryLocationLevel:
+      type: string
+      enum:
+        - DE:BUNDESVERBAND
+        - DE:LANDESVERBAND
+        - DE:BEZIRKSVERBAND
+        - DE:KREISVERBAND
+        - DE:REGIONALVERBAND
+        - DE:ORTSVERBAND
     GreenDirectoryLocation:
       type: object
       properties:
-        id:
-          type: string
         level:
-          enum:
-            - DE:BUNDESVERBAND
-            - DE:LANDESVERBAND
-            - DE:BEZIRKSVERBAND
-            - DE:KREISVERBAND
-            - DE:REGIONALVERBAND
-            - DE:ORTSVERBAND
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryLocationLevel'
+        id:
           type: string
         country:
           type: string
@@ -6836,8 +7112,8 @@ components:
           type: string
           nullable: true
       required:
-        - id
         - level
+        - id
         - country
         - state
         - region
@@ -6846,17 +7122,10 @@ components:
     GreenDirectoryRecord:
       type: object
       properties:
-        id:
-          type: string
         type:
-          enum:
-            - PARTY
-            - REGIONAL_CHAPTER
-            - COMMITTEE
-            - YOUTH_ORGANIZATION
-            - SUB_ORGANIZATION
-            - PERSON
-            - PARLIAMENTARY_GROUP
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryRecordType'
+        id:
           type: string
         divisionKey:
           type: string
@@ -6883,8 +7152,8 @@ components:
           allOf:
             - $ref: '#/components/schemas/GreenDirectoryRecordPerson'
       required:
-        - id
         - type
+        - id
         - divisionKey
         - location
         - urls
@@ -6892,15 +7161,6 @@ components:
         - externalRefs
         - name
         - person
-    GreenDirectoryLocationLevel:
-      type: string
-      enum:
-        - DE:BUNDESVERBAND
-        - DE:LANDESVERBAND
-        - DE:BEZIRKSVERBAND
-        - DE:KREISVERBAND
-        - DE:REGIONALVERBAND
-        - DE:ORTSVERBAND
     FindGreenDirectoryRecordsResponse:
       type: object
       properties:

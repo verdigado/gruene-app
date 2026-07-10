@@ -18,7 +18,7 @@ class TeamStatisticsCategoryDetail extends StatefulWidget {
 }
 
 class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDetail> {
-  DivisionLevel _selectedDivisionType = DivisionLevel.kv;
+  HierarchyLevel _selectedDivisionType = HierarchyLevel.kv;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
                     Text(_getTitle(), style: theme.textTheme.titleSmall),
                   ],
                 ),
-                SegmentedButton<DivisionLevel>(
+                SegmentedButton<HierarchyLevel>(
                   style: SegmentedButton.styleFrom(
                     selectedForegroundColor: ThemeColors.background,
                     selectedBackgroundColor: ThemeColors.primary,
@@ -72,9 +72,9 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
     );
   }
 
-  List<ButtonSegment<DivisionLevel>> _getButtonSegments() {
+  List<ButtonSegment<HierarchyLevel>> _getButtonSegments() {
     var theme = Theme.of(context);
-    ButtonSegment<DivisionLevel> getButtonSegment(DivisionLevel value, String label) => ButtonSegment(
+    ButtonSegment<HierarchyLevel> getButtonSegment(HierarchyLevel value, String label) => ButtonSegment(
       value: value,
       label: Text(
         label,
@@ -85,9 +85,9 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
     );
 
     return [
-      getButtonSegment(DivisionLevel.kv, t.divisions.level.kv.short),
-      getButtonSegment(DivisionLevel.lv, t.divisions.level.lv.short),
-      getButtonSegment(DivisionLevel.bv, t.divisions.level.bv.short),
+      getButtonSegment(HierarchyLevel.kv, t.divisions.level.kv.short),
+      getButtonSegment(HierarchyLevel.lv, t.divisions.level.lv.short),
+      getButtonSegment(HierarchyLevel.bv, t.divisions.level.bv.short),
     ];
   }
 
@@ -105,14 +105,14 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
 
   List<TeamStatisticsCategoryItem> _getStatResults(TeamStatisticsCategory categoryStats) {
     switch (_selectedDivisionType) {
-      case DivisionLevel.kv:
+      case HierarchyLevel.kv:
         return categoryStats.division;
-      case DivisionLevel.lv:
+      case HierarchyLevel.lv:
         return categoryStats.state;
-      case DivisionLevel.bv:
+      case HierarchyLevel.bv:
         return categoryStats.germany;
-      case DivisionLevel.ov:
-      case DivisionLevel.swaggerGeneratedUnknown:
+      case HierarchyLevel.ov:
+      case HierarchyLevel.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
   }
@@ -273,14 +273,14 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
 
     getEmptyText() {
       switch (_selectedDivisionType) {
-        case DivisionLevel.kv:
+        case HierarchyLevel.kv:
           return t.campaigns.statistic.no_teams.kv;
-        case DivisionLevel.lv:
+        case HierarchyLevel.lv:
           return t.campaigns.statistic.no_teams.lv;
-        case DivisionLevel.bv:
+        case HierarchyLevel.bv:
           return t.campaigns.statistic.no_teams.bv;
-        case DivisionLevel.ov:
-        case DivisionLevel.swaggerGeneratedUnknown:
+        case HierarchyLevel.ov:
+        case HierarchyLevel.swaggerGeneratedUnknown:
           throw UnimplementedError();
       }
     }
