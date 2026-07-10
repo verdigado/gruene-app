@@ -14,6 +14,8 @@ import 'package:keycloak_authenticator/api.dart';
 import 'package:uuid/uuid.dart';
 
 class AuthRepository {
+  static Completer<bool>? _refreshCompleter;
+
   final FlutterAppAuth _appAuth = FlutterAppAuth();
   final _secureStorage = GetIt.instance<FlutterSecureStorage>();
   final AuthenticatorService _authenticatorService = GetIt.I<AuthenticatorService>();
@@ -109,6 +111,26 @@ class AuthRepository {
   }
 
   Future<bool> refreshToken() async {
+    final existing = _refreshCompleter;
+    if (existing != null && !existing.isCompleted) {
+      logger.d('Token refresh already in progress, awaiting existing attempt');
+      return existing.future;
+    }
+
+    final completer = Completer<bool>();
+    _refreshCompleter = completer;
+
+    try {
+      final result = await _doRefreshToken();
+      completer.complete(result);
+      return result;
+    } catch (e, stackTrace) {
+      completer.completeError(e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<bool> _doRefreshToken() async {
     final refreshToken = await getRefreshToken();
     if (refreshToken == null) {
       logger.d('No refresh token found');

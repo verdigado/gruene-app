@@ -10,7 +10,6 @@ const retryCountHeader = 'Retry-Count';
 
 class AccessTokenAuthenticator implements Authenticator {
   final AuthRepository _authRepository = AuthRepository();
-  Completer<String?>? _completer;
 
   AccessTokenAuthenticator();
 
@@ -45,30 +44,11 @@ class AccessTokenAuthenticator implements Authenticator {
     return null;
   }
 
-  Future<String?> _refreshToken() {
-    var completer = _completer;
-    if (completer != null && !completer.isCompleted) {
-      logger.d('Access token refresh is already in progress');
-      return completer.future;
+  Future<String?> _refreshToken() async {
+    if (!await _authRepository.refreshToken()) {
+      throw Exception('Failed to refresh token');
     }
-
-    completer = Completer<String?>();
-    _completer = completer;
-
-    _authRepository
-        .refreshToken()
-        .then((success) {
-          if (success) {
-            completer?.complete(_authRepository.getAccessToken());
-          } else {
-            completer?.completeError('Failed to refresh token', StackTrace.current);
-          }
-        })
-        .onError((error, stackTrace) {
-          completer?.completeError(error ?? 'Refresh token error', stackTrace);
-        });
-
-    return completer.future;
+    return _authRepository.getAccessToken();
   }
 
   @override
