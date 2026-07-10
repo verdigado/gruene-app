@@ -19,7 +19,7 @@ extension ProfileExtension on Profile {
 
   List<Visibility> profileVisibilityOptions() => [
     Visibility.private,
-    ...(partyDivision?.level == DivisionLevel.ov ? [Visibility.ovWide] : []),
+    ...(partyDivision?.level == HierarchyLevel.ov ? [Visibility.ovWide] : []),
     Visibility.kvWide,
     Visibility.lvWide,
     Visibility.bvWide,
@@ -68,7 +68,7 @@ extension PublicProfileExtension on PublicProfile {
 
   List<Division> get divisions => memberships.map((membership) => membership.division).toList();
 
-  Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == DivisionHierarchy.gr);
+  Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == HierarchyType.gr);
 
   List<String> displayRoles(List<ProfileRoleType>? types) =>
       roles.where((role) => types == null || types.contains(role.type)).map((role) => role.shortName).toSet().toList();

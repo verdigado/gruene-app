@@ -12,7 +12,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class DivisionSearchHelper {
   static Future<Division?>? searchDivision(
     BuildContext context, {
-    DivisionLevel? level,
+    HierarchyLevel? level,
     List<String>? divisionKeysFilter,
   }) async {
     var navState = Navigator.of(context, rootNavigator: true);
@@ -100,7 +100,7 @@ class DivisionSearchHelper {
     String searchText,
     int pageKey,
     int pageSize, {
-    DivisionLevel? level,
+    HierarchyLevel? level,
     List<String>? divisionKeysFilter,
   }) async {
     var divisionService = GetIt.I<GrueneApiDivisionsService>();

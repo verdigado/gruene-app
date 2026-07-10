@@ -656,7 +656,7 @@ paths:
           in: query
           description: Filter by type
           schema:
-            $ref: '#/components/schemas/TagType'
+            $ref: '#/components/schemas/ProfileTagType'
         - name: offset
           required: false
           in: query
@@ -3976,9 +3976,34 @@ components:
             $ref: '#/components/schemas/DivisionAccount'
       required:
         - data
+    HierarchyType:
+      type: string
+      enum:
+        - GR
+        - GJ
+        - KPV
+      description: The root hierarchy the division belongs to
+    HierarchyLevel:
+      type: string
+      enum:
+        - BV
+        - LV
+        - KV
+        - OV
+      description: Level in the hierarchy
     UserRbacGroup:
       type: object
       properties:
+        hierarchy:
+          description: The root hierarchy the division belongs to
+          example: GR
+          allOf:
+            - $ref: '#/components/schemas/HierarchyType'
+        level:
+          description: Level in the hierarchy
+          example: BV
+          allOf:
+            - $ref: '#/components/schemas/HierarchyLevel'
         id:
           type: string
           description: |-
@@ -4014,32 +4039,15 @@ components:
           type: string
           description: Descriptive name of the division.
           example: Baden-Württemberg LV
-        hierarchy:
-          description: The root hierarchy the division belongs to
-          example: GR
-          enum:
-            - GR
-            - GJ
-            - KPV
-          type: string
-        level:
-          description: Level in the hierarchy
-          example: BV
-          enum:
-            - BV
-            - LV
-            - KV
-            - OV
-          type: string
       required:
+        - hierarchy
+        - level
         - id
         - divisionKey
         - parentKey
         - implicit
         - name
         - displayName
-        - hierarchy
-        - level
     UserRbacRole:
       type: object
       properties:
@@ -4309,6 +4317,13 @@ components:
     NbRegionalChapter:
       type: object
       properties:
+        type:
+          description: |-
+            Regional chapter type
+            Possible values: BV | LV | KV | OV
+          example: OV
+          allOf:
+            - $ref: '#/components/schemas/NbRegionalChapterType'
         id:
           type: string
           description: Id of the regional chapter (division key)
@@ -4317,17 +4332,6 @@ components:
           type: string
           description: Regional chapter name
           example: Neunkirchen-Seelscheid
-        type:
-          description: |-
-            Regional chapter type
-            Possible values: BV | LV | KV | OV
-          example: OV
-          enum:
-            - BV
-            - LV
-            - KV
-            - OV
-          type: string
         organization:
           $ref: '#/components/schemas/NbOrganization'
         zip_code:
@@ -4335,9 +4339,9 @@ components:
           description: Zip code of office location
           example: '53819'
       required:
+        - type
         - id
         - name
-        - type
         - organization
         - zip_code
     FindNbRegionalChaptersResponse:
@@ -4455,20 +4459,24 @@ components:
         - type
         - id
         - url
+    ProfileTagType:
+      type: string
+      enum:
+        - skill
+        - interest
+      description: Tag type
     ProfileTag:
       type: object
       properties:
+        type:
+          description: Tag type
+          example: '"interest'
+          allOf:
+            - $ref: '#/components/schemas/ProfileTagType'
         id:
           type: string
           description: Tag id
           example: '1'
-        type:
-          description: Tag type
-          example: '"interest'
-          enum:
-            - skill
-            - interest
-          type: string
         label:
           type: string
           description: Tag label
@@ -4478,8 +4486,8 @@ components:
           description: External id
           example: '100'
       required:
-        - id
         - type
+        - id
         - label
     Address:
       type: object
@@ -4541,6 +4549,16 @@ components:
     Division:
       type: object
       properties:
+        hierarchy:
+          description: The root hierarchy the division belongs to
+          example: GR
+          allOf:
+            - $ref: '#/components/schemas/HierarchyType'
+        level:
+          description: Level in the hierarchy
+          example: BV
+          allOf:
+            - $ref: '#/components/schemas/HierarchyLevel'
         urls:
           description: List of internet presences
           example:
@@ -4566,23 +4584,6 @@ components:
           type: string
           description: Descriptive name of the division.
           example: Baden-Württemberg LV
-        hierarchy:
-          description: The root hierarchy the division belongs to
-          example: GR
-          enum:
-            - GR
-            - GJ
-            - KPV
-          type: string
-        level:
-          description: Level in the hierarchy
-          example: BV
-          enum:
-            - BV
-            - LV
-            - KV
-            - OV
-          type: string
         officeAddress:
           nullable: true
           description: Office address
@@ -4594,14 +4595,14 @@ components:
           items:
             $ref: '#/components/schemas/DivisionEmail'
       required:
+        - hierarchy
+        - level
         - urls
         - id
         - divisionKey
         - name1
         - name2
         - shortName
-        - hierarchy
-        - level
         - officeAddress
         - emails
     DivisionMembership:
@@ -4615,19 +4616,22 @@ components:
       required:
         - division
         - joinedAt
+    ProfileRoleType:
+      type: string
+      enum:
+        - role
+        - mandate
+        - office
     ProfileRole:
       type: object
       properties:
+        type:
+          example: role
+          allOf:
+            - $ref: '#/components/schemas/ProfileRoleType'
         id:
           type: string
           example: '12345'
-        type:
-          example: role
-          enum:
-            - role
-            - mandate
-            - office
-          type: string
         name:
           type: string
           example: LAG Verkehr Mitarbeitende
@@ -4635,8 +4639,8 @@ components:
           type: string
           example: LAG Mobilität
       required:
-        - id
         - type
+        - id
         - name
         - alias
     PublicProfile:
@@ -4940,11 +4944,6 @@ components:
         - socialMedia
         - tags
         - privacy
-    TagType:
-      type: string
-      enum:
-        - skill
-        - interest
     FindProfileTagsResponse:
       type: object
       properties:
@@ -5339,6 +5338,15 @@ components:
     Campaign:
       type: object
       properties:
+        scope:
+          allOf:
+            - $ref: '#/components/schemas/CampaignScope'
+        type:
+          allOf:
+            - $ref: '#/components/schemas/CampaignType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/CampaignStatus'
         id:
           type: string
           example: '1'
@@ -5347,27 +5355,6 @@ components:
         description:
           type: string
           nullable: true
-        scope:
-          enum:
-            - EU
-            - FEDERAL
-            - STATE
-            - DISTRICT
-            - MIXED
-          type: string
-        type:
-          enum:
-            - ELECTION
-            - INITIATIVE
-          type: string
-        status:
-          enum:
-            - DRAFT
-            - ACTIVE
-            - PAUSED
-            - CLOSED
-            - ARCHIVED
-          type: string
         divisionKey:
           type: string
         start:
@@ -5382,11 +5369,11 @@ components:
           format: date-time
           type: string
       required:
-        - id
-        - name
         - scope
         - type
         - status
+        - id
+        - name
         - divisionKey
         - electionDate
     FindCampaignsResponse:
@@ -5858,6 +5845,9 @@ components:
           type: array
           items:
             type: number
+        type:
+          allOf:
+            - $ref: '#/components/schemas/PoiType'
         id:
           type: string
           example: '1'
@@ -5879,12 +5869,6 @@ components:
             $ref: '#/components/schemas/ImageSrcSet'
         address:
           $ref: '#/components/schemas/PoiAddress'
-        type:
-          enum:
-            - FLYER_SPOT
-            - POSTER
-            - HOUSE
-          type: string
         poster:
           $ref: '#/components/schemas/PoiPoster'
         flyerSpot:
@@ -5893,6 +5877,7 @@ components:
           $ref: '#/components/schemas/PoiHouse'
       required:
         - coords
+        - type
         - id
         - campaignId
         - userId
@@ -5901,7 +5886,6 @@ components:
         - updatedAt
         - photos
         - address
-        - type
     PoiStatus:
       type: string
       enum:
@@ -6426,9 +6410,21 @@ components:
         - divisionKey
         - name
         - memberships
+    TeamMembershipStatus:
+      type: string
+      enum:
+        - PENDING
+        - ACCEPTED
+        - RESIGNED
     TeamMembership:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipType'
+        status:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipStatus'
         id:
           type: string
           example: '1'
@@ -6448,24 +6444,13 @@ components:
         end:
           format: date-time
           type: string
-        type:
-          type: string
-          enum:
-            - LEAD
-            - MEMBER
-        status:
-          type: string
-          enum:
-            - PENDING
-            - ACCEPTED
-            - RESIGNED
       required:
+        - type
+        - status
         - id
         - userId
         - invitingUserId
         - createdAt
-        - type
-        - status
     Team:
       type: object
       properties:
@@ -6499,6 +6484,9 @@ components:
     TeamMembershipStatisticsItem:
       type: object
       properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipStatus'
         userName:
           type: string
           nullable: true
@@ -6508,12 +6496,6 @@ components:
         memberSince:
           format: date-time
           type: string
-        status:
-          type: string
-          enum:
-            - PENDING
-            - ACCEPTED
-            - RESIGNED
         posterCount:
           type: number
           minimum: 0
@@ -6609,6 +6591,9 @@ components:
     TeamInvitation:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipType'
         membershipId:
           type: string
           example: '1'
@@ -6629,17 +6614,12 @@ components:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/Division'
-        type:
-          type: string
-          enum:
-            - LEAD
-            - MEMBER
       required:
+        - type
         - membershipId
         - teamId
         - invitationDate
         - teamName
-        - type
     DeleteTeamMembership:
       type: object
       properties:
@@ -6856,6 +6836,15 @@ components:
         - KV
         - OV
         - BEZV
+    RoleType:
+      type: string
+      enum:
+        - AMT
+        - BEZ
+        - MANDAT
+        - ROLLE
+        - SYSTEM
+      description: Type of role
     RoleAlias:
       type: object
       properties:
@@ -6914,6 +6903,24 @@ components:
     Role:
       type: object
       properties:
+        hierarchy:
+          nullable: true
+          description: >-
+            Hierarchy this role refers to, or null if the role is not scoped to
+            one
+          example: GR
+          allOf:
+            - $ref: '#/components/schemas/HierarchyType'
+        type:
+          description: Type of role
+          example: ROLLE
+          allOf:
+            - $ref: '#/components/schemas/RoleType'
+        level:
+          description: Hierarchy level this role applies to
+          example: LV
+          allOf:
+            - $ref: '#/components/schemas/RoleLevel'
         id:
           type: string
           description: The role id
@@ -6921,27 +6928,6 @@ components:
         name:
           type: string
           description: Name of the role
-        hierarchy:
-          nullable: true
-          description: >-
-            Hierarchy this role refers to, or null if the role is not scoped to
-            one
-          example: GR
-          enum:
-            - GR
-            - GJ
-            - KPV
-          type: string
-        type:
-          description: Type of role
-          example: ROLLE
-          enum:
-            - AMT
-            - BEZ
-            - MANDAT
-            - ROLLE
-            - SYSTEM
-          type: string
         minAge:
           type: number
           nullable: true
@@ -6951,17 +6937,6 @@ components:
           type: number
           description: Role max age
           example: 99
-        level:
-          description: Hierarchy level this role applies to
-          example: LV
-          enum:
-            - ALL
-            - BV
-            - LV
-            - KV
-            - OV
-            - BEZV
-          type: string
         categories:
           description: Role categories
           type: array
@@ -6978,13 +6953,13 @@ components:
           items:
             $ref: '#/components/schemas/RoleAlias'
       required:
-        - id
-        - name
         - hierarchy
         - type
+        - level
+        - id
+        - name
         - minAge
         - maxAge
-        - level
         - categories
         - tags
         - aliases
@@ -7047,23 +7022,26 @@ components:
       required:
         - type
         - content
+    BookmarkType:
+      type: string
+      enum:
+        - NEWS
     Bookmark:
       type: object
       properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/BookmarkType'
         id:
           type: string
-        type:
-          type: string
-          enum:
-            - NEWS
         itemId:
           type: string
           description: The id of the item that is being bookmarked.
         url:
           type: string
       required:
-        - id
         - type
+        - id
         - itemId
         - url
     News:
@@ -7116,19 +7094,22 @@ components:
             $ref: '#/components/schemas/News'
       required:
         - data
+    IpVersion:
+      type: string
+      enum:
+        - ivp4
+        - ipv6
     ClientInfo:
       type: object
       properties:
+        clientIpVersion:
+          allOf:
+            - $ref: '#/components/schemas/IpVersion'
         clientIp:
           type: string
-        clientIpVersion:
-          enum:
-            - ivp4
-            - ipv6
-          type: string
       required:
-        - clientIp
         - clientIpVersion
+        - clientIp
     GnetzApplicationCategory:
       type: object
       properties:
@@ -7241,10 +7222,6 @@ components:
             $ref: '#/components/schemas/Bookmark'
       required:
         - data
-    BookmarkType:
-      type: string
-      enum:
-        - NEWS
     CreateBookmark:
       type: object
       properties:
@@ -7372,19 +7349,22 @@ components:
         - emails
         - externalRefs
         - name
+    GreenDirectoryLocationLevel:
+      type: string
+      enum:
+        - DE:BUNDESVERBAND
+        - DE:LANDESVERBAND
+        - DE:BEZIRKSVERBAND
+        - DE:KREISVERBAND
+        - DE:REGIONALVERBAND
+        - DE:ORTSVERBAND
     GreenDirectoryLocation:
       type: object
       properties:
-        id:
-          type: string
         level:
-          enum:
-            - DE:BUNDESVERBAND
-            - DE:LANDESVERBAND
-            - DE:BEZIRKSVERBAND
-            - DE:KREISVERBAND
-            - DE:REGIONALVERBAND
-            - DE:ORTSVERBAND
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryLocationLevel'
+        id:
           type: string
         country:
           type: string
@@ -7401,8 +7381,8 @@ components:
           type: string
           nullable: true
       required:
-        - id
         - level
+        - id
         - country
         - state
         - region
@@ -7411,17 +7391,10 @@ components:
     GreenDirectoryRecord:
       type: object
       properties:
-        id:
-          type: string
         type:
-          enum:
-            - PARTY
-            - REGIONAL_CHAPTER
-            - COMMITTEE
-            - YOUTH_ORGANIZATION
-            - SUB_ORGANIZATION
-            - PERSON
-            - PARLIAMENTARY_GROUP
+          allOf:
+            - $ref: '#/components/schemas/GreenDirectoryRecordType'
+        id:
           type: string
         divisionKey:
           type: string
@@ -7448,8 +7421,8 @@ components:
           allOf:
             - $ref: '#/components/schemas/GreenDirectoryRecordPerson'
       required:
-        - id
         - type
+        - id
         - divisionKey
         - location
         - urls
@@ -7457,15 +7430,6 @@ components:
         - externalRefs
         - name
         - person
-    GreenDirectoryLocationLevel:
-      type: string
-      enum:
-        - DE:BUNDESVERBAND
-        - DE:LANDESVERBAND
-        - DE:BEZIRKSVERBAND
-        - DE:KREISVERBAND
-        - DE:REGIONALVERBAND
-        - DE:ORTSVERBAND
     FindGreenDirectoryRecordsResponse:
       type: object
       properties:

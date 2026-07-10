@@ -2,15 +2,15 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 extension DivisionExtension on Division {
-  String get shortDisplayName => level == DivisionLevel.bv ? name2 : '${level.value} $name2';
+  String get shortDisplayName => level == HierarchyLevel.bv ? name2 : '${level.value} $name2';
 
-  String get displayName => level == DivisionLevel.bv ? name2 : '$name1 $name2';
+  String get displayName => level == HierarchyLevel.bv ? name2 : '$name1 $name2';
 
   // Includes implicit members (i.e. child divisions), e.g. when searching for profiles in the API
   // Example: LV NRW: 11000000 -> 110, includes child KVs and OVs but not e.g. LV Rheinland-Pfalz (11000000)
   String get implicitMembersDivisionKey => divisionKey.substring(0, level.segmentLength);
 
-  String parentDivisionKey(DivisionLevel level) =>
+  String parentDivisionKey(HierarchyLevel level) =>
       divisionKey.substring(0, level.segmentLength).padRight(divisionKey.length, '0');
 
   bool matches(String query) =>
@@ -39,7 +39,7 @@ extension SortExtension on List<Division> {
 extension FilterExtension on Iterable<Division> {
   List<Division> filter(String query) => where((division) => division.matches(query)).toList().sortByLevel();
 
-  List<Division> filterByLevel(DivisionLevel level) {
+  List<Division> filterByLevel(HierarchyLevel level) {
     final filtered = where((division) => division.level == level).toList();
     filtered.sort((a, b) => a.name2.compareTo(b.name2));
     return filtered;
@@ -48,20 +48,20 @@ extension FilterExtension on Iterable<Division> {
   Division get bundesverband => firstWhere((it) => it.divisionKey == '10000000');
 }
 
-extension DivisionLevelExtension on DivisionLevel {
+extension HierarchyLevelExtension on HierarchyLevel {
   int get granularity => switch (this) {
-    DivisionLevel.bv => 0,
-    DivisionLevel.lv => 1,
-    DivisionLevel.kv => 2,
-    DivisionLevel.ov => 3,
-    DivisionLevel.swaggerGeneratedUnknown => 99,
+    HierarchyLevel.bv => 0,
+    HierarchyLevel.lv => 1,
+    HierarchyLevel.kv => 2,
+    HierarchyLevel.ov => 3,
+    HierarchyLevel.swaggerGeneratedUnknown => 99,
   };
 
   int get segmentLength => switch (this) {
-    DivisionLevel.bv => 1,
-    DivisionLevel.lv => 3,
-    DivisionLevel.kv => 6,
-    DivisionLevel.ov => 8,
-    DivisionLevel.swaggerGeneratedUnknown => 8,
+    HierarchyLevel.bv => 1,
+    HierarchyLevel.lv => 3,
+    HierarchyLevel.kv => 6,
+    HierarchyLevel.ov => 8,
+    HierarchyLevel.swaggerGeneratedUnknown => 8,
   };
 }
