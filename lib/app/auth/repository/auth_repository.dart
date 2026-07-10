@@ -14,7 +14,7 @@ import 'package:keycloak_authenticator/api.dart';
 import 'package:uuid/uuid.dart';
 
 class AuthRepository {
-  static Completer<bool>? _refreshCompleter;
+  static Completer<String?>? _refreshCompleter;
 
   final FlutterAppAuth _appAuth = FlutterAppAuth();
   final _secureStorage = GetIt.instance<FlutterSecureStorage>();
@@ -110,18 +110,18 @@ class AuthRepository {
     return !isExpired;
   }
 
-  Future<bool> refreshToken() async {
+  Future<String?> refreshAccessToken() async {
     final existing = _refreshCompleter;
     if (existing != null && !existing.isCompleted) {
       logger.d('Token refresh already in progress, awaiting existing attempt');
       return existing.future;
     }
 
-    final completer = Completer<bool>();
+    final completer = Completer<String?>();
     _refreshCompleter = completer;
 
     try {
-      final result = await _doRefreshToken();
+      final result = await _refreshAccessToken();
       completer.complete(result);
       return result;
     } catch (e, stackTrace) {
@@ -130,11 +130,11 @@ class AuthRepository {
     }
   }
 
-  Future<bool> _doRefreshToken() async {
+  Future<String?> _refreshAccessToken() async {
     final refreshToken = await getRefreshToken();
     if (refreshToken == null) {
       logger.d('No refresh token found');
-      return false;
+      return null;
     }
 
     try {
@@ -152,15 +152,15 @@ class AuthRepository {
       await _secureStorage.write(key: SecureStorageKeys.idToken, value: result.idToken);
       await _secureStorage.write(key: SecureStorageKeys.refreshToken, value: result.refreshToken);
       logger.d('Token refresh successful');
-      return true;
+      return result.accessToken;
     } catch (e) {
       logger.w('Token refresh failed: $e');
       if (e is PlatformException && (e.message?.contains('Unable to resolve host') ?? false)) {
-        // Continue without successful token refresh if the app is offline
-        return true;
+        // Continue with the existing access token if the app is offline
+        return getAccessToken();
       }
     }
-    return false;
+    return null;
   }
 
   Future<void> _deleteTokens() async {
