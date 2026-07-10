@@ -34,13 +34,10 @@ class Selection<T> extends StatelessWidget {
     final decoratorProps = DropDownDecoratorProps(decoration: InputDecoration(hintText: t.common.actions.select));
     final theme = Theme.of(context);
 
-    final selectedValue = selected;
-    final sortedItems = selectedValue == null
+    final selected = this.selected;
+    final sortedItems = selected == null
         ? items
-        : [
-            ...items.where((item) => compare(item, selectedValue)),
-            ...items.where((item) => !compare(item, selectedValue)),
-          ];
+        : [...items.where((item) => compare(item, selected)), ...items.where((item) => !compare(item, selected))];
 
     return DropdownSearch<T>(
       selectedItem: selected,
@@ -55,6 +52,12 @@ class Selection<T> extends StatelessWidget {
         searchFieldProps: searchFieldProps,
         containerBuilder: containerBuilder,
         emptyBuilder: emptyBuilder,
+        itemBuilder: (context, item, _, isSelected) => ListTile(
+          title: Text(itemAsString(item)),
+          trailing: selected != null && compare(item, selected)
+              ? Icon(Icons.check, color: theme.colorScheme.primary)
+              : null,
+        ),
       ),
       suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
       decoratorProps: decoratorProps,
