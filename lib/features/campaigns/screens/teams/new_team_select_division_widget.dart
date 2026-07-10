@@ -140,7 +140,7 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
     var campaignManagerDivisions = widget.currentUserInfo.getCampaignManagerDivisionKeys();
     final result = await DivisionSearchHelper.searchDivision(
       context,
-      level: DivisionLevel.kv,
+      level: HierarchyLevel.kv,
       divisionKeysFilter: campaignManagerDivisions,
     );
 

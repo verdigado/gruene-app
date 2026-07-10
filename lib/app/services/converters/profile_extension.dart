@@ -18,17 +18,17 @@ extension ProfileExtension on Profile {
 
   Future<Division?> getOwnKV() async {
     final division = memberships
-        .firstWhereOrNull((d) => [DivisionLevel.kv, DivisionLevel.ov].contains(d.division.level))
+        .firstWhereOrNull((d) => [HierarchyLevel.kv, HierarchyLevel.ov].contains(d.division.level))
         ?.division;
 
     switch (division?.level) {
-      case DivisionLevel.kv:
+      case HierarchyLevel.kv:
         return division;
-      case DivisionLevel.ov:
-        final parentKey = division!.parentDivisionKey(DivisionLevel.kv);
+      case HierarchyLevel.ov:
+        final parentKey = division!.parentDivisionKey(HierarchyLevel.kv);
         final parentDivisions = await GetIt.I<GrueneApiDivisionsService>().searchDivision(
           divisionKeys: [parentKey],
-          level: DivisionLevel.kv,
+          level: HierarchyLevel.kv,
         );
         return parentDivisions.firstOrNull;
       default:
