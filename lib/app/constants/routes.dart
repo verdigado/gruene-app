@@ -123,7 +123,7 @@ class Routes {
     pageBuilder: (context, state) => buildPageWithoutAnimation(
       context: context,
       state: state,
-      child: ProfileSearchScreenContainer(preselectedDivision: state.extra as Division?),
+      child: ProfileSearchScreen(preselectedDivision: state.extra as Division?),
     ),
     routes: [profileDetail],
   );

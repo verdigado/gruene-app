@@ -6,47 +6,66 @@ import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/hint.dart';
+import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profiles_filter_dialog.dart';
 import 'package:gruene_app/features/profiles/widgets/profiles_list.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class ProfileSearchScreenContainer extends StatelessWidget {
+class ProfileSearchScreen extends StatelessWidget {
   final Division? preselectedDivision;
 
-  const ProfileSearchScreenContainer({super.key, this.preselectedDivision});
+  const ProfileSearchScreen({super.key, this.preselectedDivision});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.search),
-      body: FutureLoadingScreen(
-        load: () async => (divisions: await loadDivisions(), tags: await fetchProfileTags()),
-        buildChild: (data, _) =>
-            ProfileSearchScreen(divisions: data.divisions, tags: data.tags, preselectedDivision: preselectedDivision),
+      body: ProfileSearchContainer(preselectedDivision: preselectedDivision),
+    );
+  }
+}
+
+class ProfileSearchContainer extends StatelessWidget {
+  final Division? preselectedDivision;
+  final SearchActionState Function(PublicProfile profile)? getActionState;
+
+  const ProfileSearchContainer({super.key, this.preselectedDivision, this.getActionState});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureLoadingScreen(
+      load: () async => (divisions: await loadDivisions(), tags: await fetchProfileTags()),
+      buildChild: (data, _) => ProfileSearch(
+        divisions: data.divisions,
+        tags: data.tags,
+        preselectedDivision: preselectedDivision,
+        getActionState: getActionState,
       ),
     );
   }
 }
 
-class ProfileSearchScreen extends StatefulWidget {
+class ProfileSearch extends StatefulWidget {
   final List<Division> divisions;
   final List<ProfileTag> tags;
   final Division? preselectedDivision;
+  final SearchActionState Function(PublicProfile profile)? getActionState;
 
-  const ProfileSearchScreen({
+  const ProfileSearch({
     super.key,
     required this.divisions,
     required this.tags,
     required this.preselectedDivision,
+    this.getActionState,
   });
 
   @override
-  State<ProfileSearchScreen> createState() => _ProfileSearchScreenState();
+  State<ProfileSearch> createState() => _ProfileSearchState();
 }
 
-class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
+class _ProfileSearchState extends State<ProfileSearch> {
   String _query = '';
   Division? _selectedDivision;
   List<ProfileTag> _selectedSkills = [];
@@ -106,6 +125,7 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
               divisionFilter: divisionFilter,
               skillsFilter: skillsFilter,
               interestsFilter: interestsFilter,
+              getActionState: widget.getActionState,
             ),
           ),
         ],

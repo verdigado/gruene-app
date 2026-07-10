@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 class FullScreenDialog extends StatelessWidget {
   final Widget child;
   final Widget? appBarAction;
+  final String? title;
 
-  const FullScreenDialog({super.key, required this.child, this.appBarAction});
+  const FullScreenDialog({super.key, required this.child, this.appBarAction, this.title});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final appBarAction = this.appBarAction;
+    final title = this.title;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceDim,
       appBar: AppBar(
+        title: title != null ? Text(title, style: theme.textTheme.titleMedium) : null,
         backgroundColor: theme.colorScheme.surfaceDim,
         surfaceTintColor: theme.colorScheme.surfaceDim,
         automaticallyImplyLeading: false,

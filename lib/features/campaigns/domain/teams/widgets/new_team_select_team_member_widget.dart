@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
+import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_save_widget.dart';
-import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
+import 'package:gruene_app/features/profiles/screens/profile_search_screen.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class NewTeamSelectTeamMemberWidget extends StatefulWidget {
   final NewTeamDetails newTeamDetails;
+
   const NewTeamSelectTeamMemberWidget({super.key, required this.newTeamDetails});
 
   @override
@@ -159,9 +161,14 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
     var localContext = context;
     if (!localContext.mounted) return;
 
-    final newTeamMember = await ProfileSearchHelper.searchProfile(
+    final newTeamMember = await showFullScreenDialog<PublicProfile>(
       localContext,
-      (userId) => _getActionStateAndText(allCurrentMembersAndLeads, userId),
+      (context) => FullScreenDialog(
+        title: t.campaigns.team.select_team_member_label,
+        child: ProfileSearchContainer(
+          getActionState: (profile) => _getActionStateAndText(allCurrentMembersAndLeads, profile.userId),
+        ),
+      ),
     );
     if (newTeamMember != null) {
       var allMembersAndLeads = [...teamMembers.map((x) => x.userId), (await _getCurrentTeamLeadProfile()).userId];
@@ -184,6 +191,6 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
         return SearchActionState.disabled(actionText: t.campaigns.team.invitation_pending);
       }
     }
-    return SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_member);
+    return SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_member, icon: Icons.email_outlined);
   }
 }

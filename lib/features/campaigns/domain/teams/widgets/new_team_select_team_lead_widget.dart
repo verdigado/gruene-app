@@ -3,14 +3,16 @@ import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_save_widget.dart';
-import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
+import 'package:gruene_app/features/profiles/screens/profile_search_screen.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class NewTeamSelectTeamLeadWidget extends StatefulWidget {
   final NewTeamDetails newTeamDetails;
+
   const NewTeamSelectTeamLeadWidget({super.key, required this.newTeamDetails});
 
   @override
@@ -102,9 +104,14 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
   }
 
   Future<void> onChangeTeamLead() async {
-    final result = await ProfileSearchHelper.searchProfile(
+    final result = await showFullScreenDialog<PublicProfile>(
       context,
-      (userId) => SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_lead),
+      (context) => FullScreenDialog(
+        title: t.campaigns.team.select_team_lead_label,
+        child: ProfileSearchContainer(
+          getActionState: (_) => SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_lead),
+        ),
+      ),
     );
 
     if (result != null) {

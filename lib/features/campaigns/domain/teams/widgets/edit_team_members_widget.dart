@@ -3,10 +3,11 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
+import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_save_widget.dart';
-import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
+import 'package:gruene_app/features/profiles/screens/profile_search_screen.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -164,7 +165,13 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
   }
 
   Future<void> _addNewTeamMember() async {
-    final newTeamMember = await ProfileSearchHelper.searchProfile(context, _getActionStateAndText);
+    final newTeamMember = await showFullScreenDialog<PublicProfile>(
+      context,
+      (context) => FullScreenDialog(
+        title: t.campaigns.team.select_team_member_label,
+        child: ProfileSearchContainer(getActionState: _getActionStateAndText),
+      ),
+    );
 
     if (newTeamMember != null) {
       if (!_activeMemberships.map((m) => m.userId).contains(newTeamMember.userId)) {
@@ -206,8 +213,8 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     }
   }
 
-  SearchActionState _getActionStateAndText(String userId) {
-    var activeUserMemberships = _activeMemberships.where((m) => m.userId == userId);
+  SearchActionState _getActionStateAndText(PublicProfile profile) {
+    var activeUserMemberships = _activeMemberships.where((m) => m.userId == profile.userId);
     if (activeUserMemberships.length == 1) {
       var activeUserMembership = activeUserMemberships.single;
       if (activeUserMembership.status == TeamMembershipStatus.accepted) {
@@ -216,6 +223,6 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
         return SearchActionState.disabled(actionText: t.campaigns.team.invitation_pending);
       }
     }
-    return SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_member);
+    return SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_member, icon: Icons.email_outlined);
   }
 }

@@ -3,6 +3,7 @@ import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_list_item.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -13,6 +14,7 @@ class ProfilesList extends StatelessWidget {
   final SelectionFilterModel<Division?, List<Division>> divisionFilter;
   final SelectionFilterModel<List<ProfileTag>, List<ProfileTag>> skillsFilter;
   final SelectionFilterModel<List<ProfileTag>, List<ProfileTag>> interestsFilter;
+  final SearchActionState Function(PublicProfile profile)? getActionState;
 
   const ProfilesList({
     super.key,
@@ -20,6 +22,7 @@ class ProfilesList extends StatelessWidget {
     required this.divisionFilter,
     required this.skillsFilter,
     required this.interestsFilter,
+    this.getActionState,
   });
 
   @override
@@ -40,7 +43,11 @@ class ProfilesList extends StatelessWidget {
           itemCount: data.profiles.length,
           itemBuilder: (context, index) {
             final profile = data.profiles[index];
-            return ProfileListItem(profile: profile, isUser: profile.userId == data.userId);
+            return ProfileListItem(
+              profile: profile,
+              isUser: profile.userId == data.userId,
+              actionState: getActionState?.call(profile),
+            );
           },
         );
       },
