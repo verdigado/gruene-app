@@ -68,7 +68,7 @@ extension PublicProfileExtension on PublicProfile {
 
   List<Division> get divisions => memberships.map((membership) => membership.division).toList();
 
-  Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == 'GR');
+  Division? get partyDivision => divisions.firstWhereOrNull((division) => division.hierarchy == DivisionHierarchy.gr);
 
   List<String> displayRoles(List<ProfileRoleType>? types) =>
       roles.where((role) => types == null || types.contains(role.type)).map((role) => role.shortName).toSet().toList();
