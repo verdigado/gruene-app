@@ -17,6 +17,7 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
       Routes.login,
       Routes.mfaLogin,
       Routes.settings,
+      Routes.challengeDetail,
       StatefulShellRoute.indexedStack(
         builder: (context, _, navigationShell) {
           final theme = Theme.of(context);

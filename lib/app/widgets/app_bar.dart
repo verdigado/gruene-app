@@ -11,7 +11,16 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Widget? leadingAction;
 
-  const MainAppBar({super.key, required this.title, this.appBarAction, this.leadingAction, this.tabBar});
+  final bool showSettings;
+
+  const MainAppBar({
+    super.key,
+    required this.title,
+    this.appBarAction,
+    this.leadingAction,
+    this.tabBar,
+    this.showSettings = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +37,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       bottom: tabBar,
       actions: [
         ?appBarAction,
-        if (currentRoute.path != Routes.settings.path && isLoggedIn)
+        if (showSettings && currentRoute.path != Routes.settings.path && isLoggedIn)
           IconButton(
             icon: Icon(Icons.settings_outlined, color: theme.colorScheme.surface),
             onPressed: () => context.push(Routes.settings.path),

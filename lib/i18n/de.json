@@ -325,7 +325,20 @@
     },
     "challenges": {
       "label": "Challenges",
-      "myChallengeLabel": "Meine Challenges"
+      "myChallengeLabel": "Meine Challenges",
+      "availableChallengeLabel": "Verfügbare Challenges",
+      "challengeSubTitle": "${startDate} - ${endDate} | ${participants} Teilnehmende",
+      "actions": {
+        "join": "Teilnehmen",
+        "leave": "Verlassen"
+      },
+      "timeIndicator": {
+        "startingSoon": "startet bald",
+        "activeLabel": "läuft - noch ${hours} Stunden"
+      },
+      "challengeDetail": {
+        "title": "Challenge"
+      }
     },
     "statistic": {
       "label": "Statistik",

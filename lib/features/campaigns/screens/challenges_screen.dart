@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/features/campaigns/screens/challenges/available_challenges_widget.dart';
+import 'package:gruene_app/features/campaigns/screens/challenges/my_challenges_widget.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ChallengesScreen extends StatefulWidget {
@@ -12,13 +13,76 @@ class ChallengesScreen extends StatefulWidget {
 
 class _ChallengesScreenState extends State<ChallengesScreen> {
   bool _loading = true;
-  final List<Challenge> _joinedChallenges = [
+  var now = DateTime.now();
+  late final List<Challenge> _joinedChallenges = [
+    Challenge(
+      id: '1',
+      title: '100 Haustüren an einem Wochenende',
+      description: 'Challenge 1',
+      start: now.subtract(Duration(days: 2)),
+      end: now.add(Duration(days: 3)),
+      status: ChallengeStatus.active,
+      createdAt: DateTime(2026, 7, 1),
+      updatedAt: DateTime(2026, 7, 2),
+      campaignId: '1',
+      activities: [
+        ChallengeActivityDto(
+          id: '1',
+          type: ChallengeActivityType.house,
+          count: 5,
+          createdAt: DateTime(2026, 7, 1),
+          updatedAt: DateTime(2026, 7, 2),
+        ),
+      ],
+    ),
+    Challenge(
+      id: '2',
+      title: 'Challenge 2',
+      description: 'Challenge 2',
+      start: now.subtract(Duration(days: 4)),
+      end: now.add(Duration(days: 5)),
+      status: ChallengeStatus.active,
+      createdAt: DateTime(2026, 7, 1),
+      updatedAt: DateTime(2026, 7, 2),
+      campaignId: '1',
+      activities: [
+        ChallengeActivityDto(
+          id: '2',
+          type: ChallengeActivityType.flyerSpot,
+          count: 10,
+          createdAt: DateTime(2026, 7, 1),
+          updatedAt: DateTime(2026, 7, 2),
+        ),
+      ],
+    ),
+    Challenge(
+      id: '2',
+      title: 'Challenge 2',
+      description: 'Challenge 2',
+      start: now.add(Duration(days: 2)),
+      end: now.add(Duration(days: 5)),
+      status: ChallengeStatus.active,
+      createdAt: DateTime(2026, 7, 1),
+      updatedAt: DateTime(2026, 7, 2),
+      campaignId: '1',
+      activities: [
+        ChallengeActivityDto(
+          id: '2',
+          type: ChallengeActivityType.flyerSpot,
+          count: 10,
+          createdAt: DateTime(2026, 7, 1),
+          updatedAt: DateTime(2026, 7, 2),
+        ),
+      ],
+    ),
+  ];
+  late final List<Challenge> _availableChallenges = [
     Challenge(
       id: '1',
       title: 'Challenge 1',
       description: 'Challenge 1',
-      start: DateTime(2026, 7, 9),
-      end: DateTime(2026, 7, 10),
+      start: now.add(Duration(days: 1)),
+      end: now.add(Duration(days: 3)),
       status: ChallengeStatus.active,
       createdAt: DateTime(2026, 7, 1),
       updatedAt: DateTime(2026, 7, 2),
@@ -53,32 +117,10 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         ),
       ],
     ),
-  ];
-  final List<Challenge> _availableChallenges = [
     Challenge(
-      id: '1',
-      title: 'Challenge 1',
-      description: 'Challenge 1',
-      start: DateTime(2026, 7, 9),
-      end: DateTime(2026, 7, 10),
-      status: ChallengeStatus.active,
-      createdAt: DateTime(2026, 7, 1),
-      updatedAt: DateTime(2026, 7, 2),
-      campaignId: '1',
-      activities: [
-        ChallengeActivityDto(
-          id: '1',
-          type: ChallengeActivityType.house,
-          count: 5,
-          createdAt: DateTime(2026, 7, 1),
-          updatedAt: DateTime(2026, 7, 2),
-        ),
-      ],
-    ),
-    Challenge(
-      id: '2',
-      title: 'Challenge 2',
-      description: 'Challenge 2',
+      id: '3',
+      title: 'Challenge 3',
+      description: 'Challenge 3',
       start: DateTime(2026, 7, 10),
       end: DateTime(2026, 7, 11),
       status: ChallengeStatus.active,
@@ -87,7 +129,47 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       campaignId: '1',
       activities: [
         ChallengeActivityDto(
-          id: '2',
+          id: '3',
+          type: ChallengeActivityType.flyerSpot,
+          count: 10,
+          createdAt: DateTime(2026, 7, 1),
+          updatedAt: DateTime(2026, 7, 2),
+        ),
+      ],
+    ),
+    Challenge(
+      id: '4',
+      title: 'Challenge 4',
+      description: 'Challenge 4',
+      start: DateTime(2026, 7, 10),
+      end: DateTime(2026, 7, 11),
+      status: ChallengeStatus.active,
+      createdAt: DateTime(2026, 7, 1),
+      updatedAt: DateTime(2026, 7, 2),
+      campaignId: '1',
+      activities: [
+        ChallengeActivityDto(
+          id: '4',
+          type: ChallengeActivityType.flyerSpot,
+          count: 10,
+          createdAt: DateTime(2026, 7, 1),
+          updatedAt: DateTime(2026, 7, 2),
+        ),
+      ],
+    ),
+    Challenge(
+      id: '5',
+      title: 'Challenge 5',
+      description: 'Challenge 5',
+      start: DateTime(2026, 7, 10),
+      end: DateTime(2026, 7, 11),
+      status: ChallengeStatus.active,
+      createdAt: DateTime(2026, 7, 1),
+      updatedAt: DateTime(2026, 7, 2),
+      campaignId: '1',
+      activities: [
+        ChallengeActivityDto(
+          id: '5',
           type: ChallengeActivityType.flyerSpot,
           count: 10,
           createdAt: DateTime(2026, 7, 1),
@@ -131,18 +213,12 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
 
       child: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
-        child: Container(
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              MyChallengesWidget(joinedChallenges: _joinedChallenges),
-              SizedBox(height: 20),
-              Text('Available Challenges', style: Theme.of(context).textTheme.headlineSmall),
-              ..._availableChallenges.map(
-                (challenge) => ListTile(title: Text(challenge.title), subtitle: Text(challenge.description ?? '')),
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            Row(children: [MyChallengesWidget(joinedChallenges: _joinedChallenges)]),
+            SizedBox(height: 20),
+            Row(children: [AvailableChallengesWidget(availableChallenges: _availableChallenges)]),
+          ],
         ),
       ),
     );
@@ -150,52 +226,5 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
 
   void reload() {
     _loadData();
-  }
-}
-
-class MyChallengesWidget extends StatelessWidget {
-  final List<Challenge> joinedChallenges;
-
-  const MyChallengesWidget({super.key, required this.joinedChallenges});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 20, left: 16),
-      child: Column(
-        children: [
-          Row(
-            children: [Text(t.campaigns.challenges.myChallengeLabel, style: Theme.of(context).textTheme.labelMedium)],
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(children: [...joinedChallenges.map((challenge) => getActiveChallengeCard(challenge, context))]),
-          ),
-          // ...joinedChallenges.map(
-          //   (challenge) => ListTile(title: Text(challenge.title), subtitle: Text(challenge.description ?? '')),
-          // ),
-        ],
-      ),
-    );
-  }
-
-  Widget getActiveChallengeCard(Challenge challenge, BuildContext context) {
-    return Card(
-      child: Container(
-        // margin: EdgeInsets.only(right: 8),
-        width: 200,
-        decoration: BoxDecoration(
-          color: ThemeColors.sun,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-        ),
-        child: Column(
-          children: [
-            Text(challenge.title, style: Theme.of(context).textTheme.labelMedium),
-            SizedBox(height: 4),
-            Text(challenge.description ?? '', style: Theme.of(context).textTheme.bodySmall),
-          ],
-        ),
-      ),
-    );
   }
 }

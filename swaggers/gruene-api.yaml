@@ -4956,19 +4956,6 @@ components:
       required:
         - data
         - meta
-    HierarchyType:
-      type: string
-      enum:
-        - GR
-        - GJ
-        - KPV
-    HierarchyLevel:
-      type: string
-      enum:
-        - BV
-        - LV
-        - KV
-        - OV
     FindDivisionsResponse:
       type: object
       properties:

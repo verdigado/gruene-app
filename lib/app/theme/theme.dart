@@ -223,6 +223,13 @@ final ThemeData appTheme =
       timePickerTheme: TimePickerThemeData(
         timeSelectorSeparatorTextStyle: WidgetStatePropertyAll(_ThemeTextStyles.displayLarge.copyWith(height: 2)),
       ),
+
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: ThemeColors.secondary,
+        linearTrackColor: ThemeColors.grey200,
+        linearMinHeight: 12,
+        borderRadius: BorderRadius.circular(6),
+      ),
     );
 
 final boxShadowDecoration = BoxDecoration(
