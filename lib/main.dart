@@ -16,6 +16,7 @@ import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
+import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
@@ -127,6 +128,7 @@ Future<void> main() async {
   GetIt.I.registerFactory<GrueneApiDivisionsService>(() => GrueneApiDivisionsService());
   GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
   GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
+  GetIt.I.registerFactory<GrueneApiChallengeService>(() => GrueneApiChallengeService());
 
   GetIt.I.registerFactory<BaseNotificationHandler>(
     () => NewsNotificationHandler(),

@@ -1273,6 +1273,71 @@ paths:
       summary: Create a new challenge
       tags:
         - campaigns
+    get:
+      operationId: findChallenges
+      parameters:
+        - name: start
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-03-20T06:03:50.427'
+            type: string
+        - name: end
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-04-23T12:15:59.123'
+            type: string
+        - name: activityType
+          required: false
+          in: query
+          description: Filter by challenge activity type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ChallengeActivityType'
+        - name: state
+          required: false
+          in: query
+          description: Filter by challenge state
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ChallengeStatus'
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 1000
+            type: number
+        - name: campaignId
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindChallengesResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find challenges
+      tags:
+        - campaigns
   /v1/campaigns/challenges/{challengeId}:
     get:
       operationId: getChallenge
@@ -5456,7 +5521,7 @@ components:
         - PLANNED
         - ACTIVE
         - CLOSED
-    ChallengeActivityDto:
+    ChallengeActivity:
       type: object
       properties:
         type:
@@ -5502,10 +5567,12 @@ components:
         end:
           format: date-time
           type: string
+        participantCount:
+          type: number
         activities:
           type: array
           items:
-            $ref: '#/components/schemas/ChallengeActivityDto'
+            $ref: '#/components/schemas/ChallengeActivity'
         createdAt:
           format: date-time
           type: string
@@ -5518,9 +5585,28 @@ components:
         - title
         - start
         - end
+        - participantCount
         - activities
         - createdAt
         - updatedAt
+    FindChallengesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Challenge'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+      required:
+        - data
+        - total
+        - offset
+        - limit
     UpdatePollingStation:
       type: object
       properties:

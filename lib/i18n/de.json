@@ -330,6 +330,7 @@
       "challengeSubTitle": "${startDate} - ${endDate} | ${participants} Teilnehmende",
       "actions": {
         "join": "Teilnehmen",
+        "joined": "Teilgenommen",
         "leave": "Verlassen"
       },
       "timeIndicator": {
