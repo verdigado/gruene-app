@@ -4,19 +4,25 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
+import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/screens/progress_with_label.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class MyChallengesWidget extends StatelessWidget {
-  final List<Challenge> joinedChallenges;
+  final List<JoinedChallenge> joinedChallenges;
   final rng = Random();
 
-  MyChallengesWidget({super.key, required this.joinedChallenges});
+  final List<Campaign> knownCampaigns;
+
+  MyChallengesWidget({super.key, required this.joinedChallenges, required this.knownCampaigns});
 
   @override
   Widget build(BuildContext context) {
+    if (joinedChallenges.isEmpty) return SizedBox.shrink();
+    joinedChallenges.sort((a, b) => a.end.compareTo(b.end));
+
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return Container(
       padding: EdgeInsets.only(top: 20, left: 16),
@@ -42,8 +48,15 @@ class MyChallengesWidget extends StatelessWidget {
     );
   }
 
-  Widget getActiveChallengeCard(Challenge challenge, BuildContext context) {
-    var progress = rng.nextInt(100);
+  Widget getActiveChallengeCard(JoinedChallenge challenge, BuildContext context) {
+    String challengeCampaignName = challenge.campaignId == null
+        ? ' '
+        : knownCampaigns.firstWhereOrNull((c) => c.id == challenge.campaignId)?.name ?? t.common.unknown;
+    var maxActivityCount = challenge.activities.fold(0, (prev, current) => prev + current.count.round());
+    var currentActivityCount = challenge.participations.fold(
+      0,
+      (prev, current) => prev + current.currentContributionCount.round(),
+    );
     return Card(
       child: InkWell(
         onTap: () => openChallenge(context, challenge),
@@ -74,7 +87,7 @@ class MyChallengesWidget extends StatelessWidget {
                         bottom: 8,
                         left: 16,
                         child: Text(
-                          'Abgeordnetenhauswahl Berlin 2026',
+                          challengeCampaignName,
                           style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.background),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -92,6 +105,8 @@ class MyChallengesWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
                           Text(
                             challenge.title,
@@ -115,7 +130,10 @@ class MyChallengesWidget extends StatelessWidget {
                         children: [
                           SizedBox(
                             width: 234,
-                            child: ProgressWithLabel(value: progress / 100, label: '$progress/100'),
+                            child: ProgressWithLabel(
+                              value: currentActivityCount / maxActivityCount,
+                              label: '$currentActivityCount / $maxActivityCount',
+                            ),
                           ),
                         ],
                       ),
@@ -130,7 +148,7 @@ class MyChallengesWidget extends StatelessWidget {
     );
   }
 
-  void openChallenge(BuildContext context, Challenge challenge) {
+  void openChallenge(BuildContext context, JoinedChallenge challenge) {
     context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
   }
 }

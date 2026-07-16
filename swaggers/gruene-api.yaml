@@ -882,6 +882,40 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/AreaType'
+        - name: sort
+          required: false
+          in: query
+          schema:
+            example: name,-updatedAt
+            type: string
+        - name: createdAfter
+          required: false
+          in: query
+          description: Only areas created at or after this timestamp (inclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: createdBefore
+          required: false
+          in: query
+          description: Only areas created before this timestamp (exclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: updatedAfter
+          required: false
+          in: query
+          description: Only areas updated at or after this timestamp (inclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: updatedBefore
+          required: false
+          in: query
+          description: Only areas updated before this timestamp (exclusive).
+          schema:
+            format: date-time
+            type: string
         - name: offset
           required: false
           in: query
@@ -972,6 +1006,40 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/AreaType'
+        - name: sort
+          required: false
+          in: query
+          schema:
+            example: name,-updatedAt
+            type: string
+        - name: createdAfter
+          required: false
+          in: query
+          description: Only areas created at or after this timestamp (inclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: createdBefore
+          required: false
+          in: query
+          description: Only areas created before this timestamp (exclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: updatedAfter
+          required: false
+          in: query
+          description: Only areas updated at or after this timestamp (inclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: updatedBefore
+          required: false
+          in: query
+          description: Only areas updated before this timestamp (exclusive).
+          schema:
+            format: date-time
+            type: string
         - name: offset
           required: false
           in: query
@@ -1338,6 +1406,72 @@ paths:
       summary: Find challenges
       tags:
         - campaigns
+  /v1/campaigns/challenges/self:
+    get:
+      operationId: findJoinedChallenges
+      parameters:
+        - name: start
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-03-20T06:03:50.427'
+            type: string
+        - name: end
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-04-23T12:15:59.123'
+            type: string
+        - name: activityType
+          required: false
+          in: query
+          description: Filter by challenge activity type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ChallengeActivityType'
+        - name: state
+          required: false
+          in: query
+          description: Filter by challenge state
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ChallengeStatus'
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 1000
+            type: number
+        - name: campaignId
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindJoinedChallengesResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find joined challenges
+      tags:
+        - campaigns
   /v1/campaigns/challenges/{challengeId}:
     get:
       operationId: getChallenge
@@ -1361,6 +1495,38 @@ paths:
       security:
         - bearer: []
       summary: Get a challenge
+      tags:
+        - campaigns
+    put:
+      operationId: updateChallenge
+      parameters:
+        - name: challengeId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChallenge'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Challenge'
+        '400':
+          description: ''
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+      summary: Update a challenge
       tags:
         - campaigns
   /v1/campaigns/challenges/{challengeId}/join:
@@ -2092,6 +2258,40 @@ paths:
           in: query
           schema:
             example: 47.695103,7.659684,53.670793, 14.229507
+            type: string
+        - name: sort
+          required: false
+          in: query
+          schema:
+            example: name,-updatedAt
+            type: string
+        - name: createdAfter
+          required: false
+          in: query
+          description: Only routes created at or after this timestamp (inclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: createdBefore
+          required: false
+          in: query
+          description: Only routes created before this timestamp (exclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: updatedAfter
+          required: false
+          in: query
+          description: Only routes updated at or after this timestamp (inclusive).
+          schema:
+            format: date-time
+            type: string
+        - name: updatedBefore
+          required: false
+          in: query
+          description: Only routes updated before this timestamp (exclusive).
+          schema:
+            format: date-time
             type: string
         - name: offset
           required: false
@@ -3947,7 +4147,7 @@ info:
     removed.
 
     API tokens can be obtained from `technik@verdigado.com`.
-  version: 0.1.2
+  version: 0.1.3
   contact: {}
 tags: []
 servers:
@@ -5483,9 +5683,39 @@ components:
         - end
         - title
         - activities
+    UpdateChallenge:
+      type: object
+      properties:
+        description:
+          type: string
+          nullable: true
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        title:
+          type: string
+      required:
+        - start
+        - end
+        - title
     CreateChallengeMembership:
       type: object
       properties: {}
+    ChallengeActivityParticipation:
+      type: object
+      properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/ChallengeActivityType'
+        currentContributionCount:
+          type: number
+          example: 0
+      required:
+        - type
+        - currentContributionCount
     ChallengeMembership:
       type: object
       properties:
@@ -5544,6 +5774,60 @@ components:
         - count
         - createdAt
         - updatedAt
+    JoinedChallenge:
+      type: object
+      properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/ChallengeStatus'
+        joinedAt:
+          format: date-time
+          type: string
+        participations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeActivityParticipation'
+        id:
+          type: string
+          example: '1'
+        campaignId:
+          type: string
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        start:
+          format: date-time
+          type: string
+        end:
+          format: date-time
+          type: string
+        participantCount:
+          type: number
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeActivity'
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - status
+        - joinedAt
+        - participations
+        - id
+        - title
+        - start
+        - end
+        - participantCount
+        - activities
+        - createdAt
+        - updatedAt
     Challenge:
       type: object
       properties:
@@ -5596,6 +5880,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Challenge'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+      required:
+        - data
+        - total
+        - offset
+        - limit
+    FindJoinedChallengesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/JoinedChallenge'
         total:
           type: number
         offset:

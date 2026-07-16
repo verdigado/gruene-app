@@ -9,6 +9,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/new_page_error_indicator.dart';
 import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
@@ -39,73 +40,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   PagingState<int, Challenge> _pagingState = PagingState();
   final int pageSize = 20;
   List<Campaign> _knownCampaigns = [];
-  late final List<Challenge> _joinedChallenges = [
-    Challenge(
-      id: '1',
-      title: '100 Haustüren an einem Wochenende',
-      description: 'Challenge 1',
-      start: now.subtract(Duration(days: 2)),
-      end: now.add(Duration(days: 3)),
-      status: ChallengeStatus.active,
-      createdAt: DateTime(2026, 7, 1),
-      updatedAt: DateTime(2026, 7, 2),
-      campaignId: '1',
-      participantCount: 4,
-      activities: [
-        ChallengeActivity(
-          id: '1',
-          type: ChallengeActivityType.house,
-          count: 5,
-          createdAt: DateTime(2026, 7, 1),
-          updatedAt: DateTime(2026, 7, 2),
-        ),
-      ],
-    ),
-    Challenge(
-      id: '2',
-      title: 'Challenge 2',
-      description: 'Challenge 2',
-      start: now.subtract(Duration(days: 4)),
-      end: now.add(Duration(days: 5)),
-      status: ChallengeStatus.active,
-      createdAt: DateTime(2026, 7, 1),
-      updatedAt: DateTime(2026, 7, 2),
-      campaignId: '1',
-      participantCount: 4,
-      activities: [
-        ChallengeActivity(
-          id: '2',
-          type: ChallengeActivityType.flyerSpot,
-          count: 10,
-          createdAt: DateTime(2026, 7, 1),
-          updatedAt: DateTime(2026, 7, 2),
-        ),
-      ],
-    ),
-    Challenge(
-      id: '2',
-      title: 'Challenge 2',
-      description: 'Challenge 2',
-      start: now.add(Duration(days: 2)),
-      end: now.add(Duration(days: 5)),
-      status: ChallengeStatus.active,
-      createdAt: DateTime(2026, 7, 1),
-      updatedAt: DateTime(2026, 7, 2),
-      campaignId: '1',
-      participantCount: 4,
-
-      activities: [
-        ChallengeActivity(
-          id: '2',
-          type: ChallengeActivityType.flyerSpot,
-          count: 10,
-          createdAt: DateTime(2026, 7, 1),
-          updatedAt: DateTime(2026, 7, 2),
-        ),
-      ],
-    ),
-  ];
-
+  List<JoinedChallenge> _joinedChallenges = [];
   @override
   void dispose() {
     super.dispose();
@@ -140,10 +75,16 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    // _fetchNextPage();
+    var challengeService = GetIt.I<GrueneApiChallengeService>();
+    var joinedChallenges = await challengeService.getMyChallenges();
+
+    var campaignService = GetIt.I<GrueneApiCampaignService>();
+    var knownCampaigns = await campaignService.findCampaigns();
 
     setState(() {
       _loading = false;
+      _joinedChallenges = joinedChallenges;
+      _knownCampaigns = knownCampaigns;
     });
   }
 
@@ -158,14 +99,11 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       final newKey = (_pagingState.keys?.last ?? 0) + 1;
       var challengeService = GetIt.I<GrueneApiChallengeService>();
       final newItems = await challengeService.getChallenges(
-        challengeActivityFilter,
-        PagingHelper.getOffsetForPage(newKey, pageSize),
-        pageSize,
+        activityTypes: challengeActivityFilter,
+        challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
+        offset: PagingHelper.getOffsetForPage(newKey, pageSize),
+        limit: pageSize,
       );
-      if (_knownCampaigns.isEmpty) {
-        var campaignService = GetIt.I<GrueneApiCampaignService>();
-        _knownCampaigns = await campaignService.findCampaigns();
-      }
 
       final isLastPage = newItems.isEmpty || newItems.length < pageSize;
 
@@ -215,7 +153,20 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       state: _pagingState,
       fetchNextPage: _fetchNextPage,
       builderDelegate: PagedChildBuilderDelegate(
-        noItemsFoundIndicatorBuilder: (context) => Center(child: Text(t.campaigns.search.no_entries_found)),
+        noItemsFoundIndicatorBuilder: (context) => Container(
+          padding: EdgeInsets.only(left: 16, top: 20, right: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                t.campaigns.challenges.no_challenges_found_title,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight(700)),
+              ),
+              SizedBox(height: 12),
+              Text(t.campaigns.challenges.no_challenges_found, style: Theme.of(context).textTheme.labelMedium),
+            ],
+          ),
+        ),
         newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(onTap: _fetchNextPage),
         itemBuilder: (context, item, index) => getAvailableChallengeCard(item, context),
       ),
@@ -232,7 +183,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                Row(children: [MyChallengesWidget(joinedChallenges: _joinedChallenges)]),
+                Row(
+                  children: [MyChallengesWidget(joinedChallenges: _joinedChallenges, knownCampaigns: _knownCampaigns)],
+                ),
                 SizedBox(height: 20),
               ],
             ),
