@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
@@ -12,11 +11,9 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class MyChallengesWidget extends StatelessWidget {
   final List<JoinedChallenge> joinedChallenges;
-  final rng = Random();
-
   final List<Campaign> knownCampaigns;
 
-  MyChallengesWidget({super.key, required this.joinedChallenges, required this.knownCampaigns});
+  const MyChallengesWidget({super.key, required this.joinedChallenges, required this.knownCampaigns});
 
   @override
   Widget build(BuildContext context) {

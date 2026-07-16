@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/logger.dart';
 
 class ProgressWithLabel extends StatelessWidget {
   final double value;
