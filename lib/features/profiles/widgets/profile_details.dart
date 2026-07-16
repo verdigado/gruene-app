@@ -48,7 +48,12 @@ class ProfileDetails extends StatelessWidget {
               if (profile.phoneNumbers.isNotEmpty)
                 SectionCardListItem(title: t.profiles.phoneNumber, value: profile.phoneNumbers.first.number),
               if (isOwnProfile)
-                SectionCardListItem(title: t.profiles.personalId, value: profile.personalId, copyOnTap: true),
+                SectionCardListItem(
+                  title: t.profiles.personalId,
+                  value: profile.personalId,
+                  onTap: () => Clipboard.setData(ClipboardData(text: profile.personalId)),
+                  trailing: Icon(Icons.copy, color: theme.disabledColor),
+                ),
             ],
           ),
         if (divisions.isNotEmpty)

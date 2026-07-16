@@ -8,7 +8,7 @@ class SectionCardListItem extends StatelessWidget {
   final String? title;
   final String? url;
   final void Function()? onTap;
-  final bool copyOnTap;
+  final Widget? trailing;
   final Widget? extraTrailing;
 
   const SectionCardListItem({
@@ -16,8 +16,8 @@ class SectionCardListItem extends StatelessWidget {
     this.title,
     required this.value,
     this.url,
-    this.copyOnTap = false,
     this.extraTrailing,
+    this.trailing,
     this.onTap,
   });
 
@@ -26,14 +26,6 @@ class SectionCardListItem extends StatelessWidget {
     final theme = Theme.of(context);
     final title = this.title ?? value;
     final url = this.url;
-    final copyOnTap = this.copyOnTap ? () => Clipboard.setData(ClipboardData(text: value)) : null;
-    final copyIcon = this.copyOnTap
-        ? Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [Icon(Icons.copy, color: theme.disabledColor)],
-          )
-        : null;
 
     return ListTile(
       title: Text(title, style: this.title != null ? theme.textTheme.titleMedium : theme.textTheme.bodyLarge),
@@ -43,14 +35,23 @@ class SectionCardListItem extends StatelessWidget {
               child: Text(value, style: theme.textTheme.bodyLarge?.apply(color: theme.colorScheme.primary)),
             )
           : null,
-      onTap: onTap ?? (url != null ? () => openUrl(url, context) : copyOnTap),
+      onTap: onTap ?? (url != null ? () => openUrl(url, context) : null),
       onLongPress: () => Clipboard.setData(ClipboardData(text: url ?? value)),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
+      trailing: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          extraTrailing,
-          url != null ? Icon(Icons.arrow_outward, color: theme.primaryColor) : copyIcon,
-        ].nonNulls.toList(),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              extraTrailing,
+              trailing ??
+                  (url != null || extraTrailing != null
+                      ? Icon(Icons.arrow_outward, color: url != null ? theme.primaryColor : theme.disabledColor)
+                      : null),
+            ].nonNulls.toList(),
+          ),
+        ],
       ),
     );
   }
