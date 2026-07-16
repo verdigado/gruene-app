@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/routes.dart';
-import 'package:gruene_app/app/utils/error_message.dart';
+import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:http/http.dart';
 
 OverlayEntry? _overlay;
 
@@ -26,24 +25,21 @@ void hideLoadingOverlay() {
 Future<T?> tryAndNotify<T>({
   required Future<T> Function() function,
   required BuildContext context,
-  String? successMessage,
   String? errorMessage,
+  void Function(BuildContext rootContext, T value)? onSuccess,
   void Function(bool loading)? setLoading,
 }) async {
   final rootContext = Navigator.of(context, rootNavigator: true).context;
   setLoading != null ? setLoading(true) : showLoadingOverlay(context);
   try {
     final value = await function();
-    if (successMessage != null && rootContext.mounted) {
-      showSnackBar(rootContext, successMessage);
+    if (onSuccess != null && rootContext.mounted) {
+      onSuccess(rootContext, value);
     }
     return value;
   } catch (error) {
     if (rootContext.mounted) {
-      showSnackBar(
-        rootContext,
-        errorMessage ?? (error is ClientException ? t.error.offlineError : t.error.unknownError),
-      );
+      showSnackBar(rootContext, getErrorMessage(error, defaultMessage: errorMessage));
     }
   } finally {
     setLoading != null ? setLoading(false) : hideLoadingOverlay();
