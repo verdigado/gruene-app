@@ -18,7 +18,7 @@ extension DivisionExtension on Division {
 }
 
 extension SortExtension on List<Division> {
-  List<Division> sortByLevel() {
+  List<Division> sortByLevel({bool reverseLevel = false}) {
     final divisions = this;
     divisions.sort((a, b) {
       if (a.hierarchy != b.hierarchy) {
@@ -27,7 +27,8 @@ extension SortExtension on List<Division> {
       }
       if (a.level != b.level) {
         // Sort BV > LVs > KVs > OVs
-        return a.level.granularity - b.level.granularity;
+        final granularity = a.level.granularity - b.level.granularity;
+        return reverseLevel ? -granularity : granularity;
       }
       // Sort alphabetical
       return a.name2.compareTo(b.name2);

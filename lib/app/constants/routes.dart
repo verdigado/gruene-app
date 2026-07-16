@@ -106,9 +106,13 @@ class Routes {
       child: ProfileDetailScreen(profileId: state.pathParameters['profileId']!),
     ),
   );
-  static GoRoute profileSearch = buildRoute(
-    RouteLocations.profileSearch,
-    ProfileSearchScreenContainer(),
+  static GoRoute profileSearch = GoRoute(
+    path: RouteLocations.profileSearch,
+    pageBuilder: (context, state) => buildPageWithoutAnimation(
+      context: context,
+      state: state,
+      child: ProfileSearchScreenContainer(preselectedDivision: state.extra as Division?),
+    ),
     routes: [profileDetail],
   );
   static GoRoute profiles = buildRoute(

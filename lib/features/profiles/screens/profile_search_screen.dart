@@ -12,7 +12,9 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileSearchScreenContainer extends StatelessWidget {
-  const ProfileSearchScreenContainer({super.key});
+  final Division? preselectedDivision;
+
+  const ProfileSearchScreenContainer({super.key, this.preselectedDivision});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,8 @@ class ProfileSearchScreenContainer extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.search),
       body: FutureLoadingScreen(
         load: () async => (divisions: await loadDivisions(), tags: await fetchProfileTags()),
-        buildChild: (data, _) => ProfileSearchScreen(divisions: data.divisions, tags: data.tags),
+        buildChild: (data, _) =>
+            ProfileSearchScreen(divisions: data.divisions, tags: data.tags, preselectedDivision: preselectedDivision),
       ),
     );
   }
@@ -29,8 +32,14 @@ class ProfileSearchScreenContainer extends StatelessWidget {
 class ProfileSearchScreen extends StatefulWidget {
   final List<Division> divisions;
   final List<ProfileTag> tags;
+  final Division? preselectedDivision;
 
-  const ProfileSearchScreen({super.key, required this.divisions, required this.tags});
+  const ProfileSearchScreen({
+    super.key,
+    required this.divisions,
+    required this.tags,
+    required this.preselectedDivision,
+  });
 
   @override
   State<ProfileSearchScreen> createState() => _ProfileSearchScreenState();
@@ -41,6 +50,12 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
   Division? _selectedDivision;
   List<ProfileTag> _selectedSkills = [];
   List<ProfileTag> _selectedInterests = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDivision = widget.preselectedDivision;
+  }
 
   @override
   Widget build(BuildContext context) {
