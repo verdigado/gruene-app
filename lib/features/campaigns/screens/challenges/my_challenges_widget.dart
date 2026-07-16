@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
@@ -10,8 +11,9 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class MyChallengesWidget extends StatelessWidget {
   final List<Challenge> joinedChallenges;
+  final rng = Random();
 
-  const MyChallengesWidget({super.key, required this.joinedChallenges});
+  MyChallengesWidget({super.key, required this.joinedChallenges});
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,7 @@ class MyChallengesWidget extends StatelessWidget {
   }
 
   Widget getActiveChallengeCard(Challenge challenge, BuildContext context) {
+    var progress = rng.nextInt(100);
     return Card(
       child: InkWell(
         onTap: () => openChallenge(context, challenge),
@@ -109,7 +112,12 @@ class MyChallengesWidget extends StatelessWidget {
                         ],
                       ),
                       Row(
-                        children: [SizedBox(width: 234, child: ProgressWithLabel(value: 0.37, label: '37/100'))],
+                        children: [
+                          SizedBox(
+                            width: 234,
+                            child: ProgressWithLabel(value: progress / 100, label: '$progress/100'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
