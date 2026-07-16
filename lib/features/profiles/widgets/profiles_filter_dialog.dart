@@ -91,7 +91,7 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
             compare: (skill1, skill2) => skill1.id == skill2.id,
             filter: (skill, query) => skill.label.matches(query),
             itemAsString: (skill) => skill.label,
-            label: t.profiles.search,
+            label: t.profiles.skills,
           ),
         ),
         FilterSection(
