@@ -238,7 +238,6 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                       end: Alignment.bottomCenter,
                       colors: [ThemeColors.secondary, ThemeColors.primary],
                     ),
-                    // color: ThemeColors.primary,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
                   ),
                 ),

@@ -54,6 +54,7 @@ class MyChallengesWidget extends StatelessWidget {
       0,
       (prev, current) => prev + current.currentContributionCount.round(),
     );
+    final progressValue = maxActivityCount > 0 ? (currentActivityCount / maxActivityCount).clamp(0.0, 1.0) : 0.0;
     return Card(
       child: InkWell(
         onTap: () => openChallenge(context, challenge),
@@ -70,7 +71,6 @@ class MyChallengesWidget extends StatelessWidget {
                       end: Alignment.centerRight,
                       colors: [ThemeColors.primary, ThemeColors.secondary],
                     ),
-                    // color: ThemeColors.primary,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
                   ),
                   child: Stack(
@@ -128,7 +128,7 @@ class MyChallengesWidget extends StatelessWidget {
                           SizedBox(
                             width: 234,
                             child: ProgressWithLabel(
-                              value: currentActivityCount / maxActivityCount,
+                              value: progressValue,
                               label: '$currentActivityCount / $maxActivityCount',
                             ),
                           ),
