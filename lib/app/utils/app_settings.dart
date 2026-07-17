@@ -5,6 +5,7 @@ import 'package:maplibre_gl_platform_interface/maplibre_gl_platform_interface.da
 class AppSettings {
   var campaign = CampaignSessionSettings();
   ({LatLng lastPosition, double lastZoomLevel})? recentEventMapSetting;
+  bool challengePrivacyDialogSeen = false;
 
   static void register() {
     if (GetIt.I.isRegistered<AppSettings>()) {

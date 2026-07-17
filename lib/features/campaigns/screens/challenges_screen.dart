@@ -10,6 +10,7 @@ import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/new_page_error_indicator.dart';
 import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
@@ -28,29 +29,28 @@ class ChallengesScreen extends StatefulWidget {
 
 class _ChallengesScreenState extends State<ChallengesScreen> {
   bool _loading = true;
-  var now = DateTime.now();
-
-  late List<FilterChipModel> flyerFilter;
+  late List<FilterChipModel> _flyerFilter;
   final List<ChallengeActivityType> challengeActivityFilter = [
     ChallengeActivityType.house,
     ChallengeActivityType.flyerSpot,
     ChallengeActivityType.poster,
   ];
-  final FilterChipController filterController = FilterChipController();
+  final FilterChipController _filterController = FilterChipController();
   PagingState<int, Challenge> _pagingState = PagingState();
-  final int pageSize = 20;
+  final int _pageSize = 20;
   List<Campaign> _knownCampaigns = [];
   List<JoinedChallenge> _joinedChallenges = [];
+
   @override
   void dispose() {
     super.dispose();
-    filterController.dispose();
+    _filterController.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    flyerFilter = [
+    _flyerFilter = [
       FilterChipModel(
         text: t.campaigns.door.label,
         isActive: challengeActivityFilter.contains(ChallengeActivityType.house),
@@ -67,6 +67,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         stateChanged: (state) => addRemoveActivityType(state, ChallengeActivityType.flyerSpot),
       ),
     ];
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
@@ -101,11 +102,11 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       final newItems = await challengeService.getChallenges(
         activityTypes: challengeActivityFilter,
         challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
-        offset: PagingHelper.getOffsetForPage(newKey, pageSize),
-        limit: pageSize,
+        offset: PagingHelper.getOffsetForPage(newKey, _pageSize),
+        limit: _pageSize,
       );
 
-      final isLastPage = newItems.isEmpty || newItems.length < pageSize;
+      final isLastPage = newItems.isEmpty || newItems.length < _pageSize;
 
       setState(() {
         _pagingState = _pagingState.copyWith(
@@ -142,8 +143,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
             ],
           ),
           FilterChipCampaign(
-            filterOptions: flyerFilter,
-            filterController: filterController,
+            filterOptions: _flyerFilter,
+            filterController: _filterController,
             spacingOnBeginAndEnd: false,
           ),
         ],
@@ -222,103 +223,106 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     String challengeCampaignName = challenge.campaignId == null
         ? ' '
         : _knownCampaigns.firstWhereOrNull((c) => c.id == challenge.campaignId)?.name ?? t.common.unknown;
-    return Card(
-      child: InkWell(
-        onTap: () => openChallenge(context, challenge),
-        child: SizedBox(
-          height: 150,
-          child: Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [ThemeColors.secondary, ThemeColors.primary],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Card(
+        child: InkWell(
+          onTap: () => openChallenge(context, challenge),
+          child: SizedBox(
+            height: 150,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [ThemeColors.secondary, ThemeColors.primary],
+                      ),
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
                     ),
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                            height: 25,
-                            child: ChallengeTimeIndicator(start: challenge.start, end: challenge.end),
-                          ),
-                        ],
-                      ),
-
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            challengeCampaignName,
-                            style: Theme.of(context).textTheme.labelSmall,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textAlign: TextAlign.left,
-                          ),
-                          Text(
-                            challenge.title,
-                            style: Theme.of(context).textTheme.titleSmall,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
-                          Text(
-                            t.campaigns.challenges.challengeSubTitle(
-                              startDate: challenge.start.formattedDateTime,
-                              endDate: challenge.end.formattedDateTime,
-                              participants: challenge.activities.length,
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              height: 25,
+                              child: ChallengeTimeIndicator(start: challenge.start, end: challenge.end),
                             ),
-                            style: Theme.of(context).textTheme.labelMedium,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          _joinedChallenges.any((c) => c.id == challenge.id)
-                              ? Text(
-                                  t.campaigns.challenges.actions.joined,
-                                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                    color: ThemeColors.primary,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ).disable()
-                              : GestureDetector(
-                                  onTap: () => joinChallenge(challenge),
-                                  child: Text(
-                                    t.campaigns.challenges.actions.join,
+                          ],
+                        ),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              challengeCampaignName,
+                              style: Theme.of(context).textTheme.labelSmall,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              challenge.title,
+                              style: Theme.of(context).textTheme.titleSmall,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                            Text(
+                              t.campaigns.challenges.challengeSubTitle(
+                                startDate: challenge.start.formattedDateTime,
+                                endDate: challenge.end.formattedDateTime,
+                                participants: challenge.activities.length,
+                              ),
+                              style: Theme.of(context).textTheme.labelMedium,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            _joinedChallenges.any((c) => c.id == challenge.id)
+                                ? Text(
+                                    t.campaigns.challenges.actions.joined,
                                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
                                       color: ThemeColors.primary,
                                       decoration: TextDecoration.underline,
                                     ),
+                                  ).disable()
+                                : GestureDetector(
+                                    onTap: () => joinChallenge(challenge),
+                                    child: Text(
+                                      t.campaigns.challenges.actions.join,
+                                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                        color: ThemeColors.primary,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -329,8 +333,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
   }
 
-  void joinChallenge(Challenge challenge) {
-    var challengeService = GetIt.I<GrueneApiChallengeService>();
-    challengeService.joinChallenge(challenge.id);
+  Future<void> joinChallenge(Challenge challenge) async {
+    var result = await ChallengeHelper.joinChallenge(context, challenge);
+    if (result == null) return;
+    _loadData();
   }
 }
