@@ -330,7 +330,7 @@
       "challengeSubTitle": "${startDate} - ${endDate} | ${participants} Teilnehmende",
       "no_challenges_found_title": "Keine passenden Challenges gefunden.",
       "no_challenges_found": "Wende Dich an die Lokalkoordinator*in Deiner Gliederung, um neue Challenges anlegen zu lassen!",
-      "joinConfirmationDiaolg": {
+      "joinConfirmationDialog": {
         "dialogTitle": "Challenge-Funktion nutzen",
         "dialogText": "Bitte beachte, dass du als Challenge-Teilnehmer*in namentlich in der Rangliste aufgeführt werden kannst. Deine Sichtbarkeits-Einstellungen greifen hier nicht.",
         "dialogAccept": "Teilnehmen",

@@ -25,8 +25,8 @@ class ChallengeHelper {
           await showDialog<bool>(
             context: context,
             builder: (dialogContext) => AlertDialog(
-              title: Text(t.campaigns.challenges.joinConfirmationDiaolg.dialogTitle),
-              content: Text(t.campaigns.challenges.joinConfirmationDiaolg.dialogText),
+              title: Text(t.campaigns.challenges.joinConfirmationDialog.dialogTitle),
+              content: Text(t.campaigns.challenges.joinConfirmationDialog.dialogText),
               actionsAlignment: MainAxisAlignment.spaceBetween,
               actions: [
                 TextButton(
@@ -35,7 +35,7 @@ class ChallengeHelper {
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(t.campaigns.challenges.joinConfirmationDiaolg.dialogAccept),
+                  child: Text(t.campaigns.challenges.joinConfirmationDialog.dialogAccept),
                 ),
               ],
             ),
@@ -47,7 +47,7 @@ class ChallengeHelper {
     var challengeService = GetIt.I<GrueneApiChallengeService>();
     var joinResult = await challengeService.joinChallenge(challenge.id);
     if (!context.mounted) return null;
-    showToastAsSnack(context, t.campaigns.challenges.joinConfirmationDiaolg.joinToast(title: challenge.title));
+    showToastAsSnack(context, t.campaigns.challenges.joinConfirmationDialog.joinToast(title: challenge.title));
     return joinResult;
   }
 }
