@@ -49,8 +49,7 @@ class ProfileCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(profile.fullName, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    if (role != null)
-                      Text(role, style: theme.textTheme.labelSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(role ?? '', style: theme.textTheme.labelSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),
