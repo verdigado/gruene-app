@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/utils/build_page_without_animation.dart';
 import 'package:gruene_app/features/campaigns/screens/campaigns_screen.dart';
+import 'package:gruene_app/features/campaigns/screens/challenges/challenge_detail_screen.dart';
+import 'package:gruene_app/features/campaigns/screens/challenges_screen.dart';
 import 'package:gruene_app/features/campaigns/screens/doors_screen.dart';
 import 'package:gruene_app/features/campaigns/screens/flyer_screen.dart';
 import 'package:gruene_app/features/campaigns/screens/posters_screen.dart';
@@ -67,9 +69,18 @@ class Routes {
     routes: [eventDetail],
   );
 
+  static GoRoute challengeDetail = GoRoute(
+    path: RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, ':challengeId']),
+    pageBuilder: (context, state) => buildPageWithoutAnimation(
+      context: context,
+      state: state,
+      child: ChallengeDetailScreen(challengeId: state.pathParameters['challengeId']!),
+    ),
+  );
   static GoRoute campaignDoorDetail = buildRoute(RouteLocations.campaignDoorDetail, DoorsScreen());
   static GoRoute campaignPosterDetail = buildRoute(RouteLocations.campaignPosterDetail, PostersScreen());
   static GoRoute campaignFlyerDetail = buildRoute(RouteLocations.campaignFlyerDetail, FlyerScreen());
+  static GoRoute campaignChallengesDetail = buildRoute(RouteLocations.campaignChallengesDetail, ChallengesScreen());
   static GoRoute campaignTeamDetail = buildRoute(RouteLocations.campaignTeamDetail, TeamsScreen());
   static GoRoute campaignStatisticsDetail = buildRoute(RouteLocations.campaignStatisticsDetail, StatisticsScreen());
   static StatefulShellRoute campaignShellRoute = StatefulShellRoute(
@@ -83,6 +94,7 @@ class Routes {
       StatefulShellBranch(preload: true, routes: [campaignDoorDetail]),
       StatefulShellBranch(preload: true, routes: [campaignPosterDetail]),
       StatefulShellBranch(preload: true, routes: [campaignFlyerDetail]),
+      StatefulShellBranch(preload: true, routes: [campaignChallengesDetail]),
       StatefulShellBranch(preload: true, routes: [campaignTeamDetail]),
       StatefulShellBranch(preload: true, routes: [campaignStatisticsDetail]),
     ],

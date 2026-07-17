@@ -110,7 +110,7 @@
       "experience_areas": "Erfahrungsgebiete",
       "action_areas": "Einsatzgebiete"
     },
-    "select":{
+    "select": {
       "title": "Kampagne auswählen",
       "hint": "In welcher Kampagne bist du gerade aktiv? Du kannst die Kampagne jederzeit in deinen Einstellungen ändern.",
       "enforceSelectHint": "Deine bisherige Kampagne '${previousCampaignName}' ist beendet. Bitte wähle eine neue Kampagne aus!",
@@ -322,6 +322,26 @@
       "select_team": "Team auswählen",
       "select_team_hint_route": "Wähle das Team aus, dem du diese Route zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
       "select_team_hint_area": "Wähle das Team aus, dem du dieses Einsatzgebiet zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen"
+    },
+    "challenges": {
+      "label": "Challenges",
+      "myChallengeLabel": "Meine Challenges",
+      "availableChallengeLabel": "Verfügbare Challenges",
+      "challengeSubTitle": "${startDate} - ${endDate} | ${participants} Teilnehmende",
+      "no_challenges_found_title": "Keine passenden Challenges gefunden.",
+      "no_challenges_found": "Wende Dich an die Lokalkoordinator*in Deiner Gliederung, um neue Challenges anlegen zu lassen!",
+      "actions": {
+        "join": "Teilnehmen",
+        "joined": "Teilgenommen",
+        "leave": "Verlassen"
+      },
+      "timeIndicator": {
+        "startingSoon": "startet bald",
+        "activeLabel": "läuft - noch ${hours} Stunden"
+      },
+      "challengeDetail": {
+        "title": "Challenge"
+      }
     },
     "statistic": {
       "label": "Statistik",

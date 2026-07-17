@@ -12,18 +12,20 @@ class FilterChipModel {
 
   final FilterChipStateChangedCallback? stateChanged;
 
-  const FilterChipModel({required this.text, required this.isEnabled, this.stateChanged, this.isActive = false});
+  const FilterChipModel({required this.text, this.isEnabled = true, this.stateChanged, this.isActive = false});
 }
 
 class FilterChipCampaign extends StatefulWidget {
   final List<FilterChipModel> filterOptions;
   final Map<String, List<String>>? filterExclusions;
   final FilterChipController filterController;
+  final bool spacingOnBeginAndEnd;
 
   const FilterChipCampaign({
     required this.filterOptions,
     required this.filterController,
     this.filterExclusions,
+    this.spacingOnBeginAndEnd = true,
     super.key,
   });
 
@@ -74,7 +76,11 @@ class _FilterChipCampaignState extends State<FilterChipCampaign> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 16,
-            children: [SizedBox.shrink(), ...widget.filterOptions.map(_getFilterChipItem), SizedBox.shrink()],
+            children: [
+              if (widget.spacingOnBeginAndEnd) SizedBox.shrink(),
+              ...widget.filterOptions.map(_getFilterChipItem),
+              if (widget.spacingOnBeginAndEnd) SizedBox.shrink(),
+            ],
           ),
         ),
       ),

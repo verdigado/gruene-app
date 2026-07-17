@@ -1,3 +1,5 @@
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+
 class CampaignConstants {
   static const dummyImageAssetName = 'assets/splash/logo_android12.png';
   static const doorAssetName = 'assets/symbols/doors/door.png';
@@ -89,4 +91,6 @@ class CampaignConstants {
   static String focusAreaAttributeMilieuAddOnAgeLabel = 'milieu_add_on_age_label';
   static String focusAreaAttributeSpecialPoliticalSituationLabel(int index) =>
       'special_political_situation_${index}_label';
+
+  static const currentlyOngoingChallengeFilter = [ChallengeStatus.active, ChallengeStatus.planned];
 }
