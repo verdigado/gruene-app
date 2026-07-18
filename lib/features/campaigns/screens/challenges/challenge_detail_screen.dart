@@ -39,16 +39,21 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     });
   }
 
-  void _loadData() async {
+  Future<void> _loadData() async {
     setState(() => _loading = true);
 
     var challengeService = GetIt.I<GrueneApiChallengeService>();
-    var currentChallenge = await challengeService.getChallenge(widget.challengeId);
-    var currentJoinedChallenge = (await challengeService.getMyChallenges()).firstWhereOrNull(
+
+    var results = await Future.wait([
+      challengeService.getChallenge(widget.challengeId),
+      challengeService.getMyChallenges(),
+      challengeService.getChallengeLeaderboard(widget.challengeId),
+    ]);
+    var currentChallenge = results[0] as Challenge;
+    var currentJoinedChallenge = (results[1] as List<JoinedChallenge>).firstWhereOrNull(
       (c) => c.id == currentChallenge.id,
     );
-    var currentChallengeLeaderboard = await challengeService.getChallengeLeaderboard(widget.challengeId);
-    var campaignService = GetIt.I<GrueneApiCampaignService>();
+    var currentChallengeLeaderboard = results[2] as List<ChallengeLeaderboardEntry>;
 
     var lastRankWithTargetReached = currentChallengeLeaderboard.where((x) => x.isCompleted()).lastOrNull?.rank ?? -1;
     if (lastRankWithTargetReached == (currentChallengeLeaderboard.lastOrNull?.rank ?? -1)) {
@@ -57,17 +62,20 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
     Campaign? currentCampaign;
     if (currentChallenge.campaignId != null) {
+      var campaignService = GetIt.I<GrueneApiCampaignService>();
       currentCampaign = await campaignService.getCampaign(currentChallenge.campaignId!);
     }
 
-    setState(() {
-      _loading = false;
-      _currentChallenge = currentChallenge;
-      _currentJoinedChallenge = currentJoinedChallenge;
-      _currentChallengeLeaderboard = currentChallengeLeaderboard;
-      _lastRankWithTargetReached = lastRankWithTargetReached;
-      _currentCampaign = currentCampaign;
-    });
+    if (mounted) {
+      setState(() {
+        _loading = false;
+        _currentChallenge = currentChallenge;
+        _currentJoinedChallenge = currentJoinedChallenge;
+        _currentChallengeLeaderboard = currentChallengeLeaderboard;
+        _lastRankWithTargetReached = lastRankWithTargetReached;
+        _currentCampaign = currentCampaign;
+      });
+    }
   }
 
   @override
