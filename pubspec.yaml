@@ -56,7 +56,7 @@ dependencies:
   keycloak_authenticator:
     path: ./packages/keycloak_authenticator
   mobile_scanner: ^7.0.0-beta.3
-  timeago: ^3.7.0
+  timeago: ^3.7.1
   local_auth: ^3.0.1
   image_picker: ^1.1.2
   path_provider: ^2.1.5

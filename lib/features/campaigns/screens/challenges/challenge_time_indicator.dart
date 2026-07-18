@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 enum TimeIndicatorState { upcoming, active, finished }
 
@@ -16,9 +17,12 @@ class ChallengeTimeIndicator extends StatelessWidget {
     final now = DateTime.now();
     TimeIndicatorState? state;
     String indicatorText = '';
+    final locale = LocaleSettings.currentLocale.languageCode;
     if (now.isBetween(DateTimeRange(start: start, end: end))) {
       state = TimeIndicatorState.active;
-      indicatorText = t.campaigns.challenges.timeIndicator.activeLabel(hours: end.difference(now).inHours.toString());
+      indicatorText = t.campaigns.challenges.timeIndicator.activeLabel(
+        timeago_label: timeago.format(end, locale: locale, allowFromNow: true),
+      );
     } else if (now.isBetween(DateTimeRange(start: start.subtract(Duration(days: 3)), end: start))) {
       state = TimeIndicatorState.upcoming;
       indicatorText = t.campaigns.challenges.timeIndicator.startingSoon;

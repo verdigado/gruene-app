@@ -359,7 +359,7 @@
       },
       "timeIndicator": {
         "startingSoon": "startet bald",
-        "activeLabel": "läuft - noch ${hours} Stunden"
+        "activeLabel": "läuft - ${timeago_label}"
       },
       "challengeDetail": {
         "title": "Challenge"
