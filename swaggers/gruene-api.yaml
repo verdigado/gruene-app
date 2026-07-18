@@ -1374,6 +1374,17 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/ChallengeStatus'
+        - name: sort
+          required: false
+          in: query
+          description: >-
+            Comma-separated sort fields. Prefix a field with "-" for descending
+            order. Supported fields: startDate, endDate, activityType, title,
+            participantsCount, userDivision. userDivision requires a bearer
+            token.
+          schema:
+            example: startDate,-participantsCount,title
+            type: string
         - name: offset
           required: false
           in: query
@@ -1440,6 +1451,17 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/ChallengeStatus'
+        - name: sort
+          required: false
+          in: query
+          description: >-
+            Comma-separated sort fields. Prefix a field with "-" for descending
+            order. Supported fields: startDate, endDate, activityType, title,
+            participantsCount, userDivision. userDivision requires a bearer
+            token.
+          schema:
+            example: startDate,-participantsCount,title
+            type: string
         - name: offset
           required: false
           in: query
@@ -1470,6 +1492,45 @@ paths:
       security:
         - bearer: []
       summary: Find joined challenges
+      tags:
+        - campaigns
+  /v1/campaigns/challenges/{challengeId}/leaderboard:
+    get:
+      operationId: getChallengeLeaderboard
+      parameters:
+        - name: challengeId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            maximum: 9900
+            default: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 100
+            default: 99
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindChallengeLeaderboardResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get challenge leaderboard
       tags:
         - campaigns
   /v1/campaigns/challenges/{challengeId}:
@@ -1527,6 +1588,32 @@ paths:
       security:
         - bearer: []
       summary: Update a challenge
+      tags:
+        - campaigns
+    delete:
+      operationId: deleteChallenge
+      parameters:
+        - name: challengeId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Challenge'
+        '400':
+          description: ''
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete a challenge
       tags:
         - campaigns
   /v1/campaigns/challenges/{challengeId}/join:
@@ -5745,6 +5832,25 @@ components:
         - completed
         - createdAt
         - updatedAt
+    ChallengeLeaderboardEntry:
+      type: object
+      properties:
+        rank:
+          type: number
+        userName:
+          type: string
+        divisionName:
+          type: string
+        currentActivityCount:
+          type: number
+        activityTargetCount:
+          type: number
+      required:
+        - rank
+        - userName
+        - divisionName
+        - currentActivityCount
+        - activityTargetCount
     ChallengeStatus:
       type: string
       enum:
@@ -5898,6 +6004,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JoinedChallenge'
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+      required:
+        - data
+        - total
+        - offset
+        - limit
+    FindChallengeLeaderboardResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeLeaderboardEntry'
         total:
           type: number
         offset:

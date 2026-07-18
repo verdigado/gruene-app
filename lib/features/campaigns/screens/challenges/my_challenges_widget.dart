@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
@@ -49,12 +50,7 @@ class MyChallengesWidget extends StatelessWidget {
     String challengeCampaignName = challenge.campaignId == null
         ? ' '
         : knownCampaigns.firstWhereOrNull((c) => c.id == challenge.campaignId)?.name ?? t.common.unknown;
-    var maxActivityCount = challenge.activities.fold(0, (prev, current) => prev + current.count.round());
-    var currentActivityCount = challenge.participations.fold(
-      0,
-      (prev, current) => prev + current.currentContributionCount.round(),
-    );
-    final progressValue = maxActivityCount > 0 ? (currentActivityCount / maxActivityCount).clamp(0.0, 1.0) : 0.0;
+    var progressInfo = challenge.getProgressInfo();
     return Card(
       child: InkWell(
         onTap: () => openChallenge(context, challenge),
@@ -127,10 +123,7 @@ class MyChallengesWidget extends StatelessWidget {
                         children: [
                           SizedBox(
                             width: 234,
-                            child: ProgressWithLabel(
-                              value: progressValue,
-                              label: '$currentActivityCount / $maxActivityCount',
-                            ),
+                            child: ProgressWithLabel(value: progressInfo.progressValue, label: progressInfo.label),
                           ),
                         ],
                       ),

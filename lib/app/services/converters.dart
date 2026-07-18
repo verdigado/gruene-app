@@ -94,3 +94,4 @@ part 'converters/user_info_extensions.dart';
 part 'converters/team_assignment_type_extension.dart';
 part 'converters/widget_extension.dart';
 part 'converters/campaign_list_extension.dart';
+part 'converters/joined_challenge_extension.dart';

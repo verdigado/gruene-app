@@ -169,6 +169,7 @@
     },
     "poster": {
       "label": "Plakat",
+      "label_plural": "Plakate",
       "addPoster": "Plakat eintragen",
       "editPoster": "Plakat bearbeiten",
       "my_posters_action": "Meine Plakate",
@@ -234,6 +235,7 @@
     },
     "door": {
       "label": "Haustür",
+      "label_plural": "Haustüren",
       "addDoor": "Haustüren eintragen",
       "closedDoors": "Ungeöffnete Türen",
       "editDoor": "Haustüren bearbeiten",
@@ -245,6 +247,7 @@
     },
     "flyer": {
       "label": "Flyer",
+      "label_plural": "Flyer",
       "addFlyer": "Wahlkampfstand eintragen",
       "editFlyer": "Wahlkampfstand bearbeiten",
       "countFlyer": "Anzahl der Flyer",
@@ -328,6 +331,7 @@
       "myChallengeLabel": "Meine Challenges",
       "availableChallengeLabel": "Verfügbare Challenges",
       "challengeSubTitle": "${startDate} - ${endDate} | ${participants} Teilnehmende",
+      "challengeSubTitleLong": "${startDate} - ${endDate} | ${activities} | ${participants} Teilnehmende",
       "no_challenges_found_title": "Keine passenden Challenges gefunden.",
       "no_challenges_found": "Wende Dich an die Lokalkoordinator*in Deiner Gliederung, um neue Challenges anlegen zu lassen!",
       "joinConfirmationDialog": {
@@ -337,9 +341,21 @@
         "joinToast": "Challenge ${title} beigetreten. Viel Erfolg!"
       },
       "actions": {
-        "join": "Teilnehmen",
-        "joined": "Teilgenommen",
-        "leave": "Verlassen"
+        "join": "Beitreten",
+        "participate": "Teilnehmen",
+        "participated": "Teilgenommen",
+        "leave": "Challenge verlassen"
+      },
+      "detailScreen": {
+        "myProgress": "Mein Fortschritt",
+        "leftOverLabel": "noch **${hours_left}h** für **${leftover_activities}!**",
+        "leaderboard": {
+          "title": "Challenge Leaderboard",
+          "version": "Aktueller Zwischenstand ${last_udpate}",
+          "targetReached": "Ziel erreicht",
+          "plannedChallengeNotReadyYet": "Geplante Challenge, noch keine Platzierungen vorhanden.",
+          "leaderboardEmpty": "Noch keine Platzierungen vorhanden."
+        }
       },
       "timeIndicator": {
         "startingSoon": "startet bald",

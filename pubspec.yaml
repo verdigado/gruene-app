@@ -85,6 +85,7 @@ dependencies:
   # flutter_nice_toast: ^0.2.5
   diacritic: ^0.1.6
   dropdown_search: ^7.0.0
+  flutter_markdown_plus: ^1.0.12
 
 dev_dependencies:
 

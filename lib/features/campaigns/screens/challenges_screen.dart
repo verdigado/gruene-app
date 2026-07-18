@@ -77,7 +77,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     setState(() => _loading = true);
 
     var challengeService = GetIt.I<GrueneApiChallengeService>();
-    var joinedChallenges = await challengeService.getMyChallenges();
+    var joinedChallenges = await challengeService.getMyChallenges(
+      challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
+    );
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
     var knownCampaigns = await campaignService.findCampaigns();
@@ -299,7 +301,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                           children: [
                             _joinedChallenges.any((c) => c.id == challenge.id)
                                 ? Text(
-                                    t.campaigns.challenges.actions.joined,
+                                    t.campaigns.challenges.actions.participated,
                                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
                                       color: ThemeColors.primary,
                                       decoration: TextDecoration.underline,
@@ -308,7 +310,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                                 : GestureDetector(
                                     onTap: () => joinChallenge(challenge),
                                     child: Text(
-                                      t.campaigns.challenges.actions.join,
+                                      t.campaigns.challenges.actions.participate,
                                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                                         color: ThemeColors.primary,
                                         decoration: TextDecoration.underline,
