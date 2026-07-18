@@ -52,7 +52,7 @@ class ChallengeHelper {
   }
 
   static Future<void> leaveChallenge(BuildContext context, Challenge challenge) async {
-    if (!context.mounted) return null;
+    if (!context.mounted) return;
     var confirmResult =
         await showDialog<bool>(
           context: context,
