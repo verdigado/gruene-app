@@ -7,6 +7,7 @@ import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/section_card.dart';
+import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide ProfileImage, Image;
@@ -33,101 +34,105 @@ class ProfileDetails extends StatelessWidget {
     ].where((divisionKey) => divisionKey != partyDivision?.divisionKey).nonNulls.toList();
     final theme = Theme.of(context);
 
-    return Column(
-      spacing: 16,
-      children: [
-        if (email != null || profile.phoneNumbers.isNotEmpty || isOwnProfile)
-          SectionCard(
-            children: [
-              if (email != null)
-                SectionCardListItem(
-                  title: t.profiles.email,
-                  value: email,
-                  onTap: isOwnProfile ? null : () => openMail(email, context),
-                ),
-              if (profile.phoneNumbers.isNotEmpty)
-                SectionCardListItem(title: t.profiles.phoneNumber, value: profile.phoneNumbers.first.number),
-              if (isOwnProfile)
-                SectionCardListItem(
-                  title: t.profiles.personalId,
-                  value: profile.personalId,
-                  onTap: () => Clipboard.setData(ClipboardData(text: profile.personalId)),
-                  trailing: Icon(Icons.copy, color: theme.disabledColor),
-                ),
-            ],
-          ),
-        if (divisions.isNotEmpty)
-          SectionCard(
-            title: t.profiles.memberships,
-            children: [
-              FutureLoadingScreen(
-                load: parentDivisionKeys.isNotEmpty
-                    ? () => loadDivisions(parentDivisionKeys)
-                    : () async => <Division>[],
-                buildChild: (data, _) => Column(
-                  children: [...divisions, ...data]
-                      .sortByLevel(reverseLevel: true)
-                      .map((division) {
-                        final email = division.emails.firstOrNull?.address;
-                        return Column(
-                          children: [
-                            SectionCardListItem(
-                              value: division.shortDisplayName,
-                              url: division.urls.firstOrNull,
-                              extraTrailing: email != null
-                                  ? IconButton(
-                                      onPressed: () => openMail(email, context),
-                                      onLongPress: () => Clipboard.setData(ClipboardData(text: email)),
-                                      icon: Icon(Icons.email_outlined, color: theme.primaryColor),
-                                    )
-                                  : null,
-                            ),
-                            if (isOwnProfile && division.divisionKey == partyDivision?.divisionKey)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: DivisionProfileCards(division: division, userId: profile.userId),
+    return FutureLoadingScreen(
+      load: () async => (
+        profiles: await fetchProfiles(division: partyDivision, limit: maxProfileCards),
+        parentDivisions: parentDivisionKeys.isNotEmpty ? await loadDivisions(parentDivisionKeys) : <Division>[],
+      ),
+      loadingLayoutBuilder: (Widget child) => Padding(padding: EdgeInsetsGeometry.all(16), child: child),
+      buildChild: (data, _) {
+        return Column(
+          spacing: 16,
+          children: [
+            if (email != null || profile.phoneNumbers.isNotEmpty || isOwnProfile)
+              SectionCard(
+                children: [
+                  if (email != null)
+                    SectionCardListItem(
+                      title: t.profiles.email,
+                      value: email,
+                      onTap: isOwnProfile ? null : () => openMail(email, context),
+                    ),
+                  if (profile.phoneNumbers.isNotEmpty)
+                    SectionCardListItem(title: t.profiles.phoneNumber, value: profile.phoneNumbers.first.number),
+                  if (isOwnProfile)
+                    SectionCardListItem(
+                      title: t.profiles.personalId,
+                      value: profile.personalId,
+                      onTap: () => Clipboard.setData(ClipboardData(text: profile.personalId)),
+                      trailing: Icon(Icons.copy, color: theme.disabledColor),
+                    ),
+                ],
+              ),
+            if (divisions.isNotEmpty)
+              SectionCard(
+                title: t.profiles.memberships,
+                children: [...divisions, ...data.parentDivisions]
+                    .sortByLevel(reverseLevel: true)
+                    .map((division) {
+                      final email = division.emails.firstOrNull?.address;
+                      return Column(
+                        children: [
+                          SectionCardListItem(
+                            value: division.shortDisplayName,
+                            url: division.urls.firstOrNull,
+                            extraTrailing: email != null
+                                ? IconButton(
+                                    onPressed: () => openMail(email, context),
+                                    onLongPress: () => Clipboard.setData(ClipboardData(text: email)),
+                                    icon: Icon(Icons.email_outlined, color: theme.primaryColor),
+                                  )
+                                : null,
+                          ),
+                          if (isOwnProfile && division.divisionKey == partyDivision?.divisionKey)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: DivisionProfileCards(
+                                profiles: data.profiles,
+                                division: division,
+                                userId: profile.userId,
                               ),
-                          ],
-                        );
-                      })
-                      .withDividers(Divider(indent: 16, endIndent: 16)),
+                            ),
+                        ],
+                      );
+                    })
+                    .withDividers(Divider(indent: 16, endIndent: 16)),
+              ),
+            if (mandateRoles.isNotEmpty)
+              SectionCard(
+                title: t.profiles.mandateRoles,
+                children: mandateRoles.map((role) => SectionCardListItem(value: role)),
+              ),
+            if (officeRoles.isNotEmpty)
+              SectionCard(
+                title: t.profiles.officeRoles,
+                children: officeRoles.map((role) => SectionCardListItem(value: role)),
+              ),
+            if (sherpaRoles.isNotEmpty)
+              SectionCard(
+                title: t.profiles.sherpaRoles,
+                children: sherpaRoles.map((role) => SectionCardListItem(value: role)),
+              ),
+            if (profile.socialMedia.isNotEmpty)
+              SectionCard(
+                title: t.profiles.socialMedia,
+                children: profile.socialMedia.map(
+                  (platform) => SectionCardListItem(value: platform.label, url: platform.url),
                 ),
               ),
-            ],
-          ),
-        if (mandateRoles.isNotEmpty)
-          SectionCard(
-            title: t.profiles.mandateRoles,
-            children: mandateRoles.map((role) => SectionCardListItem(value: role)),
-          ),
-        if (officeRoles.isNotEmpty)
-          SectionCard(
-            title: t.profiles.officeRoles,
-            children: officeRoles.map((role) => SectionCardListItem(value: role)),
-          ),
-        if (sherpaRoles.isNotEmpty)
-          SectionCard(
-            title: t.profiles.sherpaRoles,
-            children: sherpaRoles.map((role) => SectionCardListItem(value: role)),
-          ),
-        if (profile.socialMedia.isNotEmpty)
-          SectionCard(
-            title: t.profiles.socialMedia,
-            children: profile.socialMedia.map(
-              (platform) => SectionCardListItem(value: platform.label, url: platform.url),
-            ),
-          ),
-        if (skills.isNotEmpty)
-          SectionCard(
-            title: t.profiles.skills,
-            children: skills.map((tag) => SectionCardListItem(value: tag)),
-          ),
-        if (interests.isNotEmpty)
-          SectionCard(
-            title: t.profiles.interests,
-            children: interests.map((tag) => SectionCardListItem(value: tag)),
-          ),
-      ],
+            if (skills.isNotEmpty)
+              SectionCard(
+                title: t.profiles.skills,
+                children: skills.map((tag) => SectionCardListItem(value: tag)),
+              ),
+            if (interests.isNotEmpty)
+              SectionCard(
+                title: t.profiles.interests,
+                children: interests.map((tag) => SectionCardListItem(value: tag)),
+              ),
+          ],
+        );
+      },
     );
   }
 }
