@@ -18,10 +18,15 @@ class ChallengeTimeIndicator extends StatelessWidget {
     TimeIndicatorState? state;
     String indicatorText = '';
     final locale = LocaleSettings.currentLocale.languageCode;
+    timeago.setLocaleMessages(t.campaigns.challenges.timeago.language_code(code: locale), ChallengeTimeMessages());
     if (now.isBetween(DateTimeRange(start: start, end: end))) {
       state = TimeIndicatorState.active;
       indicatorText = t.campaigns.challenges.timeIndicator.activeLabel(
-        timeago_label: timeago.format(end, locale: locale, allowFromNow: true),
+        timeago_label: timeago.format(
+          end,
+          locale: t.campaigns.challenges.timeago.language_code(code: locale),
+          allowFromNow: true,
+        ),
       );
     } else if (now.isBetween(DateTimeRange(start: start.subtract(Duration(days: 3)), end: start))) {
       state = TimeIndicatorState.upcoming;
@@ -65,4 +70,39 @@ class ChallengeTimeIndicator extends StatelessWidget {
       ),
     );
   }
+}
+
+class ChallengeTimeMessages implements timeago.LookupMessages {
+  @override
+  String prefixAgo() => t.campaigns.challenges.timeago.prefixAgo;
+  @override
+  String prefixFromNow() => t.campaigns.challenges.timeago.prefixFromNow;
+  @override
+  String suffixAgo() => t.campaigns.challenges.timeago.suffixAgo;
+  @override
+  String suffixFromNow() => t.campaigns.challenges.timeago.suffixFromNow;
+  @override
+  String lessThanOneMinute(int seconds) => t.campaigns.challenges.timeago.lessThanOneMinute;
+  @override
+  String aboutAMinute(int minutes) => t.campaigns.challenges.timeago.aboutAMinute;
+  @override
+  String minutes(int minutes) => t.campaigns.challenges.timeago.minutes(minutes: minutes);
+  @override
+  String aboutAnHour(int minutes) => t.campaigns.challenges.timeago.aboutAnHour;
+  @override
+  String hours(int hours) => t.campaigns.challenges.timeago.hours(hours: hours);
+  @override
+  String aDay(int hours) => t.campaigns.challenges.timeago.aDay;
+  @override
+  String days(int days) => t.campaigns.challenges.timeago.days(days: days);
+  @override
+  String aboutAMonth(int days) => t.campaigns.challenges.timeago.aboutAMonth;
+  @override
+  String months(int months) => t.campaigns.challenges.timeago.months(months: months);
+  @override
+  String aboutAYear(int year) => t.campaigns.challenges.timeago.aboutAYear;
+  @override
+  String years(int years) => t.campaigns.challenges.timeago.years(years: years);
+  @override
+  String wordSeparator() => t.campaigns.challenges.timeago.wordSeparator;
 }
