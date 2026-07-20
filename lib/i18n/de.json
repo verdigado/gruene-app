@@ -367,6 +367,25 @@
       },
       "challengeDetail": {
         "title": "Challenge"
+      },
+      "timeago": {
+        "language_code": "${code}_challenges",
+        "prefixAgo": "vor",
+        "prefixFromNow": "noch",
+        "suffixAgo": "",
+        "suffixFromNow": "",
+        "lessThanOneMinute": "weniger als einer Minute",
+        "aboutAMinute": "einer Minute",
+        "minutes": "${minutes} Minuten",
+        "aboutAnHour": "~1 Stunde",
+        "hours": "${hours} Stunden",
+        "aDay": "~1 Tag",
+        "days": "${days} Tage",
+        "aboutAMonth": "~1 Monat",
+        "months": "${months} Monate",
+        "aboutAYear": "~1 Jahr",
+        "years": "${years} Jahre",
+        "wordSeparator": " "
       }
     },
     "statistic": {
