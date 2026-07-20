@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/constants.dart';
+import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/domain/divisions_api_service.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/app/widgets/pressable_opacity.dart';
 import 'package:gruene_app/app/widgets/section_card.dart';
+import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -20,6 +28,7 @@ class ProfileDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final challengeService = GetIt.I<GrueneApiChallengeService>();
     final email = profile.email;
     final mandateRoles = profile.displayRoles(types: [ProfileRoleType.mandate]);
     final officeRoles = profile.displayRoles(types: [ProfileRoleType.office]);
@@ -36,14 +45,49 @@ class ProfileDetails extends StatelessWidget {
 
     return FutureLoadingScreen(
       load: () async => (
+        challenges: await challengeService.getMyChallenges(),
         profiles: await fetchProfiles(division: partyDivision, limit: maxProfileCards),
         parentDivisions: parentDivisionKeys.isNotEmpty ? await loadDivisions(parentDivisionKeys) : <Division>[],
       ),
       loadingLayoutBuilder: (Widget child) => Padding(padding: EdgeInsetsGeometry.all(16), child: child),
       buildChild: (data, _) {
+        final completedChallenges = data.challenges.where((challenge) => challenge.isCompleted()).toList();
+        completedChallenges.sort((a, b) => b.end.compareTo(a.end));
+
         return Column(
           spacing: 16,
           children: [
+            if (completedChallenges.isNotEmpty)
+              SectionCard(
+                title: t.campaigns.challenges.label,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      padding: horizontalScreenPadding,
+                      child: Row(
+                        spacing: 8,
+                        children: completedChallenges
+                            .map(
+                              (challenge) => PressableOpacity(
+                                onTap: () => context.push(
+                                  RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]),
+                                  extra: challenge,
+                                ),
+                                child: ChallengeBadge(
+                                  activityType: challenge.activities.first.type,
+                                  maxActivityCount: challenge.getProgressInfo().maxActivityCount,
+                                  variant: BadgeVariant.dark,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             if (email != null || profile.phoneNumbers.isNotEmpty || isOwnProfile)
               SectionCard(
                 children: [
