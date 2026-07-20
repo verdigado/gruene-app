@@ -340,6 +340,10 @@
         "dialogAccept": "Teilnehmen",
         "joinToast": "Challenge ${title} beigetreten. Viel Erfolg!"
       },
+      "leaveConfirmationDialog": {
+        "dialogText": "Diese Challenge wirklich verlassen?",
+        "leaveToast": "Challenge ${title} verlassen."
+      },
       "actions": {
         "join": "Beitreten",
         "participate": "Teilnehmen",

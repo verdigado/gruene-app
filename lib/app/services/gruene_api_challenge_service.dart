@@ -22,7 +22,7 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
     apiRequest: (api) => api.v1CampaignsChallengesChallengeIdJoinPost(challengeId: challengeId, body: null),
   );
 
-  Future<ChallengeMembership> leaveChallenge(String challengeId) async =>
+  Future<void> leaveChallenge(String challengeId) async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsChallengesChallengeIdLeavePost(challengeId: challengeId));
 
   Future<Challenge> getChallenge(String challengeId) async =>

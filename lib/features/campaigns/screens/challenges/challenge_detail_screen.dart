@@ -9,6 +9,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/screens/progress_with_label.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -43,7 +44,6 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     setState(() => _loading = true);
 
     var challengeService = GetIt.I<GrueneApiChallengeService>();
-
     var results = await Future.wait([
       challengeService.getChallenge(widget.challengeId),
       challengeService.getMyChallenges(),
@@ -211,7 +211,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
         width: media.size.width,
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: FilledButton(
-          onPressed: () => '',
+          onPressed: () => joinChallenge(),
           child: Text(
             t.campaigns.challenges.actions.join,
             style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
@@ -261,18 +261,21 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
             ),
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.logout_outlined, color: ThemeColors.primary),
-                  Text(
-                    t.campaigns.challenges.actions.leave,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: ThemeColors.primary,
-                      fontWeight: FontWeight.w700,
+              child: GestureDetector(
+                onTap: () => leaveChallenge(_currentChallenge),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.logout_outlined, color: ThemeColors.primary),
+                    Text(
+                      t.campaigns.challenges.actions.leave,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: ThemeColors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -467,6 +470,20 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     );
 
     return memberItemWidgets;
+  }
+
+  Future<void> leaveChallenge(Challenge currentChallenge) async {
+    await ChallengeHelper.leaveChallenge(context, _currentChallenge);
+    setState(() {
+      _loadData();
+    });
+  }
+
+  Future<void> joinChallenge() async {
+    await ChallengeHelper.joinChallenge(context, _currentChallenge);
+    setState(() {
+      _loadData();
+    });
   }
 }
 

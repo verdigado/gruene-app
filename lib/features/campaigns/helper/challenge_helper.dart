@@ -50,4 +50,27 @@ class ChallengeHelper {
     showToastAsSnack(context, t.campaigns.challenges.joinConfirmationDialog.joinToast(title: challenge.title));
     return joinResult;
   }
+
+  static Future<void> leaveChallenge(BuildContext context, Challenge challenge) async {
+    if (!context.mounted) return;
+    var confirmResult =
+        await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            content: Text(t.campaigns.challenges.leaveConfirmationDialog.dialogText),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: [
+              TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(t.common.actions.cancel)),
+              TextButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: Text(t.common.actions.confirm)),
+            ],
+          ),
+        ) ??
+        false;
+    if (!confirmResult) return;
+
+    var challengeService = GetIt.I<GrueneApiChallengeService>();
+    await challengeService.leaveChallenge(challenge.id);
+    if (!context.mounted) return;
+    showToastAsSnack(context, t.campaigns.challenges.leaveConfirmationDialog.leaveToast(title: challenge.title));
+  }
 }
