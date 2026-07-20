@@ -13,6 +13,7 @@ import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/new_page_error_indicator.dart';
 import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
+import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/my_challenges_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/filter_chip_widget.dart';
@@ -236,15 +237,32 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
               children: [
                 Expanded(
                   flex: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [ThemeColors.secondary, ThemeColors.primary],
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [ThemeColors.secondary, ThemeColors.primary],
+                          ),
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
+                        ),
                       ),
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
-                    ),
+                      Positioned(
+                        top: 25,
+                        left: 10,
+
+                        child: SizedBox(
+                          height: 200,
+                          child: ChallengeBadge(
+                            activityType: challenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
+                            variant: .dark,
+                            maxActivityCount: challenge.activities.map((a) => a.count.round()).sum(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
