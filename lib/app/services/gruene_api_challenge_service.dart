@@ -13,10 +13,11 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
     map: (result) => result.data,
   );
 
-  Future<List<JoinedChallenge>> getMyChallenges({List<ChallengeStatus>? challengeStatus}) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsChallengesSelfGet(state: challengeStatus),
-    map: (result) => result.data,
-  );
+  Future<List<JoinedChallenge>> getMyChallenges({List<ChallengeStatus>? challengeStatus, String? campaignId}) async =>
+      getFromApi(
+        apiRequest: (api) => api.v1CampaignsChallengesSelfGet(state: challengeStatus, campaignId: campaignId),
+        map: (result) => result.data,
+      );
 
   Future<ChallengeMembership> joinChallenge(String challengeId) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsChallengesChallengeIdJoinPost(challengeId: challengeId, body: null),

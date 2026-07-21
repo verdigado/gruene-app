@@ -409,6 +409,9 @@
         "title": "Team Top-10",
         "update_info": "Team-Statistiken werden mehrmals am Tag aktualisiert"
       },
+      "challenge_statistics": {
+        "title": "Challenges"
+      },
       "recorded_posters": "Plakate",
       "including_damaged_or_taken_down": "inkl. beschädigt und abgehängt",
       "recorded_doors": "Haustüren",

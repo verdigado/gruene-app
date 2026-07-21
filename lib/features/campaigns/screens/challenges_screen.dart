@@ -230,7 +230,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Card(
         child: InkWell(
-          onTap: () => openChallenge(context, challenge),
+          onTap: () => ChallengeHelper.openChallenge(context, challenge),
           child: SizedBox(
             height: 150,
             child: Row(
@@ -350,10 +350,6 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         ),
       ),
     );
-  }
-
-  void openChallenge(BuildContext context, Challenge challenge) {
-    context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
   }
 
   Future<void> joinChallenge(Challenge challenge) async {
