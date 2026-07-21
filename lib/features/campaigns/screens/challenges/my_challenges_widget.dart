@@ -56,8 +56,8 @@ class MyChallengesWidget extends StatelessWidget {
       child: InkWell(
         onTap: () => openChallenge(context, challenge),
         child: SizedBox(
-          height: 300,
-          width: 250,
+          height: 250,
+          width: 200,
           child: Column(
             children: [
               Expanded(
@@ -75,14 +75,17 @@ class MyChallengesWidget extends StatelessWidget {
                       child: Stack(
                         children: [
                           Positioned(
-                            top: 10,
-                            right: -10,
-                            child: SizedBox(
-                              height: 210,
-                              child: ChallengeBadge(
-                                activityType: challenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
-                                variant: .dark,
-                                maxActivityCount: challenge.activities.map((a) => a.count.round()).sum(),
+                            top: 40,
+                            right: 20,
+                            child: Transform.scale(
+                              scale: 1.625,
+                              child: Opacity(
+                                opacity: 0.2,
+                                child: ChallengeBadge(
+                                  activityType: challenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
+                                  variant: .light,
+                                  maxActivityCount: challenge.activities.map((a) => a.count.round()).sum(),
+                                ),
                               ),
                             ),
                           ),
@@ -110,6 +113,7 @@ class MyChallengesWidget extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
+                  color: ThemeColors.background,
                   padding: EdgeInsets.all(8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -131,7 +135,7 @@ class MyChallengesWidget extends StatelessWidget {
                               participants: challenge.activities.length,
                             ),
                             style: Theme.of(context).textTheme.labelMedium,
-                            maxLines: 2,
+                            maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -139,7 +143,7 @@ class MyChallengesWidget extends StatelessWidget {
                       Row(
                         children: [
                           SizedBox(
-                            width: 234,
+                            width: 184,
                             child: ProgressWithLabel(value: progressInfo.progressValue, label: progressInfo.label),
                           ),
                         ],

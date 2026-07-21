@@ -250,15 +250,17 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                         ),
                       ),
                       Positioned(
-                        top: 25,
-                        left: 10,
-
-                        child: SizedBox(
-                          height: 200,
-                          child: ChallengeBadge(
-                            activityType: challenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
-                            variant: .dark,
-                            maxActivityCount: challenge.activities.map((a) => a.count.round()).sum(),
+                        top: 60,
+                        left: 30,
+                        child: Transform.scale(
+                          scale: 1.5,
+                          child: Opacity(
+                            opacity: 0.2,
+                            child: ChallengeBadge(
+                              activityType: challenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
+                              variant: .light,
+                              maxActivityCount: challenge.activities.map((a) => a.count.round()).sum(),
+                            ),
                           ),
                         ),
                       ),
@@ -271,6 +273,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                     padding: EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
+                      color: ThemeColors.background,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

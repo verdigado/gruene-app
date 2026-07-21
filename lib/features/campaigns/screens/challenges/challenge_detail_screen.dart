@@ -111,15 +111,17 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                     ),
                   ),
                   Positioned(
-                    top: -50,
-                    right: 10,
-
-                    child: SizedBox(
-                      height: 190,
-                      child: ChallengeBadge(
-                        activityType: _currentChallenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
-                        variant: .dark,
-                        maxActivityCount: _currentChallenge.activities.map((a) => a.count.round()).sum(),
+                    top: 15,
+                    right: 70,
+                    child: Transform.scale(
+                      scale: 2.4,
+                      child: Opacity(
+                        opacity: 0.2,
+                        child: ChallengeBadge(
+                          activityType: _currentChallenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
+                          variant: .light,
+                          maxActivityCount: _currentChallenge.activities.map((a) => a.count.round()).sum(),
+                        ),
                       ),
                     ),
                   ),
