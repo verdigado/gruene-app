@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
-import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
@@ -230,7 +228,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Card(
         child: InkWell(
-          onTap: () => openChallenge(context, challenge),
+          onTap: () => ChallengeHelper.openChallenge(context, challenge),
           child: SizedBox(
             height: 150,
             child: Row(
@@ -350,10 +348,6 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         ),
       ),
     );
-  }
-
-  void openChallenge(BuildContext context, Challenge challenge) {
-    context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
   }
 
   Future<void> joinChallenge(Challenge challenge) async {

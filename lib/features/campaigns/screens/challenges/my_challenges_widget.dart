@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/screens/progress_with_label.dart';
@@ -54,7 +53,7 @@ class MyChallengesWidget extends StatelessWidget {
     var progressInfo = challenge.getProgressInfo();
     return Card(
       child: InkWell(
-        onTap: () => openChallenge(context, challenge),
+        onTap: () => ChallengeHelper.openJoinedChallenge(context, challenge),
         child: SizedBox(
           height: 250,
           width: 200,
@@ -157,9 +156,5 @@ class MyChallengesWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void openChallenge(BuildContext context, JoinedChallenge challenge) {
-    context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
   }
 }

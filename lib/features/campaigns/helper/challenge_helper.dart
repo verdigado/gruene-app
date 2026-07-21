@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart' hide Visibility;
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
@@ -72,5 +74,13 @@ class ChallengeHelper {
     await challengeService.leaveChallenge(challenge.id);
     if (!context.mounted) return;
     showToastAsSnack(context, t.campaigns.challenges.leaveConfirmationDialog.leaveToast(title: challenge.title));
+  }
+
+  static void openChallenge(BuildContext context, Challenge challenge) {
+    context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
+  }
+
+  static void openJoinedChallenge(BuildContext context, JoinedChallenge challenge) {
+    context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
   }
 }

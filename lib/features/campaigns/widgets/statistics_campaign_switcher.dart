@@ -62,28 +62,31 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
       onTap: () {
         _selectCampaign();
       },
-      child: Container(
-        padding: EdgeInsets.fromLTRB(12, 12, 12, 6),
-        decoration: BoxDecoration(color: ThemeColors.background),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  t.campaigns.statistic.poi_statistics.stats_for_campaign,
-                  style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
-                ),
-                Text(
-                  t.common.actions.change,
-                  style: theme.textTheme.labelMedium!.apply(decoration: TextDecoration.underline, fontWeightDelta: 5),
-                ),
-              ],
-            ),
-            _isloading
-                ? Center(child: CircularProgressIndicator())
-                : Row(children: [Text(_currentCampaignName ?? '', style: theme.textTheme.bodyMedium)]),
-          ],
+      child: Padding(
+        padding: EdgeInsets.all(12),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(12, 12, 12, 6),
+          decoration: BoxDecoration(color: ThemeColors.background),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    t.campaigns.statistic.poi_statistics.stats_for_campaign,
+                    style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
+                  ),
+                  Text(
+                    t.common.actions.change,
+                    style: theme.textTheme.labelMedium!.apply(decoration: TextDecoration.underline, fontWeightDelta: 5),
+                  ),
+                ],
+              ),
+              _isloading
+                  ? Center(child: CircularProgressIndicator())
+                  : Row(children: [Text(_currentCampaignName ?? '', style: theme.textTheme.bodyMedium)]),
+            ],
+          ),
         ),
       ),
     );

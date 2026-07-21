@@ -25,6 +25,9 @@ class CampaignSessionSettings {
   TeamMembershipStatistics? recentTeamMembershipStatistics;
   DateTime? recentTeamMembershipStatisticsFetchTimestamp;
 
+  List<JoinedChallenge>? recentChallengeBadges;
+  DateTime? recentChallengeBadgesFetchTimestamp;
+
   late ActiveCampaignSettings _activeCampaignSettings;
 
   ActiveCampaignSettings get activeCampaign => _activeCampaignSettings;

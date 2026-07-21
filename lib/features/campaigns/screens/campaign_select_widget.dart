@@ -177,7 +177,17 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       // Don't allow closing without selection if selection is enforced
       return;
     }
-    var selectedCampaign = _activeCampaigns.firstWhere((c) => c.id == _selectedCampaignId);
+    var selectedCampaign = _selectedCampaignId == '-1'
+        ? Campaign(
+            id: '-1',
+            scope: .federal,
+            type: .election,
+            status: .active,
+            name: '',
+            divisionKey: '',
+            electionDate: DateTime.now(),
+          )
+        : _activeCampaigns.firstWhere((c) => c.id == _selectedCampaignId);
     Navigator.of(context).pop(CampaignSelectResult.success(selectedCampaign));
   }
 

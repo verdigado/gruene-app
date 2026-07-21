@@ -8,6 +8,10 @@ extension JoinedChallengeExtension on JoinedChallenge {
     var currentActivityCount = participations.map((p) => p.currentContributionCount.round()).sum();
     return ChallengeProgressInfo(currentActivityCount: currentActivityCount, maxActivityCount: maxActivityCount);
   }
+
+  bool isCompleted() {
+    return getProgressInfo().progressValue >= 1.0;
+  }
 }
 
 extension ChallengeLeaderboardEntryExtension on ChallengeLeaderboardEntry {

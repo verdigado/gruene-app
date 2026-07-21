@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
+import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
@@ -9,6 +11,7 @@ import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/features/campaigns/screens/badge_statistics_detail.dart';
+import 'package:gruene_app/features/campaigns/screens/challenge_badge_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/screens/poi_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/screens/team_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/widgets/statistics_campaign_switcher.dart';
@@ -26,6 +29,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   late CampaignStatisticsModel _poiStatistics;
   late TeamStatistics _teamStatistics;
   late TeamMembershipStatistics _teamMembershipStatistics;
+  late List<JoinedChallenge> _challengeBadges;
   final _appSettings = GetIt.I<AppSettings>();
 
   @override
@@ -64,6 +68,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           children: [
             StatisticsCampaignSwitcher(campaignChanged: () => reload(overrideCache: true)),
             BadgeStatisticsDetail(poiStatistics: _poiStatistics),
+            ChallengeBadgeStatisticsDetail(challengeBadges: _challengeBadges),
             TeamStatisticsDetail(teamStatistics: _teamStatistics),
             PoiStatisticsDetail(poiStatistics: _poiStatistics, teamMembershipStatistics: _teamMembershipStatistics),
           ],
@@ -83,17 +88,20 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       _loadPoiStatistics(overrideCache: overrideCache),
       _loadTeamStatistics(overrideCache: overrideCache),
       _loadOwnTeamStatistics(overrideCache: overrideCache),
+      _loadChallengeBadges(overrideCache: overrideCache),
     ]);
 
     var poiCampaignStatistics = results[0] as CampaignStatisticsModel;
     var teamStatistics = results[1] as TeamStatistics;
     var teamMembershipStatistics = results[2] as TeamMembershipStatistics;
+    var challengeBadges = results[3] as List<JoinedChallenge>;
 
     setState(() {
       _loading = false;
       _poiStatistics = poiCampaignStatistics;
       _teamStatistics = teamStatistics;
       _teamMembershipStatistics = teamMembershipStatistics;
+      _challengeBadges = challengeBadges;
     });
   }
 
@@ -163,5 +171,26 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       logger.d(e.message);
       rethrow;
     }
+  }
+
+  Future<List<JoinedChallenge>> _loadChallengeBadges({required bool overrideCache}) async {
+    var campaignSettings = GetIt.I<AppSettings>().campaign;
+
+    if (!overrideCache &&
+        (campaignSettings.recentChallengeBadges != null &&
+            DateTime.now().isBefore(campaignSettings.recentChallengeBadgesFetchTimestamp!.add(Duration(minutes: 5))))) {
+      return campaignSettings.recentChallengeBadges!;
+    }
+    var challengeApiService = GetIt.I<GrueneApiChallengeService>();
+    var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
+    var challengeBadges = (await challengeApiService.getMyChallenges(
+      campaignId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
+    )).where((c) => c.isCompleted()).toList();
+    challengeBadges.sort((a, b) => b.end.compareTo(a.end));
+
+    campaignSettings.recentChallengeBadges = challengeBadges;
+    campaignSettings.recentChallengeBadgesFetchTimestamp = DateTime.now();
+
+    return challengeBadges;
   }
 }
