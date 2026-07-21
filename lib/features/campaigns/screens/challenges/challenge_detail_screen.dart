@@ -10,6 +10,7 @@ import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
+import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/screens/progress_with_label.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -97,15 +98,34 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
         child: SingleChildScrollView(
           child: Stack(
             children: [
-              Container(
-                height: 128,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [ThemeColors.primary, ThemeColors.secondary],
+              Stack(
+                children: [
+                  Container(
+                    height: 128,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [ThemeColors.primary, ThemeColors.secondary],
+                      ),
+                    ),
                   ),
-                ),
+                  Positioned(
+                    top: 15,
+                    right: 70,
+                    child: Transform.scale(
+                      scale: 2.4,
+                      child: Opacity(
+                        opacity: 0.2,
+                        child: ChallengeBadge(
+                          activityType: _currentChallenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
+                          variant: .light,
+                          maxActivityCount: _currentChallenge.activities.map((a) => a.count.round()).sum(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Positioned(
                 top: 18,

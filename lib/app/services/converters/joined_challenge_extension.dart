@@ -4,11 +4,8 @@ part of '../converters.dart';
 
 extension JoinedChallengeExtension on JoinedChallenge {
   ChallengeProgressInfo getProgressInfo() {
-    var maxActivityCount = activities.fold(0, (prev, current) => prev + current.count.round());
-    var currentActivityCount = participations.fold(
-      0,
-      (prev, current) => prev + current.currentContributionCount.round(),
-    );
+    var maxActivityCount = activities.map((a) => a.count.round()).sum();
+    var currentActivityCount = participations.map((p) => p.currentContributionCount.round()).sum();
     return ChallengeProgressInfo(currentActivityCount: currentActivityCount, maxActivityCount: maxActivityCount);
   }
 }
@@ -16,6 +13,12 @@ extension JoinedChallengeExtension on JoinedChallenge {
 extension ChallengeLeaderboardEntryExtension on ChallengeLeaderboardEntry {
   bool isCompleted() {
     return currentActivityCount >= activityTargetCount;
+  }
+}
+
+extension IntListExtension on Iterable<int> {
+  int sum() {
+    return fold(0, (prev, current) => prev + current.round());
   }
 }
 

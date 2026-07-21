@@ -5,6 +5,7 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge.dart';
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/screens/progress_with_label.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -55,44 +56,64 @@ class MyChallengesWidget extends StatelessWidget {
       child: InkWell(
         onTap: () => openChallenge(context, challenge),
         child: SizedBox(
-          height: 300,
-          width: 250,
+          height: 250,
+          width: 200,
           child: Column(
             children: [
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [ThemeColors.primary, ThemeColors.secondary],
-                    ),
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: 16,
-                        left: 16,
-                        child: ChallengeTimeIndicator(start: challenge.start, end: challenge.end),
-                      ),
-                      Positioned(
-                        bottom: 8,
-                        left: 16,
-                        child: Text(
-                          challengeCampaignName,
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.background),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.left,
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [ThemeColors.primary, ThemeColors.secondary],
                         ),
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
                       ),
-                    ],
-                  ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            top: 40,
+                            right: 20,
+                            child: Transform.scale(
+                              scale: 1.625,
+                              child: Opacity(
+                                opacity: 0.2,
+                                child: ChallengeBadge(
+                                  activityType: challenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
+                                  variant: .light,
+                                  maxActivityCount: challenge.activities.map((a) => a.count.round()).sum(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 16,
+                            left: 16,
+                            child: ChallengeTimeIndicator(start: challenge.start, end: challenge.end),
+                          ),
+                          Positioned(
+                            bottom: 8,
+                            left: 16,
+                            child: Text(
+                              challengeCampaignName,
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.background),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
                 child: Container(
+                  color: ThemeColors.background,
                   padding: EdgeInsets.all(8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,7 +135,7 @@ class MyChallengesWidget extends StatelessWidget {
                               participants: challenge.activities.length,
                             ),
                             style: Theme.of(context).textTheme.labelMedium,
-                            maxLines: 2,
+                            maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -122,7 +143,7 @@ class MyChallengesWidget extends StatelessWidget {
                       Row(
                         children: [
                           SizedBox(
-                            width: 234,
+                            width: 184,
                             child: ProgressWithLabel(value: progressInfo.progressValue, label: progressInfo.label),
                           ),
                         ],
