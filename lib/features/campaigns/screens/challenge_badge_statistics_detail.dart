@@ -41,7 +41,7 @@ class ChallengeBadgeStatisticsDetail extends StatelessWidget {
 
   Widget getBadgeIcon(BuildContext context, JoinedChallenge challenge) {
     return InkWell(
-      onTap: () => ChallengeHelper.openJoinedChallenge(context, challenge),
+      onTap: () => ChallengeHelper.openChallengeAsJoined(context, challenge),
       child: ChallengeBadge(
         activityType: challenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
         variant: .dark,

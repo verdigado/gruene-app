@@ -228,7 +228,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Card(
         child: InkWell(
-          onTap: () => ChallengeHelper.openChallenge(context, challenge),
+          onTap: () => ChallengeHelper.openChallengeAsChallenge(context, challenge),
           child: SizedBox(
             height: 150,
             child: Row(
