@@ -1381,10 +1381,16 @@ paths:
             Comma-separated sort fields. Prefix a field with "-" for descending
             order. Supported fields: startDate, endDate, activityType, title,
             participantsCount, userDivision. userDivision requires a bearer
-            token.
+            token and only supports ascending order.
           schema:
             example: startDate,-participantsCount,title
             type: string
+        - name: onlyActiveCampaigns
+          required: false
+          in: query
+          description: When true, excludes challenges that belong to draft/archived
+          schema:
+            type: boolean
         - name: offset
           required: false
           in: query
@@ -1458,10 +1464,16 @@ paths:
             Comma-separated sort fields. Prefix a field with "-" for descending
             order. Supported fields: startDate, endDate, activityType, title,
             participantsCount, userDivision. userDivision requires a bearer
-            token.
+            token and only supports ascending order.
           schema:
             example: startDate,-participantsCount,title
             type: string
+        - name: onlyActiveCampaigns
+          required: false
+          in: query
+          description: When true, excludes challenges that belong to draft/archived
+          schema:
+            type: boolean
         - name: offset
           required: false
           in: query
@@ -1480,6 +1492,11 @@ paths:
           in: query
           schema:
             type: string
+        - name: onlyCompleted
+          required: false
+          in: query
+          schema:
+            type: boolean
       responses:
         '200':
           description: ''
@@ -4493,6 +4510,7 @@ components:
       enum:
         - campaigns.teamMembership.updated
         - campaigns.team-top10.updated
+        - campaigns.challengeMembership.timed
         - campaigns.routeAssignment.updated
         - campaigns.areaAssignment.updated
         - news.published

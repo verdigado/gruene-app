@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
 import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
@@ -185,8 +184,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
     var challengeBadges = (await challengeApiService.getMyChallenges(
       campaignId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
-    )).where((c) => c.isCompleted()).toList();
-    challengeBadges.sort((a, b) => b.end.compareTo(a.end));
+      onlyCompleted: true,
+      sorting: .endDescending,
+    ));
 
     campaignSettings.recentChallengeBadges = challengeBadges;
     campaignSettings.recentChallengeBadgesFetchTimestamp = DateTime.now();
