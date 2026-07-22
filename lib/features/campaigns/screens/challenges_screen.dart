@@ -78,6 +78,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     var challengeService = GetIt.I<GrueneApiChallengeService>();
     var joinedChallenges = await challengeService.getMyChallenges(
       challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
+      onlyActiveCampaigns: true,
+      sorting: .userDivision,
     );
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
