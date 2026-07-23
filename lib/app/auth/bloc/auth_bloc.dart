@@ -63,9 +63,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (isValid) {
         emit(Authenticated());
       } else {
-        final refreshed = await authRepository.refreshToken();
+        final newAccessToken = await authRepository.refreshAccessToken();
         await _pushNotificationService.updateSubscriptions();
-        if (refreshed) {
+        if (newAccessToken != null) {
           emit(Authenticated());
         } else {
           emit(Unauthenticated());

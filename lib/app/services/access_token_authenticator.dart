@@ -10,7 +10,6 @@ const retryCountHeader = 'Retry-Count';
 
 class AccessTokenAuthenticator implements Authenticator {
   final AuthRepository _authRepository = AuthRepository();
-  Completer<String?>? _completer;
 
   AccessTokenAuthenticator();
 
@@ -29,13 +28,16 @@ class AccessTokenAuthenticator implements Authenticator {
       }
 
       try {
-        final newAccessToken = await _refreshToken();
-        final updatedRequest = applyHeaders(request, {
-          HttpHeaders.authorizationHeader: '$bearerPrefix ${newAccessToken!}',
+        final newAccessToken = await _authRepository.refreshAccessToken();
+        if (newAccessToken == null) {
+          logger.w('Failed to refresh access token');
+          return null;
+        }
+
+        return applyHeaders(request, {
+          HttpHeaders.authorizationHeader: '$bearerPrefix $newAccessToken',
           retryCountHeader: '1',
         });
-
-        return updatedRequest;
       } catch (e) {
         logger.w('Failed to refresh access token: $e');
         return null;
@@ -43,32 +45,6 @@ class AccessTokenAuthenticator implements Authenticator {
     }
 
     return null;
-  }
-
-  Future<String?> _refreshToken() {
-    var completer = _completer;
-    if (completer != null && !completer.isCompleted) {
-      logger.d('Access token refresh is already in progress');
-      return completer.future;
-    }
-
-    completer = Completer<String?>();
-    _completer = completer;
-
-    _authRepository
-        .refreshToken()
-        .then((success) {
-          if (success) {
-            completer?.complete(_authRepository.getAccessToken());
-          } else {
-            completer?.completeError('Failed to refresh token', StackTrace.current);
-          }
-        })
-        .onError((error, stackTrace) {
-          completer?.completeError(error ?? 'Refresh token error', stackTrace);
-        });
-
-    return completer.future;
   }
 
   @override

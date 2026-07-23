@@ -14,6 +14,8 @@ import 'package:keycloak_authenticator/api.dart';
 import 'package:uuid/uuid.dart';
 
 class AuthRepository {
+  static Completer<String?>? _refreshCompleter;
+
   final FlutterAppAuth _appAuth = FlutterAppAuth();
   final _secureStorage = GetIt.instance<FlutterSecureStorage>();
   final AuthenticatorService _authenticatorService = GetIt.I<AuthenticatorService>();
@@ -108,37 +110,66 @@ class AuthRepository {
     return !isExpired;
   }
 
-  Future<bool> refreshToken() async {
+  Future<String?> refreshAccessToken() async {
+    final existing = _refreshCompleter;
+    if (existing != null && !existing.isCompleted) {
+      logger.d('Token refresh already in progress, awaiting existing attempt');
+      return existing.future;
+    }
+
+    final completer = Completer<String?>();
+    _refreshCompleter = completer;
+    // Ensure the future always has a listener so a completeError in the single-caller
+    // case is not surfaced as an unhandled async error.
+    completer.future.ignore();
+
+    try {
+      final result = await _refreshAccessToken();
+      completer.complete(result);
+      return result;
+    } catch (e, stackTrace) {
+      completer.completeError(e, stackTrace);
+      rethrow;
+    } finally {
+      _refreshCompleter = null;
+    }
+  }
+
+  Future<String?> _refreshAccessToken() async {
     final refreshToken = await getRefreshToken();
     if (refreshToken == null) {
       logger.d('No refresh token found');
-      return false;
+      return null;
     }
 
     try {
-      final TokenResponse result = await _appAuth.token(
-        TokenRequest(
-          Config.oidcClientId,
-          Config.oidcCallbackPath,
-          allowInsecureConnections: Config.isDevelopment,
-          refreshToken: refreshToken,
-          issuer: Config.oidcIssuer,
-        ),
-      );
+      final TokenResponse result = await _appAuth
+          .token(
+            TokenRequest(
+              Config.oidcClientId,
+              Config.oidcCallbackPath,
+              allowInsecureConnections: Config.isDevelopment,
+              refreshToken: refreshToken,
+              issuer: Config.oidcIssuer,
+            ),
+          )
+          .timeout(const Duration(seconds: 30));
 
       await _secureStorage.write(key: SecureStorageKeys.accessToken, value: result.accessToken);
       await _secureStorage.write(key: SecureStorageKeys.idToken, value: result.idToken);
       await _secureStorage.write(key: SecureStorageKeys.refreshToken, value: result.refreshToken);
       logger.d('Token refresh successful');
-      return true;
+      return result.accessToken;
     } catch (e) {
       logger.w('Token refresh failed: $e');
-      if (e is PlatformException && (e.message?.contains('Unable to resolve host') ?? false)) {
-        // Continue without successful token refresh if the app is offline
-        return true;
+      final isOffline =
+          (e is PlatformException && (e.message?.contains('Unable to resolve host') ?? false)) || e is TimeoutException;
+      if (isOffline) {
+        // Continue with the existing access token if the app is offline or the refresh timed out
+        return getAccessToken();
       }
     }
-    return false;
+    return null;
   }
 
   Future<void> _deleteTokens() async {
