@@ -125,7 +125,7 @@ class MyChallengesWidget extends StatelessWidget {
                             challenge.title,
                             style: Theme.of(context).textTheme.titleSmall,
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                            maxLines: 1,
                           ),
                           Text(
                             t.campaigns.challenges.challengeSubTitle(

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:percent_indicator/flutter_percent_indicator.dart';
 
 class ProgressWithLabel extends StatelessWidget {
   final double value;
   final String label;
 
-  const ProgressWithLabel({super.key, required this.value, required this.label})
+  final bool moveLabelWithProgress;
+
+  const ProgressWithLabel({super.key, required this.value, required this.label, this.moveLabelWithProgress = false})
     : assert(value >= 0 && value <= 1, 'value must be between 0.0 and 1.0');
 
   @override
@@ -16,13 +19,20 @@ class ProgressWithLabel extends StatelessWidget {
     // Position label horizontally based on progress, keep vertically centered
     final alignment = Alignment(
       // Map 0.0-1.0 to -0.8 to 0.8 (leaves margin at edges)
-      -0.8 + (clampedValue * 1.6),
+      -0.8 + (moveLabelWithProgress ? (clampedValue * 1.6) : 0),
       0, // Vertically centered on the progress bar
     );
 
     return Stack(
       children: [
-        LinearProgressIndicator(value: value, minHeight: 20),
+        LinearPercentIndicator(
+          percent: value,
+          lineHeight: 20,
+          progressColor: ThemeColors.primary,
+          backgroundColor: ThemeColors.grey200,
+          barRadius: Radius.circular(6),
+          padding: EdgeInsets.zero,
+        ),
         Align(
           alignment: alignment,
           child: Padding(padding: const EdgeInsets.symmetric(horizontal: 2), child: _buildLabel(context)),
@@ -41,7 +51,7 @@ class ProgressWithLabel extends StatelessWidget {
             foreground: Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 1.5
-              ..color = ThemeColors.secondary,
+              ..color = ThemeColors.primary,
           ),
         ),
         Text(
