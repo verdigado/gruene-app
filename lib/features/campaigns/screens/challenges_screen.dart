@@ -143,7 +143,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         children: [
           Row(
             children: [
-              Text(t.campaigns.challenges.availableChallengeLabel, style: Theme.of(context).textTheme.labelMedium),
+              Text(t.campaigns.challenges.availableChallengeLabel, style: Theme.of(context).textTheme.labelSmall),
             ],
           ),
           FilterChipCampaign(
@@ -308,8 +308,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                             ),
                             Text(
                               t.campaigns.challenges.challengeSubTitle(
-                                startDate: challenge.start.formattedDateTime,
-                                endDate: challenge.end.formattedDateTime,
+                                startDate: challenge.start.formattedDate,
+                                endDate: challenge.end.formattedDate,
                                 participants: challenge.participantCount.round(),
                               ),
                               style: Theme.of(context).textTheme.labelSmall,

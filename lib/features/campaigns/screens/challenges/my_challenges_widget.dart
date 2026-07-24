@@ -132,8 +132,8 @@ class MyChallengesWidget extends StatelessWidget {
                           ),
                           Text(
                             t.campaigns.challenges.challengeSubTitle(
-                              startDate: challenge.start.formattedDateTime,
-                              endDate: challenge.end.formattedDateTime,
+                              startDate: challenge.start.formattedDate,
+                              endDate: challenge.end.formattedDate,
                               participants: challenge.participantCount.round(),
                             ),
                             style: Theme.of(context).textTheme.labelSmall,
