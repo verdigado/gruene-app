@@ -40,8 +40,12 @@ class ChallengeTimeIndicator extends StatelessWidget {
       return SizedBox.shrink();
     }
     return Container(
-      decoration: BoxDecoration(color: ThemeColors.background, borderRadius: BorderRadius.circular(12)),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: ThemeColors.background,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: ThemeColors.grey200),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
