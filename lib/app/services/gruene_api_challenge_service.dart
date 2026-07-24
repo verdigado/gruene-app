@@ -19,14 +19,42 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
     map: (result) => result.data,
   );
 
-  Future<List<JoinedChallenge>> getMyChallenges({
+  Future<List<JoinedChallenge>> getAllMyChallenges({
     List<ChallengeStatus>? challengeStatus,
     String? campaignId,
     JoinedChallengeSort? sorting,
     bool? onlyCompleted,
     bool? onlyActiveCampaigns,
-    num? offset,
-    num? limit,
+  }) async {
+    var offset = 0;
+    final pageSize = 200;
+    var queryNextPage = true;
+    List<JoinedChallenge> allPages = [];
+    while (queryNextPage) {
+      var currentPage = await getMyChallenges(
+        challengeStatus: challengeStatus,
+        campaignId: campaignId,
+        sorting: sorting,
+        onlyCompleted: onlyCompleted,
+        onlyActiveCampaigns: onlyActiveCampaigns,
+        offset: offset,
+        limit: pageSize,
+      );
+      queryNextPage = currentPage.total > currentPage.offset + currentPage.data.length;
+      offset += currentPage.data.length;
+      allPages.addAll(currentPage.data);
+    }
+    return allPages;
+  }
+
+  Future<FindJoinedChallengesResponse> getMyChallenges({
+    List<ChallengeStatus>? challengeStatus,
+    String? campaignId,
+    JoinedChallengeSort? sorting,
+    bool? onlyCompleted,
+    bool? onlyActiveCampaigns,
+    required num offset,
+    required num limit,
   }) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsChallengesSelfGet(
       state: challengeStatus,
@@ -37,7 +65,6 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
       offset: offset,
       limit: limit,
     ),
-    map: (result) => result.data,
   );
 
   Future<ChallengeMembership> joinChallenge(String challengeId) async => getFromApi(
@@ -50,9 +77,8 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
   Future<Challenge> getChallenge(String challengeId) async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsChallengesChallengeIdGet(challengeId: challengeId));
 
-  Future<List<ChallengeLeaderboardEntry>> getChallengeLeaderboard(String challengeId) async => getFromApi(
+  Future<FindChallengeLeaderboardResponse> getChallengeLeaderboard(String challengeId) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsChallengesChallengeIdLeaderboardGet(challengeId: challengeId, limit: 99),
-    map: (result) => result.data,
   );
 
   String? _getSort(JoinedChallengeSort? sorting) {

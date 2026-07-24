@@ -76,7 +76,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     setState(() => _loading = true);
 
     var challengeService = GetIt.I<GrueneApiChallengeService>();
-    var joinedChallenges = await challengeService.getMyChallenges(
+    var joinedChallenges = await challengeService.getAllMyChallenges(
       challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
       onlyActiveCampaigns: true,
       sorting: .endDescending,
