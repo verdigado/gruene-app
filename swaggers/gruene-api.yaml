@@ -4510,7 +4510,6 @@ components:
       enum:
         - campaigns.teamMembership.updated
         - campaigns.team-top10.updated
-        - campaigns.challengeMembership.timed
         - campaigns.routeAssignment.updated
         - campaigns.areaAssignment.updated
         - news.published
@@ -5863,12 +5862,15 @@ components:
           type: number
         activityTargetCount:
           type: number
+        activityProgressCount:
+          type: number
       required:
         - rank
         - userName
         - divisionName
         - currentActivityCount
         - activityTargetCount
+        - activityProgressCount
     ChallengeStatus:
       type: string
       enum:
