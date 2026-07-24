@@ -79,7 +79,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     var joinedChallenges = await challengeService.getMyChallenges(
       challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
       onlyActiveCampaigns: true,
-      sorting: .userDivision,
+      sorting: .endDescending,
     );
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
@@ -106,6 +106,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         activityTypes: challengeActivityFilter,
         challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
         offset: PagingHelper.getOffsetForPage(newKey, _pageSize),
+        sorting: .userDivision,
         limit: _pageSize,
       );
 
