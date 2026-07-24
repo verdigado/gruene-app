@@ -7,9 +7,15 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
     num? offset,
     num? limit,
     List<ChallengeStatus>? challengeStatus,
+    JoinedChallengeSort? sorting,
   }) async => getFromApi(
-    apiRequest: (api) =>
-        api.v1CampaignsChallengesGet(activityType: activityTypes, offset: offset, limit: limit, state: challengeStatus),
+    apiRequest: (api) => api.v1CampaignsChallengesGet(
+      activityType: activityTypes,
+      offset: offset,
+      limit: limit,
+      state: challengeStatus,
+      sort: _getSort(sorting),
+    ),
     map: (result) => result.data,
   );
 
@@ -19,6 +25,8 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
     JoinedChallengeSort? sorting,
     bool? onlyCompleted,
     bool? onlyActiveCampaigns,
+    num? offset,
+    num? limit,
   }) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsChallengesSelfGet(
       state: challengeStatus,
@@ -26,6 +34,8 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
       sort: _getSort(sorting),
       onlyCompleted: onlyCompleted,
       onlyActiveCampaigns: onlyActiveCampaigns,
+      offset: offset,
+      limit: limit,
     ),
     map: (result) => result.data,
   );

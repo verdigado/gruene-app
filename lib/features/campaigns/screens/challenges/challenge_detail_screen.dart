@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
@@ -92,6 +93,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     return Scaffold(
       appBar: MainAppBar(title: t.campaigns.challenges.challengeDetail.title, showSettings: false),
       body: Container(
+        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding + 12),
         height: data.size.height,
         width: data.size.width,
         color: ThemeColors.grey200,
@@ -140,11 +142,11 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                     SizedBox(height: 80),
                     Text(
                       challengeCampaignName,
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: ThemeColors.textDisabled),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.textDisabled),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       textAlign: TextAlign.left,
-                    ),
+                    ).withOpacity(0.8),
                     SizedBox(height: 12),
                     Container(
                       decoration: BoxDecoration(
@@ -185,7 +187,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
       children: [
         Text(
           t.campaigns.challenges.detailScreen.leaderboard.title,
-          style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         SizedBox(height: 30),
         Column(children: _getChallengeLeaderboard()),
@@ -204,7 +206,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_currentChallenge.title, style: theme.textTheme.titleLarge),
+          Text(_currentChallenge.title, style: theme.textTheme.titleLarge?.copyWith(fontSize: 26)),
           SizedBox(height: 10),
           Text(
             t.campaigns.challenges.challengeSubTitleLong(
@@ -213,10 +215,10 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
               activities: activitiesText,
               participants: _currentChallenge.participantCount.round(),
             ),
-            style: theme.textTheme.labelMedium,
-          ),
+            style: theme.textTheme.labelSmall,
+          ).withOpacity(0.8),
           SizedBox(height: 14),
-          Text(_currentChallenge.description ?? '', style: theme.textTheme.labelMedium),
+          Text(_currentChallenge.description ?? '', style: theme.textTheme.labelSmall),
         ],
       ),
     );
@@ -234,7 +236,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
           onPressed: () => joinChallenge(),
           child: Text(
             t.campaigns.challenges.actions.join,
-            style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+            style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.surface, fontSize: 15),
           ),
         ),
       );
@@ -254,7 +256,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
               children: [
                 Text(
                   t.campaigns.challenges.detailScreen.myProgress,
-                  style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 DateTime.now().isBetween(DateTimeRange(start: _currentChallenge.start, end: _currentChallenge.end)) &&
                         leftOverActivities.isNotEmpty
@@ -269,7 +271,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
                           styleSheet: MarkdownStyleSheet.fromTheme(
                             theme,
-                          ).copyWith(p: Theme.of(context).textTheme.labelMedium),
+                          ).copyWith(p: Theme.of(context).textTheme.labelSmall),
                         ),
                       )
                     : SizedBox.shrink(),
@@ -285,11 +287,13 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                 onTap: () => leaveChallenge(_currentChallenge),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 6,
                   children: [
-                    Icon(Icons.logout_outlined, color: ThemeColors.primary),
+                    Icon(Icons.logout_outlined, color: ThemeColors.primary, size: 16),
+
                     Text(
                       t.campaigns.challenges.actions.leave,
-                      style: theme.textTheme.labelMedium?.copyWith(
+                      style: theme.textTheme.labelSmall?.copyWith(
                         color: ThemeColors.primary,
                         fontWeight: FontWeight.w700,
                       ),
@@ -386,7 +390,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
               Column(
                 crossAxisAlignment: .start,
                 children: [
-                  Text(item.userName, style: theme.textTheme.displayMedium, overflow: .fade),
+                  Text(item.userName, style: theme.textTheme.labelLarge?.copyWith(fontSize: 18), overflow: .fade),
                   Text(item.divisionName, style: theme.textTheme.labelMedium, overflow: .fade),
                 ],
               ),
@@ -406,17 +410,20 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                               ? [
                                   Text(
                                     t.campaigns.challenges.detailScreen.leaderboard.targetReached,
-                                    style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 8,
+                                    ),
                                   ),
                                   SizedBox(width: 5),
                                 ]
                               : [SizedBox.shrink()]),
-                          Icon(Icons.emoji_events_outlined),
+                          Icon(Icons.emoji_events_outlined, size: 13),
                         ],
                       ),
                     )
                   : SizedBox.shrink(),
-              Text(item.currentActivityCount.round().toString(), textAlign: .end, style: theme.textTheme.labelMedium),
+              Text(item.currentActivityCount.round().toString(), textAlign: .end, style: theme.textTheme.labelSmall),
             ],
           ),
         ],
