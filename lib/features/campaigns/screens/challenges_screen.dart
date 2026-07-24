@@ -273,7 +273,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                   child: Container(
                     padding: EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
                       color: ThemeColors.background,
                     ),
                     child: Column(

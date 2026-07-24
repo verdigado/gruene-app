@@ -112,7 +112,10 @@ class MyChallengesWidget extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
-                  color: ThemeColors.background,
+                  decoration: BoxDecoration(
+                    color: ThemeColors.background,
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                  ),
                   padding: EdgeInsets.all(8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
