@@ -4,10 +4,10 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class GrueneApiChallengeService extends GrueneApiBaseService {
   Future<List<Challenge>> getChallenges({
     List<ChallengeActivityType>? activityTypes,
-    num? offset,
-    num? limit,
     List<ChallengeStatus>? challengeStatus,
     JoinedChallengeSort? sorting,
+    required num offset,
+    required num limit,
   }) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsChallengesGet(
       activityType: activityTypes,
