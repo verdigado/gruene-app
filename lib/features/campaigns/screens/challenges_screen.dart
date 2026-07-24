@@ -310,7 +310,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                               t.campaigns.challenges.challengeSubTitle(
                                 startDate: challenge.start.formattedDateTime,
                                 endDate: challenge.end.formattedDateTime,
-                                participants: challenge.activities.length,
+                                participants: challenge.participantCount.round(),
                               ),
                               style: Theme.of(context).textTheme.labelMedium,
                               maxLines: 2,
