@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
@@ -92,6 +93,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     return Scaffold(
       appBar: MainAppBar(title: t.campaigns.challenges.challengeDetail.title, showSettings: false),
       body: Container(
+        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding + 12),
         height: data.size.height,
         width: data.size.width,
         color: ThemeColors.grey200,
