@@ -5,7 +5,14 @@ part of '../converters.dart';
 extension JoinedChallengeExtension on JoinedChallenge {
   ChallengeProgressInfo getProgressInfo() {
     var maxActivityCount = activities.map((a) => a.count.round()).sum();
-    var currentActivityCount = participations.map((p) => p.currentContributionCount.round()).sum();
+    var currentActivityCount = participations
+        .map(
+          (p) => min(
+            p.currentContributionCount.round(),
+            activities.firstWhereOrNull((a) => a.type == p.type)?.count.round() ?? 0,
+          ),
+        )
+        .sum();
     return ChallengeProgressInfo(currentActivityCount: currentActivityCount, maxActivityCount: maxActivityCount);
   }
 
@@ -16,7 +23,7 @@ extension JoinedChallengeExtension on JoinedChallenge {
 
 extension ChallengeLeaderboardEntryExtension on ChallengeLeaderboardEntry {
   bool isCompleted() {
-    return currentActivityCount >= activityTargetCount;
+    return activityProgressCount >= activityTargetCount;
   }
 }
 

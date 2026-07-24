@@ -90,19 +90,19 @@ class MyChallengesWidget extends StatelessWidget {
                           ),
                           Positioned(
                             top: 16,
-                            left: 16,
+                            left: 10,
                             child: ChallengeTimeIndicator(start: challenge.start, end: challenge.end),
                           ),
                           Positioned(
                             bottom: 8,
-                            left: 16,
+                            left: 10,
                             child: Text(
                               challengeCampaignName,
                               style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.background),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               textAlign: TextAlign.left,
-                            ),
+                            ).withOpacity(0.7),
                           ),
                         ],
                       ),
@@ -112,8 +112,11 @@ class MyChallengesWidget extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
-                  color: ThemeColors.background,
-                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: ThemeColors.background,
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                  ),
+                  padding: EdgeInsets.all(10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -125,24 +128,24 @@ class MyChallengesWidget extends StatelessWidget {
                             challenge.title,
                             style: Theme.of(context).textTheme.titleSmall,
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                            maxLines: 1,
                           ),
                           Text(
                             t.campaigns.challenges.challengeSubTitle(
-                              startDate: challenge.start.formattedDateTime,
-                              endDate: challenge.end.formattedDateTime,
-                              participants: challenge.activities.length,
+                              startDate: challenge.start.formattedDate,
+                              endDate: challenge.end.formattedDate,
+                              participants: challenge.participantCount.round(),
                             ),
-                            style: Theme.of(context).textTheme.labelMedium,
+                            style: Theme.of(context).textTheme.labelSmall,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
-                          ),
+                          ).withOpacity(0.8),
                         ],
                       ),
                       Row(
                         children: [
                           SizedBox(
-                            width: 184,
+                            width: 180,
                             child: ProgressWithLabel(value: progressInfo.progressValue, label: progressInfo.label),
                           ),
                         ],

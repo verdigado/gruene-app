@@ -9,4 +9,8 @@ extension WidgetExtension on Widget {
       ],
     );
   }
+
+  Widget withOpacity(double opacity) {
+    return Opacity(opacity: opacity, child: this);
+  }
 }

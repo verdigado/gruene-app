@@ -86,6 +86,7 @@ dependencies:
   diacritic: ^0.1.6
   dropdown_search: ^7.0.0
   flutter_markdown_plus: ^1.0.12
+  percent_indicator: ^4.2.5
 
 dev_dependencies:
 

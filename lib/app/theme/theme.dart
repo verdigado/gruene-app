@@ -225,7 +225,7 @@ final ThemeData appTheme =
       ),
 
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: ThemeColors.secondary,
+        color: ThemeColors.primary,
         linearTrackColor: ThemeColors.grey200,
         linearMinHeight: 12,
         borderRadius: BorderRadius.circular(6),
@@ -235,6 +235,7 @@ final ThemeData appTheme =
 final boxShadowDecoration = BoxDecoration(
   color: ThemeColors.background,
   borderRadius: BorderRadius.all(Radius.circular(10)),
+
   boxShadow: [
     BoxShadow(
       color: Colors.grey.withValues(alpha: 0.5),

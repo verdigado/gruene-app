@@ -79,7 +79,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     var joinedChallenges = await challengeService.getMyChallenges(
       challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
       onlyActiveCampaigns: true,
-      sorting: .userDivision,
+      sorting: .endDescending,
     );
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
@@ -106,6 +106,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         activityTypes: challengeActivityFilter,
         challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
         offset: PagingHelper.getOffsetForPage(newKey, _pageSize),
+        sorting: .userDivision,
         limit: _pageSize,
       );
 
@@ -142,7 +143,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         children: [
           Row(
             children: [
-              Text(t.campaigns.challenges.availableChallengeLabel, style: Theme.of(context).textTheme.labelMedium),
+              Text(t.campaigns.challenges.availableChallengeLabel, style: Theme.of(context).textTheme.labelSmall),
             ],
           ),
           FilterChipCampaign(
@@ -272,7 +273,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                   child: Container(
                     padding: EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(8), bottomRight: Radius.circular(8)),
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
                       color: ThemeColors.background,
                     ),
                     child: Column(
@@ -298,23 +299,23 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               textAlign: TextAlign.left,
-                            ),
+                            ).withOpacity(0.8),
                             Text(
                               challenge.title,
-                              style: Theme.of(context).textTheme.titleSmall,
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 12),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                             ),
                             Text(
                               t.campaigns.challenges.challengeSubTitle(
-                                startDate: challenge.start.formattedDateTime,
-                                endDate: challenge.end.formattedDateTime,
-                                participants: challenge.activities.length,
+                                startDate: challenge.start.formattedDate,
+                                endDate: challenge.end.formattedDate,
+                                participants: challenge.participantCount.round(),
                               ),
-                              style: Theme.of(context).textTheme.labelMedium,
+                              style: Theme.of(context).textTheme.labelSmall,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                            ),
+                            ).withOpacity(0.8),
                           ],
                         ),
                         Row(
@@ -323,9 +324,11 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                             _joinedChallenges.any((c) => c.id == challenge.id)
                                 ? Text(
                                     t.campaigns.challenges.actions.participated,
-                                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                       color: ThemeColors.primary,
                                       decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 10,
                                     ),
                                   ).disable()
                                 : GestureDetector(
@@ -335,6 +338,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                                         color: ThemeColors.primary,
                                         decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 10,
                                       ),
                                     ),
                                   ),
