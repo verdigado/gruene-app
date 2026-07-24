@@ -6042,6 +6042,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChallengeLeaderboardEntry'
+        lastUpdate:
+          format: date-time
+          type: string
         total:
           type: number
         offset:
@@ -6050,6 +6053,7 @@ components:
           type: number
       required:
         - data
+        - lastUpdate
         - total
         - offset
         - limit

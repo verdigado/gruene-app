@@ -189,6 +189,10 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
           t.campaigns.challenges.detailScreen.leaderboard.title,
           style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
+        Text(
+          t.campaigns.challenges.detailScreen.leaderboard.version(last_udpate: 'ass'),
+          style: theme.textTheme.labelSmall?.copyWith(fontSize: 8),
+        ).withOpacity(0.8),
         SizedBox(height: 30),
         Column(children: _getChallengeLeaderboard()),
       ],
