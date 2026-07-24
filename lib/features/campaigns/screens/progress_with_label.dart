@@ -30,7 +30,7 @@ class ProgressWithLabel extends StatelessWidget {
           lineHeight: 20,
           progressColor: ThemeColors.primary,
           backgroundColor: ThemeColors.grey200,
-          barRadius: Radius.circular(6),
+          barRadius: Radius.circular(10),
           padding: EdgeInsets.zero,
         ),
         Align(
