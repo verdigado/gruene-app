@@ -18,25 +18,33 @@ extension NullableRemoteMessageExtension on RemoteMessage? {
         return NotificationMessageType.routeAssignmentUpdate;
       case NotificationConstants.notificationTypeAreaAssignmentUpdated:
         return NotificationMessageType.areaAssignmentUpdate;
+      case NotificationConstants.notificationTypeChallengeMembershipTimeElapsed:
+        return NotificationMessageType.challengeMembershipTimeElapsed;
+      case NotificationConstants.notificationTypeChallengeMembershipTargetReached:
+        return NotificationMessageType.challengeMembershipTargetReached;
     }
+    logger.d('No push notification handler found for type `$type`');
     return null;
   }
 }
 
 extension RemoteMessageExtension on RemoteMessage {
-  BaseNotificationHandler getNotificationHandler() {
-    final type = getMessageType();
-    return GetIt.I<BaseNotificationHandler>(instanceName: type?.toString() ?? '');
+  BaseNotificationHandler? getNotificationHandler() {
+    final messageType = getMessageType();
+    if (messageType == null) {
+      return null;
+    }
+    return GetIt.I<BaseNotificationHandler>(instanceName: messageType.toString());
   }
 
   void processMessage(BuildContext? currentContext) {
     var handler = getNotificationHandler();
-    handler.processMessage(this, currentContext);
+    handler?.processMessage(this, currentContext);
   }
 
   String? getPayload() {
     var handler = getNotificationHandler();
-    return handler.getPayload(this);
+    return handler?.getPayload(this);
   }
 }
 
@@ -44,11 +52,15 @@ extension NotificationResponseExtension on NotificationResponse {
   BaseNotificationHandler? getNotificationHandler() {
     var localPayload = payload;
     NotificationMessageType? instanceIdentifier;
-    if (localPayload == null) throw UnimplementedError();
+    if (localPayload == null || localPayload.trim().isEmpty) throw UnimplementedError();
     if (localPayload.startsWith(NotificationConstants.payloadNewsPrefix)) {
       instanceIdentifier = NotificationMessageType.news;
     } else if (localPayload.startsWith(NotificationConstants.payloadMfa)) {
       instanceIdentifier = NotificationMessageType.mfa;
+    } else if (localPayload.startsWith(NotificationConstants.payloadCampaignsChallengeMembershipTimeElapsedPrefix)) {
+      instanceIdentifier = NotificationMessageType.challengeMembershipTimeElapsed;
+    } else if (localPayload.startsWith(NotificationConstants.payloadCampaignsChallengeMembershipTargetReachedPrefix)) {
+      instanceIdentifier = NotificationMessageType.challengeMembershipTargetReached;
     } else if (localPayload == NotificationConstants.payloadTeam) {
       instanceIdentifier = NotificationMessageType.teamMembershipUpdate;
     } else if (localPayload == NotificationConstants.payloadTeamTop10) {

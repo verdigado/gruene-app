@@ -5,4 +5,6 @@ enum NotificationMessageType {
   routeAssignmentUpdate,
   areaAssignmentUpdate,
   teamTop10Update,
+  challengeMembershipTimeElapsed,
+  challengeMembershipTargetReached,
 }

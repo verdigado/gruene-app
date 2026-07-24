@@ -76,11 +76,15 @@ class ChallengeHelper {
     showToastAsSnack(context, t.campaigns.challenges.leaveConfirmationDialog.leaveToast(title: challenge.title));
   }
 
-  static void openChallenge(BuildContext context, Challenge challenge) {
-    context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
+  static void openChallenge(BuildContext context, String challengeId, {Object? extra}) {
+    context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challengeId]), extra: extra);
   }
 
-  static void openJoinedChallenge(BuildContext context, JoinedChallenge challenge) {
-    context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challenge.id]), extra: challenge);
+  static void openChallengeAsChallenge(BuildContext context, Challenge challenge) {
+    openChallenge(context, challenge.id, extra: challenge);
+  }
+
+  static void openChallengeAsJoined(BuildContext context, JoinedChallenge challenge) {
+    openChallenge(context, challenge.id, extra: challenge);
   }
 }

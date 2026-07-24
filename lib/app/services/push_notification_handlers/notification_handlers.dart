@@ -7,10 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
+import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
 
 part 'base_notification_handler.dart';
 part 'news_notification_handler.dart';
 part 'mfa_notification_handler.dart';
 part 'team_notification_handler.dart';
 part 'team_top10_notification_handler.dart';
+part 'challenge_membership_time_elapsed_handler.dart';
+part 'challenge_membership_target_reached_handler.dart';
 part 'notification_constants.dart';

@@ -53,7 +53,7 @@ class MyChallengesWidget extends StatelessWidget {
     var progressInfo = challenge.getProgressInfo();
     return Card(
       child: InkWell(
-        onTap: () => ChallengeHelper.openJoinedChallenge(context, challenge),
+        onTap: () => ChallengeHelper.openChallengeAsJoined(context, challenge),
         child: SizedBox(
           height: 250,
           width: 200,
