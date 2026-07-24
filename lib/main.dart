@@ -108,8 +108,6 @@ Future<void> main() async {
   intializeNotficationHandlers();
   WidgetsFlutterBinding.ensureInitialized();
 
-  // setupCachePeriodicFlushing();
-
   runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
 }
 
