@@ -90,12 +90,12 @@ class MyChallengesWidget extends StatelessWidget {
                           ),
                           Positioned(
                             top: 16,
-                            left: 16,
+                            left: 10,
                             child: ChallengeTimeIndicator(start: challenge.start, end: challenge.end),
                           ),
                           Positioned(
                             bottom: 8,
-                            left: 16,
+                            left: 10,
                             child: Text(
                               challengeCampaignName,
                               style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.background),
@@ -116,7 +116,7 @@ class MyChallengesWidget extends StatelessWidget {
                     color: ThemeColors.background,
                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
                   ),
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.all(10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -145,7 +145,7 @@ class MyChallengesWidget extends StatelessWidget {
                       Row(
                         children: [
                           SizedBox(
-                            width: 184,
+                            width: 180,
                             child: ProgressWithLabel(value: progressInfo.progressValue, label: progressInfo.label),
                           ),
                         ],
