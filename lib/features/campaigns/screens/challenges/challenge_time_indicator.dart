@@ -69,7 +69,7 @@ class ChallengeTimeIndicator extends StatelessWidget {
             ),
           ),
           SizedBox(width: 6),
-          Text(indicatorText, style: Theme.of(context).textTheme.labelMedium),
+          Text(indicatorText, style: Theme.of(context).textTheme.labelSmall),
         ],
       ),
     );
