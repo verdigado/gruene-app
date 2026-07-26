@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
+import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
@@ -35,6 +36,8 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
   Campaign? _currentCampaign;
   double _lastRankWithTargetReached = -1;
 
+  bool _hasError = false;
+
   @override
   void initState() {
     super.initState();
@@ -44,55 +47,60 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
   }
 
   Future<void> _loadData() async {
-    setState(() => _loading = true);
+    setState(() {
+      _loading = true;
+      _hasError = false;
+    });
 
-    var challengeService = GetIt.I<GrueneApiChallengeService>();
-    var results = await Future.wait([
-      challengeService.getChallenge(widget.challengeId),
-      challengeService.getAllMyChallenges(),
-      challengeService.getChallengeLeaderboard(widget.challengeId),
-    ]);
-    var currentChallenge = results[0] as Challenge;
-    var currentJoinedChallenge = (results[1] as List<JoinedChallenge>).firstWhereOrNull(
-      (c) => c.id == currentChallenge.id,
-    );
-    var currentChallengeLeaderboardResult = results[2] as FindChallengeLeaderboardResponse;
-    var currentChallengeLeaderboard = currentChallengeLeaderboardResult.data;
+    try {
+      var challengeService = GetIt.I<GrueneApiChallengeService>();
+      var results = await Future.wait([
+        challengeService.getChallenge(widget.challengeId),
+        challengeService.getAllMyChallenges(),
+        challengeService.getChallengeLeaderboard(widget.challengeId),
+      ]);
+      var currentChallenge = results[0] as Challenge;
+      var currentJoinedChallenge = (results[1] as List<JoinedChallenge>).firstWhereOrNull(
+        (c) => c.id == currentChallenge.id,
+      );
+      var currentChallengeLeaderboardResult = results[2] as FindChallengeLeaderboardResponse;
+      var currentChallengeLeaderboard = currentChallengeLeaderboardResult.data;
 
-    var lastRankWithTargetReached = currentChallengeLeaderboard.where((x) => x.isCompleted()).lastOrNull?.rank ?? -1;
-    if (lastRankWithTargetReached == (currentChallengeLeaderboard.lastOrNull?.rank ?? -1)) {
-      lastRankWithTargetReached = -1;
-    }
+      var lastRankWithTargetReached = currentChallengeLeaderboard.where((x) => x.isCompleted()).lastOrNull?.rank ?? -1;
+      if (lastRankWithTargetReached == (currentChallengeLeaderboard.lastOrNull?.rank ?? -1)) {
+        lastRankWithTargetReached = -1;
+      }
 
-    Campaign? currentCampaign;
-    if (currentChallenge.campaignId != null) {
-      var campaignService = GetIt.I<GrueneApiCampaignService>();
-      currentCampaign = await campaignService.getCampaign(currentChallenge.campaignId!);
-    }
+      Campaign? currentCampaign;
+      if (currentChallenge.campaignId != null) {
+        var campaignService = GetIt.I<GrueneApiCampaignService>();
+        currentCampaign = await campaignService.getCampaign(currentChallenge.campaignId!);
+      }
 
-    if (mounted) {
-      setState(() {
-        _loading = false;
-        _currentChallenge = currentChallenge;
-        _currentJoinedChallenge = currentJoinedChallenge;
-        _currentChallengeLeaderboard = currentChallengeLeaderboard;
-        _lastLeaderboardUpdate = currentChallengeLeaderboardResult.lastUpdate;
-        _lastRankWithTargetReached = lastRankWithTargetReached;
-        _currentCampaign = currentCampaign;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _currentChallenge = currentChallenge;
+          _currentJoinedChallenge = currentJoinedChallenge;
+          _currentChallengeLeaderboard = currentChallengeLeaderboard;
+          _lastLeaderboardUpdate = currentChallengeLeaderboardResult.lastUpdate;
+          _lastRankWithTargetReached = lastRankWithTargetReached;
+          _currentCampaign = currentCampaign;
+        });
+      }
+    } on Exception {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _hasError = true;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return Center(
-        child: Container(alignment: Alignment.center, child: CircularProgressIndicator()),
-      );
-    }
-    String challengeCampaignName = _currentCampaign == null ? ' ' : _currentCampaign?.name ?? t.common.unknown;
     var data = MediaQuery.of(context);
-    var theme = Theme.of(context);
     return Scaffold(
       appBar: MainAppBar(title: t.campaigns.challenges.challengeDetail.title, showSettings: false),
       body: Container(
@@ -100,86 +108,102 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
         height: data.size.height,
         width: data.size.width,
         color: ThemeColors.grey200,
-        child: SingleChildScrollView(
-          child: Stack(
+        child: _getDetailWidget(),
+      ),
+    );
+  }
+
+  Widget? _getDetailWidget() {
+    var data = MediaQuery.of(context);
+
+    if (_loading) {
+      return Center(
+        child: Container(alignment: Alignment.center, child: CircularProgressIndicator()),
+      );
+    }
+    if (_hasError) {
+      return ErrorScreen(errorMessage: t.error.unknownError, retry: () => _loadData());
+    }
+    String challengeCampaignName = _currentCampaign == null ? ' ' : _currentCampaign?.name ?? t.common.unknown;
+    var theme = Theme.of(context);
+    return SingleChildScrollView(
+      child: Stack(
+        children: [
+          Stack(
             children: [
-              Stack(
-                children: [
-                  Container(
-                    height: 128,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [ThemeColors.primary, ThemeColors.secondary],
-                      ),
-                    ),
+              Container(
+                height: 128,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [ThemeColors.primary, ThemeColors.secondary],
                   ),
-                  Positioned(
-                    top: 15,
-                    right: 70,
-                    child: Transform.scale(
-                      scale: 2.4,
-                      child: Opacity(
-                        opacity: 0.2,
-                        child: ChallengeBadge(
-                          activityType: _currentChallenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
-                          variant: .light,
-                          maxActivityCount: _currentChallenge.activities.map((a) => a.count.round()).sum(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               Positioned(
-                top: 18,
-                left: 16,
-                child: ChallengeTimeIndicator(start: _currentChallenge.start, end: _currentChallenge.end),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 80),
-                    Text(
-                      challengeCampaignName,
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.textDisabled),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      textAlign: TextAlign.left,
-                    ).withOpacity(0.8),
-                    SizedBox(height: 12),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: ThemeColors.background,
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      width: data.size.width - 32,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [getChallengeBaseInfo(theme), SizedBox(height: 10), getJoinOrProgress()],
-                      ),
+                top: 15,
+                right: 70,
+                child: Transform.scale(
+                  scale: 2.4,
+                  child: Opacity(
+                    opacity: 0.2,
+                    child: ChallengeBadge(
+                      activityType: _currentChallenge.activities.firstOrNull?.type ?? ChallengeActivityType.house,
+                      variant: .light,
+                      maxActivityCount: _currentChallenge.activities.map((a) => a.count.round()).sum(),
                     ),
-                    SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: ThemeColors.background,
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      width: data.size.width - 32,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 16),
-                        child: getChallengeLeaderboardOverview(theme),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],
           ),
-        ),
+          Positioned(
+            top: 18,
+            left: 16,
+            child: ChallengeTimeIndicator(start: _currentChallenge.start, end: _currentChallenge.end),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 80),
+                Text(
+                  challengeCampaignName,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.textDisabled),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  textAlign: TextAlign.left,
+                ).withOpacity(0.8),
+                SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(
+                    color: ThemeColors.background,
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  width: data.size.width - 32,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [getChallengeBaseInfo(theme), SizedBox(height: 10), getJoinOrProgress()],
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    color: ThemeColors.background,
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  width: data.size.width - 32,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 16),
+                    child: getChallengeLeaderboardOverview(theme),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
