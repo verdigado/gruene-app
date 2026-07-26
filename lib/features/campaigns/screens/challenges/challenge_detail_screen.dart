@@ -31,6 +31,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
   late Challenge _currentChallenge;
   JoinedChallenge? _currentJoinedChallenge;
   late List<ChallengeLeaderboardEntry> _currentChallengeLeaderboard;
+  late DateTime _lastLeaderboardUpdate;
   Campaign? _currentCampaign;
   double _lastRankWithTargetReached = -1;
 
@@ -48,14 +49,15 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     var challengeService = GetIt.I<GrueneApiChallengeService>();
     var results = await Future.wait([
       challengeService.getChallenge(widget.challengeId),
-      challengeService.getMyChallenges(),
+      challengeService.getAllMyChallenges(),
       challengeService.getChallengeLeaderboard(widget.challengeId),
     ]);
     var currentChallenge = results[0] as Challenge;
     var currentJoinedChallenge = (results[1] as List<JoinedChallenge>).firstWhereOrNull(
       (c) => c.id == currentChallenge.id,
     );
-    var currentChallengeLeaderboard = results[2] as List<ChallengeLeaderboardEntry>;
+    var currentChallengeLeaderboardResult = results[2] as FindChallengeLeaderboardResponse;
+    var currentChallengeLeaderboard = currentChallengeLeaderboardResult.data;
 
     var lastRankWithTargetReached = currentChallengeLeaderboard.where((x) => x.isCompleted()).lastOrNull?.rank ?? -1;
     if (lastRankWithTargetReached == (currentChallengeLeaderboard.lastOrNull?.rank ?? -1)) {
@@ -74,6 +76,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
         _currentChallenge = currentChallenge;
         _currentJoinedChallenge = currentJoinedChallenge;
         _currentChallengeLeaderboard = currentChallengeLeaderboard;
+        _lastLeaderboardUpdate = currentChallengeLeaderboardResult.lastUpdate;
         _lastRankWithTargetReached = lastRankWithTargetReached;
         _currentCampaign = currentCampaign;
       });
@@ -189,6 +192,12 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
           t.campaigns.challenges.detailScreen.leaderboard.title,
           style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
+        Text(
+          t.campaigns.challenges.detailScreen.leaderboard.version(
+            last_udpate: _lastLeaderboardUpdate.getAsLocalDateTimeString(),
+          ),
+          style: theme.textTheme.labelSmall?.copyWith(fontSize: 8),
+        ).withOpacity(0.8),
         SizedBox(height: 30),
         Column(children: _getChallengeLeaderboard()),
       ],

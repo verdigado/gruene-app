@@ -182,7 +182,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     }
     var challengeApiService = GetIt.I<GrueneApiChallengeService>();
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
-    var challengeBadges = (await challengeApiService.getMyChallenges(
+    var challengeBadges = (await challengeApiService.getAllMyChallenges(
       campaignId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
       onlyCompleted: true,
       sorting: .endDescending,
