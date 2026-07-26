@@ -106,7 +106,7 @@ class PushNotificationService {
     if (fbToken != null) {
       // register device on api for api controlled events
       var userService = GetIt.I<GrueneApiUserService>();
-      userService.addDeviceToken(fbToken);
+      await userService.addDeviceToken(fbToken);
     }
 
     final newTopics = await _getFcmTopics();

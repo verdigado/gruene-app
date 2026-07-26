@@ -5,6 +5,9 @@ class NotificationConstants {
   static const String payloadTeam = 'team';
   static const String payloadNewsPrefix = 'news.';
   static const String payloadMfa = 'mfa';
+  static const String payloadCampaignsChallengeMembershipTimeElapsedPrefix = 'campaignsChallengeMembershipTimeElapsed.';
+  static const String payloadCampaignsChallengeMembershipTargetReachedPrefix =
+      'campaignsChallengeMembershipTargetReached.';
 
   static const notificationTypeNews = 'news.published';
   static const notificationTypeMfa = 'mfa';
@@ -12,4 +15,6 @@ class NotificationConstants {
   static const notificationTypeTeamTop10Updated = 'campaigns.team-top10.updated';
   static const notificationTypeRouteAssignmentUpdated = 'campaigns.routeAssignment.updated';
   static const notificationTypeAreaAssignmentUpdated = 'campaigns.areaAssignment.updated';
+  static const notificationTypeChallengeMembershipTimeElapsed = 'campaigns.challengeMembership.time.elapsed';
+  static const notificationTypeChallengeMembershipTargetReached = 'campaigns.challengeMembership.target.reached';
 }

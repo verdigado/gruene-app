@@ -98,6 +98,20 @@ Future<void> main() async {
   GetIt.I.registerSingleton<OpenInvitationCampaignValueStore>(OpenInvitationCampaignValueStore());
   GetIt.I.registerSingleton<ActiveCampaignNotifier>(ActiveCampaignNotifier());
   GetIt.I.registerSingleton<NewCampaignNotifier>(NewCampaignNotifier());
+  initializeTimers();
+  GetIt.I.registerSingleton<FileManager>(FileManager());
+  GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.poster.toString());
+  GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.flyer.toString());
+  GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.door.toString());
+  GetIt.I.registerSingleton<TeamRefreshController>(TeamRefreshController());
+  initializeApiServices();
+  intializeNotficationHandlers();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
+}
+
+void initializeTimers() {
   GetIt.I.registerSingleton<BackgroundTimer>(
     AppTimers.getCampaignActionCacheTimer(),
     instanceName: 'campaignActionCacheTimer',
@@ -111,11 +125,9 @@ Future<void> main() async {
     AppTimers.getCheckForNewCampaignsTimer(),
     instanceName: 'checkForNewCampaignsTimer',
   );
-  GetIt.I.registerSingleton<FileManager>(FileManager());
-  GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.poster.toString());
-  GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.flyer.toString());
-  GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.door.toString());
-  GetIt.I.registerSingleton<TeamRefreshController>(TeamRefreshController());
+}
+
+void initializeApiServices() {
   GetIt.I.registerFactory<GrueneApiPosterService>(() => GrueneApiPosterService());
   GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
   GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());
@@ -129,7 +141,9 @@ Future<void> main() async {
   GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
   GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
   GetIt.I.registerFactory<GrueneApiChallengeService>(() => GrueneApiChallengeService());
+}
 
+void intializeNotficationHandlers() {
   GetIt.I.registerFactory<BaseNotificationHandler>(
     () => NewsNotificationHandler(),
     instanceName: NotificationMessageType.news.toString(),
@@ -154,11 +168,14 @@ Future<void> main() async {
     () => TeamTop10NotificationHandler(),
     instanceName: NotificationMessageType.teamTop10Update.toString(),
   );
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // setupCachePeriodicFlushing();
-
-  runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => ChallengeMembershipTimeElapsedHandler(),
+    instanceName: NotificationMessageType.challengeMembershipTimeElapsed.toString(),
+  );
+  GetIt.I.registerFactory<BaseNotificationHandler>(
+    () => ChallengeMembershipTargetReachedHandler(),
+    instanceName: NotificationMessageType.challengeMembershipTargetReached.toString(),
+  );
 }
 
 class MyApp extends StatelessWidget {
