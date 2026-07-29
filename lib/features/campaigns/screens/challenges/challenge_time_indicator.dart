@@ -60,7 +60,7 @@ class ChallengeTimeIndicator extends StatelessWidget {
                 null => throw UnimplementedError(),
               },
               border: switch (state) {
-                TimeIndicatorState.upcoming => BoxBorder.all(color: ThemeColors.textDark, width: 1),
+                TimeIndicatorState.upcoming => BoxBorder.all(color: ThemeColors.textDark, width: .5),
                 TimeIndicatorState.active => null,
                 TimeIndicatorState.finished => throw UnimplementedError(),
                 null => throw UnimplementedError(),
