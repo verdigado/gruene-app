@@ -29,7 +29,7 @@ class MyChallengesWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [Text(t.campaigns.challenges.myChallengeLabel, style: Theme.of(context).textTheme.labelMedium)],
+            children: [Text(t.campaigns.challenges.myChallengeLabel, style: Theme.of(context).textTheme.titleMedium)],
           ),
           SizedBox(
             width: mediaQuery.size.width - 16,
@@ -136,7 +136,7 @@ class MyChallengesWidget extends StatelessWidget {
                               endDate: challenge.end.formattedDate,
                               participants: challenge.participantCount.round(),
                             ),
-                            style: Theme.of(context).textTheme.labelSmall,
+                            style: Theme.of(context).textTheme.labelMedium,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ).withOpacity(0.8),
