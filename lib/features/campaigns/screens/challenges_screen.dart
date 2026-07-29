@@ -143,7 +143,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         children: [
           Row(
             children: [
-              Text(t.campaigns.challenges.availableChallengeLabel, style: Theme.of(context).textTheme.labelSmall),
+              Text(t.campaigns.challenges.availableChallengeLabel, style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
           FilterChipCampaign(
@@ -271,7 +271,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                 Expanded(
                   flex: 3,
                   child: Container(
-                    padding: EdgeInsets.all(6),
+                    padding: EdgeInsets.only(left: 6, top: 10, right: 10, bottom: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
                       color: ThemeColors.background,
@@ -302,7 +302,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                             ).withOpacity(0.8),
                             Text(
                               challenge.title,
-                              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: 12),
+                              style: Theme.of(context).textTheme.titleSmall,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                             ),
@@ -312,7 +312,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                                 endDate: challenge.end.formattedDate,
                                 participants: challenge.participantCount.round(),
                               ),
-                              style: Theme.of(context).textTheme.labelSmall,
+                              style: Theme.of(context).textTheme.labelMedium,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ).withOpacity(0.8),
@@ -324,11 +324,10 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                             _joinedChallenges.any((c) => c.id == challenge.id)
                                 ? Text(
                                     t.campaigns.challenges.actions.participated,
-                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
                                       color: ThemeColors.primary,
                                       decoration: TextDecoration.underline,
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 10,
                                     ),
                                   ).disable()
                                 : GestureDetector(
@@ -339,7 +338,6 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                                         color: ThemeColors.primary,
                                         decoration: TextDecoration.underline,
                                         fontWeight: FontWeight.w700,
-                                        fontSize: 10,
                                       ),
                                     ),
                                   ),

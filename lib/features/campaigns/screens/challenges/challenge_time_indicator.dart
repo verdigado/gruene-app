@@ -45,7 +45,7 @@ class ChallengeTimeIndicator extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: ThemeColors.grey200),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -60,7 +60,7 @@ class ChallengeTimeIndicator extends StatelessWidget {
                 null => throw UnimplementedError(),
               },
               border: switch (state) {
-                TimeIndicatorState.upcoming => BoxBorder.all(color: ThemeColors.textDark, width: 1),
+                TimeIndicatorState.upcoming => BoxBorder.all(color: ThemeColors.textDark, width: .5),
                 TimeIndicatorState.active => null,
                 TimeIndicatorState.finished => throw UnimplementedError(),
                 null => throw UnimplementedError(),

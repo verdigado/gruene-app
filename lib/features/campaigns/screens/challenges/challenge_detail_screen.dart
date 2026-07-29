@@ -171,7 +171,9 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                 SizedBox(height: 80),
                 Text(
                   challengeCampaignName,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ThemeColors.textDisabled),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelMedium?.copyWith(color: ThemeColors.textDisabled, fontSize: 15),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   textAlign: TextAlign.left,
@@ -214,13 +216,13 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
       children: [
         Text(
           t.campaigns.challenges.detailScreen.leaderboard.title,
-          style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         Text(
           t.campaigns.challenges.detailScreen.leaderboard.version(
             last_udpate: _lastLeaderboardUpdate.getAsLocalDateTimeString(),
           ),
-          style: theme.textTheme.labelSmall?.copyWith(fontSize: 8),
+          style: theme.textTheme.labelSmall,
         ).withOpacity(0.8),
         SizedBox(height: 30),
         Column(children: _getChallengeLeaderboard()),
@@ -248,10 +250,10 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
               activities: activitiesText,
               participants: _currentChallenge.participantCount.round(),
             ),
-            style: theme.textTheme.labelSmall,
+            style: theme.textTheme.labelMedium,
           ).withOpacity(0.8),
           SizedBox(height: 14),
-          Text(_currentChallenge.description ?? '', style: theme.textTheme.labelSmall),
+          Text(_currentChallenge.description ?? '', style: theme.textTheme.labelMedium),
         ],
       ),
     );
@@ -289,7 +291,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
               children: [
                 Text(
                   t.campaigns.challenges.detailScreen.myProgress,
-                  style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 DateTime.now().isBetween(DateTimeRange(start: _currentChallenge.start, end: _currentChallenge.end)) &&
                         leftOverActivities.isNotEmpty
@@ -322,11 +324,11 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 6,
                   children: [
-                    Icon(Icons.logout_outlined, color: ThemeColors.primary, size: 16),
+                    Icon(Icons.logout_outlined, color: ThemeColors.primary, size: 24),
 
                     Text(
                       t.campaigns.challenges.actions.leave,
-                      style: theme.textTheme.labelSmall?.copyWith(
+                      style: theme.textTheme.labelLarge?.copyWith(
                         color: ThemeColors.primary,
                         fontWeight: FontWeight.w700,
                       ),
@@ -443,20 +445,17 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                               ? [
                                   Text(
                                     t.campaigns.challenges.detailScreen.leaderboard.targetReached,
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 8,
-                                    ),
+                                    style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
                                   ),
                                   SizedBox(width: 5),
                                 ]
                               : [SizedBox.shrink()]),
-                          Icon(Icons.emoji_events_outlined, size: 13),
+                          Icon(Icons.emoji_events_outlined, size: 20),
                         ],
                       ),
                     )
                   : SizedBox.shrink(),
-              Text(item.currentActivityCount.round().toString(), textAlign: .end, style: theme.textTheme.labelSmall),
+              Text(item.currentActivityCount.round().toString(), textAlign: .end, style: theme.textTheme.labelMedium),
             ],
           ),
         ],

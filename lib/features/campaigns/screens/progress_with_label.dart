@@ -17,11 +17,13 @@ class ProgressWithLabel extends StatelessWidget {
     final clampedValue = value.clamp(0.0, 1.0);
 
     // Position label horizontally based on progress, keep vertically centered
-    final alignment = Alignment(
-      // Map 0.0-1.0 to -0.8 to 0.8 (leaves margin at edges)
-      -0.8 + (moveLabelWithProgress ? (clampedValue * 1.6) : 0),
-      0, // Vertically centered on the progress bar
-    );
+    final alignment = moveLabelWithProgress
+        ? Alignment(
+            // Map 0.0-1.0 to -0.8 to 0.8 (leaves margin at edges)
+            -0.8 + (clampedValue * 1.6),
+            0, // Vertically centered on the progress bar
+          )
+        : Alignment.centerLeft;
 
     return Stack(
       children: [
@@ -35,7 +37,7 @@ class ProgressWithLabel extends StatelessWidget {
         ),
         Align(
           alignment: alignment,
-          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 2), child: _buildLabel(context)),
+          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 6), child: _buildLabel(context)),
         ),
       ],
     );
