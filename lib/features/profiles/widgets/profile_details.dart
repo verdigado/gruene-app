@@ -7,7 +7,7 @@ import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/domain/divisions_api_service.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
+import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
@@ -28,7 +28,7 @@ class ProfileDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final challengeService = GetIt.I<GrueneApiChallengeService>();
+    final userService = GetIt.I<GrueneApiUserService>();
     final email = profile.email;
     final mandateRoles = profile.displayRoles(types: [ProfileRoleType.mandate]);
     final officeRoles = profile.displayRoles(types: [ProfileRoleType.office]);
@@ -45,9 +45,11 @@ class ProfileDetails extends StatelessWidget {
 
     return FutureLoadingScreen(
       load: () async => (
-        // TODO fetch correct challenges
-        // challenges: await challengeService.getJoinedChallenges(userId: profile.userId),
-        challenges: <JoinedChallenge>[],
+        challenges: await userService.getAllMyChallenges(
+          userId: profile.userId,
+          onlyCompleted: true,
+          sorting: .endDescending,
+        ),
         profiles: partyDivision != null && isOwnProfile
             ? await fetchProfiles(division: partyDivision, limit: maxProfileCards)
             : <PublicProfile>[],
