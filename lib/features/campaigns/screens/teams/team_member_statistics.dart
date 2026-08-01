@@ -173,49 +173,63 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 12,
         children: [
-          Row(
-            children: [
-              Container(
-                height: 32,
-                width: 32,
-                decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
+          Container(
+            height: 32,
+            width: 32,
+            decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
 
-                child: Center(
-                  child: Text(
-                    index.toString(),
-                    style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background),
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.userName ?? t.common.unknown,
-                    style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
-                  ),
-                  Text(
-                    [
-                      item.divisionName == '' ? null : item.divisionName,
-                      item.memberSince == null
-                          ? null
-                          : t.campaigns.team.member_statistics_member_info.member_since(
-                              date: DateFormat(t.campaigns.poster.date_format).format(item.memberSince!),
-                            ),
-                    ].nonNulls.join(', '),
-                    style: theme.textTheme.labelMedium,
-                  ),
-                ],
-              ),
-            ],
+            child: Center(
+              child: Text(index.toString(), style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background)),
+            ),
           ),
-          Text(
-            textAlign: TextAlign.end,
-            NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(_getCurrentStatValue(item)),
-            style: theme.textTheme.labelMedium,
+          Expanded(
+            child: Column(
+              mainAxisAlignment: .start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        item.userName ?? t.common.unknown,
+                        style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  crossAxisAlignment: .start,
+                  spacing: 6,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        [
+                          item.divisionName == '' ? null : (item.divisionName),
+                          item.memberSince == null
+                              ? null
+                              : t.campaigns.team.member_statistics_member_info.member_since(
+                                  date: DateFormat(t.campaigns.poster.date_format).format(item.memberSince!),
+                                ),
+                        ].nonNulls.join(', '),
+                        style: theme.textTheme.labelMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    Text(
+                      textAlign: TextAlign.end,
+                      NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(_getCurrentStatValue(item)),
+                      style: theme.textTheme.labelMedium,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

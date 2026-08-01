@@ -128,54 +128,55 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 12,
         children: [
-          Row(
-            children: [
-              Container(
-                height: 32,
-                width: 32,
-                decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
-                child: Center(
-                  child: Text(
-                    index.toString(),
-                    style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background),
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-            ],
+          Container(
+            height: 32,
+            width: 32,
+            decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
+            child: Center(
+              child: Text(index.toString(), style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background)),
+            ),
           ),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: .start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: .spaceBetween,
+                  crossAxisAlignment: .start,
+                  spacing: 6,
                   children: [
-                    Container(
-                      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 165),
+                    Flexible(
                       child: Text(
                         item.teamName,
                         style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
                         overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                     Text(
-                      textAlign: TextAlign.end,
                       NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(item.count),
                       style: theme.textTheme.labelLarge,
                     ),
                   ],
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: .spaceBetween,
+                  crossAxisAlignment: .start,
+                  spacing: 6,
                   children: [
-                    Container(
-                      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 235),
-                      child: Text(item.division, style: theme.textTheme.labelMedium, overflow: TextOverflow.ellipsis),
+                    Flexible(
+                      child: Text(
+                        item.division,
+                        style: theme.textTheme.labelMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Icon(Icons.group_outlined, size: 16),
                         SizedBox(width: 2),
