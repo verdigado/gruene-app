@@ -405,58 +405,79 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
       ),
       child: Row(
         mainAxisAlignment: .spaceBetween,
-        crossAxisAlignment: .end,
+        crossAxisAlignment: .center,
+        spacing: 12,
         children: [
-          Row(
-            children: [
-              Container(
-                height: 32,
-                width: 32,
-                decoration: BoxDecoration(color: ThemeColors.primary, shape: .circle),
-
-                child: Center(
-                  child: Text(
-                    index.toString(),
-                    style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background),
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Text(item.userName, style: theme.textTheme.labelLarge?.copyWith(fontSize: 18), overflow: .fade),
-                  Text(item.divisionName, style: theme.textTheme.labelMedium, overflow: .fade),
-                ],
-              ),
-            ],
+          Container(
+            height: 32,
+            width: 32,
+            decoration: BoxDecoration(color: ThemeColors.primary, shape: .circle),
+            child: Center(
+              child: Text(index.toString(), style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background)),
+            ),
           ),
-          Column(
-            mainAxisAlignment: .end,
-            crossAxisAlignment: .end,
-            children: [
-              item.isCompleted()
-                  ? Container(
-                      color: ThemeColors.sun,
-                      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-                      child: Row(
-                        children: [
-                          ...(index == 1
-                              ? [
-                                  Text(
-                                    t.campaigns.challenges.detailScreen.leaderboard.targetReached,
-                                    style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                  SizedBox(width: 5),
-                                ]
-                              : [SizedBox.shrink()]),
-                          Icon(Icons.emoji_events_outlined, size: 20),
-                        ],
+          Expanded(
+            child: Column(
+              mainAxisAlignment: .start,
+              children: [
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  crossAxisAlignment: .start,
+                  spacing: 6,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        item.userName,
+                        style: theme.textTheme.labelLarge?.copyWith(fontSize: 18),
+                        overflow: .ellipsis,
+                        maxLines: 1,
                       ),
-                    )
-                  : SizedBox.shrink(),
-              Text(item.currentActivityCount.round().toString(), textAlign: .end, style: theme.textTheme.labelMedium),
-            ],
+                    ),
+                    item.isCompleted()
+                        ? Container(
+                            color: ThemeColors.sun,
+                            padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                            child: Row(
+                              mainAxisAlignment: .end,
+                              children: [
+                                ...(index == 1
+                                    ? [
+                                        Text(
+                                          t.campaigns.challenges.detailScreen.leaderboard.targetReached,
+                                          style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+                                        ),
+                                        SizedBox(width: 5),
+                                      ]
+                                    : [SizedBox.shrink()]),
+                                Icon(Icons.emoji_events_outlined, size: 20),
+                              ],
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  crossAxisAlignment: .start,
+                  spacing: 6,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        item.divisionName,
+                        style: theme.textTheme.labelMedium,
+                        overflow: .ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    Text(
+                      item.currentActivityCount.round().toString(),
+                      textAlign: .end,
+                      style: theme.textTheme.labelMedium,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
