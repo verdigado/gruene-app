@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -19,26 +18,4 @@ class GrueneApiUserService extends GrueneApiBaseService {
       ),
     );
   }
-
-  Future<FindJoinedChallengesResponse> getUserChallenges({
-    required String userId,
-    List<ChallengeStatus>? challengeStatus,
-    String? campaignId,
-    ChallengeSort? sorting,
-    bool? onlyCompleted,
-    bool? onlyActiveCampaigns,
-    required num offset,
-    required num limit,
-  }) async => getFromApi(
-    apiRequest: (api) => api.v1UsersUserIdChallengesGet(
-      userId: userId,
-      state: challengeStatus,
-      campaignId: campaignId,
-      sort: sorting.getSortString(),
-      onlyCompleted: onlyCompleted,
-      onlyActiveCampaigns: onlyActiveCampaigns,
-      offset: offset,
-      limit: limit,
-    ),
-  );
 }

@@ -7,7 +7,7 @@ import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/domain/divisions_api_service.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_user_service.dart';
+import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
@@ -28,7 +28,7 @@ class ProfileDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userService = GetIt.I<GrueneApiUserService>();
+    final profileService = GetIt.I<GrueneApiProfileService>();
     final email = profile.email;
     final mandateRoles = profile.displayRoles(types: [ProfileRoleType.mandate]);
     final officeRoles = profile.displayRoles(types: [ProfileRoleType.office]);
@@ -45,11 +45,7 @@ class ProfileDetails extends StatelessWidget {
 
     return FutureLoadingScreen(
       load: () async => (
-        challenges: await userService.getAllMyChallenges(
-          userId: profile.userId,
-          onlyCompleted: true,
-          sorting: .endDescending,
-        ),
+        completedChallenges: await profileService.getAllMyChallenges(profileId: profile.id, sorting: .endDescending),
         profiles: partyDivision != null && isOwnProfile
             ? await fetchProfiles(division: partyDivision, limit: maxProfileCards)
             : <PublicProfile>[],
@@ -57,7 +53,7 @@ class ProfileDetails extends StatelessWidget {
       ),
       loadingLayoutBuilder: (Widget child) => Padding(padding: screenPadding, child: child),
       buildChild: (data, _) {
-        final completedChallenges = data.challenges.where((challenge) => challenge.isCompleted()).toList();
+        final completedChallenges = data.completedChallenges;
         completedChallenges.sort((a, b) => b.end.compareTo(a.end));
 
         return Column(
@@ -83,7 +79,7 @@ class ProfileDetails extends StatelessWidget {
                                 ),
                                 child: ChallengeBadge(
                                   activityType: challenge.activities.first.type,
-                                  maxActivityCount: challenge.getProgressInfo().maxActivityCount,
+                                  maxActivityCount: challenge.activities.map((a) => a.count.toInt()).sum(),
                                   variant: BadgeVariant.dark,
                                 ),
                               ),

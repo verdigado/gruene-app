@@ -45,26 +45,24 @@ extension GrueneApiChallengeServiceExtension on GrueneApiChallengeService {
   }
 }
 
-extension GrueneApiUserServiceExtension on GrueneApiUserService {
-  Future<List<JoinedChallenge>> getAllMyChallenges({
-    required String userId,
+extension GrueneApiProfileServiceExtension on GrueneApiProfileService {
+  Future<List<CompletedChallenge>> getAllMyChallenges({
+    required String profileId,
     List<ChallengeStatus>? challengeStatus,
     String? campaignId,
     ChallengeSort? sorting,
-    bool? onlyCompleted,
     bool? onlyActiveCampaigns,
   }) async {
     var offset = 0;
     final pageSize = 200;
     var queryNextPage = true;
-    List<JoinedChallenge> allPages = [];
+    List<CompletedChallenge> allPages = [];
     while (queryNextPage) {
-      var currentPage = await getUserChallenges(
-        userId: userId,
+      var currentPage = await getCompletedChallenges(
+        profileId: profileId,
         challengeStatus: challengeStatus,
         campaignId: campaignId,
         sorting: sorting,
-        onlyCompleted: onlyCompleted,
         onlyActiveCampaigns: onlyActiveCampaigns,
         offset: offset,
         limit: pageSize,
