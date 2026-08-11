@@ -1770,6 +1770,8 @@ paths:
                 $ref: '#/components/schemas/FindCompletedChallengesResponse'
         '401':
           description: ''
+        '404':
+          description: ''
       security:
         - bearer: []
       summary: Find completed challenges for a user profile
