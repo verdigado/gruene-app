@@ -90,7 +90,7 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
                     ),
                     Text(
                       _campaignName,
-                      style: theme.textTheme.displayMedium!.apply(color: ThemeColors.grey200, fontSizeDelta: -4),
+                      style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.grey200),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
