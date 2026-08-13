@@ -670,4 +670,3 @@ workflows:
                 - equal:
                     - << pipeline.parameters.workflow_type >>
                     - promotion
-
