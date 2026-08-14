@@ -169,7 +169,10 @@
     },
     "poster": {
       "label": "Plakat",
-      "label_plural": "Plakate",
+      "label_cardinal": {
+        "one": "${n} Plakat",
+        "other": "${n} Plakate"
+      },
       "addPoster": "Plakat eintragen",
       "editPoster": "Plakat bearbeiten",
       "my_posters_action": "Meine Plakate",
@@ -235,7 +238,10 @@
     },
     "door": {
       "label": "Haustür",
-      "label_plural": "Haustüren",
+      "label_cardinal": {
+        "one": "${n} Haustür",
+        "other": "${n} Haustüren"
+      },
       "addDoor": "Haustüren eintragen",
       "closedDoors": "Ungeöffnete Türen",
       "editDoor": "Haustüren bearbeiten",
@@ -247,7 +253,9 @@
     },
     "flyer": {
       "label": "Flyer",
-      "label_plural": "Flyer",
+      "label_cardinal": {
+        "other": "${n} Flyer"
+      },
       "addFlyer": "Wahlkampfstand eintragen",
       "editFlyer": "Wahlkampfstand bearbeiten",
       "countFlyer": "Anzahl der Flyer",
@@ -352,7 +360,7 @@
       },
       "detailScreen": {
         "myProgress": "Mein Fortschritt",
-        "leftOverLabel": "noch **${hours_left}h** für **${leftover_activities}!**",
+        "leftOverLabel": "noch **${timeleft}** für **${leftover_activities}!**",
         "leaderboard": {
           "title": "Challenge Leaderboard",
           "version": "Aktueller Zwischenstand ${last_udpate}",
@@ -367,6 +375,26 @@
       },
       "challengeDetail": {
         "title": "Challenge"
+      },
+      "time_remaining": {
+        "minutes(param=minutes)": {
+          "one": "1 Minute",
+          "other": "${minutes} Minuten"
+        },
+        "hours(param=hours)": {
+          "other": "${hours} Std"
+        },
+        "halfhours(param=hours)": {
+          "other": "${hours},5 Std"
+        },
+        "days(param=days)": {
+          "one": "1 Tag",
+          "other": "${days} Tage"
+        },
+        "weeks(param=weeks)": {
+          "one": "1 Woche",
+          "other": "${weeks} Wochen"
+        }
       },
       "timeago": {
         "language_code": "${code}_challenges",
