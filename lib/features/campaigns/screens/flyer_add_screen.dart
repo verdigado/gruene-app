@@ -87,7 +87,7 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
                     ),
                     Text(
                       _campaignName,
-                      style: theme.textTheme.displayMedium!.apply(color: ThemeColors.grey200, fontSizeDelta: -4),
+                      style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.grey200),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
