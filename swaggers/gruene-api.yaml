@@ -1687,6 +1687,96 @@ paths:
       summary: Leave a challenge
       tags:
         - campaigns
+  /v1/profiles/{profileId}/completed-challenges:
+    get:
+      operationId: findCompletedChallengesByUserProfile
+      parameters:
+        - name: profileId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: start
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-03-20T06:03:50.427'
+            type: string
+        - name: end
+          required: false
+          in: query
+          schema:
+            format: date-time
+            example: '2026-04-23T12:15:59.123'
+            type: string
+        - name: activityType
+          required: false
+          in: query
+          description: Filter by challenge activity type
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ChallengeActivityType'
+        - name: state
+          required: false
+          in: query
+          description: Filter by challenge state
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ChallengeStatus'
+        - name: sort
+          required: false
+          in: query
+          description: >-
+            Comma-separated sort fields. Prefix a field with "-" for descending
+            order. Supported fields: startDate, endDate, activityType, title,
+            participantsCount, userDivision. userDivision requires a bearer
+            token and only supports ascending order.
+          schema:
+            example: startDate,-participantsCount,title
+            type: string
+        - name: onlyActiveCampaigns
+          required: false
+          in: query
+          description: When true, excludes challenges that belong to draft/archived
+          schema:
+            type: boolean
+        - name: offset
+          required: false
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 1000
+            type: number
+        - name: campaignId
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindCompletedChallengesResponse'
+        '401':
+          description: ''
+        '404':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find completed challenges for a user profile
+      tags:
+        - profiles
   /v1/campaigns/polling-stations:
     post:
       operationId: createPollingStation
@@ -4251,7 +4341,7 @@ info:
     removed.
 
     API tokens can be obtained from `technik@verdigado.com`.
-  version: 0.1.3
+  version: 0.2.0
   contact: {}
 tags: []
 servers:
@@ -4510,6 +4600,8 @@ components:
       enum:
         - campaigns.teamMembership.updated
         - campaigns.team-top10.updated
+        - campaigns.challengeMembership.time.elapsed
+        - campaigns.challengeMembership.target.reached
         - campaigns.routeAssignment.updated
         - campaigns.areaAssignment.updated
         - news.published
@@ -5888,6 +5980,7 @@ components:
           example: '1'
         count:
           type: number
+          minimum: 1
         createdAt:
           format: date-time
           type: string
@@ -6057,6 +6150,59 @@ components:
         - total
         - offset
         - limit
+    CompletedChallengeActivity:
+      type: object
+      properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/ChallengeActivityType'
+        count:
+          type: number
+          minimum: 1
+      required:
+        - type
+        - count
+    CompletedChallenge:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        campaignId:
+          type: string
+          nullable: true
+        title:
+          type: string
+        end:
+          format: date-time
+          type: string
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompletedChallengeActivity'
+      required:
+        - id
+        - title
+        - end
+        - activities
+    FindCompletedChallengesResponse:
+      type: object
+      properties:
+        total:
+          type: number
+        offset:
+          type: number
+        limit:
+          type: number
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompletedChallenge'
+      required:
+        - total
+        - offset
+        - limit
+        - data
     UpdatePollingStation:
       type: object
       properties:

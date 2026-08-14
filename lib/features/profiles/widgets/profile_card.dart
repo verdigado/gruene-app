@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/routes.dart';
-import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
-import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 
@@ -62,45 +60,41 @@ class ProfileCard extends StatelessWidget {
 }
 
 class DivisionProfileCards extends StatelessWidget {
+  final List<PublicProfile> profiles;
   final Division division;
   final String userId;
 
-  const DivisionProfileCards({super.key, required this.division, required this.userId});
+  const DivisionProfileCards({super.key, required this.division, required this.userId, required this.profiles});
 
   @override
   Widget build(BuildContext context) {
-    return FutureLoadingScreen(
-      load: () => fetchProfiles(division: division, limit: maxProfileCards),
-      loadingLayoutBuilder: (Widget child) =>
-          Padding(padding: EdgeInsetsGeometry.symmetric(vertical: 16), child: child),
-      buildChild: (profiles, _) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: horizontalScreenPadding,
-            child: Row(
-              spacing: 8,
-              children: profiles
-                  .where((profile) => profile.userId != userId)
-                  .map((profile) => ProfileCard(profile: profile))
-                  .toList(),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: horizontalScreenPadding,
+          child: Row(
+            spacing: 8,
+            children: profiles
+                .where((profile) => profile.userId != userId)
+                .map((profile) => ProfileCard(profile: profile))
+                .toList(),
           ),
-          if (profiles.length >= maxProfileCards)
-            Padding(
-              padding: horizontalScreenPadding,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  onPressed: () => context.pushNested(Routes.profileSearch.path, extra: division),
-                  label: Text(t.profiles.moreMembers),
-                  icon: Icon(Icons.arrow_forward),
-                ),
+        ),
+        if (profiles.length >= maxProfileCards)
+          Padding(
+            padding: horizontalScreenPadding,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: () => context.pushNested(Routes.profileSearch.path, extra: division),
+                label: Text(t.profiles.moreMembers),
+                icon: Icon(Icons.arrow_forward),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

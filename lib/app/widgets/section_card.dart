@@ -37,21 +37,18 @@ class SectionCardListItem extends StatelessWidget {
           : null,
       onTap: onTap ?? (url != null ? () => openUrl(url, context) : null),
       onLongPress: () => Clipboard.setData(ClipboardData(text: url ?? value)),
-      trailing: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              extraTrailing,
-              trailing ??
-                  (url != null || extraTrailing != null
-                      ? Icon(Icons.arrow_outward, color: url != null ? theme.primaryColor : theme.disabledColor)
-                      : null),
-            ].nonNulls.toList(),
-          ),
-        ],
+      trailing: Padding(
+        padding: EdgeInsets.only(top: this.title != null ? 24 : 0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            extraTrailing,
+            trailing ??
+                (url != null || extraTrailing != null
+                    ? Icon(Icons.arrow_outward, color: url != null ? theme.primaryColor : theme.disabledColor)
+                    : null),
+          ].nonNulls.toList(),
+        ),
       ),
     );
   }

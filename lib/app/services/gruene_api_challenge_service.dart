@@ -1,3 +1,4 @@
+import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -5,7 +6,7 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
   Future<List<Challenge>> getChallenges({
     List<ChallengeActivityType>? activityTypes,
     List<ChallengeStatus>? challengeStatus,
-    JoinedChallengeSort? sorting,
+    ChallengeSort? sorting,
     required num offset,
     required num limit,
   }) async => getFromApi(
@@ -14,43 +15,15 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
       offset: offset,
       limit: limit,
       state: challengeStatus,
-      sort: _getSort(sorting),
+      sort: sorting.getSortString(),
     ),
     map: (result) => result.data,
   );
 
-  Future<List<JoinedChallenge>> getAllMyChallenges({
-    List<ChallengeStatus>? challengeStatus,
-    String? campaignId,
-    JoinedChallengeSort? sorting,
-    bool? onlyCompleted,
-    bool? onlyActiveCampaigns,
-  }) async {
-    var offset = 0;
-    final pageSize = 200;
-    var queryNextPage = true;
-    List<JoinedChallenge> allPages = [];
-    while (queryNextPage) {
-      var currentPage = await getMyChallenges(
-        challengeStatus: challengeStatus,
-        campaignId: campaignId,
-        sorting: sorting,
-        onlyCompleted: onlyCompleted,
-        onlyActiveCampaigns: onlyActiveCampaigns,
-        offset: offset,
-        limit: pageSize,
-      );
-      queryNextPage = currentPage.total > currentPage.offset + currentPage.data.length;
-      offset += currentPage.data.length;
-      allPages.addAll(currentPage.data);
-    }
-    return allPages;
-  }
-
   Future<FindJoinedChallengesResponse> getMyChallenges({
     List<ChallengeStatus>? challengeStatus,
     String? campaignId,
-    JoinedChallengeSort? sorting,
+    ChallengeSort? sorting,
     bool? onlyCompleted,
     bool? onlyActiveCampaigns,
     required num offset,
@@ -59,7 +32,7 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
     apiRequest: (api) => api.v1CampaignsChallengesSelfGet(
       state: challengeStatus,
       campaignId: campaignId,
-      sort: _getSort(sorting),
+      sort: sorting.getSortString(),
       onlyCompleted: onlyCompleted,
       onlyActiveCampaigns: onlyActiveCampaigns,
       offset: offset,
@@ -80,16 +53,4 @@ class GrueneApiChallengeService extends GrueneApiBaseService {
   Future<FindChallengeLeaderboardResponse> getChallengeLeaderboard(String challengeId) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsChallengesChallengeIdLeaderboardGet(challengeId: challengeId, limit: 99),
   );
-
-  String? _getSort(JoinedChallengeSort? sorting) {
-    if (sorting == null) return null;
-    switch (sorting) {
-      case JoinedChallengeSort.userDivision:
-        return 'userDivision';
-      case JoinedChallengeSort.endDescending:
-        return '-endDate';
-    }
-  }
 }
-
-enum JoinedChallengeSort { userDivision, endDescending }
