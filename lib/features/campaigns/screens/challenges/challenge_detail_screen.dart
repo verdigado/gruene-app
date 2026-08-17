@@ -231,7 +231,10 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
   }
 
   Widget getChallengeBaseInfo(ThemeData theme) {
-    var activitiesText = _currentChallenge.activities.map(getActivityText).where((x) => x.isNotEmpty).join(', ');
+    var activitiesText = _currentChallenge.activities
+        .map((activity) => getActivityLabel(activity.type, activity.count.round()))
+        .where((x) => x.isNotEmpty)
+        .join(', ');
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
@@ -280,7 +283,9 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
           _currentJoinedChallenge?.getProgressInfo() ??
           ChallengeProgressInfo(currentActivityCount: 0, maxActivityCount: 0);
       var leftOverActivities = _currentChallenge.activities.map(getIncomplete).where((x) => x.rest > 0);
-      var leftOverActivitiesLabel = leftOverActivities.map(getActivityLabel).join(', ');
+      var leftOverActivitiesLabel = leftOverActivities
+          .map((activity) => getActivityLabel(activity.type, activity.rest))
+          .join(', ');
 
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -300,7 +305,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                         padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
                         child: MarkdownBody(
                           data: t.campaigns.challenges.detailScreen.leftOverLabel(
-                            hours_left: _currentChallenge.end.difference(DateTime.now()).inHours.toString(),
+                            timeleft: _currentChallenge.end.getTimeRemaining(),
                             leftover_activities: leftOverActivitiesLabel,
                           ),
 
@@ -343,12 +348,6 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     }
   }
 
-  String getActivityText(ChallengeActivity activity) {
-    String? typeLabel = getActivityTypeLabel(activity.type);
-
-    return typeLabel == null ? '' : '${activity.count.round()} $typeLabel';
-  }
-
   LeftOverActivity getIncomplete(ChallengeActivity activity) {
     var targetChallengeActivity = _currentJoinedChallenge?.participations.firstWhereOrNull(
       (a) => a.type == activity.type,
@@ -363,20 +362,14 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     }
   }
 
-  String getActivityLabel(LeftOverActivity activity) {
-    String? typeLabel = getActivityTypeLabel(activity.type);
-
-    return typeLabel == null ? '' : '${activity.rest} $typeLabel';
-  }
-
-  String? getActivityTypeLabel(ChallengeActivityType activityType) {
-    var typeLabel = switch (activityType) {
+  String getActivityLabel(ChallengeActivityType type, int count) {
+    var typeLabel = switch (type) {
       ChallengeActivityType.swaggerGeneratedUnknown => null,
-      ChallengeActivityType.poster => t.campaigns.poster.label_plural,
-      ChallengeActivityType.flyerSpot => t.campaigns.flyer.label_plural,
-      ChallengeActivityType.house => t.campaigns.door.label_plural,
+      ChallengeActivityType.poster => t.campaigns.poster.label_cardinal(n: count),
+      ChallengeActivityType.flyerSpot => t.campaigns.flyer.label_cardinal(n: count),
+      ChallengeActivityType.house => t.campaigns.door.label_cardinal(n: count),
     };
-    return typeLabel;
+    return typeLabel ?? '';
   }
 
   List<Widget> _getChallengeLeaderboard() {
