@@ -73,14 +73,14 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
                   ),
 
                   _getCategoryRow(
-                    TeamAssignmentType.poster,
-                    t.campaigns.statistic.recorded_posters,
-                    widget.poiStatistics.posterStats,
-                  ),
-                  _getCategoryRow(
                     TeamAssignmentType.door,
                     t.campaigns.statistic.recorded_doors,
                     widget.poiStatistics.houseStats,
+                  ),
+                  _getCategoryRow(
+                    TeamAssignmentType.poster,
+                    t.campaigns.statistic.recorded_posters,
+                    widget.poiStatistics.posterStats,
                   ),
                   _getCategoryRow(
                     TeamAssignmentType.flyer,
