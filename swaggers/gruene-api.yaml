@@ -4341,7 +4341,7 @@ info:
     removed.
 
     API tokens can be obtained from `technik@verdigado.com`.
-  version: 0.2.0
+  version: 0.2.1
   contact: {}
 tags: []
 servers:
@@ -7156,6 +7156,9 @@ components:
         status:
           allOf:
             - $ref: '#/components/schemas/TeamMembershipStatus'
+        type:
+          allOf:
+            - $ref: '#/components/schemas/TeamMembershipType'
         userName:
           type: string
           nullable: true
@@ -7179,6 +7182,7 @@ components:
           minimum: 0
       required:
         - status
+        - type
         - posterCount
         - flyerCount
         - openedDoorCount
