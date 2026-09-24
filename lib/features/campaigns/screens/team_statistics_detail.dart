@@ -30,13 +30,13 @@ class _TeamStatisticsDetailState extends State<TeamStatisticsDetail> {
             ),
           ),
           TeamStatisticsCategoryDetail(
-            category: TeamAssignmentType.poster,
-            statisticData: widget.teamStatistics.poster,
+            category: TeamAssignmentType.door,
+            statisticData: widget.teamStatistics.house,
             ownTeamId: widget.ownTeamId,
           ),
           TeamStatisticsCategoryDetail(
-            category: TeamAssignmentType.door,
-            statisticData: widget.teamStatistics.house,
+            category: TeamAssignmentType.poster,
+            statisticData: widget.teamStatistics.poster,
             ownTeamId: widget.ownTeamId,
           ),
           TeamStatisticsCategoryDetail(
