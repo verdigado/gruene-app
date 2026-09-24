@@ -7,8 +7,9 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class TeamStatisticsDetail extends StatefulWidget {
   final TeamStatistics teamStatistics;
+  final String? ownTeamId;
 
-  const TeamStatisticsDetail({required this.teamStatistics, super.key});
+  const TeamStatisticsDetail({required this.teamStatistics, super.key, required this.ownTeamId});
 
   @override
   State<TeamStatisticsDetail> createState() => _TeamStatisticsDetailState();
@@ -31,9 +32,18 @@ class _TeamStatisticsDetailState extends State<TeamStatisticsDetail> {
           TeamStatisticsCategoryDetail(
             category: TeamAssignmentType.poster,
             statisticData: widget.teamStatistics.poster,
+            ownTeamId: widget.ownTeamId,
           ),
-          TeamStatisticsCategoryDetail(category: TeamAssignmentType.door, statisticData: widget.teamStatistics.house),
-          TeamStatisticsCategoryDetail(category: TeamAssignmentType.flyer, statisticData: widget.teamStatistics.flyer),
+          TeamStatisticsCategoryDetail(
+            category: TeamAssignmentType.door,
+            statisticData: widget.teamStatistics.house,
+            ownTeamId: widget.ownTeamId,
+          ),
+          TeamStatisticsCategoryDetail(
+            category: TeamAssignmentType.flyer,
+            statisticData: widget.teamStatistics.flyer,
+            ownTeamId: widget.ownTeamId,
+          ),
           Row(
             children: [
               Text(

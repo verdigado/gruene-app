@@ -30,6 +30,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   late TeamStatistics _teamStatistics;
   late TeamMembershipStatistics _teamMembershipStatistics;
   late List<JoinedChallenge> _challengeBadges;
+  late Team? _ownTeam;
   final _appSettings = GetIt.I<AppSettings>();
 
   @override
@@ -69,7 +70,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             StatisticsCampaignSwitcher(campaignChanged: () => reload(overrideCache: true)),
             BadgeStatisticsDetail(poiStatistics: _poiStatistics),
             ChallengeBadgeStatisticsDetail(challengeBadges: _challengeBadges),
-            TeamStatisticsDetail(teamStatistics: _teamStatistics),
+            TeamStatisticsDetail(teamStatistics: _teamStatistics, ownTeamId: _ownTeam?.id),
             PoiStatisticsDetail(poiStatistics: _poiStatistics, teamMembershipStatistics: _teamMembershipStatistics),
           ],
         ),
@@ -89,12 +90,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       _loadTeamStatistics(overrideCache: overrideCache),
       _loadOwnTeamStatistics(overrideCache: overrideCache),
       _loadChallengeBadges(overrideCache: overrideCache),
+      _loadOwnTeam(overrideCache: overrideCache),
     ]);
 
     var poiCampaignStatistics = results[0] as CampaignStatisticsModel;
     var teamStatistics = results[1] as TeamStatistics;
     var teamMembershipStatistics = results[2] as TeamMembershipStatistics;
     var challengeBadges = results[3] as List<JoinedChallenge>;
+    var ownTeam = results[4] as Team?;
 
     setState(() {
       _loading = false;
@@ -102,6 +105,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       _teamStatistics = teamStatistics;
       _teamMembershipStatistics = teamMembershipStatistics;
       _challengeBadges = challengeBadges;
+      _ownTeam = ownTeam;
     });
   }
 
@@ -193,5 +197,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     campaignSettings.recentChallengeBadgesFetchTimestamp = DateTime.now();
 
     return challengeBadges;
+  }
+
+  Future<Team?> _loadOwnTeam({required bool overrideCache}) async {
+    var campaignSettings = GetIt.I<AppSettings>().campaign;
+
+    if (!overrideCache &&
+        (campaignSettings.recentOwnTeamFetchTimestamp != null &&
+            DateTime.now().isBefore(campaignSettings.recentOwnTeamFetchTimestamp!.add(Duration(minutes: 5))))) {
+      return campaignSettings.recentOwnTeam;
+    }
+    var teamApiService = GetIt.I<GrueneApiTeamsService>();
+    var ownTeam = (await teamApiService.getOwnTeam());
+
+    campaignSettings.recentOwnTeam = ownTeam;
+    campaignSettings.recentOwnTeamFetchTimestamp = DateTime.now();
+
+    return ownTeam;
   }
 }

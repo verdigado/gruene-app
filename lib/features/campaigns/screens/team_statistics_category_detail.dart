@@ -10,8 +10,14 @@ import 'package:intl/intl.dart';
 class TeamStatisticsCategoryDetail extends StatefulWidget {
   final TeamAssignmentType category;
   final TeamStatisticsCategory statisticData;
+  final String? ownTeamId;
 
-  const TeamStatisticsCategoryDetail({super.key, required this.category, required this.statisticData});
+  const TeamStatisticsCategoryDetail({
+    super.key,
+    required this.category,
+    required this.statisticData,
+    required this.ownTeamId,
+  });
 
   @override
   State<TeamStatisticsCategoryDetail> createState() => _TeamStatisticsCategoryDetailState();
@@ -125,6 +131,7 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
       padding: EdgeInsetsGeometry.all(4),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+        color: ((widget.ownTeamId == item.teamId) ? ThemeColors.sun : ThemeColors.background),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
