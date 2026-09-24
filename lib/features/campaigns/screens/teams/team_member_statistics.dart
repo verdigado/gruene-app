@@ -193,12 +193,18 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
                   children: [
                     Flexible(
                       child: Text(
-                        item.userName ?? t.common.unknown,
+                        (item.userName ?? t.common.unknown),
                         style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                     ),
+                    item.type == TeamMembershipType.lead
+                        ? Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: CustomIcon(path: 'assets/icons/chess_queen.svg', color: ThemeColors.textDark),
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
                 Row(
