@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:gruene_app/features/campaigns/models/action_area/action_area_assignment_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Wrapped;
 import 'package:json_annotation/json_annotation.dart';
 
 part 'route_assignment_update_model.g.dart';
@@ -17,10 +18,10 @@ class RouteAssignmentUpdateModel {
 
   Map<String, dynamic> toJson() => _$RouteAssignmentUpdateModelToJson(this);
 
-  RouteAssignmentUpdateModel copyWith({String? id, TeamInfo? team, RouteDetailModel? routeDetail}) {
+  RouteAssignmentUpdateModel copyWith({String? id, Wrapped<TeamInfo?>? team, RouteDetailModel? routeDetail}) {
     return RouteAssignmentUpdateModel(
       id: id ?? this.id,
-      team: team ?? this.team,
+      team: team != null ? team.value : this.team,
       routeDetail: routeDetail ?? this.routeDetail,
     );
   }
