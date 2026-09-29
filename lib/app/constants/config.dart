@@ -22,6 +22,8 @@ class Config {
   static String get ipV4ServiceUrl => dotenv.env['IP_V4_SERVICE_URL']!;
   static String get ipV6ServiceUrl => dotenv.env['IP_V6_SERVICE_URL']!;
 
+  static String get requestCampaignUrl => dotenv.env['REQUEST_CAMPAIGN_URL']!;
+
   static String get defaultLocale => 'de_DE';
   static String get defaultLanguageCode => 'de';
 
