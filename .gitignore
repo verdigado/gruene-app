@@ -209,7 +209,9 @@ node_modules
 /lib/swagger_generated_code/
 android/app/google-services.json
 
+/docs/agents/
 CLAUDE.md
+CONTEXT.md
 .direnv
 .envrc
 *.nix
