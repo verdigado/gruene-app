@@ -9,12 +9,13 @@ import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/models/action_area/action_area_assignment_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/features/campaigns/screens/teams/select_team_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Wrapped;
 import 'package:intl/intl.dart';
 import 'package:turf/turf.dart' as turf;
 
@@ -159,22 +160,37 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
       ),
       child: Row(
+        mainAxisAlignment: .spaceBetween,
+        crossAxisAlignment: .start,
+        spacing: 8,
         children: [
-          SizedBox(width: 6),
-          Icon(Icons.group_outlined, size: 30),
-          SizedBox(width: 35),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => (_currentUserInfo.isCampaignManager() && _currentUserKV != null)
-                  ? _selectTeam(_currentActionAreaDetail)
-                  : null,
-              child: Text(
-                _currentActionAreaDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
-                style: theme.textTheme.bodyLarge,
-                softWrap: true,
-              ),
+          Flexible(
+            child: Row(
+              children: [
+                SizedBox(width: 6),
+                Icon(Icons.group_outlined, size: 30),
+                SizedBox(width: 35),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => (_currentUserInfo.isCampaignManager() && _currentUserKV != null)
+                        ? _selectTeam(_currentActionAreaDetail)
+                        : null,
+                    child: Text(
+                      _currentActionAreaDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
+                      style: theme.textTheme.bodyLarge,
+                      softWrap: true,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+          _currentActionAreaDetail.team != null
+              ? GestureDetector(
+                  onTap: () async => await _assignTeam(_currentActionAreaDetail, null),
+                  child: Icon(Icons.link_off_outlined),
+                )
+              : SizedBox.shrink(),
         ],
       ),
     );
@@ -209,14 +225,18 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     );
 
     if (selectedTeam != null) {
-      var actionAreaAssignmentUpdate = actionArea.asActionAreaAssignmentUpdate().copyWith(
-        team: selectedTeam.asRouteTeam(),
-      );
-      var feature = await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaAssignmentUpdate);
-      await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
-      setState(() {
-        _currentActionAreaDetail = actionAreaAssignmentUpdate.transformToVirtualActionAreaDetailModel();
-      });
+      await _assignTeam(actionArea, selectedTeam.asRouteTeam());
     }
+  }
+
+  Future<void> _assignTeam(ActionAreaDetailModel actionArea, TeamInfo? selectedTeam) async {
+    var actionAreaAssignmentUpdate = actionArea.asActionAreaAssignmentUpdate().copyWith(
+      team: Wrapped.value(selectedTeam),
+    );
+    var feature = await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaAssignmentUpdate);
+    await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
+    setState(() {
+      _currentActionAreaDetail = actionAreaAssignmentUpdate.transformToVirtualActionAreaDetailModel();
+    });
   }
 }

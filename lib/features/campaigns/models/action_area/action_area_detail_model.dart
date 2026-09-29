@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/features/campaigns/models/action_area/action_area_assignment_update_model.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Wrapped;
 import 'package:json_annotation/json_annotation.dart';
 
 part 'action_area_detail_model.g.dart';
@@ -52,7 +53,7 @@ class ActionAreaDetailModel {
     Polygon? polygon,
     String? createdAt,
     bool? isVirtual,
-    TeamInfo? team,
+    Wrapped<TeamInfo?>? team,
   }) {
     if (isVirtual ?? this.isVirtual) {
       return ActionAreaDetailModel.virtual(
@@ -63,7 +64,7 @@ class ActionAreaDetailModel {
         status: status ?? this.status,
         polygon: polygon ?? this.polygon,
         createdAt: createdAt ?? this.createdAt,
-        team: team ?? this.team,
+        team: team != null ? team.value : this.team,
       );
     } else {
       return ActionAreaDetailModel.virtual(
@@ -74,7 +75,7 @@ class ActionAreaDetailModel {
         status: status ?? this.status,
         polygon: polygon ?? this.polygon,
         createdAt: createdAt ?? this.createdAt,
-        team: team ?? this.team,
+        team: team != null ? team.value : this.team,
       );
     }
   }

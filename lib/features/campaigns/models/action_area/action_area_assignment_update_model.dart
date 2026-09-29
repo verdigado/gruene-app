@@ -18,11 +18,20 @@ class ActionAreaAssignmentUpdateModel {
 
   Map<String, dynamic> toJson() => _$ActionAreaAssignmentUpdateModelToJson(this);
 
-  ActionAreaAssignmentUpdateModel copyWith({String? id, TeamInfo? team, ActionAreaDetailModel? routeDetail}) {
+  ActionAreaAssignmentUpdateModel copyWith({
+    String? id,
+    Wrapped<TeamInfo?>? team,
+    ActionAreaDetailModel? routeDetail,
+  }) {
     return ActionAreaAssignmentUpdateModel(
       id: id ?? this.id,
-      team: team ?? this.team,
+      team: team != null ? team.value : this.team,
       actionAreaDetail: routeDetail ?? actionAreaDetail,
     );
   }
+}
+
+class Wrapped<T> {
+  final T value;
+  const Wrapped.value(this.value);
 }
