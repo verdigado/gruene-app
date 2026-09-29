@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 enum PhotoGalleryAction { downloadPhoto, deletePhoto, replacePhoto, replacePhotoWithCamera, replacePhotoWithImage }
@@ -67,8 +68,11 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
               pageController: _imageSliderController,
               itemCount: allImages.length,
               backgroundDecoration: BoxDecoration(color: ThemeColors.text.withAlpha(120)),
-              builder: (context, index) =>
-                  PhotoViewGalleryPageOptions(imageProvider: widget.getImageProvider(allImages[index])),
+              builder: (context, index) => PhotoViewGalleryPageOptions(
+                imageProvider: widget.getImageProvider(allImages[index]),
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.contained * 6,
+              ),
               onPageChanged: (index) {
                 setState(() => _currentImageIndex = index);
               },
