@@ -9,6 +9,8 @@ import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/horizontal_divider.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_flow.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_screens.dart';
 
 class WelcomeView extends StatelessWidget {
   const WelcomeView({super.key});
@@ -55,6 +57,15 @@ class WelcomeView extends StatelessWidget {
             child: Text(t.login.mfa, style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary)),
           ),
         ),
+        if (guestCodeLogin.isOn)
+          TextButton(
+            onPressed: () =>
+                Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const GuestCodeEntryScreen())),
+            child: Text(
+              'Einladungscode eingeben',
+              style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
+            ),
+          ),
         const SizedBox(height: 32),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

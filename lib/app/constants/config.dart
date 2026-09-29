@@ -9,6 +9,10 @@ class Config {
   static bool get isStaging => Config.env == 'staging';
   static bool get isDevelopment => Config.env == 'development';
 
+  /// Prototype mode: fake auth + fixture data, for building new user flows
+  /// without Keycloak or the Gruene API. Never true in a real build.
+  static bool get isPrototype => (bool.tryParse(dotenv.env['PROTOTYPE'] ?? 'false', caseSensitive: false)) ?? false;
+
   static String get grueneApiUrl => dotenv.env['GRUENE_API_URL']!;
   static String? get grueneApiAccessToken => dotenv.env['GRUENE_API_ACCESS_TOKEN'];
 

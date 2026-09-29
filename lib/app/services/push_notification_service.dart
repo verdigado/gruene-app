@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
+import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/enums/push_notification_topic_enum.dart';
 import 'package:gruene_app/app/models/push_notification_settings_model.dart';
@@ -92,6 +93,13 @@ class PushNotificationService {
 
   Future<void> updateSubscriptions() async {
     if (!_firebaseInitialized) {
+      return;
+    }
+
+    // PROTOTYPE: no topics and no device registration, so no real push
+    // notification ever reaches a prototype install.
+    if (Config.isPrototype) {
+      await _unsubscribeAll();
       return;
     }
 

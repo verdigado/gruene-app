@@ -9,6 +9,7 @@ import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profiles_filter_dialog.dart';
 import 'package:gruene_app/features/profiles/widgets/profiles_list.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_marker.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileSearchScreenContainer extends StatelessWidget {
@@ -51,6 +52,9 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
   List<ProfileTag> _selectedSkills = [];
   List<ProfileTag> _selectedInterests = [];
 
+  /// PROTOTYPE: the dedicated guest filter, behind `guestSearchFilter`.
+  GuestFilterValue _selectedGuests = GuestFilterValue.all;
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +86,13 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
       values: interests,
     );
 
+    final guestFilter = SelectionFilterModel(
+      update: (value) => setState(() => _selectedGuests = value),
+      initial: GuestFilterValue.all,
+      current: _selectedGuests,
+      values: GuestFilterValue.values,
+    );
+
     return Container(
       padding: screenPadding.copyWith(bottom: 0),
       child: Column(
@@ -91,11 +102,14 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
         children: [
           FilterBar(
             searchFilter: searchFilter,
-            modified: [divisionFilter, skillsFilter, interestsFilter].modified(),
+            modified:
+                [divisionFilter, skillsFilter, interestsFilter].modified() ||
+                (guestSearchFilter.isOn && _selectedGuests != GuestFilterValue.all),
             filterDialog: ProfilesFilterDialog(
               divisionFilter: divisionFilter,
               skillsFilter: skillsFilter,
               interestsFilter: interestsFilter,
+              guestFilter: guestFilter,
             ),
           ),
           Expanded(
@@ -104,6 +118,7 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
               divisionFilter: divisionFilter,
               skillsFilter: skillsFilter,
               interestsFilter: interestsFilter,
+              guestFilter: guestFilter,
             ),
           ),
         ],

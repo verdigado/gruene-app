@@ -8,6 +8,8 @@ import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart'
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_marker.dart';
+import 'package:gruene_app/prototype/prototype.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class EditTeamMembersWidget extends StatefulWidget {
@@ -108,14 +110,21 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
                       child: CustomIcon(path: 'assets/icons/chess_queen.svg', color: ThemeColors.textDark),
                     )
                   : SizedBox.shrink(),
+              // PROTOTYPE: the API may send no name for a team member, and
+              // `.safe()` turns that into an empty string — a blank row. Says
+              // what it is instead.
               Text(
-                teamMembership.userName.safe(),
+                isPrototype && teamMembership.userName.isNullOrEmpty()
+                    ? 'Ehemalige:r Mitarbeitende:r'
+                    : teamMembership.userName.safe(),
                 style: theme.textTheme.bodyLarge?.apply(
                   color: teamMembership.status != TeamMembershipStatus.pending
                       ? ThemeColors.textDark
                       : ThemeColors.textDisabled,
                 ),
               ),
+              // PROTOTYPE: who in this team is a guest, for whoever edits it.
+              GuestMarker.forName(teamMembership.userName),
             ],
           ),
           Row(children: actions),

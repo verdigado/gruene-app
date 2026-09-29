@@ -6,6 +6,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_marker.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
 
@@ -205,6 +206,9 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
                             child: CustomIcon(path: 'assets/icons/chess_queen.svg', color: ThemeColors.textDark),
                           )
                         : SizedBox.shrink(),
+                    // PROTOTYPE: the team statistics rank guests next to
+                    // members. Unmarked, a guest at rank 2 reads as a member.
+                    GuestMarker.forName(item.userName),
                   ],
                 ),
                 Row(

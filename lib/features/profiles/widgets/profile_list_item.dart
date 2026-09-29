@@ -7,6 +7,7 @@ import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/horizontal_divider.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_marker.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide ProfileImage;
 
 class ProfileListItem extends StatelessWidget {
@@ -26,7 +27,20 @@ class ProfileListItem extends StatelessWidget {
         onTap: () => isUser ? context.push(Routes.profiles.path) : context.pushNested(profile.id, extra: profile),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         leading: ProfileImage(profile: profile),
-        title: Text(profile.fullName, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleMedium),
+        // PROTOTYPE: guests are named as guests wherever members see them.
+        title: Row(
+          children: [
+            Flexible(
+              child: Text(
+                profile.fullName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleMedium,
+              ),
+            ),
+            GuestMarker.forUser(profile.userId),
+          ],
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

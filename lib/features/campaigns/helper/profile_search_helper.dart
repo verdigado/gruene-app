@@ -9,6 +9,7 @@ import 'package:gruene_app/features/campaigns/screens/teams/search_screen.dart';
 import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_marker.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileSearchHelper {
@@ -73,7 +74,14 @@ class ProfileSearchHelper {
                       padding: EdgeInsets.all(6),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(item.fullName, style: theme.textTheme.titleMedium),
+                        // PROTOTYPE: the older search marks guests too — a team
+                        // lead picking members needs the same information.
+                        child: Row(
+                          children: [
+                            Flexible(child: Text(item.fullName, style: theme.textTheme.titleMedium)),
+                            GuestMarker.forUser(item.userId),
+                          ],
+                        ),
                       ),
                     ),
                     Container(

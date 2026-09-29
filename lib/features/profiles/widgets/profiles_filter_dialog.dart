@@ -5,6 +5,7 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/filter_dialog.dart';
 import 'package:gruene_app/app/widgets/selection.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_marker.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfilesFilterDialog extends StatefulWidget {
@@ -12,11 +13,15 @@ class ProfilesFilterDialog extends StatefulWidget {
   final SelectionFilterModel<List<ProfileTag>, List<ProfileTag>> skillsFilter;
   final SelectionFilterModel<List<ProfileTag>, List<ProfileTag>> interestsFilter;
 
+  /// PROTOTYPE: only rendered while `guestSearchFilter` is on.
+  final SelectionFilterModel<GuestFilterValue, List<GuestFilterValue>> guestFilter;
+
   const ProfilesFilterDialog({
     super.key,
     required this.divisionFilter,
     required this.skillsFilter,
     required this.interestsFilter,
+    required this.guestFilter,
   });
 
   @override
@@ -29,6 +34,7 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
   late Division? _localSelectedDivision;
   late List<ProfileTag> _localSelectedSkills;
   late List<ProfileTag> _localSelectedInterests;
+  late GuestFilterValue _localSelectedGuests;
 
   @override
   void initState() {
@@ -36,6 +42,13 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
     _localSelectedDivision = widget.divisionFilter.current;
     _localSelectedSkills = widget.skillsFilter.current;
     _localSelectedInterests = widget.interestsFilter.current;
+    _localSelectedGuests = widget.guestFilter.current;
+  }
+
+  void setGuests(GuestFilterValue? value) {
+    final selected = value ?? GuestFilterValue.all;
+    widget.guestFilter.update(selected);
+    setState(() => _localSelectedGuests = selected);
   }
 
   void setDivision(Division? division) {
@@ -57,6 +70,7 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
     setDivision(widget.divisionFilter.initial);
     setSkills(widget.skillsFilter.initial);
     setInterests(widget.interestsFilter.initial);
+    setGuests(widget.guestFilter.initial);
   }
 
   @override
@@ -64,12 +78,28 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
     final filtersModified =
         widget.divisionFilter.modified(_localSelectedDivision) ||
         widget.skillsFilter.modified(_localSelectedSkills) ||
-        widget.interestsFilter.modified(_localSelectedInterests);
+        widget.interestsFilter.modified(_localSelectedInterests) ||
+        (guestSearchFilter.isOn && _localSelectedGuests != GuestFilterValue.all);
 
     return FilterDialog(
       resetFilters: resetFilters,
       modified: filtersModified,
       children: [
+        // PROTOTYPE: first, because it changes the population the other filters
+        // then narrow — and because its presence is the question being asked.
+        if (guestSearchFilter.isOn)
+          FilterSection(
+            title: 'Gäste',
+            child: Selection(
+              selected: _localSelectedGuests,
+              setSelected: setGuests,
+              items: GuestFilterValue.values,
+              compare: (a, b) => a == b,
+              filter: (value, query) => value.label.toLowerCase().contains(query.toLowerCase()),
+              itemAsString: (value) => value.label,
+              label: 'Gäste',
+            ),
+          ),
         FilterSection(
           title: t.divisions.division,
           child: Selection(

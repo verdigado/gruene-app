@@ -8,9 +8,21 @@ import 'package:gruene_app/app/services/interceptors/auth_interceptor.dart';
 import 'package:gruene_app/app/services/interceptors/keep_alive_interceptor.dart';
 import 'package:gruene_app/app/services/interceptors/user_agent_interceptor.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/fixture_http_client.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 Future<GrueneApi> createGrueneApiClient() async {
+  // Prototype mode short-circuits the network at the transport layer, so the
+  // generated converters still parse fixtures into the real swagger models.
+  // The auth interceptor is skipped because fixtures need no bearer token.
+  if (Config.isPrototype) {
+    return GrueneApi.create(
+      baseUrl: Uri.parse(Config.grueneApiUrl),
+      httpClient: FixtureHttpClient(),
+      interceptors: [UserAgentInterceptor()],
+    );
+  }
+
   List<Interceptor> interceptors = [
     UserAgentInterceptor(),
     KeepAliveInterceptor(),

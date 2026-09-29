@@ -8,6 +8,7 @@ import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_details.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_marker.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfileDetailScreen extends StatelessWidget {
@@ -34,7 +35,11 @@ class ProfileDetailScreen extends StatelessWidget {
               spacing: 16,
               children: [
                 ProfileHeader(profile: profile),
+                // PROTOTYPE: says what an otherwise empty profile actually is.
+                GuestInfoCard.forUser(profile.userId),
                 ProfileDetails(profile: profile),
+                // PROTOTYPE: acting on a guest sits at the end, after the facts.
+                GuestManageAction.forUser(profile.userId),
               ],
             ),
           );

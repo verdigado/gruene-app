@@ -54,6 +54,12 @@ import 'package:gruene_app/features/news/bloc/bookmark_event.dart';
 import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_bloc.dart';
 import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_event.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/dev_drawer.dart';
+import 'package:gruene_app/prototype/experiments.dart';
+import 'package:gruene_app/prototype/fake_auth_repository.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_gallery.dart';
+import 'package:gruene_app/prototype/prototype.dart';
+import 'package:gruene_app/prototype/settings.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -73,6 +79,13 @@ Future<void> main() async {
   rruleL10n = await RruleL10nDe.create();
 
   registerSecureStorage();
+
+  if (isPrototype) {
+    registerPrototypeExperiments();
+    // Before runApp: the app must come up in the configuration the last demo
+    // left behind, not flip a screen later.
+    await prototypeSettings.load();
+  }
 
   final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -109,6 +122,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
+
+  // PROTOTYPE: screenshot gallery build only (tools/prototype/guest_gallery.sh).
+  if (isPrototype && guestGalleryEnabled) unawaited(startGuestGallery(navigatorKey));
 }
 
 void initializeTimers() {
@@ -185,7 +201,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = AuthRepository();
+    final authRepository = isPrototype ? FakeAuthRepository() : AuthRepository();
     final shortestSide = MediaQuery.sizeOf(context).shortestSide;
 
     if (shortestSide < 640) {
@@ -233,6 +249,12 @@ class MyApp extends StatelessWidget {
                 routerDelegate: router.routerDelegate,
                 routeInformationProvider: router.routeInformationProvider,
                 theme: appTheme,
+                // No prototype menu in the screenshot gallery: its chip would be
+                // in every static screen.
+                builder: isPrototype && !guestGalleryEnabled
+                    ? (context, child) =>
+                          PrototypeOverlay(navigatorKey: navigatorKey, child: child ?? const SizedBox.shrink())
+                    : null,
               );
             },
           );

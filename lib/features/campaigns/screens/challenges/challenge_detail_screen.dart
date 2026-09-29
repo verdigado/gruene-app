@@ -16,6 +16,7 @@ import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge
 import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/screens/progress_with_label.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_marker.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ChallengeDetailScreen extends StatefulWidget {
@@ -419,11 +420,20 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                   spacing: 6,
                   children: [
                     Flexible(
-                      child: Text(
-                        item.userName,
-                        style: theme.textTheme.labelLarge?.copyWith(fontSize: 18),
-                        overflow: .ellipsis,
-                        maxLines: 1,
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              item.userName,
+                              style: theme.textTheme.labelLarge?.copyWith(fontSize: 18),
+                              overflow: .ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                          // PROTOTYPE: matched by name, because a leaderboard
+                          // entry carries no user id at all.
+                          GuestMarker.forName(item.userName),
+                        ],
                       ),
                     ),
                     item.isCompleted()

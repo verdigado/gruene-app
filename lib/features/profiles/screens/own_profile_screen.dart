@@ -11,6 +11,10 @@ import 'package:gruene_app/features/profiles/widgets/profile_details.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_flow.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_screens.dart';
+import 'package:gruene_app/prototype/flows/guest/guest_terms.dart';
+import 'package:gruene_app/prototype/prototype.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class OwnProfileScreen extends StatelessWidget {
@@ -31,6 +35,15 @@ class OwnProfileScreen extends StatelessWidget {
               Column(
                 children: [
                   TextListItem(title: t.profiles.search, onPress: () => context.pushNested(Routes.profileSearch.path)),
+                  // PROTOTYPE: guest administration lives with people, not with
+                  // the campaign — it outlives the Wahlkampf-only scope.
+                  if (guestAdministration.isOn && prototypePersona.value.canInviteGuests)
+                    TextListItem(
+                      title: terms.accesses,
+                      onPress: () => Navigator.of(
+                        context,
+                      ).push(MaterialPageRoute<void>(builder: (_) => const GuestAdministrationScreen())),
+                    ),
                   TextListItem(
                     title: t.profiles.myMembershipCard,
                     onPress: () => context.pushNested(Routes.membershipCard.path),

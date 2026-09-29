@@ -2,6 +2,9 @@
 
 # B90/DIE GRÜNEN App
 
+> **Concept branch, not for merging.** This branch contains a clickable prototype of the guest access concept. See
+> [Guest Access Concept Prototype](docs/guest-access-concept.md).
+
 ## Contents
 
 - [Setup](#setup)
