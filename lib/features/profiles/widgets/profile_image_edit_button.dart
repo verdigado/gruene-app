@@ -31,7 +31,8 @@ class ProfileImageEditButton extends StatelessWidget {
       onPressed: () => tryAndNotify(
         function: () async => _editProfileImage(context),
         context: context,
-        onSuccess: (context, image) => image != null ? showSnackBar(context, t.profiles.profileImage.updated) : null,
+        onSuccess: (context, image) =>
+            image != null ? showSnackBar(context: context, text: t.profiles.profileImage.updated) : null,
         setLoading: setLoading,
       ),
       style: TextButton.styleFrom(

@@ -47,7 +47,8 @@ class _EventsScreenState extends State<EventsScreen> {
   Widget build(BuildContext context) {
     final writableCalendars = widget.calendars.where((calendar) => !calendar.readOnly).toList();
     return BlocListener<EventsBloc, EventsState>(
-      listener: (context, state) => showMap && state.events.isEmpty ? showSnackBar(context, t.events.noEvents) : null,
+      listener: (context, state) =>
+          showMap && state.events.isEmpty ? showSnackBar(context: context, text: t.events.noEvents) : null,
       child: Stack(
         children: [
           Offstage(

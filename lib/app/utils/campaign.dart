@@ -22,6 +22,9 @@ String? getCurrentPoiStatisticsCampaignId() {
 void switchCampaign(Campaign? campaign, BuildContext context) {
   var appSettings = GetIt.I<AppSettings>();
   appSettings.campaign.activeCampaign.recentSelectedCampaignId = campaign?.id;
-  showSnackBar(context, t.campaigns.infoToast.campaigns_changed(campaignName: campaign?.name ?? t.common.notAvailable));
+  showSnackBar(
+    context: context,
+    text: t.campaigns.infoToast.campaigns_changed(campaignName: campaign?.name ?? t.common.notAvailable),
+  );
   GetIt.I<ActiveCampaignNotifier>().reset();
 }

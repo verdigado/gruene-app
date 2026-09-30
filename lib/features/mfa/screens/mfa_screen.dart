@@ -22,7 +22,7 @@ class MfaScreen extends StatelessWidget {
           listener: (context, state) {
             final error = state.error;
             if (error != null) {
-              showSnackBar(context, getErrorMessage(error));
+              showSnackBar(context: context, text: getErrorMessage(error));
             }
           },
           builder: (context, state) {

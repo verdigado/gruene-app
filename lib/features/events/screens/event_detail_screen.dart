@@ -123,7 +123,7 @@ class EventDeletionConfirmationDialog extends StatelessWidget {
               await deleteEvent(event);
             },
             context: context,
-            onSuccess: (context, _) => showSnackBar(context, t.events.deleted),
+            onSuccess: (context, _) => showSnackBar(context: context, text: t.events.deleted),
           ),
         ),
       ],

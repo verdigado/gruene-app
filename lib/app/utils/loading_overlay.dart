@@ -39,7 +39,10 @@ Future<T?> tryAndNotify<T>({
     return value;
   } catch (error) {
     if (rootContext.mounted) {
-      showSnackBar(rootContext, getErrorMessage(error, defaultMessage: errorMessage));
+      showSnackBar(
+        context: rootContext,
+        text: getErrorMessage(error, defaultMessage: errorMessage),
+      );
     }
   } finally {
     setLoading != null ? setLoading(false) : hideLoadingOverlay();

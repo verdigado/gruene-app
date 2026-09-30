@@ -49,7 +49,7 @@ class _VerifyViewState extends State<VerifyView> {
       // Just show an error in the snackbar
     }
     if (mounted) {
-      showSnackBar(context, t.mfa.verify.authenticationFailed);
+      showSnackBar(context: context, text: t.mfa.verify.authenticationFailed);
     }
   }
 
