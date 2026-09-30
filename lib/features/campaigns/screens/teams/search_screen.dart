@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/widgets/hint.dart';
 import 'package:gruene_app/features/campaigns/helper/new_page_error_indicator.dart';
 import 'package:gruene_app/features/campaigns/widgets/search_bar_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -14,12 +15,14 @@ class SearchScreen<T> extends StatefulWidget {
   final SearchDataDelegate<T> searchDataDelegate;
   final GetSearchItemWidgetDelegate<T> getSearchItemWidget;
   final String searchHintText;
+  final String? permanentHintText;
 
   const SearchScreen({
     super.key,
     required this.searchDataDelegate,
     required this.getSearchItemWidget,
     required this.searchHintText,
+    this.permanentHintText,
     this.pageSize = 20,
   });
 
@@ -62,10 +65,20 @@ class _SearchScreenState<T> extends State<SearchScreen<T>> {
   Widget build(BuildContext context) {
     var searchBar = Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: SearchBarWidget(
-        onExecuteSearch: onSearchExecuted,
-        onSearchCleared: onSearchCleared,
-        hintText: widget.searchHintText,
+      child: Column(
+        spacing: 8,
+        children: [
+          SearchBarWidget(
+            onExecuteSearch: onSearchExecuted,
+            onSearchCleared: onSearchCleared,
+            hintText: widget.searchHintText,
+          ),
+          if (widget.permanentHintText != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Hint(text: widget.permanentHintText!),
+            ),
+        ],
       ),
     );
     var paging = PagedSliverList<int, T>(

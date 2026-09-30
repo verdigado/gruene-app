@@ -30,6 +30,7 @@ class ProfileSearchHelper {
               searchDataDelegate: _searchProfile,
               getSearchItemWidget: (item, index, context, closeSearchScreen) =>
                   _getSearchProfileItemWidget(item, index, context, closeSearchScreen, getActionState),
+              permanentHintText: t.campaigns.search.permanentProfileSearchHintText,
             ),
           );
         },
