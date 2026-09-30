@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
@@ -10,8 +11,11 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
+import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -166,6 +170,33 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
                       ),
                     ),
                   ),
+            Container(
+              height: 45,
+              padding: EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                spacing: 8,
+                crossAxisAlignment: .center,
+                children: [
+                  CustomIcon(path: 'assets/icons/chat_info.svg', color: ThemeColors.primary),
+
+                  GestureDetector(
+                    onTap: () {
+                      logger.i('START');
+                      var url = Config.requestCampaignUrl;
+                      openUrl(url, context);
+                    },
+
+                    child: Text(
+                      t.campaigns.select.reportMissingCampaign,
+                      style: theme.textTheme.labelLarge?.apply(
+                        color: ThemeColors.primary,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

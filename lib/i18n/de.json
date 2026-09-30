@@ -116,7 +116,8 @@
       "enforceSelectHint": "Deine bisherige Kampagne '${previousCampaignName}' ist beendet. Bitte wähle eine neue Kampagne aus!",
       "electionDate": "Wahltermin",
       "statisticsTitle": "Statistik anzeigen",
-      "statisticsHint": "Wähle die Kampagne aus, für die du die Statistiken anzeigen möchtest."
+      "statisticsHint": "Wähle die Kampagne aus, für die du die Statistiken anzeigen möchtest.",
+      "reportMissingCampaign": "Fehlende Kampagne melden"
     },
     "infoToast": {
       "focusAreas_activated": "Fokusgebiete aktiviert",
