@@ -93,7 +93,7 @@ class EventDetail extends StatelessWidget {
                   }
                 },
                 context: context,
-                onSuccess: (context, _) => showSnackBar(context, t.common.saved),
+                onSuccess: (context, _) => showSnackBar(context: context, text: t.common.saved),
               ),
             ),
           ],

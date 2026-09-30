@@ -48,7 +48,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
         return await teamsService.getOwnTeam();
       },
       context: context,
-      onSuccess: (context, _) => showSnackBar(context, t.profiles.visibility.updated),
+      onSuccess: (context, _) => showSnackBar(context: context, text: t.profiles.visibility.updated),
     );
 
     if (_selectedVisibility == Visibility.private && team != null && mounted) {

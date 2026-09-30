@@ -320,7 +320,7 @@ Future<CalendarEvent?> save({
       return event;
     },
     context: context,
-    onSuccess: (context, _) => showSnackBar(context, t.events.updated),
+    onSuccess: (context, _) => showSnackBar(context: context, text: t.events.updated),
   );
 }
 

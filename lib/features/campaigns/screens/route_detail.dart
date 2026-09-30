@@ -7,6 +7,7 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
@@ -169,22 +170,37 @@ class _RouteDetailState extends State<RouteDetail> {
         border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
       ),
       child: Row(
+        mainAxisAlignment: .spaceBetween,
+        crossAxisAlignment: .start,
+        spacing: 8,
         children: [
-          SizedBox(width: 6),
-          Icon(Icons.group_outlined, size: 30),
-          SizedBox(width: 35),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => (_currentUserInfo.isCampaignManager() && _currentUserKV != null)
-                  ? _selectTeam(_currentRouteDetail)
-                  : null,
-              child: Text(
-                _currentRouteDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
-                style: theme.textTheme.bodyLarge,
-                softWrap: true,
-              ),
+          Flexible(
+            child: Row(
+              children: [
+                SizedBox(width: 6),
+                Icon(Icons.group_outlined, size: 30),
+                SizedBox(width: 35),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => (_currentUserInfo.isCampaignManager() && _currentUserKV != null)
+                        ? _selectTeam(_currentRouteDetail)
+                        : null,
+                    child: Text(
+                      _currentRouteDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
+                      style: theme.textTheme.bodyLarge,
+                      softWrap: true,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+          _currentRouteDetail.team != null
+              ? GestureDetector(
+                  onTap: () async => await _assignTeam(_currentRouteDetail, null),
+                  child: Icon(Icons.link_off_outlined),
+                )
+              : SizedBox.shrink(),
         ],
       ),
     );
@@ -218,12 +234,28 @@ class _RouteDetailState extends State<RouteDetail> {
     );
 
     if (selectedTeam != null) {
-      var routeAssignmentUpdate = route.asRouteAssignmentUpdate().copyWith(team: selectedTeam.asRouteTeam());
-      var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeAssignmentUpdate);
-      await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
-      setState(() {
-        _currentRouteDetail = routeAssignmentUpdate.transformToVirtualRouteDetailModel();
-      });
+      await _assignTeam(route, selectedTeam.asRouteTeam());
+    }
+  }
+
+  Future<void> _assignTeam(RouteDetailModel route, TeamInfo? selectedTeam) async {
+    var routeAssignmentUpdate = route.asRouteAssignmentUpdate().copyWith(team: Wrapped.value(selectedTeam));
+    var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeAssignmentUpdate);
+    await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
+    if (!mounted) return;
+    var previousTeamData = _currentRouteDetail.team;
+
+    setState(() {
+      _currentRouteDetail = routeAssignmentUpdate.transformToVirtualRouteDetailModel();
+    });
+    if (selectedTeam == null && previousTeamData != null) {
+      if (!mounted) return;
+
+      showToastAsSnack(
+        context,
+        t.campaigns.team.assignment_suspended(team: previousTeamData.name),
+        onActionPressed: () async => await _assignTeam(route, previousTeamData),
+      );
     }
   }
 }

@@ -52,7 +52,7 @@ class RouteDetailModel {
     LineString? lineString,
     String? createdAt,
     bool? isVirtual,
-    TeamInfo? team,
+    Wrapped<TeamInfo?>? team,
   }) {
     if (isVirtual ?? this.isVirtual) {
       return RouteDetailModel.virtual(
@@ -63,7 +63,7 @@ class RouteDetailModel {
         status: status ?? this.status,
         lineString: lineString ?? this.lineString,
         createdAt: createdAt ?? this.createdAt,
-        team: team ?? this.team,
+        team: team != null ? team.value : this.team,
       );
     } else {
       return RouteDetailModel(
@@ -74,7 +74,7 @@ class RouteDetailModel {
         status: status ?? this.status,
         lineString: lineString ?? this.lineString,
         createdAt: createdAt ?? this.createdAt,
-        team: team ?? this.team,
+        team: team != null ? team.value : this.team,
       );
     }
   }

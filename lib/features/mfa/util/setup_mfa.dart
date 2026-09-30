@@ -29,7 +29,7 @@ Future<void> waitForReadyStatus(BuildContext context, MfaBloc bloc) async {
 void setupMfa(BuildContext context, String actionTokenUrl) {
   // Prevent authenticator registration with arbitrary keycloak instances
   if (!actionTokenUrl.startsWith(Config.oidcIssuer)) {
-    showSnackBar(context, t.mfa.tokenScan.oidcIssuerMissmatch);
+    showSnackBar(context: context, text: t.mfa.tokenScan.oidcIssuerMissmatch);
     return;
   }
 
@@ -44,7 +44,7 @@ void setupMfa(BuildContext context, String actionTokenUrl) {
 
   final error = bloc.state.error;
   if (error != null) {
-    showSnackBar(context, getErrorMessage(error));
+    showSnackBar(context: context, text: getErrorMessage(error));
     return;
   }
 

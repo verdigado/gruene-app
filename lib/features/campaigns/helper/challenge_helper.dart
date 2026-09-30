@@ -49,7 +49,10 @@ class ChallengeHelper {
     var challengeService = GetIt.I<GrueneApiChallengeService>();
     var joinResult = await challengeService.joinChallenge(challenge.id);
     if (!context.mounted) return null;
-    showSnackBar(context, t.campaigns.challenges.joinConfirmationDialog.joinToast(title: challenge.title));
+    showSnackBar(
+      context: context,
+      text: t.campaigns.challenges.joinConfirmationDialog.joinToast(title: challenge.title),
+    );
     return joinResult;
   }
 
@@ -73,7 +76,10 @@ class ChallengeHelper {
     var challengeService = GetIt.I<GrueneApiChallengeService>();
     await challengeService.leaveChallenge(challenge.id);
     if (!context.mounted) return;
-    showSnackBar(context, t.campaigns.challenges.leaveConfirmationDialog.leaveToast(title: challenge.title));
+    showSnackBar(
+      context: context,
+      text: t.campaigns.challenges.leaveConfirmationDialog.leaveToast(title: challenge.title),
+    );
   }
 
   static void openChallenge(BuildContext context, String challengeId, {Object? extra}) {

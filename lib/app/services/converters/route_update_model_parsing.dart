@@ -9,7 +9,7 @@ extension RouteStatusUpdateModelParsing on RouteStatusUpdateModel {
 
 extension RouteAssignmentUpdateModelParsing on RouteAssignmentUpdateModel {
   RouteDetailModel transformToVirtualRouteDetailModel() {
-    var newRouteDetail = routeDetail.copyWith(team: team, isVirtual: true);
+    var newRouteDetail = routeDetail.copyWith(team: Wrapped.value(team), isVirtual: true);
     return newRouteDetail;
   }
 }

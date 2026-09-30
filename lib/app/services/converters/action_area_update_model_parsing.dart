@@ -9,7 +9,7 @@ extension ActionAreaUpdateModelParsing on ActionAreaStatusUpdateModel {
 
 extension ActionAreaAssignmentUpdateModelParsing on ActionAreaAssignmentUpdateModel {
   ActionAreaDetailModel transformToVirtualActionAreaDetailModel() {
-    var newActionAreaDetail = actionAreaDetail.copyWith(team: team, isVirtual: true);
+    var newActionAreaDetail = actionAreaDetail.copyWith(team: Wrapped.value(team), isVirtual: true);
     return newActionAreaDetail;
   }
 }

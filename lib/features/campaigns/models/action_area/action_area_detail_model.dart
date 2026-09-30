@@ -52,7 +52,7 @@ class ActionAreaDetailModel {
     Polygon? polygon,
     String? createdAt,
     bool? isVirtual,
-    TeamInfo? team,
+    Wrapped<TeamInfo?>? team,
   }) {
     if (isVirtual ?? this.isVirtual) {
       return ActionAreaDetailModel.virtual(
@@ -63,7 +63,7 @@ class ActionAreaDetailModel {
         status: status ?? this.status,
         polygon: polygon ?? this.polygon,
         createdAt: createdAt ?? this.createdAt,
-        team: team ?? this.team,
+        team: team != null ? team.value : this.team,
       );
     } else {
       return ActionAreaDetailModel.virtual(
@@ -74,7 +74,7 @@ class ActionAreaDetailModel {
         status: status ?? this.status,
         polygon: polygon ?? this.polygon,
         createdAt: createdAt ?? this.createdAt,
-        team: team ?? this.team,
+        team: team != null ? team.value : this.team,
       );
     }
   }
