@@ -1,9 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:motion_toast/motion_toast.dart';
 
-  ScaffoldMessenger.of(Navigator.of(context, rootNavigator: true).context).showSnackBar(SnackBar(content: Text(text)));
-void showSnackBar({required BuildContext context, required String text}) {
+void showSnackBar({
+  required BuildContext context,
+  required String text,
+  Function? onActionPressed,
+  SnackBarBehavior? behavior,
+  EdgeInsetsGeometry? margin,
+  bool rootContext = true,
+}) {
+  var scaffoldMessenger = rootContext
+      ? ScaffoldMessenger.of(Navigator.of(context, rootNavigator: true).context)
+      : ScaffoldMessenger.of(context);
+  var action = onActionPressed != null
+      ? SnackBarAction(
+          label: t.common.actions.undo,
+          onPressed: () {
+            onActionPressed();
+            scaffoldMessenger.removeCurrentSnackBar();
+          },
+        )
+      : null;
+
+  scaffoldMessenger.showSnackBar(SnackBar(behavior: behavior, content: Text(text), action: action, margin: margin));
 }
 
 void showToastError(BuildContext context, String text) {
@@ -16,7 +37,13 @@ void showToastError(BuildContext context, String text) {
   ).show(context);
 }
 
-void showToastAsSnack(BuildContext context, String text, {double height = 80, double? width}) {
+void showToastAsSnack(
+  BuildContext context,
+  String text, {
+  double height = 80,
+  double? width,
+  Function? onActionPressed,
+}) {
   var theme = Theme.of(context);
   // to get the current keyboard height, so that the toast is shown above the keyboard, if it is open
   var mediaQuery = MediaQuery.of(context);
@@ -29,7 +56,24 @@ void showToastAsSnack(BuildContext context, String text, {double height = 80, do
     displaySideBar: false,
     description: Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 16),
-      child: Text(text, style: theme.textTheme.labelMedium!.apply(color: ThemeColors.background)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(text, style: theme.textTheme.labelMedium!.apply(color: ThemeColors.background)),
+          ),
+          if (onActionPressed != null)
+            TextButton(
+              onPressed: () {
+                onActionPressed();
+              },
+              child: Text(
+                t.common.actions.undo,
+                style: theme.textTheme.labelMedium!.apply(color: ThemeColors.background),
+              ),
+            ),
+        ],
+      ),
     ),
   ).show(context);
 }

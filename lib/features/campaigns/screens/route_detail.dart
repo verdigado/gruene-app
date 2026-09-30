@@ -7,6 +7,7 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
@@ -241,8 +242,20 @@ class _RouteDetailState extends State<RouteDetail> {
     var routeAssignmentUpdate = route.asRouteAssignmentUpdate().copyWith(team: Wrapped.value(selectedTeam));
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeAssignmentUpdate);
     await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
+    if (!mounted) return;
+    var previousTeamData = _currentRouteDetail.team;
+
     setState(() {
       _currentRouteDetail = routeAssignmentUpdate.transformToVirtualRouteDetailModel();
     });
+    if (selectedTeam == null && previousTeamData != null) {
+      if (!mounted) return;
+
+      showToastAsSnack(
+        context,
+        t.campaigns.team.assignment_suspended(team: previousTeamData.name),
+        onActionPressed: () async => await _assignTeam(route, previousTeamData),
+      );
+    }
   }
 }

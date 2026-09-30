@@ -7,6 +7,8 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
@@ -234,8 +236,20 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     );
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaAssignmentUpdate);
     await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
+    if (!mounted) return;
+    var previousTeamData = _currentActionAreaDetail.team;
+
     setState(() {
       _currentActionAreaDetail = actionAreaAssignmentUpdate.transformToVirtualActionAreaDetailModel();
     });
+    if (selectedTeam == null && previousTeamData != null) {
+      if (!mounted) return;
+
+      showToastAsSnack(
+        context,
+        t.campaigns.team.assignment_suspended(team: previousTeamData.name),
+        onActionPressed: () async => await _assignTeam(actionArea, previousTeamData),
+      );
+    }
   }
 }

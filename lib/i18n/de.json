@@ -332,7 +332,8 @@
       },
       "select_team": "Team auswählen",
       "select_team_hint_route": "Wähle das Team aus, dem du diese Route zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
-      "select_team_hint_area": "Wähle das Team aus, dem du dieses Einsatzgebiet zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen"
+      "select_team_hint_area": "Wähle das Team aus, dem du dieses Einsatzgebiet zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
+      "assignment_suspended": "Zuweisung an ${team} aufgehoben"
     },
     "challenges": {
       "label": "Challenges",
