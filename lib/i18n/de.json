@@ -101,8 +101,7 @@
       "hintTextDivision": "Gliederung finden",
       "hintTextProfile": "Nutzerprofil finden",
       "no_entries_found": "Leider nichts gefunden",
-      "country_code": "de-de",
-      "permanentProfileSearchHintText": "Nicht alle Nutzenden erscheinen in der Suche - manche haben die Sichtbarkeit ihres Profils eingeschränkt."
+      "country_code": "de-de"
     },
     "filters": {
       "focusAreas": "Fokusgebiete",
