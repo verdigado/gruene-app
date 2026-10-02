@@ -42,6 +42,7 @@ class CampaignConstants {
   static const routesLineSelectedLayerId = 'routes_layer_selected';
   static const routesLineSelectedOutlineLayerId = 'routes_layer_focus_selected';
   static const routeAssignmentAssetId = 'routes_assignment';
+  static const routeDefaultColor = '#008939';
 
   static const experienceAreaSourceName = 'experience_areas';
   static const experienceAreaSelectedSourceName = 'experience_areas_selected';
@@ -72,6 +73,7 @@ class CampaignConstants {
   static const featurePropertyIsVirtual = 'is_virtual';
   static const featurePropertyStatus = 'status';
   static const featurePropertyIsAssigned = 'is_assigned';
+  static const featurePropertyColor = 'color';
 
   static String focusAreaMapIdProperty = 'id';
   static String focusAreaMapScoreColorProperty = 'score_color';

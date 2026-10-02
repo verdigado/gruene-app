@@ -28,6 +28,7 @@ import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
+import 'package:gruene_app/app/services/gruene_api_visual_identifier_service.dart';
 import 'package:gruene_app/app/services/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/services/notification_message_type.dart';
@@ -45,6 +46,7 @@ import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
+import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
@@ -104,6 +106,11 @@ Future<void> main() async {
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.flyer.toString());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.door.toString());
   GetIt.I.registerSingleton<TeamRefreshController>(TeamRefreshController());
+  GetIt.I.registerFactory<VisualIdentifierHelper>(() {
+    var visualIdentifierHelper = VisualIdentifierHelper();
+    visualIdentifierHelper.ensureInitialized();
+    return visualIdentifierHelper;
+  });
   initializeApiServices();
   intializeNotficationHandlers();
   WidgetsFlutterBinding.ensureInitialized();
@@ -141,6 +148,7 @@ void initializeApiServices() {
   GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
   GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
   GetIt.I.registerFactory<GrueneApiChallengeService>(() => GrueneApiChallengeService());
+  GetIt.I.registerFactory<GrueneApiVisualIdentifierService>(() => GrueneApiVisualIdentifierService());
 }
 
 void intializeNotficationHandlers() {

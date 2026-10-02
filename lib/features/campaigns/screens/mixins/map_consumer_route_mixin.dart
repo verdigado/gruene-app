@@ -17,7 +17,7 @@ mixin MapConsumerRouteMixin on InfoBox {
       LineLayerProperties(
         lineJoin: 'round',
         lineCap: 'round',
-        lineColor: '#008939',
+        lineColor: [Expressions.get, CampaignConstants.featurePropertyColor],
         lineWidth: 7,
         lineOpacity: [
           Expressions.match,
@@ -46,7 +46,13 @@ mixin MapConsumerRouteMixin on InfoBox {
     await mapLibreController.addLineLayer(
       CampaignConstants.routesSelectedSourceName,
       CampaignConstants.routesLineSelectedLayerId,
-      LineLayerProperties(lineJoin: 'round', lineCap: 'round', lineColor: '#008939', lineWidth: 7, lineOpacity: 0.9),
+      LineLayerProperties(
+        lineJoin: 'round',
+        lineCap: 'round',
+        lineColor: [Expressions.get, CampaignConstants.featurePropertyColor],
+        lineWidth: 7,
+        lineOpacity: 0.9,
+      ),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );
