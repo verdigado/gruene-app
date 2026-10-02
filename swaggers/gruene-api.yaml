@@ -2414,6 +2414,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Route'
+        '400':
+          description: ''
         '401':
           description: ''
       security:
@@ -2594,6 +2596,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Route'
+        '400':
+          description: ''
         '401':
           description: ''
         '404':
@@ -2985,6 +2989,14 @@ paths:
     get:
       operationId: getCampaignStatistics
       parameters:
+        - name: campaignId
+          required: false
+          in: query
+          description: >-
+            Filter statistics by campaign. If omitted, statistics are aggregated
+            across all campaigns.
+          schema:
+            type: string
         - name: start
           required: false
           in: query
@@ -2998,11 +3010,6 @@ paths:
           schema:
             format: date-time
             example: '2026-04-23T12:15:59.123'
-            type: string
-        - name: campaignId
-          required: false
-          in: query
-          schema:
             type: string
       responses:
         '200':
@@ -3401,6 +3408,24 @@ paths:
       security:
         - bearer: []
       summary: Get Team assignments
+      tags:
+        - campaigns
+  /v1/campaigns/visual-identifiers:
+    get:
+      operationId: findVisualIdentifiers
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindVisualIdentifiersResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: Find visual identifiers
       tags:
         - campaigns
   /v1/roles:
@@ -6620,6 +6645,11 @@ components:
         type:
           allOf:
             - $ref: '#/components/schemas/RouteType'
+        visualIdentifierId:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 255
         name:
           type: string
           nullable: true
@@ -6643,6 +6673,11 @@ components:
         type:
           allOf:
             - $ref: '#/components/schemas/RouteType'
+        visualIdentifierId:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 255
         campaignId:
           type: string
           nullable: true
@@ -6677,6 +6712,11 @@ components:
         status:
           allOf:
             - $ref: '#/components/schemas/RouteStatus'
+        visualIdentifierId:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 255
         id:
           type: string
           example: '1'
@@ -6713,6 +6753,7 @@ components:
       required:
         - type
         - status
+        - visualIdentifierId
         - id
         - campaignId
         - createdAt
@@ -7442,6 +7483,11 @@ components:
         status:
           allOf:
             - $ref: '#/components/schemas/RouteStatus'
+        visualIdentifierId:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 255
         id:
           type: string
           example: '1'
@@ -7473,6 +7519,7 @@ components:
       required:
         - type
         - status
+        - visualIdentifierId
         - id
         - campaignId
         - createdAt
@@ -7495,6 +7542,33 @@ components:
       required:
         - areas
         - routes
+    VisualIdentifier:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 0
+          maximum: 255
+          example: 0
+        color:
+          type: string
+          example: '#008939'
+          pattern: ^#[0-9A-F]{6}$
+        name:
+          type: string
+      required:
+        - id
+        - color
+        - name
+    FindVisualIdentifiersResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VisualIdentifier'
+      required:
+        - data
     RoleAssignmentStatus:
       type: string
       enum:

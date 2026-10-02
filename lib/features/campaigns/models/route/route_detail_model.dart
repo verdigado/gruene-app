@@ -16,6 +16,7 @@ class RouteDetailModel {
   final String createdAt;
   final bool isVirtual;
   final TeamInfo? team;
+  final int? visualIdentifierId;
 
   const RouteDetailModel({
     required this.id,
@@ -26,6 +27,7 @@ class RouteDetailModel {
     required this.lineString,
     required this.createdAt,
     required this.team,
+    required this.visualIdentifierId,
   }) : isVirtual = false;
 
   RouteDetailModel.virtual({
@@ -37,6 +39,7 @@ class RouteDetailModel {
     required this.lineString,
     required this.createdAt,
     required this.team,
+    required this.visualIdentifierId,
   }) : isVirtual = true;
 
   factory RouteDetailModel.fromJson(Map<String, dynamic> json) => _$RouteDetailModelFromJson(json);
@@ -53,6 +56,7 @@ class RouteDetailModel {
     String? createdAt,
     bool? isVirtual,
     Wrapped<TeamInfo?>? team,
+    int? visualIdentifierId,
   }) {
     if (isVirtual ?? this.isVirtual) {
       return RouteDetailModel.virtual(
@@ -64,6 +68,7 @@ class RouteDetailModel {
         lineString: lineString ?? this.lineString,
         createdAt: createdAt ?? this.createdAt,
         team: team != null ? team.value : this.team,
+        visualIdentifierId: visualIdentifierId ?? this.visualIdentifierId,
       );
     } else {
       return RouteDetailModel(
@@ -75,6 +80,7 @@ class RouteDetailModel {
         lineString: lineString ?? this.lineString,
         createdAt: createdAt ?? this.createdAt,
         team: team != null ? team.value : this.team,
+        visualIdentifierId: visualIdentifierId ?? this.visualIdentifierId,
       );
     }
   }

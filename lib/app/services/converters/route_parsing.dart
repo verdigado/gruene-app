@@ -11,6 +11,7 @@ extension TeamRouteParsing on Route {
       lineString: lineString,
       createdAt: createdAt.getAsLocalDateString(),
       team: team,
+      visualIdentifierId: visualIdentifierId,
     );
   }
 }
