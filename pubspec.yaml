@@ -51,7 +51,7 @@ dependencies:
   wheel_slider: ^1.2.1
   geolocator: ^14.0.2
   flutter_html: ^3.0.0-beta.2
-  package_info_plus: ^9.0.0
+  package_info_plus: ^10.2.2
   motion_toast: ^2.11.0
   flutter_keycloak_authenticator: ^0.1.1
   mobile_scanner: ^7.0.0-beta.3
