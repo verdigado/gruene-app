@@ -130,7 +130,7 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
     var profileService = GetIt.I<GrueneApiProfileService>();
     try {
       var currentDivision = (await profileService.getSelf()).getOwnKV();
-      return currentDivision;
+      return await currentDivision;
     } catch (e) {
       return null;
     }

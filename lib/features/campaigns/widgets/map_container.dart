@@ -34,10 +34,18 @@ import 'package:turf/turf.dart' as turf;
 
 typedef OnMapCreatedCallback = void Function(MapController controller);
 typedef AddPOIClickedCallback = void Function(LatLng location);
-typedef LoadVisiblePoisCallBack =
-    void Function(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached);
-typedef LoadDataLayersCallBack =
-    void Function(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached);
+typedef LoadVisiblePoisCallBack = void Function(
+  String campaignId,
+  LatLng locationSW,
+  LatLng locationNE,
+  bool loadCached,
+);
+typedef LoadDataLayersCallBack = void Function(
+  String campaignId,
+  LatLng locationSW,
+  LatLng locationNE,
+  bool loadCached,
+);
 typedef GetMarkerImagesCallback = Map<String, String> Function();
 typedef OnFeatureClickCallback = void Function(dynamic feature);
 typedef GetBasicPoiFromFeatureCallback = Future<BasicPoi> Function(Map<String, dynamic> feature);

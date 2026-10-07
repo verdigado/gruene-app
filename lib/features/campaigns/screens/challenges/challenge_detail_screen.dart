@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
@@ -171,9 +172,8 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                 SizedBox(height: 80),
                 Text(
                   challengeCampaignName,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelMedium?.copyWith(color: ThemeColors.textDisabled, fontSize: 15),
+                  style: Theme.of(context).textTheme.labelMedium
+                      ?.copyWith(color: ThemeColors.textDisabled, fontSize: 15),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   textAlign: TextAlign.left,
@@ -309,9 +309,8 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                             leftover_activities: leftOverActivitiesLabel,
                           ),
 
-                          styleSheet: MarkdownStyleSheet.fromTheme(
-                            theme,
-                          ).copyWith(p: Theme.of(context).textTheme.labelSmall),
+                          styleSheet: MarkdownStyleSheet.fromTheme(theme)
+                              .copyWith(p: Theme.of(context).textTheme.labelSmall),
                         ),
                       )
                     : SizedBox.shrink(),

@@ -7,8 +7,12 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 typedef SearchDataDelegate<T> = Future<List<T>> Function(String searchText, int pageKey, int pageSize);
-typedef GetSearchItemWidgetDelegate<T> =
-    Widget Function(T item, int index, BuildContext context, void Function(T item) closeSearchScreen);
+typedef GetSearchItemWidgetDelegate<T> = Widget Function(
+  T item,
+  int index,
+  BuildContext context,
+  void Function(T item) closeSearchScreen,
+);
 
 class SearchScreen<T> extends StatefulWidget {
   final int pageSize;
