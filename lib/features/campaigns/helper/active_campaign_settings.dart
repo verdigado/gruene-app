@@ -31,7 +31,7 @@ class ActiveCampaignSettings extends ChangeNotifier {
     save();
   }
 
-  ActiveCampaignSettings({String? recentSelectedCampaignId}) : _recentSelectedCampaignId = recentSelectedCampaignId;
+  ActiveCampaignSettings({this._recentSelectedCampaignId});
 
   static Future<ActiveCampaignSettings> restore() async {
     var secureStorage = GetIt.I<FlutterSecureStorage>();
