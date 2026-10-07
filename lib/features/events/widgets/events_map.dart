@@ -61,7 +61,13 @@ class _EventsMapState extends State<EventsMap> {
     }
   }
 
-  Future<void> _onFeatureTapped(_, math.Point<double> point, LatLng coordinates, String layer) async {
+  Future<void> _onFeatureTapped(
+    math.Point<double> point,
+    LatLng coordinates,
+    String id,
+    String layerId,
+    Annotation? annotation,
+  ) async {
     final features = await mapController!.queryRenderedFeatures(point, ['events-layer'], null);
     final eventIds = features.map((feature) => feature['properties']['eventId'] as String?).nonNulls.toList();
 

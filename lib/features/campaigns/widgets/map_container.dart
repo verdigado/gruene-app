@@ -181,6 +181,8 @@ class _MapContainerState extends State<MapContainer>
             trackCameraPosition: true,
             onCameraIdle: _onCameraIdle,
             onMapClick: _onMapClick,
+            // feature clicks are resolved in _onMapClick, so taps on interactive layers must reach it too
+            featureTapsTriggersMapClick: true,
             myLocationEnabled: _permissionGiven,
             // myLocationTrackingMode: _permissionGiven ? MyLocationTrackingMode.Tracking : MyLocationTrackingMode.None,
             myLocationTrackingMode: MyLocationTrackingMode.none,

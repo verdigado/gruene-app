@@ -35,8 +35,8 @@ dependencies:
   jwt_decoder: ^2.0.1
   flutter_native_splash: ^2.4.2
   url_launcher: ^6.3.1
-  maplibre_gl: ^0.22.0
-  maplibre_gl_platform_interface: ^0.22.0
+  maplibre_gl: ^0.27.1
+  maplibre_gl_platform_interface: ^0.27.1
 #--------- swagger_dart_code_generator --------------
   chopper: ^8.0.0
   json_annotation: ^4.8.0
@@ -51,7 +51,7 @@ dependencies:
   wheel_slider: ^1.2.1
   geolocator: ^14.0.2
   flutter_html: ^3.0.0-beta.2
-  package_info_plus: ^9.0.0
+  package_info_plus: ^10.2.2
   motion_toast: ^2.11.0
   flutter_keycloak_authenticator: ^0.1.1
   mobile_scanner: ^7.0.0-beta.3
