@@ -38,6 +38,7 @@ class EventsMap extends StatefulWidget {
 
 class _EventsMapState extends State<EventsMap> {
   MapLibreMapController? mapController;
+  bool eventsLayerAdded = false;
   bool followUserLocation = false;
 
   @override
@@ -80,9 +81,11 @@ class _EventsMapState extends State<EventsMap> {
       eventsLayerName,
       const SymbolLayerProperties(iconImage: 'eventIcon', iconSize: 0.2, iconAllowOverlap: true),
     );
+    eventsLayerAdded = true;
   }
 
   Future<void> _updateEventsLayer(List<CalendarEvent> events) async {
+    if (!eventsLayerAdded) return;
     final featureCollection = events.featureCollection;
     await mapController?.setGeoJsonSource(eventsSourceName, featureCollection.toJson());
 
