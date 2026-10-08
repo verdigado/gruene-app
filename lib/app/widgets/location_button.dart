@@ -32,9 +32,15 @@ class LocationIcon extends StatelessWidget {
 
 class LocationButton extends StatefulWidget {
   final Future<void> Function(RequestedPosition) bringCameraToUser;
+  final bool bringCameraToUserOnStart;
   final bool followUserLocation;
 
-  const LocationButton({super.key, required this.bringCameraToUser, required this.followUserLocation});
+  const LocationButton({
+    super.key,
+    required this.bringCameraToUser,
+    required this.bringCameraToUserOnStart,
+    required this.followUserLocation,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -48,7 +54,9 @@ class _LocationButtonState extends State<LocationButton> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _determinePosition(context));
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _determinePosition(context, bringCameraToUser: widget.bringCameraToUserOnStart),
+    );
   }
 
   @override
@@ -57,7 +65,7 @@ class _LocationButtonState extends State<LocationButton> {
     return FloatingActionButton.small(
       heroTag: 'location',
       onPressed: () => requestedPosition == null || requestedPosition.position == null
-          ? _determinePosition(context)
+          ? _determinePosition(context, bringCameraToUser: true)
           : widget.bringCameraToUser(requestedPosition),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
@@ -80,7 +88,7 @@ class _LocationButtonState extends State<LocationButton> {
     );
   }
 
-  Future<void> _determinePosition(BuildContext context) async {
+  Future<void> _determinePosition(BuildContext context, {required bool bringCameraToUser}) async {
     setState(() => _requestedPosition = null);
     final requestedPosition = await determinePosition(
       context,
@@ -92,6 +100,6 @@ class _LocationButtonState extends State<LocationButton> {
       _showFeatureDisabled(context);
     }
 
-    await widget.bringCameraToUser(requestedPosition);
+    if (bringCameraToUser) await widget.bringCameraToUser(requestedPosition);
   }
 }

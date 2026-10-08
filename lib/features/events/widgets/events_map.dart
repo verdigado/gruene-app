@@ -24,7 +24,8 @@ import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-const double userZoom = 10;
+// If the zoom is < 10.5, enabling followUserLocation on iOS zooms in even more
+const double userZoom = 10.5;
 const double minDistance = 0.4;
 
 class EventsMap extends StatefulWidget {
@@ -114,11 +115,11 @@ class _EventsMapState extends State<EventsMap> {
     final position = positionRequest.position;
     if (position == null) return;
 
-    setState(() => followUserLocation = true);
     final cameraUpdate = CameraUpdate.newCameraPosition(
       CameraPosition(target: LatLng(position.latitude, position.longitude), bearing: 0, tilt: 0, zoom: userZoom),
     );
     await mapController?.animateCamera(cameraUpdate);
+    setState(() => followUserLocation = true);
   }
 
   @override
@@ -162,7 +163,11 @@ class _EventsMapState extends State<EventsMap> {
           Positioned(
             bottom: 16,
             right: 16,
-            child: LocationButton(bringCameraToUser: _bringCameraToUser, followUserLocation: followUserLocation),
+            child: LocationButton(
+              bringCameraToUser: _bringCameraToUser,
+              bringCameraToUserOnStart: appSettings.recentEventMapSetting == null,
+              followUserLocation: followUserLocation,
+            ),
           ),
         ],
       ),
