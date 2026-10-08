@@ -7,7 +7,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
   Future<void> addActionAreaLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
     final data = <turf.Feature>{}.toList();
 
-    addImageFromAsset(
+    await addImageFromAsset(
       mapLibreController,
       CampaignConstants.actionAreaFillAssetId,
       CampaignConstants.actionAreaFillPatternAssetName,
@@ -30,6 +30,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
           0.8,
         ],
       ),
+
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );
@@ -43,7 +44,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     );
 
     // assignment symbols
-    addImageFromAsset(
+    await addImageFromAsset(
       mapLibreController,
       CampaignConstants.actionAreaAssignmentAssetId,
       CampaignConstants.actionAreaAssignemntAssetName,
