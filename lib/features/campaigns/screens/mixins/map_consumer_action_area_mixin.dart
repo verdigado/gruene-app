@@ -12,6 +12,15 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       CampaignConstants.actionAreaFillAssetId,
       CampaignConstants.actionAreaFillPatternAssetName,
     );
+    final visualIdentifiers = await GetIt.I<VisualIdentifierHelper>().getAllVisualIdentifiers();
+    for (final visualIdentifier in visualIdentifiers.entries) {
+      await addRecoloredImageFromAsset(
+        mapLibreController,
+        CampaignConstants.actionAreaFillAssetIdForVisualIdentifier(visualIdentifier.key),
+        CampaignConstants.actionAreaFillPatternAssetName,
+        visualIdentifier.value,
+      );
+    }
 
     await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, data);
 
@@ -19,7 +28,21 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       CampaignConstants.actionAreaSourceName,
       CampaignConstants.actionAreaLayerId,
       FillLayerProperties(
-        fillPattern: [Expressions.image, CampaignConstants.actionAreaFillAssetId],
+        fillPattern: [
+          Expressions.coalesce,
+          [
+            Expressions.image,
+            [
+              Expressions.concat,
+              CampaignConstants.actionAreaFillAssetIdPrefix,
+              [
+                Expressions.toStringExpression,
+                [Expressions.get, CampaignConstants.featurePropertyVisualIdentifierId],
+              ],
+            ],
+          ],
+          [Expressions.image, CampaignConstants.actionAreaFillAssetId],
+        ],
         fillOpacity: [
           Expressions.match,
           [Expressions.get, CampaignConstants.featurePropertyStatus],
@@ -30,7 +53,6 @@ mixin MapConsumerActionAreaMixin on InfoBox {
           0.8,
         ],
       ),
-
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );

@@ -4,12 +4,17 @@ import 'package:gruene_app/app/services/gruene_api_visual_identifier_service.dar
 class VisualIdentifierHelper {
   static Map<int, String>? _visualIdentifierMap;
 
-  void ensureInitialized() async {
+  Future<void> ensureInitialized() async {
     if (_visualIdentifierMap == null) {
       var visualIdentifierService = GetIt.I.get<GrueneApiVisualIdentifierService>();
       var visualIdentifiersData = (await visualIdentifierService.getVisualIdentifiers());
       _visualIdentifierMap = {for (var e in visualIdentifiersData) e.id: e.color};
     }
+  }
+
+  Future<Map<int, String>> getAllVisualIdentifiers() async {
+    await ensureInitialized();
+    return Map.unmodifiable(_visualIdentifierMap ?? <int, String>{});
   }
 
   void reset() {

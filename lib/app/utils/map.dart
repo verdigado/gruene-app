@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:image/image.dart' as image_lib;
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/along.dart';
 
@@ -12,6 +13,29 @@ Future<void> addImageFromAsset(
   final bytes = await rootBundle.load(assetName);
   final list = bytes.buffer.asUint8List();
   return controller.addImage(name, list, sdfImage);
+}
+
+/// Adds an asset image to the currently displayed style with the color of all pixels swapped
+/// to [hexColor] (e.g. `#008939`) while keeping their alpha channel
+Future<void> addRecoloredImageFromAsset(
+  MapLibreMapController controller,
+  String name,
+  String assetName,
+  String hexColor,
+) async {
+  final bytes = await rootBundle.load(assetName);
+  final image = image_lib.decodePng(bytes.buffer.asUint8List())!.convert(numChannels: 4);
+  final color = int.parse(hexColor.replaceFirst('#', ''), radix: 16);
+  final red = (color >> 16) & 0xFF;
+  final green = (color >> 8) & 0xFF;
+  final blue = color & 0xFF;
+  for (final pixel in image) {
+    pixel
+      ..r = red
+      ..g = green
+      ..b = blue;
+  }
+  return controller.addImage(name, image_lib.encodePng(image));
 }
 
 extension FeatureCollectionExtension on FeatureCollection<Point> {

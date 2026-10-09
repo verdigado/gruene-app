@@ -844,6 +844,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Area'
+        '400':
+          description: ''
         '401':
           description: ''
       security:
@@ -1118,6 +1120,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Area'
+        '400':
+          description: ''
         '401':
           description: ''
         '404':
@@ -5551,6 +5555,11 @@ components:
         type:
           allOf:
             - $ref: '#/components/schemas/AreaType'
+        visualIdentifierId:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 255
         comment:
           type: string
           nullable: true
@@ -5570,6 +5579,11 @@ components:
         type:
           allOf:
             - $ref: '#/components/schemas/AreaType'
+        visualIdentifierId:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 255
         campaignId:
           type: string
           nullable: true
@@ -5617,6 +5631,11 @@ components:
         status:
           allOf:
             - $ref: '#/components/schemas/AreaStatus'
+        visualIdentifierId:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 255
         id:
           type: string
           example: '1'
@@ -5650,6 +5669,7 @@ components:
       required:
         - type
         - status
+        - visualIdentifierId
         - id
         - campaignId
         - createdAt
@@ -7435,6 +7455,11 @@ components:
         status:
           allOf:
             - $ref: '#/components/schemas/AreaStatus'
+        visualIdentifierId:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 255
         id:
           type: string
           example: '1'
@@ -7466,6 +7491,7 @@ components:
       required:
         - type
         - status
+        - visualIdentifierId
         - id
         - campaignId
         - createdAt
