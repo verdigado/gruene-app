@@ -24,6 +24,7 @@ import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/features/campaigns/screens/campaign_select_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/campaign_location_button.dart';
+import 'package:gruene_app/features/campaigns/widgets/map_compass.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
 import 'package:gruene_app/features/campaigns/widgets/mixins.dart';
@@ -119,6 +120,8 @@ class _MapContainerState extends State<MapContainer>
 
   bool _isInFocusMode = false;
 
+  double _bearing = 0;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -136,6 +139,7 @@ class _MapContainerState extends State<MapContainer>
   void dispose() {
     widget.mapContainerController.removeListener(_showItem);
     appSettings.campaign.activeCampaign.removeListener(_changeActiveCampaign);
+    _controller?.removeListener(_onCameraChanged);
     super.dispose();
   }
 
@@ -171,6 +175,7 @@ class _MapContainerState extends State<MapContainer>
             onStyleLoadedCallback: _onStyleLoadedCallback,
             cameraTargetBounds: CameraTargetBounds(_cameraTargetBounds),
             trackCameraPosition: true,
+            compassEnabled: false,
             onCameraIdle: _onCameraIdle,
             onMapClick: _onMapClick,
             myLocationEnabled: _permissionGiven,
@@ -180,6 +185,12 @@ class _MapContainerState extends State<MapContainer>
             minMaxZoomPreference: const MinMaxZoomPreference(4.5, 18.0),
           ),
           addMarker,
+          // add custom MapCompass as built-in compass is not working properly on Android (https://github.com/maplibre/flutter-maplibre-gl/issues/825)
+          Positioned(
+            top: 6,
+            right: 4,
+            child: MapCompass(bearing: _bearing, onPressed: _resetBearing),
+          ),
           Positioned(
             bottom: 16,
             right: 16,
@@ -200,6 +211,7 @@ class _MapContainerState extends State<MapContainer>
       _controller = controller;
       _isMapInitialized = true;
     });
+    controller.addListener(_onCameraChanged);
 
     final onMapCreated = widget.onMapCreated;
     if (onMapCreated != null) {
@@ -432,6 +444,22 @@ class _MapContainerState extends State<MapContainer>
         .map((x) => x.toJson())
         .toList();
     return jsonFeaturesFromMarkerManager;
+  }
+
+  void _onCameraChanged() {
+    final bearing = _controller?.cameraPosition?.bearing ?? 0;
+    if (!mounted || bearing == _bearing) return;
+    setState(() => _bearing = bearing);
+  }
+
+  void _resetBearing() async {
+    final cameraPosition = _controller?.cameraPosition;
+    if (cameraPosition == null) return;
+    await _controller!.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: cameraPosition.target, zoom: cameraPosition.zoom, tilt: cameraPosition.tilt, bearing: 0),
+      ),
+    );
   }
 
   void _onCameraIdle() async {
