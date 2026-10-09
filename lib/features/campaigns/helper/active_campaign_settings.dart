@@ -31,7 +31,10 @@ class ActiveCampaignSettings extends ChangeNotifier {
     save();
   }
 
-  ActiveCampaignSettings({this._recentSelectedCampaignId});
+  // Keep a public parameter name: json_serializable then restores via the constructor instead of the setter,
+  // which accesses AppSettings while AppSettings itself is still being initialized.
+  // ignore: prefer_initializing_formals
+  ActiveCampaignSettings({String? recentSelectedCampaignId}) : _recentSelectedCampaignId = recentSelectedCampaignId;
 
   static Future<ActiveCampaignSettings> restore() async {
     var secureStorage = GetIt.I<FlutterSecureStorage>();
