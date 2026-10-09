@@ -106,11 +106,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.flyer.toString());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.door.toString());
   GetIt.I.registerSingleton<TeamRefreshController>(TeamRefreshController());
-  GetIt.I.registerFactory<VisualIdentifierHelper>(() {
-    var visualIdentifierHelper = VisualIdentifierHelper();
-    visualIdentifierHelper.ensureInitialized();
-    return visualIdentifierHelper;
-  });
+  GetIt.I.registerSingleton<VisualIdentifierHelper>(VisualIdentifierHelper());
   initializeApiServices();
   intializeNotficationHandlers();
   WidgetsFlutterBinding.ensureInitialized();

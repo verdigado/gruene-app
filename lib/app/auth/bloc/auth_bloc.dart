@@ -5,6 +5,8 @@ import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
 
 class AuthEvent {}
 
@@ -38,6 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final success = await authRepository.login();
       if (success) {
         AppSettings.register();
+        await _initializeVisualIdentifiers();
         emit(Authenticated());
         await _pushNotificationService.updateSubscriptions();
       } else {
@@ -51,6 +54,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await authRepository.logout();
           await _pushNotificationService.updateSubscriptions();
           AppSettings.register();
+          GetIt.I<VisualIdentifierHelper>().reset();
           emit(Unauthenticated());
         },
         context: event.context,
@@ -61,16 +65,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       final isValid = await authRepository.isTokenValid();
       if (isValid) {
+        await _initializeVisualIdentifiers();
         emit(Authenticated());
       } else {
         final newAccessToken = await authRepository.refreshAccessToken();
         await _pushNotificationService.updateSubscriptions();
         if (newAccessToken != null) {
+          await _initializeVisualIdentifiers();
           emit(Authenticated());
         } else {
           emit(Unauthenticated());
         }
       }
     });
+  }
+
+  Future<void> _initializeVisualIdentifiers() async {
+    try {
+      await GetIt.I<VisualIdentifierHelper>().ensureInitialized();
+    } catch (e) {
+      logger.e('Failed to initialize visual identifiers', error: e);
+    }
   }
 }
