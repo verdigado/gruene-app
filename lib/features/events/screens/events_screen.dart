@@ -51,10 +51,8 @@ class _EventsScreenState extends State<EventsScreen> {
           showMap && state.events.isEmpty ? showSnackBar(context: context, text: t.events.noEvents) : null,
       child: Stack(
         children: [
-          Offstage(
-            offstage: !showMap,
-            child: EventsMap(calendars: widget.calendars),
-          ),
+          // A hidden map has no size and crashes natively on iOS (std::domain_error) when its camera is changed
+          if (showMap) EventsMap(calendars: widget.calendars),
           Offstage(
             offstage: showMap,
             child: Padding(

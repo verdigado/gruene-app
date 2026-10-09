@@ -34,14 +34,8 @@ mixin MapContainerExperienceAreaMixin {
     // await moveMapIfItemIsOnBorder(coord, Size(150, 150));
 
     // set visibility of marker layer
-    await getMapController()!.setLayerProperties(
-      CampaignConstants.experienceAreaLayerId,
-      FillLayerProperties(visibility: 'none'),
-    );
-    await getMapController()!.setLayerProperties(
-      CampaignConstants.experienceAreaOutlineLayerId,
-      LineLayerProperties(visibility: 'none'),
-    );
+    await getMapController()!.setLayerVisibility(CampaignConstants.experienceAreaLayerId, false);
+    await getMapController()!.setLayerVisibility(CampaignConstants.experienceAreaOutlineLayerId, false);
 
     // set data for '_selected layer'
     var featureObject = turf.Feature.fromJson(feature);
@@ -56,14 +50,9 @@ mixin MapContainerExperienceAreaMixin {
   ) async {
     setFocusMode(false);
 
-    await getMapController()!.setLayerProperties(
-      CampaignConstants.experienceAreaLayerId,
-      FillLayerProperties(visibility: 'visible'),
-    );
-    await getMapController()!.setLayerProperties(
-      CampaignConstants.experienceAreaOutlineLayerId,
-      LineLayerProperties(visibility: 'visible'),
-    );
+    await getMapController()!.setLayerVisibility(CampaignConstants.experienceAreaLayerId, true);
+    await getMapController()!.setLayerVisibility(CampaignConstants.experienceAreaOutlineLayerId, true);
+
     await removeLayerSource(CampaignConstants.experienceAreaSelectedSourceName);
   }
 

@@ -24,7 +24,8 @@ import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-const double userZoom = 10;
+// If the zoom is < 10.5, enabling followUserLocation on iOS zooms in even more
+const double userZoom = 10.5;
 const double minDistance = 0.4;
 
 class EventsMap extends StatefulWidget {
@@ -38,6 +39,7 @@ class EventsMap extends StatefulWidget {
 
 class _EventsMapState extends State<EventsMap> {
   MapLibreMapController? mapController;
+  bool eventsLayerAdded = false;
   bool followUserLocation = false;
 
   @override
@@ -61,7 +63,7 @@ class _EventsMapState extends State<EventsMap> {
     }
   }
 
-  Future<void> _onFeatureTapped(_, math.Point<double> point, LatLng coordinates, String layer) async {
+  Future<void> _onFeatureTapped(math.Point<double> point, LatLng coordinates, _, _, _) async {
     final features = await mapController!.queryRenderedFeatures(point, ['events-layer'], null);
     final eventIds = features.map((feature) => feature['properties']['eventId'] as String?).nonNulls.toList();
 
@@ -80,9 +82,11 @@ class _EventsMapState extends State<EventsMap> {
       eventsLayerName,
       const SymbolLayerProperties(iconImage: 'eventIcon', iconSize: 0.2, iconAllowOverlap: true),
     );
+    eventsLayerAdded = true;
   }
 
   Future<void> _updateEventsLayer(List<CalendarEvent> events) async {
+    if (!eventsLayerAdded) return;
     final featureCollection = events.featureCollection;
     await mapController?.setGeoJsonSource(eventsSourceName, featureCollection.toJson());
 
@@ -111,11 +115,11 @@ class _EventsMapState extends State<EventsMap> {
     final position = positionRequest.position;
     if (position == null) return;
 
-    setState(() => followUserLocation = true);
     final cameraUpdate = CameraUpdate.newCameraPosition(
       CameraPosition(target: LatLng(position.latitude, position.longitude), bearing: 0, tilt: 0, zoom: userZoom),
     );
     await mapController?.animateCamera(cameraUpdate);
+    setState(() => followUserLocation = true);
   }
 
   @override
@@ -159,7 +163,11 @@ class _EventsMapState extends State<EventsMap> {
           Positioned(
             bottom: 16,
             right: 16,
-            child: LocationButton(bringCameraToUser: _bringCameraToUser, followUserLocation: followUserLocation),
+            child: LocationButton(
+              bringCameraToUser: _bringCameraToUser,
+              bringCameraToUserOnStart: appSettings.recentEventMapSetting == null,
+              followUserLocation: followUserLocation,
+            ),
           ),
         ],
       ),
