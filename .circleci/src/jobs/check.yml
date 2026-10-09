@@ -1,6 +1,6 @@
 docker:
   - image: cimg/node:24.14.1
-resource_class: small
+resource_class: medium
 shell: /bin/bash -eo pipefail
 steps:
   - checkout

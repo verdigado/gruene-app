@@ -128,7 +128,7 @@ commands:
                     - v1-gradle-{{ checksum "android/build.gradle" }}-{{ checksum "android/app/build.gradle" }}-{{ checksum "android/settings.gradle" }}
                     - v1-gradle-
             - run:
-                command: ./gradlew androidDependencies
+                command: ./gradlew :app:dependencies --configuration productionReleaseRuntimeClasspath
                 name: Download Gradle Dependencies
                 working_directory: android
             - save_cache:
@@ -355,7 +355,7 @@ jobs:
     check:
         docker:
             - image: cimg/node:24.14.1
-        resource_class: small
+        resource_class: medium
         shell: /bin/bash -eo pipefail
         steps:
             - checkout

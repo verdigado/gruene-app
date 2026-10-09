@@ -4,7 +4,9 @@ analyzer:
   exclude: 
     - build/**
     - lib/swagger_generated_code/**
-    - lib/**.g.dart
+    - lib/**/*.g.dart
+    - android/**
+    - ios/**
   errors:
     always_use_package_imports: error
     directives_ordering: error

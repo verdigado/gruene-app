@@ -5,7 +5,7 @@ description: "App for the German party BÜNDNIS 90/DIE GRÜNEN"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.13.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -23,14 +23,14 @@ dependencies:
   dio: ^5.7.0
   slang: ^4.1.0
   slang_flutter: ^4.1.0
-  go_router: ^17.1.0
-  google_fonts: ^8.0.2
+  go_router: ^18.0.2
+  google_fonts: ^9.0.0
   flutter_svg: ^2.0.10+1
   flutter_appauth: ^12.0.0
   flutter_secure_storage: ^10.0.0
   flutter_dotenv: ^6.0.0
-  flutter_inappwebview: ^6.1.5
-  equatable: ^2.0.5
+  flutter_inappwebview: 6.2.0-beta.3
+  equatable: ^3.0.0
   logger: ^2.4.0
   jwt_decoder: ^2.0.1
   flutter_native_splash: ^2.4.2
@@ -51,7 +51,7 @@ dependencies:
   wheel_slider: ^1.2.1
   geolocator: ^14.0.2
   flutter_html: ^3.0.0-beta.2
-  package_info_plus: ^9.0.0
+  package_info_plus: ^10.2.2
   motion_toast: ^2.11.0
   flutter_keycloak_authenticator: ^0.1.1
   mobile_scanner: ^7.0.0-beta.3
@@ -63,14 +63,14 @@ dependencies:
   sqflite: ^2.4.1
   simple_animations: ^5.0.2
   carousel_slider_plus: ^7.1.0
-  flutter_file_dialog: ^3.0.2
-  cached_network_image: ^3.4.1
-  firebase_messaging: ^16.1.2
-  firebase_core: ^4.5.0
-  flutter_local_notifications: ^21.0.0
+  flutter_file_dialog: ^3.3.3
+  cached_network_image: ^4.0.4
+  firebase_messaging: ^16.7.0
+  firebase_core: ^4.15.0
+  flutter_local_notifications: ^22.3.1
   qr_flutter: ^4.1.0
   image_cropper: ^12.2.0
-  internet_connection_checker_plus: ^2.7.1
+  internet_connection_checker_plus: ^3.1.2
   synchronized: ^3.4.0
   rrule:
     git: https://github.com/steffenkleinle/rrule.git
@@ -102,11 +102,17 @@ dev_dependencies:
   swagger_dart_code_generator: ^4.1.1
 #----------------------------------------------------
 
+dependency_overrides:
+  # flutter_html 3.0.0 imports html's internal query_selector.dart, whose `matches` was removed in html 0.15.7
+  html: 0.15.6
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
+  config:
+    enable-swift-package-manager: false
   uses-material-design: true
   assets:
     - assets/badges/
