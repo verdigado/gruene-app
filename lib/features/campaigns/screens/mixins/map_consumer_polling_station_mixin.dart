@@ -30,19 +30,7 @@ mixin MapConsumerPollingStationMixin {
     await mapLibreController.addSymbolLayer(
       CampaignConstants.pollingStationSourceName,
       CampaignConstants.pollingStationSymbolLayerId,
-      SymbolLayerProperties(
-        iconImage: CampaignConstants.pollingStationSourceName,
-        iconSize: [
-          Expressions.interpolate,
-          ['linear'],
-          [Expressions.zoom],
-          11,
-          1,
-          16,
-          2,
-        ],
-        iconAllowOverlap: true,
-      ),
+      MapHelper.pollingStationLayerProperties(),
       enableInteraction: false,
       minzoom: mapInfo.minZoom,
     );

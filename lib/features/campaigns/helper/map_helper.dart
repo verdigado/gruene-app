@@ -6,6 +6,39 @@ import 'package:tuple/tuple.dart';
 import 'package:turf/turf.dart';
 
 class MapHelper {
+  /// Properties of the poi marker layer. Since [MapLibreMapController.setLayerProperties] resets all
+  /// properties not given, the complete set has to be passed when changing e.g. the opacity.
+  static SymbolLayerProperties poiMarkerLayerProperties({double iconOpacity = 1}) => SymbolLayerProperties(
+    iconImage: ['get', CampaignConstants.featurePropertyStatusType],
+    iconSize: [
+      Expressions.interpolate,
+      ['linear'],
+      [Expressions.zoom],
+      11,
+      1,
+      16,
+      2,
+    ],
+    iconAllowOverlap: true,
+    iconOpacity: iconOpacity,
+  );
+
+  /// Properties of the polling station layer, see [poiMarkerLayerProperties]
+  static SymbolLayerProperties pollingStationLayerProperties({double? iconOpacity = 1}) => SymbolLayerProperties(
+    iconImage: CampaignConstants.pollingStationSourceName,
+    iconSize: [
+      Expressions.interpolate,
+      ['linear'],
+      [Expressions.zoom],
+      11,
+      1,
+      16,
+      2,
+    ],
+    iconAllowOverlap: true,
+    iconOpacity: iconOpacity,
+  );
+
   static LatLng extractLatLngFromFeature(dynamic rawFeature) {
     final feature = rawFeature as Map<String, dynamic>;
     final geometry = feature['geometry'] as Map<String, dynamic>;

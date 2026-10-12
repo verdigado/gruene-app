@@ -500,19 +500,7 @@ class _MapContainerState extends State<MapContainer>
     await _controller!.addSymbolLayer(
       CampaignConstants.poiMarkerSourceId,
       CampaignConstants.markerLayerId,
-      const SymbolLayerProperties(
-        iconImage: ['get', CampaignConstants.featurePropertyStatusType],
-        iconSize: [
-          Expressions.interpolate,
-          ['linear'],
-          [Expressions.zoom],
-          11,
-          1,
-          16,
-          2,
-        ],
-        iconAllowOverlap: true,
-      ),
+      MapHelper.poiMarkerLayerProperties(),
       enableInteraction: false,
       minzoom: minZoomMarkerItems,
       filter: [
@@ -606,7 +594,10 @@ class _MapContainerState extends State<MapContainer>
     final coord = MapHelper.extractLatLngFromFeature(feature);
     await moveMapIfItemIsOnBorder(coord, Size(150, 150));
     // set opacity of marker layer
-    await _controller!.setLayerProperties(CampaignConstants.markerLayerId, SymbolLayerProperties(iconOpacity: 0.2));
+    await _controller!.setLayerProperties(
+      CampaignConstants.markerLayerId,
+      MapHelper.poiMarkerLayerProperties(iconOpacity: 0.2),
+    );
     // set data for '_selected layer'
     var featureObject = turf.Feature<turf.Point>.fromJson(feature);
     turf.FeatureCollection collection = turf.FeatureCollection(features: [featureObject]);
@@ -618,7 +609,7 @@ class _MapContainerState extends State<MapContainer>
     setState(() {
       _isInFocusMode = false;
     });
-    await _controller!.setLayerProperties(CampaignConstants.markerLayerId, SymbolLayerProperties(iconOpacity: 1));
+    await _controller!.setLayerProperties(CampaignConstants.markerLayerId, MapHelper.poiMarkerLayerProperties());
     await _controller!.setGeoJsonSource(CampaignConstants.markerSelectedSourceId, turf.FeatureCollection().toJson());
   }
 
