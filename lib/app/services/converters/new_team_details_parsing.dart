@@ -12,7 +12,7 @@ extension NewTeamDetailsParsing on NewTeamDetails {
 
   List<CreateTeamMembership> getAllMemberships() {
     var memberships = [
-      ...teamMembers!.map((m) => _asMembership(m, TeamMembershipType.member)),
+      ...(teamMembers ?? []).map((m) => _asMembership(m, TeamMembershipType.member)),
       _asMembership(selfJoin ? creatingUser : assignedTeamLead!, TeamMembershipType.lead),
     ];
     return memberships;

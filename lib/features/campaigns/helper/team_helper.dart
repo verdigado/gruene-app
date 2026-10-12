@@ -7,6 +7,7 @@ class TeamHelper {
     required BuildContext context,
     required String currentTeamName,
     required String newTeamName,
+    bool askForConfirmation = true,
   }) async {
     var theme = Theme.of(context);
     var dialogResult = await showDialog<bool>(
@@ -23,13 +24,14 @@ class TeamHelper {
             style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(
-                t.common.actions.cancel,
-                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
+            if (askForConfirmation)
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(
+                  t.common.actions.cancel,
+                  style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
+                ),
               ),
-            ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text(
