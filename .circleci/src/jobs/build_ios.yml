@@ -23,7 +23,7 @@ steps:
       environment: << parameters.environment >>
   - install_fastlane:
       directory: ios
-  - install_cocoapods
+  - resolve_swift_packages
   - run:
       name: '[FL] Build'
       command: bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
