@@ -287,7 +287,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 26.3.0
+            xcode: 27.2.0
         parameters:
             environment:
                 default: production
@@ -302,7 +302,7 @@ jobs:
                 command: softwareupdate --install-rosetta --agree-to-license
                 name: Install rosetta
             - run:
-                command: rbenv global 3.3.10
+                command: rbenv global 3.3.11
                 name: Set Ruby version
             - restore_environment_variables
             - install_flutter:
@@ -393,7 +393,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 26.3.0
+            xcode: 27.2.0
         parameters:
             production_delivery:
                 description: Whether to deliver the build to production.
@@ -402,7 +402,7 @@ jobs:
             - checkout
             - prepare_workspace
             - run:
-                command: rbenv global 3.3.10
+                command: rbenv global 3.3.11
                 name: Set Ruby version
             - restore_environment_variables
             - install_fastlane:
@@ -478,11 +478,11 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 26.3.0
+            xcode: 27.2.0
         steps:
             - checkout
             - run:
-                command: rbenv global 3.3.10
+                command: rbenv global 3.3.11
                 name: Set Ruby version
             - install_fastlane:
                 directory: ios
