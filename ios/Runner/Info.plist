@@ -54,6 +54,10 @@
 	<string>Um Freigabe für Logins in anderen Apps zu bestätigen benötigt die App Zugriff auf Face ID.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Wir benötigen Zugriff auf deinen Standort, um deine Position auf der Karte anzuzeigen.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Wir benötigen Zugriff auf deinen Standort, um deine Position auf der Karte anzuzeigen. - BACKGROUND MODUS NOT USED</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Wir benötigen Zugriff auf deinen Standort, um deine Position auf der Karte anzuzeigen. - BACKGROUND MODUS NOT USED</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Wir benötigen Zugriff auf dein Mikrofon, um Ton für Videos aufzunehmen. - NOT USED</string>
 	<key>NSPhotoLibraryUsageDescription</key>
