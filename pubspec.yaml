@@ -27,9 +27,9 @@ dependencies:
   google_fonts: ^9.0.0
   flutter_svg: ^2.0.10+1
   flutter_appauth: ^12.0.0
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^11.2.0
   flutter_dotenv: ^6.0.0
-  flutter_inappwebview: 6.2.0-beta.3
+  flutter_inappwebview: ^6.2.0-beta.3
   equatable: ^3.0.0
   logger: ^2.4.0
   jwt_decoder: ^2.0.1
@@ -53,7 +53,7 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   package_info_plus: ^10.2.2
   motion_toast: ^2.11.0
-  flutter_keycloak_authenticator: ^0.1.1
+  flutter_keycloak_authenticator: ^0.2.0
   mobile_scanner: ^7.0.0-beta.3
   timeago: ^3.7.1
   local_auth: ^3.0.1
@@ -69,7 +69,7 @@ dependencies:
   firebase_core: ^4.15.0
   flutter_local_notifications: ^22.3.1
   qr_flutter: ^4.1.0
-  image_cropper: ^12.2.0
+  image_cropper: ^13.0.0
   internet_connection_checker_plus: ^3.1.2
   synchronized: ^3.4.0
   rrule:
@@ -104,6 +104,7 @@ dev_dependencies:
 
 dependency_overrides:
   # flutter_html 3.0.0 imports html's internal query_selector.dart, whose `matches` was removed in html 0.15.7
+  # see bug https://github.com/Sub6Resources/flutter_html/issues/1515 for further details
   html: 0.15.6
 
 # For information on the generic Dart part of this file, see the
