@@ -18,7 +18,6 @@ extension ProfileExtension on Profile {
     ...(partyDivision?.level == HierarchyLevel.ov ? [Visibility.ovWide] : []),
     Visibility.kvWide,
     Visibility.lvWide,
-    Visibility.bvWide,
     Visibility.public,
   ];
 

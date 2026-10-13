@@ -30,7 +30,8 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
   @override
   void initState() {
     super.initState();
-    _selectedVisibility = widget.profile.privacy.overall;
+    final visibility = widget.profile.privacy.overall;
+    _selectedVisibility = visibility == Visibility.bvWide ? Visibility.public : visibility;
   }
 
   Future<void> _updateProfile() async {

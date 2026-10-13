@@ -6,7 +6,7 @@ String visibilityLabel(Visibility visibility) => switch (visibility) {
   Visibility.ovWide => t.divisions.level.ov.label,
   Visibility.kvWide => t.divisions.level.kv.label,
   Visibility.lvWide => t.divisions.level.lv.label,
-  Visibility.bvWide => t.divisions.level.bv.label,
+  Visibility.bvWide => t.profiles.visibility.public,
   Visibility.public => t.profiles.visibility.public,
   _ => '',
 };
@@ -15,7 +15,6 @@ String visibilityShortLabel(Visibility visibility) => switch (visibility) {
   Visibility.ovWide => t.divisions.level.ov.short,
   Visibility.kvWide => t.divisions.level.kv.short,
   Visibility.lvWide => t.divisions.level.lv.short,
-  Visibility.bvWide => t.divisions.level.bv.short,
   _ => visibilityLabel(visibility),
 };
 
