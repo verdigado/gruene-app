@@ -9,6 +9,7 @@ extension ActionAreaParsing on Area {
       name: name,
       status: status,
       polygon: polygon,
+      visualIdentifierId: visualIdentifierId,
       createdAt: createdAt.getAsLocalDateString(),
       team: team,
     );

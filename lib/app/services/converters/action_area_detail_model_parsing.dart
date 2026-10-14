@@ -17,6 +17,7 @@ extension ActionAreaDetailModelParsing on ActionAreaDetailModel {
         CampaignConstants.featurePropertyStatus: status.value!.toLowerCase(),
         CampaignConstants.featurePropertyIsVirtual: isVirtual,
         CampaignConstants.featurePropertyIsAssigned: team != null,
+        CampaignConstants.featurePropertyVisualIdentifierId: visualIdentifierId,
       },
       geometry: polygon.asTurfPolygon(),
     );

@@ -58,7 +58,7 @@ mixin MapConsumerRouteMixin on InfoBox {
     );
 
     // assignment symbols (on top of all other route layers)
-    addImageFromAsset(
+    await addImageFromAsset(
       mapLibreController,
       CampaignConstants.routeAssignmentAssetId,
       CampaignConstants.actionAreaAssignemntAssetName,

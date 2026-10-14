@@ -53,6 +53,9 @@ class CampaignConstants {
 
   static const actionAreaSourceName = 'action_areas';
   static const actionAreaFillAssetId = 'action_areas_fill';
+  static const actionAreaFillAssetIdPrefix = '${actionAreaFillAssetId}_';
+  static String actionAreaFillAssetIdForVisualIdentifier(int visualIdentifierId) =>
+      '$actionAreaFillAssetIdPrefix$visualIdentifierId';
   static const actionAreaAssignmentAssetId = 'action_areas_assignment';
   static const actionAreaSelectedSourceName = 'action_areas_selected';
   static const actionAreaLayerId = 'action_areas_layer';
@@ -74,6 +77,7 @@ class CampaignConstants {
   static const featurePropertyStatus = 'status';
   static const featurePropertyIsAssigned = 'is_assigned';
   static const featurePropertyColor = 'color';
+  static const featurePropertyVisualIdentifierId = 'visual_identifier_id';
 
   static String focusAreaMapIdProperty = 'id';
   static String focusAreaMapScoreColorProperty = 'score_color';

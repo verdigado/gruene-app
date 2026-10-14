@@ -12,6 +12,11 @@ class VisualIdentifierHelper {
     }
   }
 
+  Future<Map<int, String>> getAllVisualIdentifiers() async {
+    await ensureInitialized();
+    return Map.unmodifiable(_visualIdentifierMap ?? <int, String>{});
+  }
+
   void reset() {
     _visualIdentifierMap = null;
   }

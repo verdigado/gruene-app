@@ -7,7 +7,7 @@ mixin MapConsumerExperienceAreaMixin {
   Future<void> addExperienceAreaLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
     final data = <turf.Feature>{}.toList();
 
-    addImageFromAsset(
+    await addImageFromAsset(
       mapLibreController,
       CampaignConstants.experienceAreaSourceName,
       CampaignConstants.experienceAreaFillPatternAssetName,

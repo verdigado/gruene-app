@@ -14,12 +14,12 @@ mixin MapConsumerPollingStationMixin {
 
   Future<void> addPollingStationLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
     final initData = <turf.Feature>{}.toList();
-    addImageFromAsset(
+    await addImageFromAsset(
       mapLibreController,
       CampaignConstants.pollingStationSourceName,
       CampaignConstants.pollingStationAssetName,
     );
-    addImageFromAsset(
+    await addImageFromAsset(
       mapLibreController,
       CampaignConstants.pollingStationShieldAssetId,
       CampaignConstants.pollingStationShieldAssetName,
