@@ -69,13 +69,35 @@ mixin MapConsumerActionAreaMixin on InfoBox {
     await addImageFromAsset(
       mapLibreController,
       CampaignConstants.actionAreaAssignmentAssetId,
-      CampaignConstants.actionAreaAssignemntAssetName,
+      CampaignConstants.assignmentMarkerAssetName,
     );
+    for (final visualIdentifier in visualIdentifiers.entries) {
+      await addRecoloredImageFromAsset(
+        mapLibreController,
+        CampaignConstants.assignmentMarkerAssetIdForVisualIdentifier(visualIdentifier.key),
+        CampaignConstants.assignmentMarkerAssetName,
+        visualIdentifier.value,
+      );
+    }
     await mapLibreController.addSymbolLayer(
       CampaignConstants.actionAreaSourceName,
       CampaignConstants.actionAreaSymbolLayerId,
       SymbolLayerProperties(
-        iconImage: CampaignConstants.actionAreaAssignmentAssetId,
+        iconImage: [
+          Expressions.coalesce,
+          [
+            Expressions.image,
+            [
+              Expressions.concat,
+              CampaignConstants.assignmentMarkerAssetIdPrefix,
+              [
+                Expressions.toStringExpression,
+                [Expressions.get, CampaignConstants.featurePropertyVisualIdentifierId],
+              ],
+            ],
+          ],
+          [Expressions.image, CampaignConstants.actionAreaAssignmentAssetId],
+        ],
         iconRotationAlignment: 'viewport',
         iconSize: [
           Expressions.interpolate,

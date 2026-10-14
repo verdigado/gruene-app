@@ -22,6 +22,7 @@ extension RouteDetailModelParsing on RouteDetailModel {
         CampaignConstants.featurePropertyIsVirtual: isVirtual,
         CampaignConstants.featurePropertyIsAssigned: team != null,
         CampaignConstants.featurePropertyColor: visualIdentifierColor,
+        CampaignConstants.featurePropertyVisualIdentifierId: visualIdentifierId,
       },
       geometry: lineString.asTurfLine(),
     );

@@ -14,6 +14,7 @@ class CampaignConstants {
   static const pollingStationAssetName = 'assets/symbols/polling_stations/pollingstation.png';
   static const pollingStationShieldAssetName = 'assets/symbols/polling_stations/polling_station_shield.png';
   static const actionAreaAssignemntAssetName = 'assets/symbols/action_areas/assigned-marker_24x24.png';
+  static const assignmentMarkerAssetName = actionAreaAssignemntAssetName;
 
   static const experienceAreaFillPatternAssetName = 'assets/maps/layer_styles/experience_area_16x16.png';
   static const actionAreaFillPatternAssetName = 'assets/maps/layer_styles/action_area_16x16.png';
@@ -63,6 +64,10 @@ class CampaignConstants {
   // static const actionAreaSelectedLayerId = 'action_areas_layer_selected';
   static const actionAreaSelectedOutlineLayerId = '${actionAreaOutlineLayerId}_selected';
   static const actionAreaSymbolLayerId = 'action_areas_symbol_layer';
+
+  static const assignmentMarkerAssetIdPrefix = 'assignment_marker_';
+  static String assignmentMarkerAssetIdForVisualIdentifier(int visualIdentifierId) =>
+      '$assignmentMarkerAssetIdPrefix$visualIdentifierId';
 
   static Map<int, String> scoreInfos = {
     1: 'Stufe 1: wenige Plakate aufhängen, keine Flyer verteilen, keine Haustüren',

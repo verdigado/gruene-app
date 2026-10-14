@@ -9,6 +9,8 @@ mixin MapConsumerRouteMixin on InfoBox {
   Future<void> addRouteLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
     final data = <turf.Feature>{}.toList();
 
+    final visualIdentifiers = await GetIt.I<VisualIdentifierHelper>().getAllVisualIdentifiers();
+
     await mapInfo.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, data);
 
     await mapLibreController.addLineLayer(
@@ -61,13 +63,35 @@ mixin MapConsumerRouteMixin on InfoBox {
     await addImageFromAsset(
       mapLibreController,
       CampaignConstants.routeAssignmentAssetId,
-      CampaignConstants.actionAreaAssignemntAssetName,
+      CampaignConstants.assignmentMarkerAssetName,
     );
+    for (final visualIdentifier in visualIdentifiers.entries) {
+      await addRecoloredImageFromAsset(
+        mapLibreController,
+        CampaignConstants.assignmentMarkerAssetIdForVisualIdentifier(visualIdentifier.key),
+        CampaignConstants.assignmentMarkerAssetName,
+        visualIdentifier.value,
+      );
+    }
     await mapLibreController.addSymbolLayer(
       CampaignConstants.routesSourceName,
       CampaignConstants.routesSymbolLayerId,
       SymbolLayerProperties(
-        iconImage: CampaignConstants.routeAssignmentAssetId,
+        iconImage: [
+          Expressions.coalesce,
+          [
+            Expressions.image,
+            [
+              Expressions.concat,
+              CampaignConstants.assignmentMarkerAssetIdPrefix,
+              [
+                Expressions.toStringExpression,
+                [Expressions.get, CampaignConstants.featurePropertyVisualIdentifierId],
+              ],
+            ],
+          ],
+          [Expressions.image, CampaignConstants.routeAssignmentAssetId],
+        ],
         symbolPlacement: 'line-center',
         iconRotationAlignment: 'viewport',
         iconSize: [
