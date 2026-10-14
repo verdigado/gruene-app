@@ -52,6 +52,23 @@ mixin NewTeamMixin {
 
     if (context.mounted) {
       if (newDetails != null) {
+        var isCreatingUserInNewTeam = newDetails.getAllMemberships().any(
+          (m) => m.userId == newDetails.creatingUser.userId,
+        );
+        var currentTeamOfCreatingUser = await GetIt.I<GrueneApiTeamsService>().getOwnTeam();
+
+        // check whether current user is joining the new team and is already in a team
+        if (isCreatingUserInNewTeam && currentTeamOfCreatingUser != null) {
+          if (!context.mounted) return;
+          await TeamHelper.getConfirmationJoiningNewTeam(
+            context: context,
+            currentTeamName: currentTeamOfCreatingUser.name,
+            newTeamName: newDetails.name,
+            askForConfirmation: false,
+          );
+        }
+
+        if (!context.mounted) return;
         _showStepDivisionSelect(newDetails, context);
       }
     }
@@ -99,18 +116,6 @@ mixin NewTeamMixin {
         var isCreatingUserInNewTeam = newDetails.getAllMemberships().any(
           (m) => m.userId == newDetails?.creatingUser.userId,
         );
-        var currentTeamOfCreatingUser = await GetIt.I<GrueneApiTeamsService>().getOwnTeam();
-
-        // check whether current user is joining the new team and is already in a team
-        if (isCreatingUserInNewTeam && currentTeamOfCreatingUser != null) {
-          if (!context.mounted) return;
-          var confirmed = await TeamHelper.getConfirmationJoiningNewTeam(
-            context: context,
-            currentTeamName: currentTeamOfCreatingUser.name,
-            newTeamName: newDetails.name,
-          );
-          if (!confirmed) return;
-        }
 
         try {
           await teamService.createNewTeam(newDetails);
