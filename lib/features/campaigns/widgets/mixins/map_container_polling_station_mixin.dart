@@ -31,7 +31,7 @@ mixin MapContainerPollingStationMixin {
     // set opacity of marker layer
     await getMapController()!.setLayerProperties(
       CampaignConstants.pollingStationSymbolLayerId,
-      SymbolLayerProperties(iconOpacity: 0.2),
+      MapHelper.pollingStationLayerProperties(iconOpacity: 0.2),
     );
     // set data for '_selected layer'
     var featureObject = turf.Feature<turf.Point>.fromJson(feature);
@@ -47,7 +47,7 @@ mixin MapContainerPollingStationMixin {
 
     await getMapController()!.setLayerProperties(
       CampaignConstants.pollingStationSymbolLayerId,
-      SymbolLayerProperties(iconOpacity: 1),
+      MapHelper.pollingStationLayerProperties(),
     );
     await removeLayerSource(CampaignConstants.pollingStationSelectedSourceName);
   }
@@ -102,7 +102,6 @@ mixin MapContainerPollingStationMixin {
                         child: Text(
                           t.campaigns.pollingStation.reportCorrection,
                           textAlign: TextAlign.right,
-
                           style: theme.textTheme.labelLarge?.apply(
                             color: ThemeColors.textDark,
                             decoration: TextDecoration.underline,

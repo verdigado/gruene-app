@@ -10,6 +10,7 @@ import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info.dart';
 import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
 import 'package:gruene_app/features/campaigns/screens/map_consumer.dart';
