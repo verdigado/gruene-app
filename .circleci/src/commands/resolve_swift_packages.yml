@@ -1,0 +1,15 @@
+description: Restores and saves the Swift Package Manager cache and resolves the iOS package dependencies.
+steps:
+  - restore_cache:
+      name: Restore Swift Package Manager Cache
+      keys:
+        - 1-swiftpm-{{ arch }}-{{ checksum "ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved" }}
+  - run:
+      name: Resolve Swift Packages
+      command: xcodebuild -resolvePackageDependencies -workspace Runner.xcworkspace -scheme Runner
+      working_directory: ios
+  - save_cache:
+      name: Save Swift Package Manager Cache
+      key: 1-swiftpm-{{ arch }}-{{ checksum "ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved" }}
+      paths:
+        - ~/Library/Caches/org.swift.swiftpm/

@@ -30,22 +30,6 @@ commands:
             - run:
                 command: circleci config validate
                 name: Validate circle config
-    install_cocoapods:
-        description: Restores and saves the cocoa pods cache.
-        steps:
-            - restore_cache:
-                keys:
-                    - 1-cocoapods-{{ arch }}-{{ checksum "ios/Podfile.lock" }}
-                name: Restore CocoaPods Cache
-            - run:
-                command: bundle exec pod install
-                name: Install CocoaPods
-                working_directory: ios
-            - save_cache:
-                key: 1-cocoapods-{{ arch }}-{{ checksum "ios/Podfile.lock" }}
-                name: Save CocoaPods Cache
-                paths:
-                    - ~/Library/Caches/CocoaPods/
     install_fastlane:
         description: Restores and saves fastlane cache of the passed directory.
         parameters:
@@ -128,7 +112,7 @@ commands:
                     - v1-gradle-{{ checksum "android/build.gradle" }}-{{ checksum "android/app/build.gradle" }}-{{ checksum "android/settings.gradle" }}
                     - v1-gradle-
             - run:
-                command: ./gradlew androidDependencies
+                command: ./gradlew :app:dependencies --configuration productionReleaseRuntimeClasspath
                 name: Download Gradle Dependencies
                 working_directory: android
             - save_cache:
@@ -220,6 +204,22 @@ commands:
             - run:
                 command: ls -AR ~/attached_workspace
                 name: Recursively list attached workspace contents
+    resolve_swift_packages:
+        description: Restores and saves the Swift Package Manager cache and resolves the iOS package dependencies.
+        steps:
+            - restore_cache:
+                keys:
+                    - 1-swiftpm-{{ arch }}-{{ checksum "ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved" }}
+                name: Restore Swift Package Manager Cache
+            - run:
+                command: xcodebuild -resolvePackageDependencies -workspace Runner.xcworkspace -scheme Runner
+                name: Resolve Swift Packages
+                working_directory: ios
+            - save_cache:
+                key: 1-swiftpm-{{ arch }}-{{ checksum "ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved" }}
+                name: Save Swift Package Manager Cache
+                paths:
+                    - ~/Library/Caches/org.swift.swiftpm/
     restore_environment_variables:
         description: Sets the environment variables specified in the file 'environment_variables'. Make sure the file is persisted and has been attached.
         steps:
@@ -287,7 +287,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 26.3.0
+            xcode: 27.2.0
         parameters:
             environment:
                 default: production
@@ -302,7 +302,7 @@ jobs:
                 command: softwareupdate --install-rosetta --agree-to-license
                 name: Install rosetta
             - run:
-                command: rbenv global 3.3.10
+                command: rbenv global 3.3.11
                 name: Set Ruby version
             - restore_environment_variables
             - install_flutter:
@@ -311,7 +311,7 @@ jobs:
                 environment: << parameters.environment >>
             - install_fastlane:
                 directory: ios
-            - install_cocoapods
+            - resolve_swift_packages
             - run:
                 command: bundle exec fastlane ios build version_name:${NEW_VERSION_NAME} version_code:${NEW_VERSION_CODE}
                 name: '[FL] Build'
@@ -355,7 +355,7 @@ jobs:
     check:
         docker:
             - image: cimg/node:24.14.1
-        resource_class: small
+        resource_class: medium
         shell: /bin/bash -eo pipefail
         steps:
             - checkout
@@ -393,7 +393,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 26.3.0
+            xcode: 27.2.0
         parameters:
             production_delivery:
                 description: Whether to deliver the build to production.
@@ -402,7 +402,7 @@ jobs:
             - checkout
             - prepare_workspace
             - run:
-                command: rbenv global 3.3.10
+                command: rbenv global 3.3.11
                 name: Set Ruby version
             - restore_environment_variables
             - install_fastlane:
@@ -478,11 +478,11 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 26.3.0
+            xcode: 27.2.0
         steps:
             - checkout
             - run:
-                command: rbenv global 3.3.10
+                command: rbenv global 3.3.11
                 name: Set Ruby version
             - install_fastlane:
                 directory: ios

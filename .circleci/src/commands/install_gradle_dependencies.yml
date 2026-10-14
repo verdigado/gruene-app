@@ -6,7 +6,8 @@ steps:
         - v1-gradle-
   - run:
       name: 'Download Gradle Dependencies'
-      command: ./gradlew androidDependencies
+      # androidDependencies was removed in AGP 9, resolving the release runtime classpath fills the cache instead
+      command: ./gradlew :app:dependencies --configuration productionReleaseRuntimeClasspath
       working_directory: android
   - save_cache:
       paths:

@@ -14,7 +14,7 @@ class PushNotificationSettingsState {
 
   const PushNotificationSettingsState({this.enabled = true, this.topics = const {}});
 
-  PushNotificationSettingsState copyWith({bool? enabled, final Map<PushNotificationTopic, bool>? topics}) {
+  PushNotificationSettingsState copyWith({bool? enabled, Map<PushNotificationTopic, bool>? topics}) {
     return PushNotificationSettingsState(enabled: enabled ?? this.enabled, topics: topics ?? this.topics);
   }
 
