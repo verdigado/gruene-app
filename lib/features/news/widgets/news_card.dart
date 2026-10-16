@@ -106,7 +106,7 @@ class NewsCard extends StatelessWidget {
                 children: [
                   Text(
                     news.categories.firstOrNull?.label ?? '',
-                    style: theme.textTheme.labelSmall?.copyWith(
+                    style: theme.textTheme.labelMedium?.copyWith(
                       color: theme.colorScheme.surface,
                       fontWeight: FontWeight.w700,
                     ),
