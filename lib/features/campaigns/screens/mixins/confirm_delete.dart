@@ -1,3 +1,5 @@
+// Export for ConfirmDelete mixin to be used outside the mixins library
+
 part of '../mixins.dart';
 
 mixin ConfirmDelete {

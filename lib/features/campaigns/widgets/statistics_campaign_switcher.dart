@@ -4,7 +4,7 @@ import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
-import 'package:gruene_app/features/campaigns/screens/campaign_select_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/campaign_select_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class StatisticsCampaignSwitcher extends StatefulWidget {

@@ -14,7 +14,7 @@ import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/pressable_opacity.dart';
 import 'package:gruene_app/app/widgets/section_card.dart';
-import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge.dart';
+import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_badge.dart';
 import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';

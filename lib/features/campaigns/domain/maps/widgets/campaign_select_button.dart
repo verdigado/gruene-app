@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/campaign_select_widget.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
-import 'package:gruene_app/features/campaigns/screens/campaign_select_widget.dart';
 
 class CampaignSelectButton extends StatefulWidget {
   const CampaignSelectButton({super.key});

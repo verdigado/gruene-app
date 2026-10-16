@@ -12,10 +12,10 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_badge.dart';
+import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_time_indicator.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/progress_with_label.dart';
 import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
-import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge.dart';
-import 'package:gruene_app/features/campaigns/screens/challenges/challenge_time_indicator.dart';
-import 'package:gruene_app/features/campaigns/screens/progress_with_label.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_badge.dart';
 import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
-import 'package:gruene_app/features/campaigns/screens/challenges/challenge_badge.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 

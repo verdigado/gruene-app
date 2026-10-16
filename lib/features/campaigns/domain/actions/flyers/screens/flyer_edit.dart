@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/models/doors/door_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dart';
-import 'package:gruene_app/features/campaigns/screens/map_consumer.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
+import 'package:gruene_app/features/campaigns/models/flyer/flyer_detail_model.dart';
+import 'package:gruene_app/features/campaigns/models/flyer/flyer_update_model.dart';
 import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
 import 'package:gruene_app/features/campaigns/widgets/create_address_widget.dart';
@@ -10,20 +10,20 @@ import 'package:gruene_app/features/campaigns/widgets/delete_and_save_widget.dar
 import 'package:gruene_app/features/campaigns/widgets/enhanced_wheel_slider.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
-typedef OnSaveDoorCallback = Future<void> Function(DoorUpdateModel doorUpdate);
+typedef OnSaveFlyerCallback = Future<void> Function(FlyerUpdateModel flyerUpdate);
 
-class DoorEdit extends StatefulWidget {
-  final DoorDetailModel door;
-  final OnSaveDoorCallback onSave;
+class FlyerEdit extends StatefulWidget {
+  final FlyerDetailModel flyer;
+  final OnSaveFlyerCallback onSave;
   final OnDeletePoiCallback onDelete;
 
-  const DoorEdit({super.key, required this.door, required this.onSave, required this.onDelete});
+  const FlyerEdit({super.key, required this.flyer, required this.onSave, required this.onDelete});
 
   @override
-  State<DoorEdit> createState() => _DoorEditState();
+  State<FlyerEdit> createState() => _FlyerEditState();
 }
 
-class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidator, ConfirmDelete {
+class _FlyerEditState extends State<FlyerEdit> with AddressExtension, FlyerValidator, ConfirmDelete {
   @override
   TextEditingController streetTextController = TextEditingController();
   @override
@@ -33,8 +33,7 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
   @override
   TextEditingController cityTextController = TextEditingController();
 
-  TextEditingController closedDoorTextController = TextEditingController();
-  TextEditingController openedDoorTextController = TextEditingController();
+  TextEditingController flyerCountTextController = TextEditingController();
 
   @override
   void dispose() {
@@ -44,10 +43,8 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
 
   @override
   void initState() {
-    streetTextController.text = widget.door.address.street;
-    houseNumberTextController.text = widget.door.address.houseNumber;
-    zipCodeTextController.text = widget.door.address.zipCode;
-    cityTextController.text = widget.door.address.city;
+    setAddress(widget.flyer.address);
+    flyerCountTextController.text = widget.flyer.flyerCount.toString();
     super.initState();
   }
 
@@ -65,12 +62,12 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(children: [Text(t.campaigns.door.editDoor, style: theme.textTheme.titleLarge)]),
+            child: Row(children: [Text(t.campaigns.flyer.editFlyer, style: theme.textTheme.titleLarge)]),
           ),
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              '* ${widget.door.createdAt}',
+              '* ${widget.flyer.createdAt}',
               style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
             ),
           ),
@@ -85,28 +82,17 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
             padding: EdgeInsets.symmetric(vertical: 6),
             child: Row(
               children: [
+                Expanded(child: SizedBox()),
                 Flexible(
                   child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.closedDoors,
-                    textController: closedDoorTextController,
-                    initialValue: widget.door.closedDoors,
+                    labelText: t.campaigns.flyer.countFlyer,
+                    textController: flyerCountTextController,
+                    initialValue: widget.flyer.flyerCount,
                     labelColor: ThemeColors.textDisabled,
                     sliderColor: ThemeColors.text,
                     borderColor: lightBorderColor,
                     actionColor: theme.colorScheme.secondary,
-                    sliderInputRange: SliderInputRange.numbers0To999,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Flexible(
-                  child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.openedDoors,
-                    initialValue: widget.door.openedDoors,
-                    textController: openedDoorTextController,
-                    labelColor: ThemeColors.textDisabled,
-                    sliderColor: ThemeColors.text,
-                    borderColor: lightBorderColor,
-                    actionColor: theme.colorScheme.secondary,
+                    sliderInterval: 25,
                     sliderInputRange: SliderInputRange.numbers0To999,
                   ),
                 ),
@@ -117,7 +103,7 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
             padding: EdgeInsets.only(top: 6, bottom: 24),
             child: DeleteAndSaveWidget(
               onDelete: () => confirmDelete(context, onDeletePressed: _onDeletePressed),
-              onSave: _saveDoor,
+              onSave: _saveFlyer,
             ),
           ),
         ],
@@ -130,22 +116,21 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
   }
 
   void _onDeletePressed() {
-    widget.onDelete(widget.door.id);
+    widget.onDelete(widget.flyer.id);
     _closeDialog();
   }
 
-  void _saveDoor() async {
+  void _saveFlyer() async {
     if (!context.mounted) return;
-    final validationResult = validateDoors(openedDoorTextController.text, closedDoorTextController.text, context);
+    final validationResult = validateFlyer(flyerCountTextController.text, context);
     if (validationResult == null) return;
 
-    final updateModel = DoorUpdateModel(
-      id: widget.door.id,
+    final updateModel = FlyerUpdateModel(
+      id: widget.flyer.id,
       address: getAddress(),
-      openedDoors: validationResult.openedDoors,
-      closedDoors: validationResult.closedDoors,
-      location: widget.door.location,
-      oldDoorDetail: widget.door,
+      flyerCount: validationResult.flyerCount,
+      oldFlyerDetail: widget.flyer,
+      location: widget.flyer.location,
     );
     await widget.onSave(updateModel);
     _closeDialog();
