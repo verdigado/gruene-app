@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/widgets/text_input_field.dart';
+import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:wheel_slider/wheel_slider.dart';
 
 enum SliderInputRange { numbers0To99, numbers0To999, numbers1To999 }

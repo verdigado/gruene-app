@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/features/campaigns/widgets/text_input_field.dart';
+import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class CreateAddressWidget extends StatelessWidget {

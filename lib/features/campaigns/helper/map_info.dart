@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
-import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller.dart';
 
 class MapInfo {
   MapController mapController;

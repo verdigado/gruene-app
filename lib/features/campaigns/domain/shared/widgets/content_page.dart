@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/features/campaigns/widgets/custom_app_bar.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/custom_app_bar.dart';
 
 class ContentPage extends StatelessWidget {
   final String title;

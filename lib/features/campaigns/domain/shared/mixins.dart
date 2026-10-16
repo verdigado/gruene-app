@@ -8,7 +8,7 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
-import 'package:gruene_app/features/campaigns/widgets/search_bar_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/search_bar_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl_platform_interface/maplibre_gl_platform_interface.dart';
 

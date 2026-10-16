@@ -13,6 +13,7 @@ import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller_simplified.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_assignment_update_model.dart';
@@ -32,7 +33,6 @@ import 'package:gruene_app/features/campaigns/models/posters/poster_update_model
 import 'package:gruene_app/features/campaigns/models/route/route_assignment_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_status_update_model.dart';
-import 'package:gruene_app/features/campaigns/widgets/map_controller_simplified.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/turf.dart' as turf;
 

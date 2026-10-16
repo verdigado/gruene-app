@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/address_field_detail.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_detail_model.dart';
-import 'package:gruene_app/features/campaigns/widgets/address_field_detail.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class FlyerDetail extends StatelessWidget {

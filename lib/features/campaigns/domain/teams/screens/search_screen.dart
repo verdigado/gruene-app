@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/widgets/hint.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/search_bar_widget.dart';
 import 'package:gruene_app/features/campaigns/helper/new_page_error_indicator.dart';
-import 'package:gruene_app/features/campaigns/widgets/search_bar_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 

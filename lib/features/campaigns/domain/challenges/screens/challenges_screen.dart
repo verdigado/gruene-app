@@ -10,11 +10,11 @@ import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller
 import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_badge.dart';
 import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/domain/challenges/widgets/my_challenges_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/filter_chip_widget.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/challenge_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/new_page_error_indicator.dart';
 import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
-import 'package:gruene_app/features/campaigns/widgets/filter_chip_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';

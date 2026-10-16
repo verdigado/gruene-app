@@ -9,14 +9,14 @@ import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flye
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flyer_detail.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flyer_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_with_location.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/filter_chip_widget.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_create_model.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/flyer/flyer_update_model.dart';
 import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
-import 'package:gruene_app/features/campaigns/widgets/filter_chip_widget.dart';
-import 'package:gruene_app/features/campaigns/widgets/map_with_location.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 

@@ -3,10 +3,10 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_save_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/multiline_text_input_field.dart';
 import 'package:gruene_app/features/campaigns/helper/team_helper.dart';
-import 'package:gruene_app/features/campaigns/widgets/close_save_widget.dart';
-import 'package:gruene_app/features/campaigns/widgets/multiline_text_input_field.dart';
-import 'package:gruene_app/features/campaigns/widgets/text_input_field.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 

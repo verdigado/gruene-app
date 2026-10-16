@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
-import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
-import 'package:gruene_app/features/campaigns/widgets/mixins.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/mixins.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_container.dart';
 
 class MapWithLocation extends StatelessWidget {
   final MapContainerController mapContainerController;

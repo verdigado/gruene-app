@@ -1,8 +1,8 @@
 import 'dart:math' as m;
 
 import 'package:flutter/material.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_container.dart';
 import 'package:gruene_app/features/campaigns/models/bounding_box.dart';
-import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/turf.dart' as turf;
 
