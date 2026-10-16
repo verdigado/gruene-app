@@ -10,10 +10,10 @@ import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/full_width_image.dart';
 import 'package:gruene_app/app/widgets/html.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
-import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/bookmark_button.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 
 class NewsDetailScreen extends StatelessWidget {
   final String newsId;
@@ -22,13 +22,13 @@ class NewsDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final newsItem = GoRouterState.of(context).extra as NewsModel?;
+    final newsItem = GoRouterState.of(context).extra as News?;
     final theme = Theme.of(context);
     return Scaffold(
       appBar: MainAppBar(title: t.news.newsDetail),
-      body: FutureLoadingScreen<NewsModel?>(
+      body: FutureLoadingScreen<News?>(
         load: newsItem == null ? () => fetchNewsById(newsId) : () async => newsItem,
-        buildChild: (NewsModel? news, _) {
+        buildChild: (News? news, _) {
           if (news == null) {
             return ErrorScreen(errorMessage: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
           }
@@ -61,7 +61,7 @@ class NewsDetailScreen extends StatelessWidget {
                             t.common.updatedAt(date: news.createdAt.formattedDate),
                             style: theme.textTheme.labelSmall,
                           ),
-                          CustomHtml(data: news.content),
+                          CustomHtml(data: news.body.content),
                         ],
                       ),
                     ),
@@ -81,13 +81,13 @@ class NewsDetailScreen extends StatelessWidget {
 }
 
 class NewsDetailImage extends StatelessWidget {
-  final NewsModel news;
+  final News news;
 
   const NewsDetailImage({super.key, required this.news});
 
   @override
   Widget build(BuildContext context) {
-    final image = news.image;
+    final image = news.featuredImage;
     if (image == null) {
       return Image.asset('assets/graphics/placeholder.png', height: 256, fit: BoxFit.fitWidth);
     }
