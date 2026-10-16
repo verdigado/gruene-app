@@ -7,7 +7,6 @@ import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
-import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/repository/news_repository.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_filter_dialog.dart';
@@ -37,7 +36,7 @@ class NewsScreenContainer extends StatelessWidget {
 }
 
 class NewsScreen extends StatefulWidget {
-  final List<NewsModel> news;
+  final List<News> news;
   final List<Division> divisions;
   final List<Division> initialDivisionFilters;
 

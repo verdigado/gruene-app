@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
-import 'package:gruene_app/features/news/models/news_model.dart';
+import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class NewsList extends StatelessWidget {
-  final List<NewsModel> allNews;
+  final List<News> allNews;
   final String query;
   final bool showBookmarked;
   final List<Division> selectedDivisions;
@@ -32,7 +32,7 @@ class NewsList extends StatelessWidget {
       load: query.isNotEmpty || showBookmarked
           ? () => fetchNews(query: query, bookmarked: showBookmarked)
           : () async => allNews,
-      buildChild: (List<NewsModel> data, _) {
+      buildChild: (List<News> data, _) {
         final news = data.filter(selectedDivisions, selectedCategories, false, dateRange);
         if (news.isEmpty) {
           return ErrorScreen(errorMessage: t.news.noResults, retry: fetchNews);
