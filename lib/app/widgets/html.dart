@@ -1,10 +1,31 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide Element;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/widgets/expansion_list_tile.dart';
+import 'package:gruene_app/app/widgets/full_width_image.dart';
+
+final TagExtension imageExtension = TagExtension(
+  tagsToExtend: {'img'},
+  builder: (extensionContext) {
+    final attributes = extensionContext.attributes;
+    final src = attributes['src'] ?? '';
+    final width = double.tryParse(attributes['width'] ?? '');
+    final height = double.tryParse(attributes['height'] ?? '');
+    final image = CachedNetworkImage(imageUrl: src, fit: BoxFit.contain);
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: width ?? double.infinity),
+      child: InkWell(
+        onTap: () => showImageDialog(extensionContext.buildContext!, src),
+        child: width != null && height != null ? AspectRatio(aspectRatio: width / height, child: image) : image,
+      ),
+    );
+  },
+);
 
 final TagExtension accordionTagExtension = TagExtension(
   tagsToExtend: {'dl'},
@@ -39,6 +60,35 @@ final TagExtension accordionTagExtension = TagExtension(
   },
 );
 
+/// Renders tables as stacked blocks since flutter_html has no built-in table support and just drops the content silently
+/// flutter_html_table crashes on block elements inside cells
+/// (https://github.com/Sub6Resources/flutter_html/issues/1188)
+class BlockTableExtension extends HtmlExtension {
+  const BlockTableExtension();
+
+  @override
+  Set<String> get supportedTags => {'table', 'caption', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td'};
+
+  @override
+  StyledElement prepare(ExtensionContext context, List<StyledElement> children) {
+    return StyledElement(
+      name: context.elementName,
+      elementId: context.id,
+      elementClasses: context.classes.toList(),
+      node: context.node,
+      children: children,
+      style: Style(display: Display.block, fontWeight: context.elementName == 'th' ? FontWeight.bold : null),
+    );
+  }
+
+  @override
+  InlineSpan build(ExtensionContext context) {
+    return WidgetSpan(
+      child: CssBoxWidget.withInlineSpanChildren(style: context.style!, children: context.inlineSpanChildren!),
+    );
+  }
+}
+
 class CustomHtml extends StatelessWidget {
   final String data;
 
@@ -49,7 +99,7 @@ class CustomHtml extends StatelessWidget {
     final theme = Theme.of(context);
     return Html(
       data: data,
-      extensions: [accordionTagExtension],
+      extensions: [imageExtension, accordionTagExtension, const BlockTableExtension()],
       onLinkTap: (url, _, _) => url != null ? openUrl(url, context) : null,
       style: {
         'body': Style(margin: Margins.zero),
