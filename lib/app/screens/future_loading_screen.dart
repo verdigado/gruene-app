@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 
@@ -39,7 +40,7 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
 
   void _setData(T newData) {
     setState(() {});
-    _data = Future.value(newData);
+    _data = SynchronousFuture(newData);
   }
 
   @override
