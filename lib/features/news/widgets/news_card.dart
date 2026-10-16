@@ -111,7 +111,7 @@ class NewsCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  BookmarkButton(newsId: news.id),
+                  BookmarkButton(news: news),
                 ],
               ),
             ),
