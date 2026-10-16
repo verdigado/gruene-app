@@ -67,7 +67,7 @@ class NewsDetailScreen extends StatelessWidget {
                     ),
                     Positioned(
                       right: 0,
-                      child: BookmarkButton(newsId: news.id, color: ThemeColors.text),
+                      child: BookmarkButton(news: news, color: ThemeColors.text),
                     ),
                   ],
                 ),

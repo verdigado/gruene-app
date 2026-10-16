@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' hide Image;
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -19,21 +18,6 @@ extension NewsListExtension on List<News> {
       return a.label.compareTo(b.label);
     });
     return categories;
-  }
-
-  List<News> filter(
-    List<Division> divisions,
-    List<NewsCategory> categories,
-    bool bookmarked,
-    DateTimeRange? dateRange,
-  ) {
-    return where(
-      (it) =>
-          (divisions.isEmpty || divisions.contains(it.division)) &&
-          (categories.isEmpty || categories.containsAny(it.categories)) &&
-          (!bookmarked || it.bookmark != null) &&
-          (dateRange == null || it.createdAt.isBetween(dateRange)),
-    ).toList();
   }
 }
 

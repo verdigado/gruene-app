@@ -51,8 +51,7 @@ import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/domain/mfa_factory.dart';
-import 'package:gruene_app/features/news/bloc/bookmark_bloc.dart';
-import 'package:gruene_app/features/news/bloc/bookmark_event.dart';
+import 'package:gruene_app/features/news/bloc/bookmark_cubit.dart';
 import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_bloc.dart';
 import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_event.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -202,7 +201,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => EventsBloc()..add(LoadEvents(force: true))),
         BlocProvider(create: (context) => MfaBloc()..add(InitMfa())),
         BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadSettings())),
-        BlocProvider<BookmarkBloc>(create: (context) => BookmarkBloc()..add(LoadBookmarks())),
+        BlocProvider(create: (context) => BookmarkCubit()),
       ],
       child: Builder(
         builder: (context) {
