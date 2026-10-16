@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
+import 'package:photo_view/photo_view.dart';
 
 class FullWidthImage extends StatelessWidget {
   final String image;
@@ -30,8 +31,15 @@ void showImageDialog(BuildContext context, String image) async => await showDial
   barrierDismissible: true,
   builder: (BuildContext context) => Stack(
     children: [
-      CachedNetworkImage(imageUrl: image, fit: BoxFit.contain),
-      DialogCloseButton(),
+      SizedBox.expand(
+        child: PhotoView(
+          imageProvider: CachedNetworkImageProvider(image),
+          backgroundDecoration: BoxDecoration(color: Colors.transparent),
+          minScale: PhotoViewComputedScale.contained,
+          maxScale: PhotoViewComputedScale.contained * 6,
+        ),
+      ),
+      SizedBox.expand(child: DialogCloseButton()),
     ],
   ),
 );
