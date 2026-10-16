@@ -6,6 +6,7 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/bookmark_button.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:share_plus/share_plus.dart';
 
 const double imageHeight = 160;
 
@@ -111,7 +112,16 @@ class NewsCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  BookmarkButton(news: news),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.share, color: theme.colorScheme.surface, size: 24),
+                        onPressed: () =>
+                            SharePlus.instance.share(ShareParams(uri: Uri.tryParse('https://example.com'))),
+                      ),
+                      BookmarkButton(news: news),
+                    ],
+                  ),
                 ],
               ),
             ),
