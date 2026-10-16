@@ -1,5 +1,6 @@
 part of '../mixins.dart';
 
+/// Mixin for validating door-related input
 mixin DoorValidator {
   ({int closedDoors, int openedDoors})? validateDoors(
     String openedDoorsRawValue,

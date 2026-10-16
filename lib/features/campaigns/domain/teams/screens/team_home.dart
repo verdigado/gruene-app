@@ -6,12 +6,12 @@ import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/screens/team_assigned_elements.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/screens/team_member_statistics.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/screens/team_profile.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/widgets/open_invitation_list.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/widgets/profile_visibility_hint.dart';
-import 'package:gruene_app/features/campaigns/screens/mixins.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 

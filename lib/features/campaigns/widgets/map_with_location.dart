@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
+import 'package:gruene_app/features/campaigns/widgets/mixins.dart';
 
 class MapWithLocation extends StatelessWidget {
   final MapContainerController mapContainerController;

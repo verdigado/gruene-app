@@ -15,7 +15,6 @@ import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/features/campaigns/models/route/route_detail_model.dart';
 import 'package:gruene_app/features/campaigns/widgets/close_edit_widget.dart';
-import 'package:gruene_app/features/campaigns/widgets/map_container.dart';
 import 'package:gruene_app/features/campaigns/widgets/map_controller.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -25,3 +24,5 @@ part 'mixins/map_container_action_area_mixin.dart';
 part 'mixins/map_container_experience_area_mixin.dart';
 part 'mixins/map_container_polling_station_mixin.dart';
 part 'mixins/map_container_route_mixin.dart';
+
+typedef OnShowBottomDetailSheet = Future<U?> Function<U>(Widget detailWidget);

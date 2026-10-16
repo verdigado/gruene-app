@@ -1,9 +1,8 @@
-// Export for ConfirmDelete mixin to be used outside the mixins library
-
 part of '../mixins.dart';
 
+/// Mixin for handling delete confirmation dialogs
 mixin ConfirmDelete {
-  void confirmDelete(
+  Future<void> confirmDelete(
     BuildContext context, {
     required void Function() onDeletePressed,
     String? title,

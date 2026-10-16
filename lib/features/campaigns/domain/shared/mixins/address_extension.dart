@@ -1,5 +1,7 @@
 part of '../mixins.dart';
 
+/// Mixin for handling address-related form fields
+/// Used by doors, flyers, and posters edit/add screens
 mixin AddressExtension {
   abstract TextEditingController streetTextController;
   abstract TextEditingController houseNumberTextController;

@@ -51,7 +51,6 @@ typedef GetMarkerImagesCallback = Map<String, String> Function();
 typedef OnFeatureClickCallback = void Function(dynamic feature);
 typedef GetBasicPoiFromFeatureCallback = Future<BasicPoi> Function(Map<String, dynamic> feature);
 typedef OnNoFeatureClickCallback = void Function(Point<double> point);
-typedef OnShowBottomDetailSheet = Future<U?> Function<U>(Widget detailWidget);
 typedef OnEditItemClickedCallback = void Function();
 typedef ShowMapInfoAfterCameraMoveCallback = void Function();
 typedef AddMapLayersForContextCallback = Future<void> Function(MapLibreMapController mapLibreController);

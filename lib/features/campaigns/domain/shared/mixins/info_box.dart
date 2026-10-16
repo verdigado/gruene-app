@@ -1,7 +1,8 @@
 part of '../mixins.dart';
 
+/// Mixin for showing informational dialog boxes
 mixin InfoBox {
-  void showAboutInfoBox(BuildContext context, String title, String content) async {
+  Future<void> showAboutInfoBox(BuildContext context, String title, String content) async {
     final theme = Theme.of(context);
     await showDialog<bool>(
       context: context,
@@ -11,8 +12,8 @@ mixin InfoBox {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.info_outlined, color: ThemeColors.textCancel),
-              SizedBox(width: 6),
+              const Icon(Icons.info_outlined, color: ThemeColors.textCancel),
+              const SizedBox(width: 6),
               Text(title, style: theme.textTheme.titleMedium?.apply(color: ThemeColors.textDark)),
             ],
           ),

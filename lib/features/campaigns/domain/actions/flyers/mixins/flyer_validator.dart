@@ -1,5 +1,6 @@
 part of '../mixins.dart';
 
+/// Mixin for validating flyer-related input
 mixin FlyerValidator {
   ({int flyerCount})? validateFlyer(String flyerCountRawValue, BuildContext context) {
     final flyerCount = int.tryParse(flyerCountRawValue) ?? 0;
