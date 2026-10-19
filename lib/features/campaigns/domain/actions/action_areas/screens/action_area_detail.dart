@@ -21,7 +21,6 @@ import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
-import 'package:turf/turf.dart' as turf;
 
 class ActionAreaDetail extends StatefulWidget {
   const ActionAreaDetail({super.key, required this.actionAreaDetail, required this.mapController});
@@ -79,6 +78,10 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     var formatter = NumberFormat.decimalPattern(t.$meta.locale.languageCode);
     onClose() => Navigator.maybePop(context);
 
+    var actionAreaSurface = t.common.units.formatString(
+      value: formatter.format(widget.actionAreaDetail.polygon.toTurfPolygon().toSquareKilometers()),
+      unit: t.common.units.sq_km,
+    );
     return Container(
       constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .30),
       child: Column(
@@ -117,7 +120,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.action_area.area_label}: ${formatter.format(turf.area(widget.actionAreaDetail.polygon.toTurfPolygon())! / 1000 / 1000)} km²',
+                        '${t.campaigns.action_area.area_label}: $actionAreaSurface',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],

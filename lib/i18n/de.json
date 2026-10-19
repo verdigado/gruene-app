@@ -53,7 +53,7 @@
         "hours(param=hours)": {
           "other": "${hours} Std"
         },
-        "halfhours(param=hours)": {
+        "hoursWithHalfHours(param=hours)": {
           "other": "${hours},5 Std"
         },
         "days(param=days)": {
@@ -65,6 +65,11 @@
           "other": "${weeks} Wochen"
         }
       }
+    },
+    "units": {
+      "m": "m",
+      "sq_km": "km²",
+      "formatString": "${value} ${unit}"
     }
   },
   "divisions": {

@@ -8,4 +8,6 @@ part 'converters/feature_collection_bounds.dart';
 part 'converters/lat_lng_mapping.dart';
 part 'converters/line_string_mapping.dart';
 part 'converters/polygon_mapping.dart';
+part 'converters/turf_line_string_mapping.dart';
 part 'converters/turf_point_mapping.dart';
+part 'converters/turf_polygon_mapping.dart';

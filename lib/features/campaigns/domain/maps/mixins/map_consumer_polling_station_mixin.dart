@@ -56,7 +56,7 @@ mixin MapConsumerPollingStationMixin {
           circleDistance.getSourceName(),
           circleDistance.getCircleSymbolLayerName(),
           SymbolLayerProperties(
-            textField: '${circleDistance.distance}m',
+            textField: t.common.units.formatString(value: circleDistance.distance.toString(), unit: t.common.units.m),
             textFont: ['Roboto Regular'],
             textSize: '8',
             textColor: 'white',

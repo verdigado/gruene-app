@@ -21,8 +21,6 @@ import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
-import 'package:turf/helpers.dart';
-import 'package:turf/turf.dart' as turf;
 
 class RouteDetail extends StatefulWidget {
   const RouteDetail({super.key, required this.routeDetail, required this.mapController});
@@ -79,6 +77,10 @@ class _RouteDetailState extends State<RouteDetail> {
     var formatter = NumberFormat.decimalPatternDigits(locale: t.$meta.locale.languageCode, decimalDigits: 0);
     onClose() => Navigator.maybePop(context);
 
+    var routeLength = t.common.units.formatString(
+      value: formatter.format(_currentRouteDetail.lineString.toTurfLine().toLength()),
+      unit: t.common.units.m,
+    );
     return Container(
       constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .30),
       child: Column(
@@ -128,7 +130,7 @@ class _RouteDetailState extends State<RouteDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.route.length_label}: ${formatter.format(turf.length(turf.Feature<turf.LineString>(geometry: _currentRouteDetail.lineString.toTurfLine()), Unit.meters))} m',
+                        '${t.campaigns.route.length_label}: $routeLength',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],

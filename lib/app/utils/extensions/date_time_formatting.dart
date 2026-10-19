@@ -48,7 +48,7 @@ extension DateTimeFormatting on DateTime {
       return t.common.dateTime.timeRemaining.hours(hours: hours);
     } else if (hours >= 4) {
       if (minutes % 60 >= 30) {
-        return t.common.dateTime.timeRemaining.halfhours(hours: hours);
+        return t.common.dateTime.timeRemaining.hoursWithHalfHours(hours: hours);
       }
       return t.common.dateTime.timeRemaining.hours(hours: hours);
     } else {
