@@ -331,7 +331,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
       newPhotosReduced.add(newPhoto);
     }
 
-    final updateModel = widget.poster.asPosterUpdate().copyWith(
+    final updateModel = widget.poster.toPosterUpdate().copyWith(
       address: getAddress(),
       status: _selectedPosterStatus,
       comment: commentTextController.text,

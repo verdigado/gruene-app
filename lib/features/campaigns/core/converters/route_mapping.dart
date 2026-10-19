@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension RouteMapping on Route {
-  RouteDetailModel asRouteDetail() {
+  RouteDetailModel toRouteDetail() {
     return RouteDetailModel(
       id: id,
       type: type,
@@ -9,7 +9,7 @@ extension RouteMapping on Route {
       description: description,
       status: status,
       lineString: lineString,
-      createdAt: createdAt.getAsLocalDateString(),
+      createdAt: createdAt.toLocalDateString(),
       team: team,
       visualIdentifierId: visualIdentifierId,
     );
@@ -17,23 +17,23 @@ extension RouteMapping on Route {
 }
 
 extension RouteAssignmentMapping on RouteAssignment {
-  AssignedElement asAssignedElement() {
+  AssignedElement toAssignedElement() {
     return AssignedElement(
       id: id,
-      status: status.asTeamAssignmentStatus(),
+      status: status.toTeamAssignmentStatus(),
       name: name ?? '',
-      type: type.asTeamAssignmentType(),
+      type: type.toTeamAssignmentType(),
       elementType: AssignedElementType.route,
       assignmentDate: assignedAt ?? DateTime.now(),
       assignee: assigningUser,
-      coords: lineString.asTurfLine(),
+      coords: lineString.toTurfLine(),
       campaignId: campaignId,
     );
   }
 }
 
 extension on RouteType {
-  TeamAssignmentType asTeamAssignmentType() {
+  TeamAssignmentType toTeamAssignmentType() {
     switch (this) {
       case RouteType.flyerSpot:
         return TeamAssignmentType.flyer;
@@ -49,7 +49,7 @@ extension on RouteType {
 }
 
 extension on RouteStatus {
-  TeamAssignmentStatus asTeamAssignmentStatus() {
+  TeamAssignmentStatus toTeamAssignmentStatus() {
     switch (this) {
       case RouteStatus.open:
         return TeamAssignmentStatus.open;

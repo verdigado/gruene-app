@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension AddressModelParsing on AddressModel {
-  PoiAddress transformToPoiAddress() {
+  PoiAddress toPoiAddress() {
     final address = this;
     return PoiAddress(
       city: address.city.isEmpty ? null : address.city,

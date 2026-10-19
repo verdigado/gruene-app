@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension AreaStatusParsing on AreaStatus {
-  AreaStatus asUpdateAreaStatusStatus() {
+  AreaStatus toUpdateAreaStatusStatus() {
     switch (this) {
       case AreaStatus.open:
         return AreaStatus.open;

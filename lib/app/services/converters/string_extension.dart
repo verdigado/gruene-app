@@ -13,7 +13,7 @@ extension StringExtension on String {
 
   bool isNetworkImageUrl() => Uri.parse(this).hasScheme;
 
-  InlineSpan asRichText(BuildContext context) {
+  InlineSpan toRichText(BuildContext context) {
     var spans = <TextSpan>[];
 
     // ignore: avoid_using_regexp

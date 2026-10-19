@@ -14,27 +14,27 @@ class GrueneApiFlyerService extends GrueneApiCampaignsPoiBaseService {
     apiRequest: (api) => api.v1CampaignsPoisPost(
       body: CreatePoi(
         campaignId: newFlyer.campaignId,
-        coords: newFlyer.location.transformToGeoJsonCoords(),
-        type: poiType.transformToApiPoisType(),
-        address: newFlyer.address.transformToPoiAddress(),
+        coords: newFlyer.location.toGeoJsonCoords(),
+        type: poiType.toApiPoisType(),
+        address: newFlyer.address.toPoiAddress(),
         flyerSpot: PoiFlyerSpot(flyerCount: newFlyer.flyerCount.toDouble()),
       ),
     ),
-    map: (result) => result.transformToMarkerItem(),
+    map: (result) => result.toMarkerItem(),
   );
 
   Future<PoiDetailModel> updateFlyer(FlyerUpdateModel flyerUpdate) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisPoiIdPut(
       poiId: flyerUpdate.id,
       body: UpdatePoi(
-        address: flyerUpdate.address.transformToPoiAddress(),
+        address: flyerUpdate.address.toPoiAddress(),
         flyerSpot: PoiFlyerSpot(flyerCount: flyerUpdate.flyerCount.toDouble()),
       ),
     ),
-    map: (result) => result.transformToMarkerItem(),
+    map: (result) => result.toMarkerItem(),
   );
 
   Future<FlyerDetailModel> getPoiAsFlyerDetail(String poiId) {
-    return getPoi(poiId, (p) => p.transformPoiToFlyerDetail());
+    return getPoi(poiId, (p) => p.toFlyerDetail());
   }
 }

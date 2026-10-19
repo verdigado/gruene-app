@@ -144,7 +144,7 @@ mixin MapConsumerActionAreaMixin on InfoBox {
       final areas = await campaignService.loadActionAreasInRegion(mapInfo.campaignId, bbox.southwest, bbox.northeast);
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.actionAreaSourceName,
-        areas.transformToFeatureList(),
+        areas.toFeatures(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

@@ -359,7 +359,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
         return Text(
           t.campaigns.focus_area.meta_info(
             campaign: snapshot.data!.name,
-            updatedAt: focusArea.createdAt.getAsLocalDateString(),
+            updatedAt: focusArea.createdAt.toLocalDateString(),
             focusAreaId: focusArea.key,
           ),
           style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),

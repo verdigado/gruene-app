@@ -116,7 +116,7 @@ mixin MapConsumerPollingStationMixin {
         bbox.southwest,
         bbox.northeast,
       );
-      var allPollingStationFeatures = pollingStations.transformToFeatureList();
+      var allPollingStationFeatures = pollingStations.toFeatures();
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.pollingStationSourceName,
         allPollingStationFeatures,

@@ -1,15 +1,15 @@
 part of '../converters.dart';
 
 extension PosterUpdateModelParsing on PosterUpdateModel {
-  PoiDetailModel transformToVirtualPoiDetailModel() {
+  PoiDetailModel toVirtualPoiDetailModel() {
     return PoiDetailModel.virtual(
       id: int.parse(id),
-      status: PoiServiceType.poster.getAsMarkerItemStatus(status),
+      status: PoiServiceType.poster.toMarkerItemStatus(status),
       location: location,
     );
   }
 
-  PosterDetailModel transformToPosterDetailModel() {
+  PosterDetailModel toPosterDetailModel() {
     var photosConsolidated = oldPosterDetail.photos
         .where((x) => !deletedPhotoIds.contains(x.id))
         .where((x) => !newPhotos.any((n) => n.id == x.id))

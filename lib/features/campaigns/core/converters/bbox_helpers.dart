@@ -10,7 +10,7 @@ extension BBoxHelpers on turf.BBox {
     var northeast = getNorthEast();
 
     turf.Position getNewCoord(LatLng coord) {
-      var currentCoordAsPoint = coord.asPoint();
+      var currentCoordAsPoint = coord.toPoint();
       var originalDistance = turf.rhumbDistance(originCoord!, currentCoordAsPoint);
       var bearing = turf.rhumbBearing(originCoord, currentCoordAsPoint);
       var newDistance = originalDistance * factor;

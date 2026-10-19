@@ -3,49 +3,49 @@ part of '../converters.dart';
 extension CampaignActionParsing on CampaignAction {
   int coalescedPoiId() => poiId ?? poiTempId;
 
-  PosterCreateModel getAsPosterCreate() {
+  PosterCreateModel toPosterCreate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = PosterCreateModel.fromJson(data.convertLatLongField());
     return model;
   }
 
-  PosterUpdateModel getAsPosterUpdate() {
+  PosterUpdateModel toPosterUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = PosterUpdateModel.fromJson(data.updateIdField(poiId!).convertLatLongField());
 
     return model;
   }
 
-  DoorCreateModel getAsDoorCreate() {
+  DoorCreateModel toDoorCreate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = DoorCreateModel.fromJson(data.convertLatLongField());
 
     return model;
   }
 
-  DoorUpdateModel getAsDoorUpdate() {
+  DoorUpdateModel toDoorUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = DoorUpdateModel.fromJson(data.updateIdField(poiId!).convertLatLongField());
 
     return model;
   }
 
-  FlyerCreateModel getAsFlyerCreate() {
+  FlyerCreateModel toFlyerCreate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = FlyerCreateModel.fromJson(data.convertLatLongField());
 
     return model;
   }
 
-  FlyerUpdateModel getAsFlyerUpdate() {
+  FlyerUpdateModel toFlyerUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = FlyerUpdateModel.fromJson(data.updateIdField(poiId!).convertLatLongField());
 
     return model;
   }
 
-  PosterListItemModel getPosterUpdateAsPosterListItem(DateTime originalCreatedAt) {
-    var updateModel = getAsPosterUpdate().transformToPosterDetailModel();
+  PosterListItemModel toPosterListItemFromUpdate(DateTime originalCreatedAt) {
+    var updateModel = toPosterUpdate().toPosterDetailModel();
     var lastPhoto = updateModel.latestPhoto();
     return PosterListItemModel(
       id: updateModel.id,
@@ -54,14 +54,14 @@ extension CampaignActionParsing on CampaignAction {
       address: updateModel.address,
       status: updateModel.status.translatePosterStatus(),
       lastChangeStatus: t.campaigns.poster.updated,
-      lastChangeDateTime: '${DateTime.fromMillisecondsSinceEpoch(poiTempId).getAsLocalDateTimeString()}*',
+      lastChangeDateTime: '${DateTime.fromMillisecondsSinceEpoch(poiTempId).toLocalDateTimeString()}*',
       createdAt: originalCreatedAt,
       isCached: true,
     );
   }
 
-  PosterListItemModel getPosterCreateAsPosterListItem() {
-    var createModel = getAsPosterCreate().transformToPosterDetailModel(poiTempId.toString());
+  PosterListItemModel toPosterListItemFromCreate() {
+    var createModel = toPosterCreate().toPosterDetailModel(poiTempId.toString());
     var lastPhoto = createModel.latestPhoto();
     return PosterListItemModel(
       id: createModel.id,
@@ -70,34 +70,34 @@ extension CampaignActionParsing on CampaignAction {
       address: createModel.address,
       status: createModel.status.translatePosterStatus(),
       lastChangeStatus: t.campaigns.poster.updated,
-      lastChangeDateTime: '${DateTime.fromMillisecondsSinceEpoch(poiTempId).getAsLocalDateTimeString()}*',
+      lastChangeDateTime: '${DateTime.fromMillisecondsSinceEpoch(poiTempId).toLocalDateTimeString()}*',
       createdAt: DateTime.fromMillisecondsSinceEpoch(poiTempId),
       isCached: true,
     );
   }
 
-  RouteStatusUpdateModel getAsRouteStatusUpdate() {
+  RouteStatusUpdateModel toRouteStatusUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = RouteStatusUpdateModel.fromJson(data.updateIdField(poiId!));
 
     return model;
   }
 
-  RouteAssignmentUpdateModel getAsRouteAssignmentUpdate() {
+  RouteAssignmentUpdateModel toRouteAssignmentUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = RouteAssignmentUpdateModel.fromJson(data.updateIdField(poiId!));
 
     return model;
   }
 
-  ActionAreaStatusUpdateModel getAsActionAreaStatusUpdate() {
+  ActionAreaStatusUpdateModel toActionAreaStatusUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = ActionAreaStatusUpdateModel.fromJson(data.updateIdField(poiId!));
 
     return model;
   }
 
-  ActionAreaAssignmentUpdateModel getAsActionAreaAssignmentUpdate() {
+  ActionAreaAssignmentUpdateModel toActionAreaAssignmentUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
     var model = ActionAreaAssignmentUpdateModel.fromJson(data.updateIdField(poiId!));
 

@@ -43,11 +43,7 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
               children: [
                 Row(
                   children: [
-                    SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: SvgPicture.asset(widget.category.getAssetLocation()),
-                    ),
+                    SizedBox(height: 24, width: 24, child: SvgPicture.asset(widget.category.getAssetLocation())),
                     SizedBox(width: 4),
                     Text(_getTitle(), style: theme.textTheme.titleSmall),
                   ],
@@ -195,7 +191,7 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
                         SizedBox(width: 4),
                         Icon(Icons.event_outlined, size: 16),
                         SizedBox(width: 2),
-                        Text(item.teamCreatedAt.getAsLocalDateString(), style: theme.textTheme.labelMedium),
+                        Text(item.teamCreatedAt.toLocalDateString(), style: theme.textTheme.labelMedium),
                       ],
                     ),
                   ],

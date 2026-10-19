@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension TeamRouteTypeParsing on RouteType {
-  String getAsLabel() {
+  String toLabel() {
     var typeLabel = switch (this) {
       RouteType.flyerSpot => t.campaigns.flyer.label,
       RouteType.poster => t.campaigns.poster.label,
@@ -11,7 +11,7 @@ extension TeamRouteTypeParsing on RouteType {
     return '$typeLabel-${t.campaigns.route.label}';
   }
 
-  RouteType asUpdateRouteType() {
+  RouteType toUpdateRouteType() {
     switch (this) {
       case RouteType.flyerSpot:
         return RouteType.flyerSpot;
@@ -27,7 +27,7 @@ extension TeamRouteTypeParsing on RouteType {
 }
 
 extension TeamRouteStatusParsing on RouteStatus {
-  RouteStatus asUpdateRouteStatusStatus() {
+  RouteStatus toUpdateRouteStatusStatus() {
     switch (this) {
       case RouteStatus.open:
         return RouteStatus.open;

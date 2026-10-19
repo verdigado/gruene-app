@@ -176,7 +176,7 @@ class MediaHelper {
     var imageUrl = currentPhoto.imageUrl;
 
     var now = DateTime.now();
-    var fileName = 'poster_${now.getAsTimeStamp()}.jpg';
+    var fileName = 'poster_${now.toTimeStamp()}.jpg';
 
     if (imageUrl.isNetworkImageUrl()) {
       final Response response = await get(Uri.parse(imageUrl));

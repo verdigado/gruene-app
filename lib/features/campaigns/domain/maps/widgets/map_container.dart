@@ -537,7 +537,7 @@ class _MapContainerState extends State<MapContainer>
     // prevents concurrent addSource call on initialization
     await _lock.synchronized(() async {
       _mapFeatureManager.addMarkers(sourceId, layerData);
-      var newLayerData = _mapFeatureManager.getMarkers(sourceId).asFeatureCollection().toJson();
+      var newLayerData = _mapFeatureManager.getMarkers(sourceId).toFeatureCollection().toJson();
       final sourceIds = await _controller!.getSourceIds();
       if (sourceIds.contains(sourceId)) {
         await _controller!.setGeoJsonSource(sourceId, newLayerData);
@@ -978,9 +978,9 @@ class _MapContainerState extends State<MapContainer>
 
   void _showItem() {
     if (widget.mapContainerController.route != null) {
-      _onRouteClick(widget.mapContainerController.route!.asRouteDetail().transformToFeatureItem().toJson());
+      _onRouteClick(widget.mapContainerController.route!.toRouteDetail().toFeature().toJson());
     } else if (widget.mapContainerController.area != null) {
-      _onActionAreaClick(widget.mapContainerController.area!.asActionAreaDetail().transformToFeatureItem().toJson());
+      _onActionAreaClick(widget.mapContainerController.area!.toActionAreaDetail().toFeature().toJson());
     }
   }
 

@@ -20,7 +20,7 @@ class GrueneApiRouteService extends GrueneApiBaseService {
   Future<void> updateRouteStatus(RouteStatusUpdateModel route) => getFromApi(
     apiRequest: (api) => api.v1CampaignsRoutesRouteIdStatusPut(
       routeId: route.id,
-      body: UpdateRouteStatus(status: route.status.asUpdateRouteStatusStatus()),
+      body: UpdateRouteStatus(status: route.status.toUpdateRouteStatusStatus()),
     ),
   );
 }

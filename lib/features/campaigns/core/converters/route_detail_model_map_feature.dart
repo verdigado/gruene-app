@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension RouteDetailModelMapFeature on RouteDetailModel {
-  turf.Feature<turf.LineString> transformToFeatureItem() {
+  turf.Feature<turf.LineString> toFeature() {
     var visualIdentifierHelper = GetIt.I<VisualIdentifierHelper>();
     var visualIdentifierColor = visualIdentifierHelper.getVisualIdentifierById(
       visualIdentifierId,
@@ -16,7 +16,7 @@ extension RouteDetailModelMapFeature on RouteDetailModel {
         CampaignConstants.featurePropertyColor: visualIdentifierColor,
         CampaignConstants.featurePropertyVisualIdentifierId: visualIdentifierId,
       },
-      geometry: lineString.asTurfLine(),
+      geometry: lineString.toTurfLine(),
     );
   }
 }

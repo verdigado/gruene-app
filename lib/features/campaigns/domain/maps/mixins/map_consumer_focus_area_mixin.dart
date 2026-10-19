@@ -79,7 +79,7 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
       );
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.focusAreaSourceName,
-        focusAreas.transformToFeatureList(),
+        focusAreas.toFeatures(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

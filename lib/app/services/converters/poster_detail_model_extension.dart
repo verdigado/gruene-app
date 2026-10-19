@@ -7,7 +7,7 @@ extension PosterDetailModelExtension on PosterDetailModel {
     return photos.first;
   }
 
-  PosterUpdateModel asPosterUpdate() {
+  PosterUpdateModel toPosterUpdate() {
     return PosterUpdateModel(
       id: id,
       address: address,

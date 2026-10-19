@@ -1,18 +1,18 @@
 part of '../converters.dart';
 
 extension FlyerCreateModelParsing on FlyerCreateModel {
-  FlyerDetailModel transformToFlyerDetailModel(String temporaryId) {
+  FlyerDetailModel toFlyerDetailModel(String temporaryId) {
     return FlyerDetailModel(
       id: temporaryId,
       address: address,
       flyerCount: flyerCount,
       location: location,
-      createdAt: '${DateTime.now().getAsLocalDateTimeString()}*', // should mark this as preliminary
+      createdAt: '${DateTime.now().toLocalDateTimeString()}*', // should mark this as preliminary
       isCached: true,
     );
   }
 
-  PoiDetailModel transformToVirtualPoiDetailModel(int temporaryId) {
+  PoiDetailModel toVirtualPoiDetailModel(int temporaryId) {
     return PoiDetailModel.virtual(id: temporaryId, status: PoiServiceType.flyer.name, location: location);
   }
 }

@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension PosterStatusParsing on PosterModelStatus {
-  PosterStatus transformToPoiPosterStatus() {
+  PosterStatus toPoiPosterStatus() {
     return switch (this) {
       PosterModelStatus.ok => PosterStatus.ok,
       PosterModelStatus.damaged => PosterStatus.damaged,
@@ -11,5 +11,5 @@ extension PosterStatusParsing on PosterModelStatus {
     };
   }
 
-  String translatePosterStatus() => transformToPoiPosterStatus().translatePosterStatus();
+  String translatePosterStatus() => toPoiPosterStatus().translatePosterStatus();
 }

@@ -63,7 +63,7 @@ class TeamProfile extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 8),
                           child: Text.rich(
-                            currentTeam.description.safe().asRichText(context),
+                            currentTeam.description.safe().toRichText(context),
                             style: theme.textTheme.bodyMedium,
                             softWrap: true,
                           ),

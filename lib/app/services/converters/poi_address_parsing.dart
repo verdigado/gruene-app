@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension PoiAddressParsing on PoiAddress {
-  AddressModel transformToAddressModel() {
+  AddressModel toAddressModel() {
     final address = this;
     return AddressModel(
       street: address.street.safe(),

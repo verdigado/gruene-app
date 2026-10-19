@@ -118,7 +118,7 @@ class _RouteDetailState extends State<RouteDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.route.routeType_label}: ${_currentRouteDetail.type.getAsLabel()}',
+                        '${t.campaigns.route.routeType_label}: ${_currentRouteDetail.type.toLabel()}',
                         style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
                       ),
                     ],
@@ -126,7 +126,7 @@ class _RouteDetailState extends State<RouteDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.route.length_label}: ${formatter.format(turf.length(turf.Feature<turf.LineString>(geometry: _currentRouteDetail.lineString.asTurfLine()), Unit.meters))} m',
+                        '${t.campaigns.route.length_label}: ${formatter.format(turf.length(turf.Feature<turf.LineString>(geometry: _currentRouteDetail.lineString.toTurfLine()), Unit.meters))} m',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],
@@ -211,12 +211,12 @@ class _RouteDetailState extends State<RouteDetail> {
 
   Future<void> _changeRouteStatus(RouteDetailModel route, bool state) async {
     var newStatus = state ? RouteStatus.closed : RouteStatus.open;
-    var routeUpdate = route.asRouteStatusUpdate().copyWith(status: newStatus);
+    var routeUpdate = route.toRouteStatusUpdate().copyWith(status: newStatus);
 
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);
     await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
     setState(() {
-      _currentRouteDetail = routeUpdate.transformToVirtualRouteDetailModel();
+      _currentRouteDetail = routeUpdate.toVirtualRouteDetailModel();
     });
   }
 
@@ -236,19 +236,19 @@ class _RouteDetailState extends State<RouteDetail> {
     );
 
     if (selectedTeam != null) {
-      await _assignTeam(route, selectedTeam.asTeamInfo());
+      await _assignTeam(route, selectedTeam.toTeamInfo());
     }
   }
 
   Future<void> _assignTeam(RouteDetailModel route, TeamInfo? selectedTeam) async {
-    var routeAssignmentUpdate = route.asRouteAssignmentUpdate().copyWith(team: Wrapped.value(selectedTeam));
+    var routeAssignmentUpdate = route.toRouteAssignmentUpdate().copyWith(team: Wrapped.value(selectedTeam));
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeAssignmentUpdate);
     await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
     if (!mounted) return;
     var previousTeamData = _currentRouteDetail.team;
 
     setState(() {
-      _currentRouteDetail = routeAssignmentUpdate.transformToVirtualRouteDetailModel();
+      _currentRouteDetail = routeAssignmentUpdate.toVirtualRouteDetailModel();
     });
     if (selectedTeam == null && previousTeamData != null) {
       if (!mounted) return;

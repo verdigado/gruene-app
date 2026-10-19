@@ -153,7 +153,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   GoRouterState getCurrentRoute() => GoRouterState.of(context);
 
   void _loadCachedPois() async {
-    var markerItems = await campaignActionCache.getLayerItems(poiType.asPoiCacheType());
+    var markerItems = await campaignActionCache.getLayerItems(poiType.toPoiCacheType());
     mapController.setPoiMarkerSource(markerItems);
   }
 
@@ -166,7 +166,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     if (loadCached) _loadCachedPois();
     if (mapController.getCurrentZoomLevel() > mapController.minimumMarkerZoomLevel) {
       final markerItems = await campaignService.loadPoisInRegion(campaignId, locationSW, locationNE);
-      mapController.setPoiMarkerSource(markerItems.transformToFeatureList());
+      mapController.setPoiMarkerSource(markerItems.toFeatures());
     }
   }
 
@@ -232,7 +232,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   Future<void> deletePoi(String poiId) async {
-    var markerItem = await campaignActionCache.deletePoi(poiType.asPoiCacheType(), poiId);
+    var markerItem = await campaignActionCache.deletePoi(poiType.toPoiCacheType(), poiId);
     mapController.setPoiMarkerSource([markerItem]);
   }
 
@@ -402,12 +402,12 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   Future<void> savePoi(PoiUpdateType poiUpdate) async {
-    final updatedMarker = await campaignActionCache.updatePoi(poiType.asPoiCacheType(), poiUpdate);
+    final updatedMarker = await campaignActionCache.updatePoi(poiType.toPoiCacheType(), poiUpdate);
     mapController.setPoiMarkerSource([updatedMarker]);
   }
 
   Future<turf.Feature> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
-      await campaignActionCache.storeNewPoi(poiType.asPoiCacheType(), newPoi);
+      await campaignActionCache.storeNewPoi(poiType.toPoiCacheType(), newPoi);
 
   Future<U> getPoiFromFeature<U extends BasicPoi>(Map<String, dynamic> feature) {
     final isCached = MapHelper.extractIsCachedFromFeature(feature);
@@ -443,14 +443,14 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
         filterController.enableFilterChip(t.campaigns.filters.routes);
         var routeService = GetIt.I<GrueneApiRouteService>();
         var route = await routeService.getRoute(mapScreenController.routeId!);
-        var bbox = turf.bbox(route.lineString.asTurfLine()).scale(scaleFactor);
+        var bbox = turf.bbox(route.lineString.toTurfLine()).scale(scaleFactor);
         mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
         mapContainerController.showRoute(route);
       } else if (mapScreenController.areaId != null) {
         filterController.enableFilterChip(t.campaigns.filters.action_areas);
         var areaService = GetIt.I<GrueneApiActionAreaService>();
         var area = await areaService.getActionArea(mapScreenController.areaId!);
-        var bbox = turf.bbox(area.polygon.asTurfPolygon()).scale(scaleFactor);
+        var bbox = turf.bbox(area.polygon.toTurfPolygon()).scale(scaleFactor);
         mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
         mapContainerController.showArea(area);
       }

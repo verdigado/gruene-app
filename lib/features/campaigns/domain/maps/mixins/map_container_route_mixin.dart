@@ -54,7 +54,7 @@ mixin MapContainerRouteMixin {
 
   Future<RouteDetailModel> _getRoute(String routeId) async {
     var routeService = GetIt.I<GrueneApiRouteService>();
-    return (await routeService.getRoute(routeId)).asRouteDetail();
+    return (await routeService.getRoute(routeId)).toRouteDetail();
   }
 
   Future<RouteDetailModel> _getCachedRoute(String routeId) {

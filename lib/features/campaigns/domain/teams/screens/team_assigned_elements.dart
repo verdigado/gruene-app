@@ -61,10 +61,10 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       _assignedElements = [
         ...assignedElements.routes
             .where((r) => activeCampaigns.any((c) => c.id == r.campaignId))
-            .map((r) => r.asAssignedElement()),
+            .map((r) => r.toAssignedElement()),
         ...assignedElements.areas
             .where((a) => activeCampaigns.any((c) => c.id == a.campaignId))
-            .map((a) => a.asAssignedElement()),
+            .map((a) => a.toAssignedElement()),
       ];
     });
   }
@@ -154,11 +154,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       ),
       child: Row(
         children: [
-          SizedBox(
-            height: 24,
-            width: 24,
-            child: SvgPicture.asset(assignedElement.type.getAssetLocation()),
-          ),
+          SizedBox(height: 24, width: 24, child: SvgPicture.asset(assignedElement.type.getAssetLocation())),
           SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +180,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
 
   String _getAssignmentInfoText(AssignedElement assignedElement) {
     var assignmentInfo = t.campaigns.team.team_assigned_elements_assignment_info(
-      date: assignedElement.assignmentDate.getAsLocalDateString(),
+      date: assignedElement.assignmentDate.toLocalDateString(),
       assignee: assignedElement.assignee,
     );
     var formatter = NumberFormat.decimalPatternDigits(locale: t.$meta.locale.languageCode, decimalDigits: 1);

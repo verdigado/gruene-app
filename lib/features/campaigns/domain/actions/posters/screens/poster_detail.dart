@@ -153,7 +153,7 @@ class PosterDetail extends StatelessWidget {
 
   void onPosterRemoved(BuildContext context) {
     var oldStatus = poi.status;
-    var poiUpdate = poi.asPosterUpdate().copyWith(status: PosterModelStatus.removed);
+    var poiUpdate = poi.toPosterUpdate().copyWith(status: PosterModelStatus.removed);
     onSave(poiUpdate);
     _closeDialog(context);
 

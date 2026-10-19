@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension AreaTypeLabels on AreaType {
-  String getAsLabel() {
+  String toLabel() {
     var typeLabel = switch (this) {
       AreaType.flyerSpot => t.campaigns.flyer.label,
       AreaType.house => t.campaigns.door.label,

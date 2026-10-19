@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension FocusAreaMapFeature on FocusArea {
-  turf.Feature<turf.Polygon> transformToFeatureItem() {
+  turf.Feature<turf.Polygon> toFeature() {
     var opacities = [0, 0.2, 0.4, 0.55, 0.8];
     var scoreIndex = score.toInt() - 1;
     return turf.Feature<turf.Polygon>(
@@ -16,7 +16,7 @@ extension FocusAreaMapFeature on FocusArea {
         CampaignConstants.focusAreaMapScoreInfoProperty: CampaignConstants.scoreInfos[score],
         CampaignConstants.focusAreaMapTypeProperty: getGenType().name,
       },
-      geometry: polygon.asTurfPolygon(),
+      geometry: polygon.toTurfPolygon(),
     );
   }
 
@@ -30,7 +30,7 @@ extension FocusAreaMapFeature on FocusArea {
 }
 
 extension FocusAreaListMapFeature on List<FocusArea> {
-  List<turf.Feature<turf.Polygon>> transformToFeatureList() {
-    return map((p) => p.transformToFeatureItem()).toList();
+  List<turf.Feature<turf.Polygon>> toFeatures() {
+    return map((p) => p.toFeature()).toList();
   }
 }

@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension DateTimeParsing on DateTime {
-  String getAsLocalDateTimeString() {
+  String toLocalDateTimeString() {
     DateTime utcDateTime = this;
     DateTime localDateTime = utcDateTime.toLocal();
     final dateString = DateFormat(t.campaigns.poster.date_format).format(localDateTime);
@@ -9,21 +9,21 @@ extension DateTimeParsing on DateTime {
     return t.campaigns.poster.datetime_display_template(date: dateString, time: timeString);
   }
 
-  String getAsLocalDateString() {
+  String toLocalDateString() {
     DateTime utcDateTime = this;
     DateTime localDateTime = utcDateTime.toLocal();
     final dateString = DateFormat(t.campaigns.poster.date_format).format(localDateTime);
     return dateString;
   }
 
-  String getAsLocalTimeString() {
+  String toLocalTimeString() {
     DateTime utcDateTime = this;
     DateTime localDateTime = utcDateTime.toLocal();
     final timeString = DateFormat(t.campaigns.poster.time_format).format(localDateTime);
     return timeString;
   }
 
-  String getAsTimeStamp() {
+  String toTimeStamp() {
     DateTime utcDateTime = this;
     DateTime localDateTime = utcDateTime.toLocal();
     final timestampString = DateFormat(t.campaigns.poster.timestamp_format).format(localDateTime);

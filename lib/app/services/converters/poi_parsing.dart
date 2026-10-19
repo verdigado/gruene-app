@@ -1,33 +1,33 @@
 part of '../converters.dart';
 
 extension PoiParsing on Poi {
-  PoiDetailModel transformToMarkerItem() {
+  PoiDetailModel toMarkerItem() {
     final poi = this;
     String statusSuffix = '';
     if (poi.poster != null) statusSuffix = '_${poi.poster!.status.name}';
     return PoiDetailModel(
       id: int.parse(poi.id),
-      location: poi.coords.transformToLatLng(),
-      status: '${poi.type.transformToPoiServiceType().name}$statusSuffix',
+      location: poi.coords.toLatLng(),
+      status: '${poi.type.toPoiServiceType().name}$statusSuffix',
     );
   }
 
-  DoorDetailModel transformPoiToDoorDetail() {
+  DoorDetailModel toDoorDetail() {
     final poi = this;
     if (poi.type != PoiType.house) {
       throw Exception('Unexpected PoiType');
     }
     return DoorDetailModel(
       id: poi.id,
-      address: poi.address.transformToAddressModel(),
+      address: poi.address.toAddressModel(),
       openedDoors: poi.house!.countOpenedDoors.toInt(),
       closedDoors: poi.house!.countClosedDoors.toInt(),
-      location: poi.coords.transformToLatLng(),
-      createdAt: poi.createdAt.getAsLocalDateTimeString(),
+      location: poi.coords.toLatLng(),
+      createdAt: poi.createdAt.toLocalDateTimeString(),
     );
   }
 
-  PosterDetailModel transformPoiToPosterDetail() {
+  PosterDetailModel toPosterDetail() {
     final poi = this;
     if (poi.type != PoiType.poster) {
       throw Exception('Unexpected PoiType');
@@ -35,29 +35,29 @@ extension PoiParsing on Poi {
     return PosterDetailModel(
       id: poi.id,
       photos: _getPosterPhotos(),
-      address: poi.address.transformToAddressModel(),
-      status: poi.poster!.status.transformToModelPosterStatus(),
-      location: coords.transformToLatLng(),
+      address: poi.address.toAddressModel(),
+      status: poi.poster!.status.toModelPosterStatus(),
+      location: coords.toLatLng(),
       comment: poi.poster!.comment.safe(),
-      createdAt: poi.createdAt.getAsLocalDateTimeString(),
+      createdAt: poi.createdAt.toLocalDateTimeString(),
     );
   }
 
-  FlyerDetailModel transformPoiToFlyerDetail() {
+  FlyerDetailModel toFlyerDetail() {
     final poi = this;
     if (poi.type != PoiType.flyerSpot) {
       throw Exception('Unexpected PoiType');
     }
     return FlyerDetailModel(
       id: poi.id,
-      address: poi.address.transformToAddressModel(),
+      address: poi.address.toAddressModel(),
       flyerCount: poi.flyerSpot!.flyerCount.toInt(),
-      createdAt: poi.createdAt.getAsLocalDateTimeString(),
-      location: coords.transformToLatLng(),
+      createdAt: poi.createdAt.toLocalDateTimeString(),
+      location: coords.toLatLng(),
     );
   }
 
-  PosterListItemModel transformToPosterListItem() {
+  PosterListItemModel toPosterListItem() {
     final poi = this;
     if (poi.type != PoiType.poster) {
       throw Exception('Unexpected PoiType');
@@ -67,10 +67,10 @@ extension PoiParsing on Poi {
       id: poi.id,
       thumbnailUrl: _getLatestThumbnailImageUrl(),
       imageUrl: _getLatestImageUrl(),
-      address: poi.address.transformToAddressModel(),
+      address: poi.address.toAddressModel(),
       status: poi.poster!.status.translatePosterStatus(),
       lastChangeStatus: poi._getLastChangeStatus(),
-      lastChangeDateTime: poi.updatedAt.getAsLocalDateTimeString(),
+      lastChangeDateTime: poi.updatedAt.toLocalDateTimeString(),
       createdAt: poi.createdAt,
     );
   }
@@ -80,7 +80,7 @@ extension PoiParsing on Poi {
   }
 
   List<PosterPhotoModel> _getPosterPhotos() {
-    return photos.map((x) => x.getAsPosterPhoto()).toList();
+    return photos.map((x) => x.toPosterPhoto()).toList();
   }
 
   String? _getLatestThumbnailImageUrl() {
@@ -106,7 +106,7 @@ extension PoiParsing on Poi {
 }
 
 extension on ImageSrcSet {
-  PosterPhotoModel getAsPosterPhoto() {
+  PosterPhotoModel toPosterPhoto() {
     return PosterPhotoModel(
       id: id,
       imageUrl: original.url,

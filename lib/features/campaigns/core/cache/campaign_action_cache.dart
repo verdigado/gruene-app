@@ -75,21 +75,21 @@ class CampaignActionCache extends ChangeNotifier {
           poiType: poiType,
           poi: poiCreate as PosterCreateModel,
           getJson: (poi) => poi.toJson(),
-          getMarker: (poi, tempId) => poi.transformToVirtualPoiDetailModel(tempId).transformToFeatureItem(),
+          getMarker: (poi, tempId) => poi.toVirtualPoiDetailModel(tempId).toFeature(),
         );
       case PoiCacheType.door:
         return await _addCreateAction<DoorCreateModel>(
           poiType: poiType,
           poi: poiCreate as DoorCreateModel,
           getJson: (poi) => poi.toJson(),
-          getMarker: (poi, tempId) => poi.transformToVirtualPoiDetailModel(tempId).transformToFeatureItem(),
+          getMarker: (poi, tempId) => poi.toVirtualPoiDetailModel(tempId).toFeature(),
         );
       case PoiCacheType.flyer:
         return await _addCreateAction<FlyerCreateModel>(
           poiType: poiType,
           poi: poiCreate as FlyerCreateModel,
           getJson: (poi) => poi.toJson(),
-          getMarker: (poi, tempId) => poi.transformToVirtualPoiDetailModel(tempId).transformToFeatureItem(),
+          getMarker: (poi, tempId) => poi.toVirtualPoiDetailModel(tempId).toFeature(),
         );
       case PoiCacheType.route:
         throw UnimplementedError();
@@ -123,7 +123,7 @@ class CampaignActionCache extends ChangeNotifier {
     } else {
       await _appendActionToCache(action);
     }
-    return _getDeleteMarker(poiType, action.poiId!).transformToFeatureItem();
+    return _getDeleteMarker(poiType, action.poiId!).toFeature();
   }
 
   Future<turf.Feature> updatePoi(PoiCacheType poiType, dynamic poi) async {
@@ -134,8 +134,8 @@ class CampaignActionCache extends ChangeNotifier {
           poi: poi as PosterUpdateModel,
           getId: (poi) => poi.id,
           getJson: (poi) => poi.toJson(),
-          mergeUpdates: (action, poiUpdate) => action.getAsPosterUpdate().mergeWith(poiUpdate),
-          getMarker: (poi) => poi.transformToVirtualPoiDetailModel().transformToFeatureItem(),
+          mergeUpdates: (action, poiUpdate) => action.toPosterUpdate().mergeWith(poiUpdate),
+          getMarker: (poi) => poi.toVirtualPoiDetailModel().toFeature(),
         );
       case PoiCacheType.door:
         return await _addUpdateAction<DoorUpdateModel>(
@@ -144,7 +144,7 @@ class CampaignActionCache extends ChangeNotifier {
           getId: (poi) => poi.id,
           getJson: (poi) => poi.toJson(),
           mergeUpdates: (action, poiUpdate) => poiUpdate,
-          getMarker: (poi) => poi.transformToVirtualPoiDetailModel().transformToFeatureItem(),
+          getMarker: (poi) => poi.toVirtualPoiDetailModel().toFeature(),
         );
       case PoiCacheType.flyer:
         return await _addUpdateAction<FlyerUpdateModel>(
@@ -153,7 +153,7 @@ class CampaignActionCache extends ChangeNotifier {
           getId: (poi) => poi.id,
           getJson: (poi) => poi.toJson(),
           mergeUpdates: (action, poiUpdate) => poiUpdate,
-          getMarker: (poi) => poi.transformToVirtualPoiDetailModel().transformToFeatureItem(),
+          getMarker: (poi) => poi.toVirtualPoiDetailModel().toFeature(),
         );
       case PoiCacheType.route:
         if (poi.runtimeType == RouteStatusUpdateModel) {
@@ -163,7 +163,7 @@ class CampaignActionCache extends ChangeNotifier {
             getId: (poi) => poi.id,
             getJson: (poi) => poi.toJson(),
             mergeUpdates: (action, poiUpdate) => poiUpdate,
-            getMarker: (poi) => poi.transformToVirtualRouteDetailModel().transformToFeatureItem(),
+            getMarker: (poi) => poi.toVirtualRouteDetailModel().toFeature(),
             getActionType: () => CampaignActionType.editRouteStatus,
           );
         } else if (poi.runtimeType == RouteAssignmentUpdateModel) {
@@ -173,7 +173,7 @@ class CampaignActionCache extends ChangeNotifier {
             getId: (poi) => poi.id,
             getJson: (poi) => poi.toJson(),
             mergeUpdates: (action, poiUpdate) => poiUpdate,
-            getMarker: (poi) => poi.transformToVirtualRouteDetailModel().transformToFeatureItem(),
+            getMarker: (poi) => poi.toVirtualRouteDetailModel().toFeature(),
             getActionType: () => CampaignActionType.editRouteAssignment,
           );
         } else {
@@ -187,7 +187,7 @@ class CampaignActionCache extends ChangeNotifier {
             getId: (poi) => poi.id,
             getJson: (poi) => poi.toJson(),
             mergeUpdates: (action, poiUpdate) => poiUpdate,
-            getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
+            getMarker: (poi) => poi.toVirtualActionAreaDetailModel().toFeature(),
             getActionType: () => CampaignActionType.editActionAreaStatus,
           );
         } else if (poi.runtimeType == ActionAreaAssignmentUpdateModel) {
@@ -197,7 +197,7 @@ class CampaignActionCache extends ChangeNotifier {
             getId: (poi) => poi.id,
             getJson: (poi) => poi.toJson(),
             mergeUpdates: (action, poiUpdate) => poiUpdate,
-            getMarker: (poi) => poi.transformToVirtualActionAreaDetailModel().transformToFeatureItem(),
+            getMarker: (poi) => poi.toVirtualActionAreaDetailModel().toFeature(),
             getActionType: () => CampaignActionType.editActionAreaAssignment,
           );
         } else {
@@ -257,48 +257,48 @@ class CampaignActionCache extends ChangeNotifier {
       if (markerItems.any((m) => m.id == action.coalescedPoiId())) continue;
       switch (action.actionType) {
         case CampaignActionType.addPoster:
-          var model = action.getAsPosterCreate();
-          markerItems.add(model.transformToVirtualPoiDetailModel(action.poiTempId).transformToFeatureItem());
+          var model = action.toPosterCreate();
+          markerItems.add(model.toVirtualPoiDetailModel(action.poiTempId).toFeature());
         case CampaignActionType.editPoster:
-          var model = action.getAsPosterUpdate();
-          markerItems.add(model.transformToVirtualPoiDetailModel().transformToFeatureItem());
+          var model = action.toPosterUpdate();
+          markerItems.add(model.toVirtualPoiDetailModel().toFeature());
         case CampaignActionType.deletePoster:
           var model = _getDeleteMarker(PoiCacheType.poster, action.poiId!);
-          markerItems.add(model.transformToFeatureItem());
+          markerItems.add(model.toFeature());
 
         case CampaignActionType.addDoor:
-          var model = action.getAsDoorCreate();
-          markerItems.add(model.transformToVirtualPoiDetailModel(action.poiTempId).transformToFeatureItem());
+          var model = action.toDoorCreate();
+          markerItems.add(model.toVirtualPoiDetailModel(action.poiTempId).toFeature());
         case CampaignActionType.editDoor:
-          var model = action.getAsDoorUpdate();
-          markerItems.add(model.transformToVirtualPoiDetailModel().transformToFeatureItem());
+          var model = action.toDoorUpdate();
+          markerItems.add(model.toVirtualPoiDetailModel().toFeature());
         case CampaignActionType.deleteDoor:
           var model = _getDeleteMarker(PoiCacheType.door, action.poiId!);
-          markerItems.add(model.transformToFeatureItem());
+          markerItems.add(model.toFeature());
 
         case CampaignActionType.addFlyer:
-          var model = action.getAsFlyerCreate();
-          markerItems.add(model.transformToVirtualPoiDetailModel(action.poiTempId).transformToFeatureItem());
+          var model = action.toFlyerCreate();
+          markerItems.add(model.toVirtualPoiDetailModel(action.poiTempId).toFeature());
         case CampaignActionType.editFlyer:
-          var model = action.getAsFlyerUpdate();
-          markerItems.add(model.transformToVirtualPoiDetailModel().transformToFeatureItem());
+          var model = action.toFlyerUpdate();
+          markerItems.add(model.toVirtualPoiDetailModel().toFeature());
         case CampaignActionType.deleteFlyer:
           var model = _getDeleteMarker(PoiCacheType.flyer, action.poiId!);
-          markerItems.add(model.transformToFeatureItem());
+          markerItems.add(model.toFeature());
 
         case CampaignActionType.editRouteStatus:
-          var model = action.getAsRouteStatusUpdate();
-          markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
+          var model = action.toRouteStatusUpdate();
+          markerItems.add(model.toVirtualRouteDetailModel().toFeature());
         case CampaignActionType.editRouteAssignment:
-          var model = action.getAsRouteAssignmentUpdate();
-          markerItems.add(model.transformToVirtualRouteDetailModel().transformToFeatureItem());
+          var model = action.toRouteAssignmentUpdate();
+          markerItems.add(model.toVirtualRouteDetailModel().toFeature());
 
         case CampaignActionType.editActionAreaStatus:
-          var model = action.getAsActionAreaStatusUpdate();
-          markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
+          var model = action.toActionAreaStatusUpdate();
+          markerItems.add(model.toVirtualActionAreaDetailModel().toFeature());
         case CampaignActionType.editActionAreaAssignment:
-          var model = action.getAsActionAreaAssignmentUpdate();
-          markerItems.add(model.transformToVirtualActionAreaDetailModel().transformToFeatureItem());
+          var model = action.toActionAreaAssignmentUpdate();
+          markerItems.add(model.toVirtualActionAreaDetailModel().toFeature());
 
         case CampaignActionType.unknown:
         case null:
@@ -346,8 +346,8 @@ class CampaignActionCache extends ChangeNotifier {
       poiId: poiId,
       addActionFilter: CampaignActionType.addPoster,
       editActionFilter: CampaignActionType.editPoster,
-      transformEditAction: (action) => action.getAsPosterUpdate().transformToPosterDetailModel(),
-      transformAddAction: (action) => action.getAsPosterCreate().transformToPosterDetailModel(poiId),
+      transformEditAction: (action) => action.toPosterUpdate().toPosterDetailModel(),
+      transformAddAction: (action) => action.toPosterCreate().toPosterDetailModel(poiId),
     );
     return detailModel;
   }
@@ -357,8 +357,8 @@ class CampaignActionCache extends ChangeNotifier {
       poiId: poiId,
       addActionFilter: CampaignActionType.addDoor,
       editActionFilter: CampaignActionType.editDoor,
-      transformEditAction: (action) => action.getAsDoorUpdate().transformToDoorDetailModel(),
-      transformAddAction: (action) => action.getAsDoorCreate().transformToDoorDetailModel(poiId),
+      transformEditAction: (action) => action.toDoorUpdate().toDoorDetailModel(),
+      transformAddAction: (action) => action.toDoorCreate().toDoorDetailModel(poiId),
     );
     return detailModel;
   }
@@ -368,8 +368,8 @@ class CampaignActionCache extends ChangeNotifier {
       poiId: poiId,
       addActionFilter: CampaignActionType.addFlyer,
       editActionFilter: CampaignActionType.editFlyer,
-      transformEditAction: (action) => action.getAsFlyerUpdate().transformToFlyerDetailModel(),
-      transformAddAction: (action) => action.getAsFlyerCreate().transformToFlyerDetailModel(poiId),
+      transformEditAction: (action) => action.toFlyerUpdate().toFlyerDetailModel(),
+      transformAddAction: (action) => action.toFlyerCreate().toFlyerDetailModel(poiId),
     );
     return detailModel;
   }
@@ -379,8 +379,8 @@ class CampaignActionCache extends ChangeNotifier {
       poiId: poiId,
       addActionFilter: CampaignActionType.editRouteStatus,
       editActionFilter: CampaignActionType.editRouteStatus,
-      transformEditAction: (action) => action.getAsRouteStatusUpdate(),
-      transformAddAction: (action) => action.getAsRouteStatusUpdate(),
+      transformEditAction: (action) => action.toRouteStatusUpdate(),
+      transformAddAction: (action) => action.toRouteStatusUpdate(),
     );
     return detailModel;
   }
@@ -390,8 +390,8 @@ class CampaignActionCache extends ChangeNotifier {
       poiId: poiId,
       addActionFilter: CampaignActionType.editRouteAssignment,
       editActionFilter: CampaignActionType.editRouteAssignment,
-      transformEditAction: (action) => action.getAsRouteAssignmentUpdate(),
-      transformAddAction: (action) => action.getAsRouteAssignmentUpdate(),
+      transformEditAction: (action) => action.toRouteAssignmentUpdate(),
+      transformAddAction: (action) => action.toRouteAssignmentUpdate(),
     );
     return detailModel;
   }
@@ -401,9 +401,9 @@ class CampaignActionCache extends ChangeNotifier {
     if (action == null) throw Exception('Route not found in Cache');
     switch (action.actionType) {
       case CampaignActionType.editRouteAssignment:
-        return action.getAsRouteAssignmentUpdate().transformToVirtualRouteDetailModel();
+        return action.toRouteAssignmentUpdate().toVirtualRouteDetailModel();
       case CampaignActionType.editRouteStatus:
-        return action.getAsRouteStatusUpdate().transformToVirtualRouteDetailModel();
+        return action.toRouteStatusUpdate().toVirtualRouteDetailModel();
       case CampaignActionType.unknown:
       case CampaignActionType.addPoster:
       case CampaignActionType.editPoster:
@@ -426,9 +426,9 @@ class CampaignActionCache extends ChangeNotifier {
     if (action == null) throw Exception('Area not found in Cache');
     switch (action.actionType) {
       case CampaignActionType.editActionAreaAssignment:
-        return action.getAsActionAreaAssignmentUpdate().transformToVirtualActionAreaDetailModel();
+        return action.toActionAreaAssignmentUpdate().toVirtualActionAreaDetailModel();
       case CampaignActionType.editActionAreaStatus:
-        return action.getAsActionAreaStatusUpdate().transformToVirtualActionAreaDetailModel();
+        return action.toActionAreaStatusUpdate().toVirtualActionAreaDetailModel();
       case CampaignActionType.unknown:
       case CampaignActionType.addPoster:
       case CampaignActionType.editPoster:
@@ -451,8 +451,8 @@ class CampaignActionCache extends ChangeNotifier {
       poiId: poiId,
       addActionFilter: CampaignActionType.editActionAreaStatus,
       editActionFilter: CampaignActionType.editActionAreaStatus,
-      transformEditAction: (action) => action.getAsActionAreaStatusUpdate().transformToVirtualActionAreaDetailModel(),
-      transformAddAction: (action) => action.getAsActionAreaStatusUpdate().transformToVirtualActionAreaDetailModel(),
+      transformEditAction: (action) => action.toActionAreaStatusUpdate().toVirtualActionAreaDetailModel(),
+      transformAddAction: (action) => action.toActionAreaStatusUpdate().toVirtualActionAreaDetailModel(),
     );
     return detailModel;
   }
@@ -510,35 +510,35 @@ class CampaignActionCache extends ChangeNotifier {
         try {
           switch (action.actionType) {
             case CampaignActionType.addPoster:
-              var model = action.getAsPosterCreate();
+              var model = action.toPosterCreate();
               var newPosterMarker = await posterApiService.createNewPoster(model);
               await updateIds(newPosterMarker.id!);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editPoster:
-              var model = action.getAsPosterUpdate();
+              var model = action.toPosterUpdate();
               await posterApiService.updatePoster(model);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.addDoor:
-              var model = action.getAsDoorCreate();
+              var model = action.toDoorCreate();
               var newDoorMarker = await doorApiService.createNewDoor(model);
               await updateIds(newDoorMarker.id!);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editDoor:
-              var model = action.getAsDoorUpdate();
+              var model = action.toDoorUpdate();
               await doorApiService.updateDoor(model);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.addFlyer:
-              var model = action.getAsFlyerCreate();
+              var model = action.toFlyerCreate();
               var newFlyerMarker = await flyerApiService.createNewFlyer(model);
               await updateIds(newFlyerMarker.id!);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editFlyer:
-              var model = action.getAsFlyerUpdate();
+              var model = action.toFlyerUpdate();
               await flyerApiService.updateFlyer(model);
               campaignActionDatabase.delete(action.id!);
 
@@ -555,22 +555,22 @@ class CampaignActionCache extends ChangeNotifier {
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editRouteStatus:
-              var model = action.getAsRouteStatusUpdate();
+              var model = action.toRouteStatusUpdate();
               await routeApiService.updateRouteStatus(model);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editRouteAssignment:
-              var model = action.getAsRouteAssignmentUpdate();
+              var model = action.toRouteAssignmentUpdate();
               await routeApiService.updateRouteAssignemnt(model);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editActionAreaStatus:
-              var model = action.getAsActionAreaStatusUpdate();
+              var model = action.toActionAreaStatusUpdate();
               await areaApiService.updateActionAreaStatus(model);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editActionAreaAssignment:
-              var model = action.getAsActionAreaAssignmentUpdate();
+              var model = action.toActionAreaAssignmentUpdate();
               await areaApiService.updateActionAreaAssignemnt(model);
               campaignActionDatabase.delete(action.id!);
 
@@ -629,7 +629,7 @@ class CampaignActionCache extends ChangeNotifier {
       var editPosterActions = posterCacheList.where((p) => p.actionType == CampaignActionType.editPoster).toList();
       if (editPosterActions.isNotEmpty) {
         var editPosterAction = editPosterActions.single;
-        var posterListItem = editPosterAction.getPosterUpdateAsPosterListItem(currentPoster.createdAt);
+        var posterListItem = editPosterAction.toPosterListItemFromUpdate(currentPoster.createdAt);
         myPosters[i] = posterListItem;
       }
     }
@@ -644,7 +644,7 @@ class CampaignActionCache extends ChangeNotifier {
       var editPosterActions = posterCacheList.where((p) => p.actionType == CampaignActionType.editPoster).toList();
       if (editPosterActions.isNotEmpty) {
         var editPosterAction = editPosterActions.single;
-        var posterListItem = editPosterAction.getPosterUpdateAsPosterListItem(
+        var posterListItem = editPosterAction.toPosterListItemFromUpdate(
           DateTime.fromMillisecondsSinceEpoch(newPoster.poiTempId),
         );
         myPosters.add(posterListItem);
@@ -653,7 +653,7 @@ class CampaignActionCache extends ChangeNotifier {
       var addPosterActions = posterCacheList.where((p) => p.actionType == CampaignActionType.addPoster).toList();
       if (addPosterActions.isNotEmpty) {
         var addPosterAction = addPosterActions.single;
-        var posterListItem = addPosterAction.getPosterCreateAsPosterListItem();
+        var posterListItem = addPosterAction.toPosterListItemFromCreate();
         myPosters.add(posterListItem);
         continue;
       }
@@ -665,13 +665,13 @@ class CampaignActionCache extends ChangeNotifier {
     var editPosterActions = posterCacheList.where((p) => p.actionType == CampaignActionType.editPoster).toList();
     if (editPosterActions.isNotEmpty) {
       var editPosterAction = editPosterActions.single;
-      var posterListItem = editPosterAction.getPosterUpdateAsPosterListItem(createdAt ?? DateTime.now());
+      var posterListItem = editPosterAction.toPosterListItemFromUpdate(createdAt ?? DateTime.now());
       return posterListItem;
     }
     var addPosterActions = posterCacheList.where((p) => p.actionType == CampaignActionType.addPoster).toList();
     if (addPosterActions.isNotEmpty) {
       var addPosterAction = addPosterActions.single;
-      var posterListItem = addPosterAction.getPosterCreateAsPosterListItem();
+      var posterListItem = addPosterAction.toPosterListItemFromCreate();
       return posterListItem;
     }
     throw UnimplementedError();
@@ -683,7 +683,7 @@ class CampaignActionCache extends ChangeNotifier {
 
   Future<bool> storeCacheOnDevice() async {
     var now = DateTime.now();
-    var fileName = 'cache_dump_${now.getAsTimeStamp()}.json';
+    var fileName = 'cache_dump_${now.toTimeStamp()}.json';
 
     final allActions = await campaignActionDatabase.readAll();
     var jsonContent = jsonEncode(allActions);

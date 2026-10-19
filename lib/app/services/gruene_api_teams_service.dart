@@ -18,7 +18,7 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
       );
 
   Future<Team> createNewTeam(NewTeamDetails newTeamDetails) async =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPost(body: newTeamDetails.asCreateTeam()));
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPost(body: newTeamDetails.toCreateTeam()));
 
   Future<List<TeamInvitation>> getOpenInvitations() async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPendingInvitationsGet());
@@ -68,7 +68,7 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
   }) => getFromApi(
     apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipPut(
       teamId: teamId,
-      body: UpdateTeamMembership(userId: userId, type: membershipType.asUpdateTeamMembershipType()),
+      body: UpdateTeamMembership(userId: userId, type: membershipType.toUpdateTeamMembershipType()),
     ),
   );
 

@@ -139,7 +139,7 @@ mixin MapConsumerRouteMixin on InfoBox {
       final routes = await campaignService.loadRoutesInRegion(mapInfo.campaignId, bbox.southwest, bbox.northeast);
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.routesSourceName,
-        routes.transformToFeatureList(),
+        routes.toFeatures(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

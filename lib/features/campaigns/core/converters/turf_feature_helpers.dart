@@ -10,7 +10,7 @@ extension TurfFeatureHelpers on turf.Feature {
 }
 
 extension TurfFeatureListHelpers on List<turf.Feature> {
-  turf.FeatureCollection asFeatureCollection() {
+  turf.FeatureCollection toFeatureCollection() {
     return turf.FeatureCollection(features: this);
   }
 }

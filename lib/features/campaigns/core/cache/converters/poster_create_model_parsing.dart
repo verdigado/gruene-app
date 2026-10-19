@@ -1,15 +1,15 @@
 part of '../converters.dart';
 
 extension PosterCreateModelParsing on PosterCreateModel {
-  PoiDetailModel transformToVirtualPoiDetailModel(int temporaryId) {
+  PoiDetailModel toVirtualPoiDetailModel(int temporaryId) {
     return PoiDetailModel.virtual(
       id: temporaryId,
-      status: PoiServiceType.poster.getAsMarkerItemStatus(PosterModelStatus.ok),
+      status: PoiServiceType.poster.toMarkerItemStatus(PosterModelStatus.ok),
       location: location,
     );
   }
 
-  PosterDetailModel transformToPosterDetailModel(String temporaryId) {
+  PosterDetailModel toPosterDetailModel(String temporaryId) {
     return PosterDetailModel(
       id: temporaryId,
       status: PosterModelStatus.ok,
@@ -26,7 +26,7 @@ extension PosterCreateModelParsing on PosterCreateModel {
             ],
       location: location,
       comment: '',
-      createdAt: '${DateTime.now().getAsLocalDateTimeString()}*', // should mark this as preliminary
+      createdAt: '${DateTime.now().toLocalDateTimeString()}*', // should mark this as preliminary
       isCached: true,
     );
   }

@@ -95,7 +95,7 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
           Row(
             children: [
               Text(
-                '${t.campaigns.statistic.as_at}: ${lastUpdateTime.getAsLocalDateTimeString()} (${t.campaigns.statistic.poi_statistics.update_info})',
+                '${t.campaigns.statistic.as_at}: ${lastUpdateTime.toLocalDateTimeString()} (${t.campaigns.statistic.poi_statistics.update_info})',
                 style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
               ),
             ],

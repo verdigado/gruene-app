@@ -13,7 +13,7 @@ class GrueneApiActionAreaService extends GrueneApiBaseService {
   Future<void> updateActionAreaStatus(ActionAreaStatusUpdateModel actionArea) => getFromApi(
     apiRequest: (api) => api.v1CampaignsAreasAreaIdStatusPut(
       areaId: actionArea.id,
-      body: UpdateAreaStatus(status: actionArea.status.asUpdateAreaStatusStatus()),
+      body: UpdateAreaStatus(status: actionArea.status.toUpdateAreaStatusStatus()),
     ),
   );
 

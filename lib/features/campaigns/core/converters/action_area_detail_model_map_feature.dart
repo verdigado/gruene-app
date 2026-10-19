@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension ActionAreaDetailModelMapFeature on ActionAreaDetailModel {
-  turf.Feature<turf.Polygon> transformToFeatureItem() {
+  turf.Feature<turf.Polygon> toFeature() {
     var visualIdentifierHelper = GetIt.I<VisualIdentifierHelper>();
     var visualIdentifierColor = visualIdentifierHelper.getVisualIdentifierById(
       visualIdentifierId,
@@ -16,7 +16,7 @@ extension ActionAreaDetailModelMapFeature on ActionAreaDetailModel {
         CampaignConstants.featurePropertyVisualIdentifierId: visualIdentifierId,
         CampaignConstants.featurePropertyColor: visualIdentifierColor,
       },
-      geometry: polygon.asTurfPolygon(),
+      geometry: polygon.toTurfPolygon(),
     );
   }
 }

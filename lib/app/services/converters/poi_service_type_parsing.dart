@@ -45,7 +45,7 @@ extension PoiCacheTypeParsing on PoiCacheType {
 }
 
 extension PoiServiceTypeParsing on PoiServiceType {
-  PoiType transformToApiPoisType() {
+  PoiType toApiPoisType() {
     switch (this) {
       case PoiServiceType.poster:
         return PoiType.poster;
@@ -56,7 +56,7 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  AreaType transformToApiAreasGetType() {
+  AreaType toApiAreasGetType() {
     switch (this) {
       case PoiServiceType.door:
         return AreaType.house;
@@ -67,7 +67,7 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  String getAsMarkerItemStatus(PosterModelStatus? posterStatus) {
+  String toMarkerItemStatus(PosterModelStatus? posterStatus) {
     var typeName = name;
     switch (this) {
       case PoiServiceType.poster:
@@ -80,7 +80,7 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  RouteType transformToRoutesApiGetType() {
+  RouteType toRoutesApiGetType() {
     switch (this) {
       case PoiServiceType.poster:
         return RouteType.poster;
@@ -91,7 +91,7 @@ extension PoiServiceTypeParsing on PoiServiceType {
     }
   }
 
-  PoiCacheType asPoiCacheType() {
+  PoiCacheType toPoiCacheType() {
     switch (this) {
       case PoiServiceType.poster:
         return PoiCacheType.poster;

@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension NewTeamDetailsParsing on NewTeamDetails {
-  CreateTeam asCreateTeam() {
+  CreateTeam toCreateTeam() {
     return CreateTeam(
       divisionKey: assignedDivision!.divisionKey,
       name: name,

@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension PoiTypeParsing on PoiType {
-  PoiServiceType transformToPoiServiceType() {
+  PoiServiceType toPoiServiceType() {
     switch (this) {
       case PoiType.flyerSpot:
         return PoiServiceType.flyer;

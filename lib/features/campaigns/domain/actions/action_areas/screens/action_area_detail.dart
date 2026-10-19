@@ -115,7 +115,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.action_area.area_label}: ${formatter.format(turf.area(widget.actionAreaDetail.polygon.asTurfPolygon())! / 1000 / 1000)} km²',
+                        '${t.campaigns.action_area.area_label}: ${formatter.format(turf.area(widget.actionAreaDetail.polygon.toTurfPolygon())! / 1000 / 1000)} km²',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],
@@ -202,12 +202,12 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
 
   Future<void> _changeActionAreaStatus(ActionAreaDetailModel actionArea, bool state) async {
     var newStatus = state ? AreaStatus.closed : AreaStatus.open;
-    var actionAreaUpdate = actionArea.asActionAreaUpdate().copyWith(status: newStatus);
+    var actionAreaUpdate = actionArea.toActionAreaStatusUpdate().copyWith(status: newStatus);
 
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaUpdate);
     await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.actionAreaSourceName, [feature]);
     setState(() {
-      _currentActionAreaDetail = actionAreaUpdate.transformToVirtualActionAreaDetailModel();
+      _currentActionAreaDetail = actionAreaUpdate.toVirtualActionAreaDetailModel();
     });
   }
 
@@ -227,12 +227,12 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     );
 
     if (selectedTeam != null) {
-      await _assignTeam(actionArea, selectedTeam.asTeamInfo());
+      await _assignTeam(actionArea, selectedTeam.toTeamInfo());
     }
   }
 
   Future<void> _assignTeam(ActionAreaDetailModel actionArea, TeamInfo? selectedTeam) async {
-    var actionAreaAssignmentUpdate = actionArea.asActionAreaAssignmentUpdate().copyWith(
+    var actionAreaAssignmentUpdate = actionArea.toActionAreaAssignmentUpdate().copyWith(
       team: Wrapped.value(selectedTeam),
     );
     var feature = await _campaignActionCache.updatePoi(PoiCacheType.actionArea, actionAreaAssignmentUpdate);
@@ -241,7 +241,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     var previousTeamData = _currentActionAreaDetail.team;
 
     setState(() {
-      _currentActionAreaDetail = actionAreaAssignmentUpdate.transformToVirtualActionAreaDetailModel();
+      _currentActionAreaDetail = actionAreaAssignmentUpdate.toVirtualActionAreaDetailModel();
     });
     if (selectedTeam == null && previousTeamData != null) {
       if (!mounted) return;

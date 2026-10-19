@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension DoorUpdateModelParsing on DoorUpdateModel {
-  DoorDetailModel transformToDoorDetailModel() {
+  DoorDetailModel toDoorDetailModel() {
     var newDoorDetail = oldDoorDetail.copyWith(
       address: address,
       closedDoors: closedDoors,
@@ -11,7 +11,7 @@ extension DoorUpdateModelParsing on DoorUpdateModel {
     return newDoorDetail;
   }
 
-  PoiDetailModel transformToVirtualPoiDetailModel() {
+  PoiDetailModel toVirtualPoiDetailModel() {
     return PoiDetailModel.virtual(id: int.parse(id), status: PoiServiceType.door.name, location: location);
   }
 }

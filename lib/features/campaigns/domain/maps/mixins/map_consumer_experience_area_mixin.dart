@@ -76,7 +76,7 @@ mixin MapConsumerExperienceAreaMixin {
       );
       await mapInfo.mapController.setLayerSourceWithFeatureList(
         CampaignConstants.experienceAreaSourceName,
-        experienceAreas.transformToFeatureList(),
+        experienceAreas.toFeatures(),
       );
     } else {
       mapInfo.lastInfoSnackbar?.close();

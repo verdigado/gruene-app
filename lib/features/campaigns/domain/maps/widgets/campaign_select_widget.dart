@@ -232,7 +232,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       campaignId = campaign.id;
       campaignName = campaign.name;
       campaignSubtitle =
-          '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == campaign.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${campaign.electionDate.getAsLocalDateString()}';
+          '${_activeCampaignDivisions.firstWhere((d) => d.divisionKey == campaign.divisionKey).shortName}, ${t.campaigns.select.electionDate}: ${campaign.electionDate.toLocalDateString()}';
     }
 
     Widget asBadge(bool doBadge, Widget child) => doBadge

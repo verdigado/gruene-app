@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension AreaMapping on Area {
-  ActionAreaDetailModel asActionAreaDetail() {
+  ActionAreaDetailModel toActionAreaDetail() {
     return ActionAreaDetailModel(
       id: id,
       type: type,
@@ -10,30 +10,30 @@ extension AreaMapping on Area {
       status: status,
       polygon: polygon,
       visualIdentifierId: visualIdentifierId,
-      createdAt: createdAt.getAsLocalDateString(),
+      createdAt: createdAt.toLocalDateString(),
       team: team,
     );
   }
 }
 
 extension AreaAssignmentMapping on AreaAssignment {
-  AssignedElement asAssignedElement() {
+  AssignedElement toAssignedElement() {
     return AssignedElement(
       id: id,
-      status: status.asTeamAssignmentStatus(),
+      status: status.toTeamAssignmentStatus(),
       name: name ?? '',
-      type: type.asTeamAssignmentType(),
+      type: type.toTeamAssignmentType(),
       elementType: AssignedElementType.area,
       assignmentDate: assignedAt ?? DateTime.now(),
       assignee: assigningUser,
-      coords: polygon.asTurfPolygon(),
+      coords: polygon.toTurfPolygon(),
       campaignId: campaignId,
     );
   }
 }
 
 extension on AreaStatus {
-  TeamAssignmentStatus asTeamAssignmentStatus() {
+  TeamAssignmentStatus toTeamAssignmentStatus() {
     switch (this) {
       case AreaStatus.open:
         return TeamAssignmentStatus.open;
@@ -47,7 +47,7 @@ extension on AreaStatus {
 }
 
 extension on AreaType {
-  TeamAssignmentType asTeamAssignmentType() {
+  TeamAssignmentType toTeamAssignmentType() {
     switch (this) {
       case AreaType.flyerSpot:
         return TeamAssignmentType.flyer;

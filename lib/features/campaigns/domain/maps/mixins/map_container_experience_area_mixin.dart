@@ -110,7 +110,7 @@ mixin MapContainerExperienceAreaMixin {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.general.createdAt}: ${experienceArea.createdAt.getAsLocalDateString()}',
+                        '${t.campaigns.general.createdAt}: ${experienceArea.createdAt.toLocalDateString()}',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],

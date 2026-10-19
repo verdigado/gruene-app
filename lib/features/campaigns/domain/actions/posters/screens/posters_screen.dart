@@ -178,7 +178,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   }
 
   Future<PosterDetailModel> _getPoiFromCacheOrApi(String poiId) async {
-    if (await campaignActionCache.isCached(poiId, poiType.asPoiCacheType())) {
+    if (await campaignActionCache.isCached(poiId, poiType.toPoiCacheType())) {
       return getCachedPoi(poiId);
     } else {
       return getPoi(poiId);

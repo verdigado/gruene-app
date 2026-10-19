@@ -1,7 +1,7 @@
 part of '../converters.dart';
 
 extension TeamMembershipTypeParsing on TeamMembershipType {
-  TeamMembershipType asUpdateTeamMembershipType() {
+  TeamMembershipType toUpdateTeamMembershipType() {
     switch (this) {
       case TeamMembershipType.lead:
         return TeamMembershipType.lead;

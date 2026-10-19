@@ -92,7 +92,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
                   child: Row(
                     children: [
                       Text(
-                        t.common.updatedAt(date: _teamStatistics.lastUpdate.getAsLocalDateTimeString()),
+                        t.common.updatedAt(date: _teamStatistics.lastUpdate.toLocalDateTimeString()),
                         style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
                       ),
                     ],

@@ -2,29 +2,29 @@ part of '../converters.dart';
 
 extension LatLngParsing on LatLng {
   String toLngLatString() {
-    return transformToGeoJsonCoords().join(',');
+    return toGeoJsonCoords().join(',');
   }
 
-  List<double> transformToGeoJsonCoords() {
+  List<double> toGeoJsonCoords() {
     return [longitude, latitude];
   }
 
-  List<double> transformToGeoJsonBBox(LatLng northEast) {
+  List<double> toGeoJsonBBox(LatLng northEast) {
     final southWest = this;
-    final coords = southWest.transformToGeoJsonCoords();
-    coords.addAll(northEast.transformToGeoJsonCoords());
+    final coords = southWest.toGeoJsonCoords();
+    coords.addAll(northEast.toGeoJsonCoords());
     return coords;
   }
 
-  String transformToGeoJsonBBoxString(LatLng northEast) {
-    return transformToGeoJsonBBox(northEast).join(',');
+  String toGeoJsonBBoxString(LatLng northEast) {
+    return toGeoJsonBBox(northEast).join(',');
   }
 
   num getDistance(LatLng other) {
-    return turf.distance(asPoint(), other.asPoint(), turf.Unit.kilometers);
+    return turf.distance(toPoint(), other.toPoint(), turf.Unit.kilometers);
   }
 
-  turf.Point asPoint() {
+  turf.Point toPoint() {
     return turf.Point(coordinates: turf.Position(longitude, latitude));
   }
 }
