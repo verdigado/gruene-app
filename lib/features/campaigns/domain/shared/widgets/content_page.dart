@@ -1,0 +1,37 @@
+import 'package:flutter/material.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/custom_app_bar.dart';
+
+class ContentPage extends StatelessWidget {
+  final String title;
+  final Widget child;
+  final bool showBackButton;
+  final Color? contentBackgroundColor;
+  final Alignment alignment;
+  final bool withScroll;
+
+  const ContentPage({
+    super.key,
+    required this.title,
+    required this.child,
+    this.contentBackgroundColor,
+    this.alignment = Alignment.center,
+    this.showBackButton = true,
+    this.withScroll = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      backgroundColor: contentBackgroundColor ?? theme.colorScheme.secondary,
+      body: Align(
+        alignment: alignment,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 50),
+          child: withScroll ? SingleChildScrollView(child: child) : child,
+        ),
+      ),
+      appBar: CustomAppBar(title: title, showBackButton: showBackButton),
+    );
+  }
+}

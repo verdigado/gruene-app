@@ -1,0 +1,311 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:gruene_app/app/models/campaigns/team/team_assignment.dart';
+import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:intl/intl.dart';
+
+class TeamStatisticsCategoryDetail extends StatefulWidget {
+  final TeamAssignmentType category;
+  final TeamStatisticsCategory statisticData;
+  final String? ownTeamId;
+
+  const TeamStatisticsCategoryDetail({
+    super.key,
+    required this.category,
+    required this.statisticData,
+    required this.ownTeamId,
+  });
+
+  @override
+  State<TeamStatisticsCategoryDetail> createState() => _TeamStatisticsCategoryDetailState();
+}
+
+class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDetail> {
+  HierarchyLevel _selectedDivisionType = HierarchyLevel.kv;
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        alignment: Alignment.centerLeft,
+        decoration: boxShadowDecoration,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(height: 24, width: 24, child: SvgPicture.asset(widget.category.getAssetLocation())),
+                    SizedBox(width: 4),
+                    Text(_getTitle(), style: theme.textTheme.titleSmall),
+                  ],
+                ),
+                SegmentedButton<HierarchyLevel>(
+                  style: SegmentedButton.styleFrom(
+                    selectedForegroundColor: ThemeColors.background,
+                    selectedBackgroundColor: ThemeColors.primary,
+                    side: BorderSide(color: ThemeColors.textLight),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  multiSelectionEnabled: false,
+                  segments: _getButtonSegments(),
+                  selected: {_selectedDivisionType},
+                  showSelectedIcon: false,
+                  onSelectionChanged: (newSelection) {
+                    setState(() {
+                      _selectedDivisionType = newSelection.first;
+                    });
+                  },
+                ),
+              ],
+            ),
+            Column(children: _getTeamStats()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<ButtonSegment<HierarchyLevel>> _getButtonSegments() {
+    var theme = Theme.of(context);
+    ButtonSegment<HierarchyLevel> getButtonSegment(HierarchyLevel value, String label) => ButtonSegment(
+      value: value,
+      label: Text(
+        label,
+        style: theme.textTheme.labelMedium?.apply(
+          color: _selectedDivisionType == value ? ThemeColors.background : ThemeColors.textDark,
+        ),
+      ),
+    );
+
+    return [
+      getButtonSegment(HierarchyLevel.kv, t.divisions.level.kv.short),
+      getButtonSegment(HierarchyLevel.lv, t.divisions.level.lv.short),
+      getButtonSegment(HierarchyLevel.bv, t.divisions.level.bv.short),
+    ];
+  }
+
+  List<Widget> _getTeamStats() {
+    var categoryStats = widget.statisticData;
+    var stats = _getStatResults(categoryStats);
+
+    stats.sort((a, b) => b.count.compareTo(a.count));
+
+    if (stats.isEmpty) {
+      return _getEmptyStatInfo();
+    }
+    return stats.indexed.map(_getStatRow).toList();
+  }
+
+  List<TeamStatisticsCategoryItem> _getStatResults(TeamStatisticsCategory categoryStats) {
+    switch (_selectedDivisionType) {
+      case HierarchyLevel.kv:
+        return categoryStats.division;
+      case HierarchyLevel.lv:
+        return categoryStats.state;
+      case HierarchyLevel.bv:
+        return categoryStats.germany;
+      case HierarchyLevel.ov:
+      case HierarchyLevel.swaggerGeneratedUnknown:
+        throw UnimplementedError();
+    }
+  }
+
+  Widget _getStatRow((int, TeamStatisticsCategoryItem) e) {
+    var theme = Theme.of(context);
+    var index = e.$1 + 1;
+    var item = e.$2;
+    Widget memberItemWidget = Container(
+      padding: EdgeInsetsGeometry.all(4),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+        color: ((widget.ownTeamId == item.teamId) ? ThemeColors.sun : ThemeColors.background),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 12,
+        children: [
+          Container(
+            height: 32,
+            width: 32,
+            decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
+            child: Center(
+              child: Text(index.toString(), style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background)),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: .start,
+              children: [
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  crossAxisAlignment: .start,
+                  spacing: 6,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        item.teamName,
+                        style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    Text(
+                      NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(item.count),
+                      style: theme.textTheme.labelLarge,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  crossAxisAlignment: .start,
+                  spacing: 6,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        item.division,
+                        style: theme.textTheme.labelMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(Icons.group_outlined, size: 16),
+                        SizedBox(width: 2),
+                        Text(
+                          NumberFormat.decimalPattern(t.$meta.locale.languageCode).format(item.teamMemberCount),
+                          style: theme.textTheme.labelMedium,
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.event_outlined, size: 16),
+                        SizedBox(width: 2),
+                        Text(item.teamCreatedAt.toLocalDateString(), style: theme.textTheme.labelMedium),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (item.teamMemberCount > 0) {
+      memberItemWidget.disable();
+    }
+    return memberItemWidget;
+  }
+
+  String _getTitle() {
+    switch (widget.category) {
+      case TeamAssignmentType.poster:
+        return t.campaigns.statistic.recorded_posters;
+      case TeamAssignmentType.door:
+        return t.campaigns.statistic.recorded_doors;
+      case TeamAssignmentType.flyer:
+        return t.campaigns.statistic.recorded_flyer;
+    }
+  }
+
+  List<Widget> _getEmptyStatInfo() {
+    var mediaQuery = MediaQuery.sizeOf(context);
+    var theme = Theme.of(context);
+    var myPadding = EdgeInsets.symmetric(vertical: 4);
+    var myDecoration = BoxDecoration(borderRadius: BorderRadius.circular(6), color: ThemeColors.primary);
+    var memberItemWidgets = [1, 2].map((index) {
+      return Container(
+        padding: EdgeInsetsGeometry.all(4),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
+
+                  child: Center(
+                    child: Text(
+                      index.toString(),
+                      style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: myPadding,
+                      child: Container(height: 20, width: mediaQuery.width * 0.4, decoration: myDecoration),
+                    ),
+                    Container(height: 10, width: mediaQuery.width * 0.3, decoration: myDecoration),
+                  ],
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: myPadding,
+                  child: Container(height: 20, width: mediaQuery.width * 0.2, decoration: myDecoration),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ).disable(alpha: 220);
+    }).toList();
+
+    getEmptyText() {
+      switch (_selectedDivisionType) {
+        case HierarchyLevel.kv:
+          return t.campaigns.statistic.no_teams.kv;
+        case HierarchyLevel.lv:
+          return t.campaigns.statistic.no_teams.lv;
+        case HierarchyLevel.bv:
+          return t.campaigns.statistic.no_teams.bv;
+        case HierarchyLevel.ov:
+        case HierarchyLevel.swaggerGeneratedUnknown:
+          throw UnimplementedError();
+      }
+    }
+
+    memberItemWidgets.add(
+      Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsetsGeometry.all(4),
+              child: SizedBox(
+                width: mediaQuery.width * 0.85,
+                child: Padding(padding: myPadding, child: Text(getEmptyText())),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return memberItemWidgets;
+  }
+}

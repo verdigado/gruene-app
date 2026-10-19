@@ -1,0 +1,271 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart';
+import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
+import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/save_cancel_on_create_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
+import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
+
+class PosterAddScreen extends StatefulWidget {
+  final LatLng location;
+  final AddressModel address;
+  final File? photo;
+
+  const PosterAddScreen({super.key, this.photo, required this.address, required this.location});
+
+  @override
+  State<StatefulWidget> createState() => _PostersAddState();
+}
+
+class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
+  @override
+  TextEditingController streetTextController = TextEditingController();
+  @override
+  TextEditingController houseNumberTextController = TextEditingController();
+  @override
+  TextEditingController zipCodeTextController = TextEditingController();
+  @override
+  TextEditingController cityTextController = TextEditingController();
+  File? _currentPhoto;
+  var appSettings = GetIt.I<AppSettings>();
+  String _campaignName = '';
+
+  @override
+  void initState() {
+    setAddress(widget.address);
+    _currentPhoto = widget.photo;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+
+    super.initState();
+  }
+
+  Future<void> _loadData() async {
+    var activeCampaign = appSettings.campaign.activeCampaign.recentSelectedCampaignId;
+    if (activeCampaign != null) {
+      var campaignService = GetIt.I<GrueneApiCampaignService>();
+      var campaign = await campaignService.getCampaign(activeCampaign);
+      setState(() {
+        _campaignName = campaign.name;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    disposeAddressTextControllers();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+    return Container(
+      margin: EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      t.campaigns.poster.addPoster,
+                      style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
+                    ),
+                    Text(
+                      _campaignName,
+                      style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.grey200),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              _hasPhoto
+                  ? GestureDetector(
+                      onTap: _removeImage,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: Center(child: Icon(Icons.delete_outlined, color: Colors.white, size: 30.0)),
+                      ),
+                    )
+                  : SizedBox(),
+              SizedBox(width: 12),
+              GestureDetector(
+                onTap: _pickImageFromDevice,
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  child: Center(child: Icon(Icons.add_photo_alternate, color: Colors.white, size: 30.0)),
+                ),
+              ),
+              SizedBox(width: 6),
+              GestureDetector(
+                onTap: _acquireNewPhoto,
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: ThemeColors.background, width: 1),
+                    gradient: LinearGradient(colors: [Color(0xFF03BD4E), Color(0xFF875CFF)]),
+                  ),
+                  child: _getPhotoPreviewOrIcon(),
+                ),
+              ),
+            ],
+          ),
+          CreateAddressWidget(
+            streetTextController: streetTextController,
+            houseNumberTextController: houseNumberTextController,
+            zipCodeTextController: zipCodeTextController,
+            cityTextController: cityTextController,
+          ),
+          SaveCancelOnCreateWidget(onSave: _onSavePressed),
+          Row(
+            children: [
+              Icon(Icons.info_outlined, color: ThemeColors.background),
+              SizedBox(width: 10),
+              SizedBox(
+                width: mediaQuery.size.width - 82,
+                child: Text(
+                  t.campaigns.poster.info_poster_guidelines,
+                  style: theme.textTheme.labelMedium!.apply(
+                    color: ThemeColors.background,
+                    fontWeightDelta: 3,
+                    letterSpacingDelta: 1,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getPhotoPreviewOrIcon() {
+    if (_currentPhoto != null) {
+      return Container(
+        width: 150,
+        height: 120,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(shape: BoxShape.circle),
+        child: Image.file(_currentPhoto!, fit: BoxFit.cover),
+      );
+    } else {
+      return Center(child: Icon(Icons.photo_camera, color: Colors.white, size: 30.0));
+    }
+  }
+
+  void _acquireNewPhoto() async {
+    final photo = await MediaHelper.acquirePhoto(context);
+
+    if (photo != null) {
+      setState(() {
+        _currentPhoto = photo;
+      });
+    }
+  }
+
+  void _onSavePressed(BuildContext localContext) async {
+    if (!localContext.mounted) return;
+
+    if (_currentPhoto == null) {
+      if (!(await showNoPhotoWarning())) return;
+    }
+
+    final reducedImage = await MediaHelper.resizeAndReduceImageFile(_currentPhoto);
+    String? fileLocation;
+    if (reducedImage != null) {
+      fileLocation = await MediaHelper.storeImage(reducedImage);
+    }
+    _saveAndReturn(fileLocation);
+  }
+
+  void _saveAndReturn(String? fileLocation) {
+    Navigator.maybePop(
+      context,
+      PosterCreateModel(
+        location: widget.location,
+        address: getAddress(),
+        imageFileLocation: fileLocation,
+        campaignId: getCurrentCampaignId()!,
+      ),
+    );
+  }
+
+  void _pickImageFromDevice() async {
+    final photo = await MediaHelper.pickImageFromDevice(context);
+
+    if (photo != null) {
+      setState(() {
+        _currentPhoto = photo;
+      });
+    }
+  }
+
+  void _removeImage() {
+    if (_hasPhoto) {
+      setState(() {
+        _currentPhoto = null;
+      });
+    }
+  }
+
+  bool get _hasPhoto => _currentPhoto != null;
+
+  Future<bool> showNoPhotoWarning() async {
+    final theme = Theme.of(context);
+    final dialogResult = await showDialog<bool>(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(
+            t.campaigns.poster.noPhotoWarning,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.maybePop(context, true),
+              child: Text(
+                t.campaigns.poster.noPhotoWarningConfirm,
+                style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.maybePop(context, false),
+              child: Text(
+                t.campaigns.poster.noPhotoWarningDecline,
+                style: theme.textTheme.labelLarge?.apply(color: theme.colorScheme.secondary),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    return dialogResult ?? false;
+  }
+}

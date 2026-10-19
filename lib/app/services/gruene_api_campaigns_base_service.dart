@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/geo/geo.dart';
+import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
-import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -16,19 +17,17 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
   Future<List<PoiDetailModel>> loadPoisInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async =>
       getFromApi(
         apiRequest: (api) => api.v1CampaignsPoisGet(
-          type: poiType.transformToApiPoisType(),
-          bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
+          type: poiType.toApiPoisType(),
+          bbox: locationSW.toGeoJsonBBoxString(locationNE),
           campaignId: [campaignId],
         ),
-        map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToMarkerItem()).toList(),
+        map: (result) => result.data.where(filterByCutOffDate).map((p) => p.toMarkerItem()).toList(),
       );
 
   Future<List<FocusArea>> loadFocusAreasInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async =>
       getFromApi(
-        apiRequest: (api) => api.v1CampaignsFocusAreasGet(
-          bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
-          campaignId: campaignId,
-        ),
+        apiRequest: (api) =>
+            api.v1CampaignsFocusAreasGet(bbox: locationSW.toGeoJsonBBoxString(locationNE), campaignId: campaignId),
         map: (result) => result.data,
       );
 
@@ -42,17 +41,15 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
     LatLng locationSW,
     LatLng locationNE,
   ) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsPollingStationsGet(
-      bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
-      campaignId: [campaignId],
-    ),
+    apiRequest: (api) =>
+        api.v1CampaignsPollingStationsGet(bbox: locationSW.toGeoJsonBBoxString(locationNE), campaignId: [campaignId]),
     map: (result) => result.data,
   );
 
   Future<List<Route>> loadRoutesInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsRoutesGet(
-      type: [poiType.transformToRoutesApiGetType()],
-      bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
+      type: [poiType.toRoutesApiGetType()],
+      bbox: locationSW.toGeoJsonBBoxString(locationNE),
       campaignId: campaignId,
     ),
     map: (result) => result.data,
@@ -63,18 +60,16 @@ abstract class GrueneApiCampaignsPoiBaseService extends GrueneApiBaseService {
     LatLng locationSW,
     LatLng locationNE,
   ) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsExperienceAreasGet(
-      bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
-      campaignId: campaignId,
-    ),
+    apiRequest: (api) =>
+        api.v1CampaignsExperienceAreasGet(bbox: locationSW.toGeoJsonBBoxString(locationNE), campaignId: campaignId),
     map: (result) => result.data,
   );
 
   Future<List<Area>> loadActionAreasInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async =>
       getFromApi(
         apiRequest: (api) => api.v1CampaignsAreasGet(
-          bbox: locationSW.transformToGeoJsonBBoxString(locationNE),
-          type: [poiType.transformToApiAreasGetType()],
+          bbox: locationSW.toGeoJsonBBoxString(locationNE),
+          type: [poiType.toApiAreasGetType()],
           campaignId: campaignId,
         ),
         map: (result) => result.data,

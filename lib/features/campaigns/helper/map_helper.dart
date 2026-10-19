@@ -1,4 +1,4 @@
-import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -44,7 +44,7 @@ class MapHelper {
     final geometry = feature['geometry'] as Map<String, dynamic>;
     final coordinates = geometry['coordinates'] as List<dynamic>;
 
-    return coordinates.cast<double>().transformToLatLng();
+    return coordinates.cast<double>().toLatLng();
   }
 
   static num _calculateDistance(Feature<GeometryObject> turfFeature, Point targetPoint) {
@@ -91,7 +91,7 @@ class MapHelper {
       dynamic nextFeature,
     ) {
       final turfFeature = Feature.fromJson(nextFeature as Map<String, dynamic>);
-      final nextFeatureDistance = _calculateDistance(turfFeature, target.asPoint());
+      final nextFeatureDistance = _calculateDistance(turfFeature, target.toPoint());
 
       if (currentFeatureWithDistance != null && currentFeatureWithDistance.item2 < nextFeatureDistance) {
         return currentFeatureWithDistance;

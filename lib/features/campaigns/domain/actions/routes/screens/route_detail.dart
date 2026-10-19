@@ -1,0 +1,267 @@
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
+import 'package:gruene_app/app/geo/geo.dart';
+import 'package:gruene_app/app/models/campaigns/route/route_detail_model.dart';
+import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/enums.dart';
+import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
+import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/services/gruene_api_user_service.dart';
+import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
+import 'package:gruene_app/features/campaigns/core/cache/converters.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_edit_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/teams/widgets/select_team_widget.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:intl/intl.dart';
+
+class RouteDetail extends StatefulWidget {
+  const RouteDetail({super.key, required this.routeDetail, required this.mapController});
+
+  final RouteDetailModel routeDetail;
+  final MapController mapController;
+
+  @override
+  State<RouteDetail> createState() => _RouteDetailState();
+}
+
+class _RouteDetailState extends State<RouteDetail> {
+  final _campaignActionCache = GetIt.I<CampaignActionCache>();
+  late RouteDetailModel _currentRouteDetail;
+  bool _loading = true;
+  late UserRbacStructure _currentUserInfo;
+  late Division? _currentUserKV;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  void _loadData() async {
+    setState(() => _loading = true);
+    var profileService = GetIt.I<GrueneApiProfileService>();
+    var userService = GetIt.I<GrueneApiUserService>();
+
+    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
+    var currentUserKV = await currentUser.getOwnKV();
+
+    setState(() {
+      _loading = false;
+      _currentRouteDetail = widget.routeDetail;
+      _currentUserInfo = userInfo;
+      _currentUserKV = currentUserKV;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return Container(
+        padding: EdgeInsets.fromLTRB(24, 24, 24, 6),
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .30),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    var theme = Theme.of(context);
+    var formatter = NumberFormat.decimalPatternDigits(locale: t.$meta.locale.languageCode, decimalDigits: 0);
+    onClose() => Navigator.maybePop(context);
+
+    var routeLength = t.common.units.formatString(
+      value: formatter.format(_currentRouteDetail.lineString.toTurfLine().toLength()),
+      unit: t.common.units.m,
+    );
+    return Container(
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .30),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 6, horizontal: 18),
+            child: CloseEditWidget(onClose: () => onClose()),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 27, vertical: 6),
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+              ),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _currentRouteDetail.name ?? '-',
+                      style: theme.textTheme.labelLarge!.copyWith(
+                        color: ThemeColors.textDark,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _currentRouteDetail.description ?? '-',
+                      style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.routeType_label}: ${_currentRouteDetail.type.toLabel()}',
+                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.route.length_label}: $routeLength',
+                        style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${t.campaigns.general.createdAt}: ${_currentRouteDetail.createdAt}',
+                        style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ((!_currentUserInfo.isCampaignManager() || _currentUserKV == null) && _currentRouteDetail.team == null)
+              ? SizedBox.shrink()
+              : _getAssignmentWidget(theme),
+
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Switch(
+                  value: _currentRouteDetail.status == RouteStatus.closed,
+                  onChanged: (bool state) => _changeRouteStatus(_currentRouteDetail, state),
+                ),
+                SizedBox(width: 12),
+                Text(t.campaigns.route.quick_action_status, style: theme.textTheme.bodyLarge),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getAssignmentWidget(ThemeData theme) {
+    var widget = Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(width: 0.5, color: ThemeColors.textLight)),
+      ),
+      child: Row(
+        mainAxisAlignment: .spaceBetween,
+        crossAxisAlignment: .start,
+        spacing: 8,
+        children: [
+          Flexible(
+            child: Row(
+              children: [
+                SizedBox(width: 6),
+                Icon(Icons.group_outlined, size: 30),
+                SizedBox(width: 35),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => (_currentUserInfo.isCampaignManager() && _currentUserKV != null)
+                        ? _selectTeam(_currentRouteDetail)
+                        : null,
+                    child: Text(
+                      _currentRouteDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
+                      style: theme.textTheme.bodyLarge,
+                      softWrap: true,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _currentRouteDetail.team != null
+              ? GestureDetector(
+                  onTap: () async => await _assignTeam(_currentRouteDetail, null),
+                  child: Icon(Icons.link_off_outlined),
+                )
+              : SizedBox.shrink(),
+        ],
+      ),
+    );
+    return _currentRouteDetail.status == RouteStatus.closed ? widget.disable() : widget;
+  }
+
+  Future<void> _changeRouteStatus(RouteDetailModel route, bool state) async {
+    var newStatus = state ? RouteStatus.closed : RouteStatus.open;
+    var routeUpdate = route.toRouteStatusUpdate().copyWith(status: newStatus);
+
+    var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeUpdate);
+    await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
+    setState(() {
+      _currentRouteDetail = routeUpdate.toVirtualRouteDetailModel();
+    });
+  }
+
+  Future<void> _selectTeam(RouteDetailModel route) async {
+    if (_currentUserKV == null) return;
+    var teamsService = GetIt.I<GrueneApiTeamsService>();
+
+    var userTeams = await teamsService.findTeams([_currentUserKV!.divisionKey]);
+    if (!mounted) return;
+    var selectedTeam = await showModalBottomSheet<FindTeamsItem>(
+      context: context,
+      useRootNavigator: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+        child: SelectTeamWidget(teams: userTeams, routeOrArea: TeamAssignmentType.route),
+      ),
+    );
+
+    if (selectedTeam != null) {
+      await _assignTeam(route, selectedTeam.toTeamInfo());
+    }
+  }
+
+  Future<void> _assignTeam(RouteDetailModel route, TeamInfo? selectedTeam) async {
+    var routeAssignmentUpdate = route.toRouteAssignmentUpdate().copyWith(team: Wrapped.value(selectedTeam));
+    var feature = await _campaignActionCache.updatePoi(PoiCacheType.route, routeAssignmentUpdate);
+    await widget.mapController.setLayerSourceWithFeatureList(CampaignConstants.routesSourceName, [feature]);
+    if (!mounted) return;
+    var previousTeamData = _currentRouteDetail.team;
+
+    setState(() {
+      _currentRouteDetail = routeAssignmentUpdate.toVirtualRouteDetailModel();
+    });
+    if (selectedTeam == null && previousTeamData != null) {
+      if (!mounted) return;
+
+      showToastAsSnack(
+        context,
+        t.campaigns.team.assignment_suspended(team: previousTeamData.name),
+        onActionPressed: () async => await _assignTeam(route, previousTeamData),
+      );
+    }
+  }
+}

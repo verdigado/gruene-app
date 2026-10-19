@@ -1,14 +1,15 @@
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/geo/geo.dart';
+import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_list_item_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
-import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
-import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_update_model.dart';
+import 'package:gruene_app/app/utils/file_cache_manager.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -20,9 +21,9 @@ class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
   Future<PoiDetailModel> createNewPoster(PosterCreateModel newPoster) async {
     final requestParam = CreatePoi(
       campaignId: newPoster.campaignId,
-      coords: newPoster.location.transformToGeoJsonCoords(),
-      type: poiType.transformToApiPoisType(),
-      address: newPoster.address.transformToPoiAddress(),
+      coords: newPoster.location.toGeoJsonCoords(),
+      type: poiType.toApiPoisType(),
+      address: newPoster.address.toPoiAddress(),
     );
     // saving POI
     var newPoiResponse = handleApiError(await grueneApi.v1CampaignsPoisPost(body: requestParam));
@@ -33,14 +34,14 @@ class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
       newPoiResponse = handleApiError(await _storeNewPhoto(poiId, newPoster.imageFileLocation!));
     }
 
-    return newPoiResponse.body!.transformToMarkerItem();
+    return newPoiResponse.body!.toMarkerItem();
   }
 
   Future<PoiDetailModel> updatePoster(PosterUpdateModel posterUpdate) async {
     var dtoUpdate = UpdatePoi(
-      address: posterUpdate.address.transformToPoiAddress(),
+      address: posterUpdate.address.toPoiAddress(),
       poster: PoiPoster(
-        status: posterUpdate.status.transformToPoiPosterStatus(),
+        status: posterUpdate.status.toPoiPosterStatus(),
         comment: posterUpdate.comment.isEmpty ? null : posterUpdate.comment,
       ),
     );
@@ -58,7 +59,7 @@ class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
       updatePoiResponse = handleApiError(await _storeNewPhoto(posterUpdate.id, newPhoto.imageUrl));
     }
 
-    return updatePoiResponse.body!.transformToMarkerItem();
+    return updatePoiResponse.body!.toMarkerItem();
   }
 
   Future<chopper.Response<Poi>> _storeNewPhoto(String poiId, String imageFileLocation) async {
@@ -81,15 +82,15 @@ class GrueneApiPosterService extends GrueneApiCampaignsPoiBaseService {
   }
 
   Future<PosterDetailModel> getPoiAsPosterDetail(String poiId) async {
-    return getPoi(poiId, (p) => p.transformPoiToPosterDetail());
+    return getPoi(poiId, (p) => p.toPosterDetail());
   }
 
   Future<PosterListItemModel> getPoiAsPosterListItem(String poiId) {
-    return getPoi(poiId, (p) => p.transformToPosterListItem());
+    return getPoi(poiId, (p) => p.toPosterListItem());
   }
 
   Future<List<PosterListItemModel>> getMyPosters(String campaignId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsPoisSelfGet(type: poiType.transformToApiPoisType(), campaignId: [campaignId]),
-    map: (result) => result.data.where(filterByCutOffDate).map((p) => p.transformToPosterListItem()).toList(),
+    apiRequest: (api) => api.v1CampaignsPoisSelfGet(type: poiType.toApiPoisType(), campaignId: [campaignId]),
+    map: (result) => result.data.where(filterByCutOffDate).map((p) => p.toPosterListItem()).toList(),
   );
 }

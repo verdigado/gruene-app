@@ -6,7 +6,7 @@ abstract class BaseNotificationHandler {
   void processPayload(NotificationResponse response, BuildContext? context);
 
   @protected
-  void _navigateTo(BuildContext? context, String route) {
+  void navigateTo(BuildContext? context, String route) {
     if (context != null) {
       GoRouter.of(context).go(route);
     }

@@ -12,7 +12,6 @@ import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
-import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
@@ -38,15 +37,16 @@ import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/services/secure_storage_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/file_cache_manager.dart';
 import 'package:gruene_app/app/utils/profile_feature_checker.dart';
+import 'package:gruene_app/app/utils/visual_identifier_helper.dart';
 import 'package:gruene_app/app/widgets/clean_layout.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
+import 'package:gruene_app/features/campaigns/core/notifications/campaign_notification_handlers.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
-import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
-import 'package:gruene_app/features/campaigns/helper/file_cache_manager.dart';
-import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
@@ -156,30 +156,7 @@ void intializeNotficationHandlers() {
     () => MfaNotificationHandler(),
     instanceName: NotificationMessageType.mfa.toString(),
   );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamNotificationHandler(),
-    instanceName: NotificationMessageType.teamMembershipUpdate.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
-    instanceName: NotificationMessageType.routeAssignmentUpdate.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
-    instanceName: NotificationMessageType.areaAssignmentUpdate.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamTop10NotificationHandler(),
-    instanceName: NotificationMessageType.teamTop10Update.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => ChallengeMembershipTimeElapsedHandler(),
-    instanceName: NotificationMessageType.challengeMembershipTimeElapsed.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => ChallengeMembershipTargetReachedHandler(),
-    instanceName: NotificationMessageType.challengeMembershipTargetReached.toString(),
-  );
+  registerCampaignNotificationHandlers();
 }
 
 class MyApp extends StatelessWidget {

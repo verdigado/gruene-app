@@ -1,4 +1,4 @@
-import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class PosterStatusHelper {

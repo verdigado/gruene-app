@@ -39,6 +39,37 @@
     "map": {
       "mapData": "Kartendaten",
       "osmContributors": "OpenStreetMap Mitwirkende"
+    },
+    "dateTime": {
+      "dateFormat": "dd.MM.yyyy",
+      "timeFormat": "HH:mm",
+      "timestampFormat": "yyyyMMdd_HHmmss",
+      "displayTemplate": "${date} um ${time}",
+      "timeRemaining": {
+        "minutes(param=minutes)": {
+          "one": "1 Minute",
+          "other": "${minutes} Minuten"
+        },
+        "hours(param=hours)": {
+          "other": "${hours} Std"
+        },
+        "hoursWithHalfHours(param=hours)": {
+          "other": "${hours},5 Std"
+        },
+        "days(param=days)": {
+          "one": "1 Tag",
+          "other": "${days} Tage"
+        },
+        "weeks(param=weeks)": {
+          "one": "1 Woche",
+          "other": "${weeks} Wochen"
+        }
+      }
+    },
+    "units": {
+      "m": "m",
+      "sq_km": "km²",
+      "formatString": "${value} ${unit}"
     }
   },
   "divisions": {
@@ -184,10 +215,6 @@
       "noPhotoWarningConfirm": "Ja, trotzdem speichern",
       "noPhotoWarningDecline": "Nein, zurück",
       "photoConsentMessage": "Bitte achte darauf, dass keine Personen, Kennzeichen oder andere sensible, personenbezogene Daten auf Deinen Plakatfotos zu sehen sind.",
-      "date_format": "dd.MM.yyyy",
-      "time_format": "HH:mm",
-      "timestamp_format": "yyyyMMdd_HHmmss",
-      "datetime_display_template": "${date} um ${time}",
       "info_poster_guidelines": "Wusstest Du, dass es je nach Region unterschiedliche gesetzliche Vorgaben und Regeln für das Aufhängen von Plakaten gibt? Bitte wende Dich an Deinen Orts- oder Kreisverband für weitere Informationen, bevor Du Plakate aufhängst!",
       "status": {
         "damaged": {
@@ -377,26 +404,6 @@
       },
       "challengeDetail": {
         "title": "Challenge"
-      },
-      "time_remaining": {
-        "minutes(param=minutes)": {
-          "one": "1 Minute",
-          "other": "${minutes} Minuten"
-        },
-        "hours(param=hours)": {
-          "other": "${hours} Std"
-        },
-        "halfhours(param=hours)": {
-          "other": "${hours},5 Std"
-        },
-        "days(param=days)": {
-          "one": "1 Tag",
-          "other": "${days} Tage"
-        },
-        "weeks(param=weeks)": {
-          "one": "1 Woche",
-          "other": "${weeks} Wochen"
-        }
       },
       "timeago": {
         "language_code": "${code}_challenges",

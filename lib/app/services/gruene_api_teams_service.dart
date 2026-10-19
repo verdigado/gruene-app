@@ -1,6 +1,6 @@
+import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
-import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GrueneApiTeamsService extends GrueneApiBaseService {
@@ -18,7 +18,7 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
       );
 
   Future<Team> createNewTeam(NewTeamDetails newTeamDetails) async =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPost(body: newTeamDetails.asCreateTeam()));
+      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPost(body: newTeamDetails.toCreateTeam()));
 
   Future<List<TeamInvitation>> getOpenInvitations() async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPendingInvitationsGet());
@@ -68,7 +68,7 @@ class GrueneApiTeamsService extends GrueneApiBaseService {
   }) => getFromApi(
     apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipPut(
       teamId: teamId,
-      body: UpdateTeamMembership(userId: userId, type: membershipType.asUpdateTeamMembershipType()),
+      body: UpdateTeamMembership(userId: userId, type: membershipType.toUpdateTeamMembershipType()),
     ),
   );
 

@@ -3,11 +3,11 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/app_route.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/content_page.dart';
+import 'package:gruene_app/features/campaigns/domain/teams/screens/search_screen.dart';
 import 'package:gruene_app/features/campaigns/helper/paging_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
-import 'package:gruene_app/features/campaigns/screens/teams/search_screen.dart';
-import 'package:gruene_app/features/campaigns/widgets/app_route.dart';
-import 'package:gruene_app/features/campaigns/widgets/content_page.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 

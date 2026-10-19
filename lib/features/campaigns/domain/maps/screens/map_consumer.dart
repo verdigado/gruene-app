@@ -1,0 +1,464 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
+import 'package:gruene_app/app/geo/geo.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
+import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/enums.dart';
+import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
+import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
+import 'package:gruene_app/app/services/gruene_api_route_service.dart';
+import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
+import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
+import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
+import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
+import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/mixins.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/focus_area_gen2_info_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/app_route.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/content_page.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:gruene_app/features/campaigns/helper/enums.dart';
+import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
+import 'package:gruene_app/features/campaigns/helper/map_info.dart';
+import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
+import 'package:gruene_app/features/campaigns/models/focus_area_type.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:turf/turf.dart' as turf;
+
+typedef GetAdditionalDataBeforeCallback<T> = Future<T?> Function(BuildContext);
+typedef GetAddScreenCallback<T, U> = T Function(LatLng, AddressModel?, U?);
+typedef SaveNewAndGetMarkerCallback<T> = Future<turf.Feature> Function(T);
+typedef GetPoiCallback<T> = Future<T> Function();
+typedef GetPoiDetailWidgetCallback<T> = Widget Function(T);
+typedef GetPoiEditWidgetCallback<T> = Widget Function(T);
+typedef OnDeletePoiCallback = Future<void> Function(String poiId);
+typedef LoadCachedLayerCallback = void Function(PoiCacheType cacheType, String layerSourceName);
+
+abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailType, PoiUpdateType> extends State<T>
+    with
+        InfoBox,
+        SearchMixin<T>,
+        MapConsumerActionAreaMixin,
+        MapConsumerExperienceAreaMixin,
+        MapConsumerRouteMixin,
+        MapConsumerFocusAreaMixin,
+        MapConsumerPollingStationMixin {
+  late MapController mapController;
+  bool _mapCreated = false;
+
+  final NominatimService _nominatimService = GetIt.I<NominatimService>();
+
+  final _minZoomFocusAreaLayer = 11.0;
+  final _minZoomPollingStationLayer = 11.0;
+  final _minZoomRouteLayer = 11.0;
+  final _minZoomExperienceAreaLayer = 11.0;
+  final _minZoomActionAreaLayer = 11.0;
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _lastInfoSnackBar;
+  String? _lastFocusAreaId;
+  final campaignActionCache = GetIt.I<CampaignActionCache>();
+  final PoiServiceType poiType;
+  late MapScreenController mapScreenController;
+  final FilterChipController filterController = FilterChipController();
+  final MapContainerController mapContainerController = MapContainerController();
+  final appSettings = GetIt.I<AppSettings>();
+
+  MapConsumer(this.poiType) {
+    mapScreenController = GetIt.I<MapScreenController>(instanceName: poiType.toString());
+  }
+
+  @override
+  GrueneApiCampaignsPoiBaseService get campaignService;
+
+  @override
+  void initState() {
+    mapScreenController.addListener(_onMapScreenControllerChanged);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _onMapScreenControllerChanged();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    mapScreenController.removeListener(_onMapScreenControllerChanged);
+    filterController.dispose();
+    mapContainerController.dispose();
+    _lastInfoSnackBar?.close();
+    super.dispose();
+  }
+
+  void onMapCreated(MapController controller) {
+    mapController = controller;
+    setState(() {
+      _mapCreated = true;
+    });
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _onMapScreenControllerChanged();
+    });
+  }
+
+  void addPOIClicked<U, V extends Widget, W>(
+    LatLng location,
+    GetAdditionalDataBeforeCallback<U>? acquireAdditionalDataBefore,
+    GetAddScreenCallback<V, U> getAddScreen,
+    SaveNewAndGetMarkerCallback<W> saveAndGetMarker,
+  ) async {
+    var locationAddress = _nominatimService.getLocationAddress(location);
+    U? additionalData;
+    if (acquireAdditionalDataBefore != null) {
+      additionalData = await acquireAdditionalDataBefore(context);
+    }
+    var navState = getNavState();
+    final result = await navState.push(
+      AppRoute<W?>(
+        builder: (context) {
+          return FutureBuilder(
+            future: locationAddress.timeout(const Duration(milliseconds: 1300), onTimeout: () => AddressModel()),
+            builder: (context, AsyncSnapshot<AddressModel> snapshot) {
+              if (!snapshot.hasData || snapshot.hasError) {
+                return Container(color: ThemeColors.secondary);
+              }
+
+              final address = snapshot.data;
+              return ContentPage(
+                title: getCurrentRoute().name.safe(),
+                child: getAddScreen(location, address, additionalData),
+              );
+            },
+          );
+        },
+      ),
+    );
+
+    if (result != null) {
+      final markerItem = await saveAndGetMarker(result);
+      mapController.addPoiMarkerItem(markerItem);
+    }
+  }
+
+  NavigatorState getNavState() => Navigator.of(context, rootNavigator: true);
+  GoRouterState getCurrentRoute() => GoRouterState.of(context);
+
+  void _loadCachedPois() async {
+    var markerItems = await campaignActionCache.getLayerItems(poiType.toPoiCacheType());
+    mapController.setPoiMarkerSource(markerItems);
+  }
+
+  void _loadCachedLayer(PoiCacheType cacheType, String layerSourceName) async {
+    var layerItems = await campaignActionCache.getLayerItems(cacheType);
+    await mapController.setLayerSourceWithFeatureList(layerSourceName, layerItems);
+  }
+
+  Future<void> loadVisiblePois(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached) async {
+    if (loadCached) _loadCachedPois();
+    if (mapController.getCurrentZoomLevel() > mapController.minimumMarkerZoomLevel) {
+      final markerItems = await campaignService.loadPoisInRegion(campaignId, locationSW, locationNE);
+      mapController.setPoiMarkerSource(markerItems.toFeatures());
+    }
+  }
+
+  void onFeatureClick<U>(
+    Map<String, dynamic> feature,
+    GetPoiCallback<U> getPoi,
+    GetPoiDetailWidgetCallback<U> getPoiDetail,
+    GetPoiEditWidgetCallback<U> getPoiEdit, {
+    Size desiredSize = const Size(100, 100),
+    bool useBottomSheet = false,
+  }) async {
+    U poi = await getPoi();
+    final poiDetailWidget = getPoiDetail(poi);
+    if (useBottomSheet) {
+      await mapController.setFocusToMarkerItem(feature);
+      var result = await showDetailBottomSheet<ModalDetailResult>(poiDetailWidget);
+      if (result != null && result == ModalDetailResult.edit) {
+        _editPoi(() => getPoiEdit(poi));
+      }
+      await mapController.unsetFocusToMarkerItem();
+    } else {
+      var popupWidget = SizedBox(height: desiredSize.height, width: desiredSize.width, child: poiDetailWidget);
+      final coord = MapHelper.extractLatLngFromFeature(feature);
+      mapController.showMapPopover(coord, popupWidget, () => _editPoi(() => getPoiEdit(poi)), desiredSize);
+    }
+  }
+
+  Future<U?> showDetailBottomSheet<U>(Widget detailWidget) async {
+    final theme = Theme.of(context);
+    return await showModalBottomSheet<U>(
+      isScrollControlled: false,
+      isDismissible: true,
+      barrierColor: Colors.transparent,
+      context: context,
+      backgroundColor: theme.colorScheme.surface,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+        child: detailWidget,
+      ),
+      useRootNavigator: true,
+    );
+  }
+
+  void _editPoi(Widget Function() getEditWidget) async {
+    await showModalEditForm(context, getEditWidget);
+  }
+
+  static Future<ModalEditResult?> showModalEditForm(BuildContext context, Widget Function() getEditWidget) async {
+    final theme = Theme.of(context);
+    return await showModalBottomSheet<ModalEditResult>(
+      isScrollControlled: true,
+      isDismissible: true,
+      context: context,
+      backgroundColor: theme.colorScheme.surface,
+      useRootNavigator: true,
+      builder: (context) => SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+          child: getEditWidget(),
+        ),
+      ),
+    );
+  }
+
+  Future<void> deletePoi(String poiId) async {
+    var markerItem = await campaignActionCache.deletePoi(poiType.toPoiCacheType(), poiId);
+    mapController.setPoiMarkerSource([markerItem]);
+  }
+
+  Future<void> addMapLayersForContext(MapLibreMapController mapLibreController) async {
+    // bottom layer
+    await addFocusAreaLayers(mapLibreController, getMapInfo(MapInfoType.focusArea));
+    await addExperienceAreaLayer(mapLibreController, getMapInfo(MapInfoType.experienceArea));
+    await addActionAreaLayer(mapLibreController, getMapInfo(MapInfoType.actionArea));
+    await addRouteLayer(mapLibreController, getMapInfo(MapInfoType.route));
+    await addPollingStationLayer(mapLibreController, getMapInfo(MapInfoType.pollingStation));
+    // top layer
+  }
+
+  void loadDataLayers(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached) async {
+    if (focusAreasVisible) {
+      loadFocusAreaLayer(getMapInfo(MapInfoType.focusArea));
+    }
+    if (pollingStationVisible) {
+      loadPollingStationLayer(getMapInfo(MapInfoType.pollingStation));
+    }
+    if (routesVisible) {
+      loadRouteLayer(getMapInfo(MapInfoType.route), loadCached);
+    }
+    if (experienceAreasVisible) {
+      loadExperienceAreaLayer(getMapInfo(MapInfoType.experienceArea));
+    }
+    if (actionAreasVisible) {
+      loadActionAreaLayer(getMapInfo(MapInfoType.actionArea), loadCached);
+    }
+  }
+
+  void showFocusAreaInfoAtPoint(Point<double> point) async {
+    if (!focusAreasVisible) return;
+    var features = await mapController.getFeaturesInScreen(
+      point,
+      CampaignConstants.focusAreaFillLayerId,
+      CampaignConstants.focusAreaSourceName,
+    );
+
+    if (features.isNotEmpty) {
+      final feature = turf.Feature.fromJson(features.first as Map<String, dynamic>);
+      if (feature.properties == null) return;
+      final properties = feature.properties!;
+      var infoText = <String>[];
+
+      var currentFocusAreaId = feature.id.toString();
+
+      if (_lastFocusAreaId != null && _lastFocusAreaId == currentFocusAreaId) {
+        hideCurrentSnackBar();
+        return;
+      }
+      var focusAreaType = FocusAreaType.values.byName(properties[CampaignConstants.focusAreaMapTypeProperty] as String);
+
+      await mapController.removeLayerSource(CampaignConstants.focusAreaSelectedSourceName);
+      await mapController.setLayerSourceWithFeatureList(CampaignConstants.focusAreaSelectedSourceName, [feature]);
+
+      if (focusAreaType == FocusAreaType.gen2) {
+        hideCurrentSnackBar();
+        showFocusAreaGen2(currentFocusAreaId);
+      } else {
+        if (properties[CampaignConstants.focusAreaMapInfoProperty] != null) {
+          infoText.add(properties[CampaignConstants.focusAreaMapInfoProperty] as String);
+        }
+        if (properties[CampaignConstants.focusAreaMapScoreInfoProperty] != null) {
+          infoText.add(properties[CampaignConstants.focusAreaMapScoreInfoProperty] as String);
+        }
+
+        if (infoText.isNotEmpty) {
+          _lastFocusAreaId = currentFocusAreaId;
+          _showInfo(infoText.join('\n'));
+        }
+      }
+    }
+  }
+
+  Future<void> showFocusAreaGen2(String currentFocusAreaId) async {
+    var focusArea = await campaignService.loadFocusArea(currentFocusAreaId);
+
+    if (mounted) {
+      var theme = Theme.of(context);
+      await showModalBottomSheet<void>(
+        context: context,
+        builder: (_) => Padding(
+          padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+          child: FocusAreaGen2InfoWidget(focusArea: focusArea, poiType: poiType),
+        ),
+        isScrollControlled: false,
+        isDismissible: true,
+        backgroundColor: theme.colorScheme.surface,
+        useRootNavigator: true,
+      );
+    }
+  }
+
+  void showMapInfoAfterCameraMove() {
+    var minZoomLevels = [_minZoomFocusAreaLayer, mapController.minimumMarkerZoomLevel];
+    minZoomLevels.sort();
+    var largestMinZoomLevel = minZoomLevels.last;
+    var toggleEnableInfo = mapController.getCurrentZoomLevel() < largestMinZoomLevel;
+    mapController.toggleInfoForMissingMapFeatures(toggleEnableInfo);
+  }
+
+  @override
+  void hideCurrentSnackBar() {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  }
+
+  void _showInfo(String infoText) {
+    var scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    scaffoldMessenger.removeCurrentSnackBar();
+    _lastInfoSnackBar = scaffoldMessenger.showSnackBar(
+      SnackBar(content: Text(infoText), duration: Duration(days: 1), showCloseIcon: true),
+    );
+
+    _lastInfoSnackBar!.closed.then((SnackBarClosedReason reason) {
+      _lastFocusAreaId = null;
+      _lastInfoSnackBar = null;
+    });
+  }
+
+  @override
+  void showInfoToast(String toastText, {void Function()? moreInfoCallback}) {
+    final theme = Theme.of(context);
+
+    List<Widget> showMoreInfo() {
+      if (moreInfoCallback == null) return List<Widget>.empty();
+      return [
+        SizedBox(width: 12),
+        Text(
+          t.campaigns.infoToast.more,
+          style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDark, decoration: TextDecoration.underline),
+        ),
+      ];
+    }
+
+    MotionToast? toast;
+    tapToast() {
+      toast!.dismiss();
+      moreInfoCallback!();
+    }
+
+    toast = MotionToast(
+      icon: Icons.info_outlined,
+      secondaryColor: ThemeColors.textCancel,
+      primaryColor: ThemeColors.infoBackground,
+      displaySideBar: false,
+      width: 300,
+      height: 80,
+      description: GestureDetector(
+        onTap: tapToast,
+        child: Row(
+          children: [
+            Text(toastText, style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDark)),
+            ...showMoreInfo(),
+          ],
+        ),
+      ),
+    );
+
+    toast.show(context);
+  }
+
+  @override
+  void navigateMapToLocation(LatLng location) {
+    mapController.navigateMapToLocation(location);
+  }
+
+  Future<void> savePoi(PoiUpdateType poiUpdate) async {
+    final updatedMarker = await campaignActionCache.updatePoi(poiType.toPoiCacheType(), poiUpdate);
+    mapController.setPoiMarkerSource([updatedMarker]);
+  }
+
+  Future<turf.Feature> saveNewAndGetMarkerItem(PoiCreateType newPoi) async =>
+      await campaignActionCache.storeNewPoi(poiType.toPoiCacheType(), newPoi);
+
+  Future<U> getPoiFromFeature<U extends BasicPoi>(Map<String, dynamic> feature) {
+    final isCached = MapHelper.extractIsCachedFromFeature(feature);
+    var getPoiFromCacheOrApi = isCached ? getCachedPoi : getPoi;
+    final poiId = MapHelper.extractPoiIdFromFeature(feature);
+    return getPoiFromCacheOrApi(poiId) as Future<U>;
+  }
+
+  MapInfo getMapInfo(MapInfoType infoType) {
+    var minZoom = switch (infoType) {
+      MapInfoType.experienceArea => _minZoomExperienceAreaLayer,
+      MapInfoType.focusArea => _minZoomFocusAreaLayer,
+      MapInfoType.pollingStation => _minZoomPollingStationLayer,
+      MapInfoType.route => _minZoomRouteLayer,
+      MapInfoType.actionArea => _minZoomActionAreaLayer,
+    };
+
+    return MapInfo(
+      mapController: mapController,
+      minZoom: minZoom,
+      lastInfoSnackbar: _lastInfoSnackBar,
+      context: context,
+      loadCachedLayer: _loadCachedLayer,
+      campaignId: getCurrentCampaignId() ?? '-1',
+    );
+  }
+
+  void _onMapScreenControllerChanged() {
+    if (!_mapCreated) return;
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      final scaleFactor = 1.2;
+      if (mapScreenController.routeId != null) {
+        filterController.enableFilterChip(t.campaigns.filters.routes);
+        var routeService = GetIt.I<GrueneApiRouteService>();
+        var route = await routeService.getRoute(mapScreenController.routeId!);
+        var bbox = turf.bbox(route.lineString.toTurfLine()).scale(scaleFactor);
+        mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
+        mapContainerController.showRoute(route);
+      } else if (mapScreenController.areaId != null) {
+        filterController.enableFilterChip(t.campaigns.filters.action_areas);
+        var areaService = GetIt.I<GrueneApiActionAreaService>();
+        var area = await areaService.getActionArea(mapScreenController.areaId!);
+        var bbox = turf.bbox(area.polygon.toTurfPolygon()).scale(scaleFactor);
+        mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
+        mapContainerController.showArea(area);
+      }
+    });
+  }
+
+  Future<PoiDetailType> getCachedPoi(String poiId);
+  Future<PoiDetailType> getPoi(String poiId);
+}
