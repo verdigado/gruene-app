@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
+import 'package:gruene_app/app/models/campaigns/team/team_assignment.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
@@ -12,7 +13,7 @@ import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/globals.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
-import 'package:gruene_app/features/campaigns/models/team/team_assignment.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 import 'package:intl/intl.dart';
@@ -156,7 +157,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
           SizedBox(
             height: 24,
             width: 24,
-            child: SvgPicture.asset(assignedElement.type.getAssetLocationByAssignmentType()),
+            child: SvgPicture.asset(assignedElement.type.getAssetLocation()),
           ),
           SizedBox(width: 12),
           Column(

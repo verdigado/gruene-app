@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/widgets/edit_team_basic_info_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/widgets/edit_team_members_widget.dart';
 import 'package:gruene_app/i18n/translations.g.dart';

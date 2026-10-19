@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gruene_app/app/models/campaigns/team/team_assignment.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/models/team/team_assignment.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +46,7 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
                     SizedBox(
                       height: 24,
                       width: 24,
-                      child: SvgPicture.asset(widget.category.getAssetLocationByAssignmentType()),
+                      child: SvgPicture.asset(widget.category.getAssetLocation()),
                     ),
                     SizedBox(width: 4),
                     Text(_getTitle(), style: theme.textTheme.titleSmall),

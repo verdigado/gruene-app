@@ -1,6 +1,6 @@
+import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_model.dart';
+import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_set.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
-import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
-import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_set.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GrueneApiCampaignsStatisticsService extends GrueneApiBaseService {

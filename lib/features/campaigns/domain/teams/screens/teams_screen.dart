@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/screens/team_home.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';

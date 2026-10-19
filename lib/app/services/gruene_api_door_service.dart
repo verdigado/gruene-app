@@ -1,10 +1,10 @@
+import 'package:gruene_app/app/models/campaigns/doors/door_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/doors/door_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/doors/door_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
-import 'package:gruene_app/features/campaigns/models/doors/door_create_model.dart';
-import 'package:gruene_app/features/campaigns/models/doors/door_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/doors/door_update_model.dart';
-import 'package:gruene_app/features/campaigns/models/poi_detail_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GrueneApiDoorService extends GrueneApiCampaignsPoiBaseService {

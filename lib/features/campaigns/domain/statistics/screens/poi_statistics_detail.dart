@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_model.dart';
+import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_set.dart';
+import 'package:gruene_app/app/models/campaigns/team/team_assignment.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
-import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
-import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_set.dart';
-import 'package:gruene_app/features/campaigns/models/team/team_assignment.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';

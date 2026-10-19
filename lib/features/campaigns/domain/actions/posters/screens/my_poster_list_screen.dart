@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_list_item_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 typedef GetPoiByIdCallback<T> = Future<T> Function(String poiId);

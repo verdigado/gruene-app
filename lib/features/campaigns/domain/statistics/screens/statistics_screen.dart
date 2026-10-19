@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
@@ -14,7 +15,6 @@ import 'package:gruene_app/features/campaigns/domain/statistics/screens/badge_st
 import 'package:gruene_app/features/campaigns/domain/statistics/screens/poi_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/domain/statistics/screens/team_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/domain/statistics/widgets/statistics_campaign_switcher.dart';
-import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class StatisticsScreen extends StatefulWidget {

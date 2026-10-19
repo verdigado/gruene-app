@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/campaigns/flyer/flyer_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/flyer/flyer_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/enhanced_wheel_slider.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/mixins.dart';
@@ -7,8 +9,6 @@ import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/dele
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_save_widget.dart';
-import 'package:gruene_app/features/campaigns/models/flyer/flyer_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/flyer/flyer_update_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 typedef OnSaveFlyerCallback = Future<void> Function(FlyerUpdateModel flyerUpdate);

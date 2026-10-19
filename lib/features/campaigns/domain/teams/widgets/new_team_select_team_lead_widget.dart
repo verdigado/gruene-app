@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_save_widget.dart';
 import 'package:gruene_app/features/campaigns/helper/profile_search_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/search_action_state.dart';
-import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 

@@ -16,6 +16,7 @@ import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/i18n/translations.g.dart';

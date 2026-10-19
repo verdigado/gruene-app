@@ -3,6 +3,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_list_item_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
@@ -21,10 +25,6 @@ import 'package:gruene_app/features/campaigns/domain/shared/widgets/filter_chip_
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_list_item_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_update_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 

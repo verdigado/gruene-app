@@ -1,4 +1,4 @@
-import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/turf.dart' as turf;
 

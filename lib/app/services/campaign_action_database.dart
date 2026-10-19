@@ -1,4 +1,4 @@
-import 'package:gruene_app/features/campaigns/helper/campaign_action.dart';
+import 'package:gruene_app/app/models/campaigns/campaign_action.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

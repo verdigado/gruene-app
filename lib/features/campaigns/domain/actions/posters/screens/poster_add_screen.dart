@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -11,7 +12,6 @@ import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/crea
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/save_cancel_on_create_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_create_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/features/campaigns/models/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class BadgeStatisticsDetail extends StatelessWidget {

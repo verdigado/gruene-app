@@ -1,6 +1,6 @@
+import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_base_service.dart';
-import 'package:gruene_app/features/campaigns/models/team/new_team_details.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GrueneApiTeamsService extends GrueneApiBaseService {

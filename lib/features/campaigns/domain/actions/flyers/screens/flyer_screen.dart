@@ -2,6 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/models/campaigns/flyer/flyer_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/flyer/flyer_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/flyer/flyer_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
@@ -13,10 +17,6 @@ import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_with_locat
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/filter_chip_widget.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info_type.dart';
-import 'package:gruene_app/features/campaigns/models/flyer/flyer_create_model.dart';
-import 'package:gruene_app/features/campaigns/models/flyer/flyer_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/flyer/flyer_update_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 

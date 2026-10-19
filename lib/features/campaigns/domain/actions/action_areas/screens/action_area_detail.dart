@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
+import 'package:gruene_app/app/models/campaigns/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
@@ -8,12 +9,13 @@ import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
+import 'package:gruene_app/features/campaigns/core/cache/converters.dart';
+import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_edit_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/widgets/select_team_widget.dart';
-import 'package:gruene_app/features/campaigns/helper/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
-import 'package:gruene_app/features/campaigns/models/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
@@ -225,7 +227,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     );
 
     if (selectedTeam != null) {
-      await _assignTeam(actionArea, selectedTeam.asRouteTeam());
+      await _assignTeam(actionArea, selectedTeam.asTeamInfo());
     }
   }
 

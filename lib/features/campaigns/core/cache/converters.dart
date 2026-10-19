@@ -1,0 +1,35 @@
+import 'dart:convert';
+
+import 'package:gruene_app/app/models/campaigns/action_area/action_area_assignment_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/action_area/action_area_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/action_area/action_area_status_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/campaign_action.dart';
+import 'package:gruene_app/app/models/campaigns/doors/door_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/doors/door_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/doors/door_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/flyer/flyer_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/flyer/flyer_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/flyer/flyer_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_list_item_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/route/route_assignment_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/route/route_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.dart';
+import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/enums.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+
+part 'converters/campaign_action_parsing.dart';
+part 'converters/door_create_model_parsing.dart';
+part 'converters/door_update_model_parsing.dart';
+part 'converters/flyer_create_model_parsing.dart';
+part 'converters/flyer_update_model_parsing.dart';
+part 'converters/poster_create_model_parsing.dart';
+part 'converters/poster_update_model_parsing.dart';
+part 'converters/action_area_update_model_parsing.dart';
+part 'converters/route_update_model_parsing.dart';

@@ -4,6 +4,9 @@ import 'dart:math';
 
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
@@ -16,9 +19,6 @@ import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/media_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/poster_status.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_detail_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_photo_model.dart';
-import 'package:gruene_app/features/campaigns/models/posters/poster_update_model.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 typedef OnSavePosterCallback = Future<void> Function(PosterUpdateModel posterUpdate);
