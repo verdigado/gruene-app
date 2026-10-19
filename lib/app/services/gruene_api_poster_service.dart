@@ -1,5 +1,6 @@
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';

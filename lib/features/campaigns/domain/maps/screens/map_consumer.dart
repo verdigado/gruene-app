@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
+import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';

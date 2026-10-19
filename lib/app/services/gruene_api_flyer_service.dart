@@ -1,3 +1,4 @@
+import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/flyer/flyer_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/flyer/flyer_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/flyer/flyer_update_model.dart';

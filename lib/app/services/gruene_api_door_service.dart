@@ -1,3 +1,4 @@
+import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_update_model.dart';

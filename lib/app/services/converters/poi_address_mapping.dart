@@ -1,0 +1,13 @@
+part of '../converters.dart';
+
+extension PoiAddressMapping on PoiAddress {
+  AddressModel toAddressModel() {
+    final address = this;
+    return AddressModel(
+      street: address.street.safe(),
+      houseNumber: address.houseNumber.safe(),
+      zipCode: address.zip.safe(),
+      city: address.city.safe(),
+    );
+  }
+}

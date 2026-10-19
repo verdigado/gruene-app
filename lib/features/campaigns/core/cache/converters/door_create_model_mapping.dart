@@ -1,0 +1,19 @@
+part of '../converters.dart';
+
+extension DoorCreateModelMapping on DoorCreateModel {
+  DoorDetailModel toDoorDetailModel(String temporaryId) {
+    return DoorDetailModel(
+      id: temporaryId,
+      address: address,
+      closedDoors: closedDoors,
+      openedDoors: openedDoors,
+      location: location,
+      createdAt: '${DateTime.now().toLocalDateTimeString()}*', // should mark this as preliminary
+      isCached: true,
+    );
+  }
+
+  PoiDetailModel toVirtualPoiDetailModel(int temporaryId) {
+    return PoiDetailModel.virtual(id: temporaryId, status: PoiServiceType.door.name, location: location);
+  }
+}

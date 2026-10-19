@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as image_lib;
 import 'package:maplibre_gl/maplibre_gl.dart';
-import 'package:turf/along.dart';
 
 /// Adds an asset image to the currently displayed style
 Future<void> addImageFromAsset(
@@ -89,28 +88,4 @@ List<double>? _findMainColor(image_lib.Image image) {
   if (counts.isEmpty) return null;
   final key = counts.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
   return [((key >> 16) & 0xFF).toDouble(), ((key >> 8) & 0xFF).toDouble(), (key & 0xFF).toDouble()];
-}
-
-extension FeatureCollectionExtension on FeatureCollection<Point> {
-  LatLngBounds? get bounds {
-    num? minLat, maxLat, minLng, maxLng;
-    for (var feature in features) {
-      final lat = feature.geometry?.coordinates.lat;
-      final lng = feature.geometry?.coordinates.lng;
-
-      minLat = (minLat == null || lat == null) ? lat : (lat < minLat ? lat : minLat);
-      maxLat = (maxLat == null || lat == null) ? lat : (lat > maxLat ? lat : maxLat);
-      minLng = (minLng == null || lng == null) ? lng : (lng < minLng ? lng : minLng);
-      maxLng = (maxLng == null || lng == null) ? lng : (lng > maxLng ? lng : maxLng);
-    }
-
-    if (minLat == null || maxLat == null || minLng == null || maxLng == null) {
-      return null;
-    }
-
-    return LatLngBounds(
-      southwest: LatLng(minLat.toDouble(), minLng.toDouble()),
-      northeast: LatLng(maxLat.toDouble(), maxLng.toDouble()),
-    );
-  }
 }

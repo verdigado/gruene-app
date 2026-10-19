@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/map.dart';
+import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/location/determine_position.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/map.dart';

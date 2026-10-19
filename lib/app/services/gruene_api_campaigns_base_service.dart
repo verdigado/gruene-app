@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:gruene_app/app/constants/config.dart';
+import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';

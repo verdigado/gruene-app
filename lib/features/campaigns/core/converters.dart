@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/action_area/action_area_assignment_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/action_area/action_area_status_update_model.dart';
@@ -22,7 +23,6 @@ part 'converters/action_area_detail_model_mapping.dart';
 part 'converters/area_map_feature.dart';
 part 'converters/area_mapping.dart';
 part 'converters/area_type_labels.dart';
-part 'converters/bbox_helpers.dart';
 part 'converters/campaign_list_filters.dart';
 part 'converters/experience_area_map_feature.dart';
 part 'converters/focus_area_map_feature.dart';
