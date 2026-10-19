@@ -1,10 +1,10 @@
-part of 'notification_handlers.dart';
+part of '../campaign_notification_handlers.dart';
 
 class TeamNotificationHandler extends BaseNotificationHandler {
   @override
   void processMessage(RemoteMessage message, BuildContext? context) {
     var routerLocation = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]);
-    _navigateTo(context, routerLocation);
+    navigateTo(context, routerLocation);
     GetIt.I<TeamRefreshController>().reload();
   }
 
@@ -15,7 +15,7 @@ class TeamNotificationHandler extends BaseNotificationHandler {
 
   @override
   void processPayload(NotificationResponse response, BuildContext? context) {
-    _navigateTo(context, RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]));
+    navigateTo(context, RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignTeamDetail]));
     GetIt.I<TeamRefreshController>().reload();
   }
 }

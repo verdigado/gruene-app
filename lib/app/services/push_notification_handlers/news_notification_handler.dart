@@ -4,7 +4,7 @@ class NewsNotificationHandler extends BaseNotificationHandler {
   @override
   void processMessage(RemoteMessage message, BuildContext? context) {
     var routerLocation = '${RouteLocations.getRoute([RouteLocations.news])}/${_getNewsId(message)}';
-    _navigateTo(context, routerLocation);
+    navigateTo(context, routerLocation);
   }
 
   @override
@@ -16,7 +16,7 @@ class NewsNotificationHandler extends BaseNotificationHandler {
   @override
   void processPayload(NotificationResponse response, BuildContext? context) {
     final newsId = response.payload?.replaceFirst(NotificationConstants.payloadNewsPrefix, '');
-    _navigateTo(context, '${RouteLocations.getRoute([RouteLocations.news])}/$newsId');
+    navigateTo(context, '${RouteLocations.getRoute([RouteLocations.news])}/$newsId');
   }
 
   String? _getNewsId(RemoteMessage message) {

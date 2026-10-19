@@ -44,6 +44,7 @@ import 'package:gruene_app/app/widgets/clean_layout.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
 import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
+import 'package:gruene_app/features/campaigns/core/notifications/campaign_notification_handlers.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
@@ -156,30 +157,7 @@ void intializeNotficationHandlers() {
     () => MfaNotificationHandler(),
     instanceName: NotificationMessageType.mfa.toString(),
   );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamNotificationHandler(),
-    instanceName: NotificationMessageType.teamMembershipUpdate.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
-    instanceName: NotificationMessageType.routeAssignmentUpdate.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamNotificationHandler(), // we use the TeamNotificationHandler as currently no other handling is required
-    instanceName: NotificationMessageType.areaAssignmentUpdate.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => TeamTop10NotificationHandler(),
-    instanceName: NotificationMessageType.teamTop10Update.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => ChallengeMembershipTimeElapsedHandler(),
-    instanceName: NotificationMessageType.challengeMembershipTimeElapsed.toString(),
-  );
-  GetIt.I.registerFactory<BaseNotificationHandler>(
-    () => ChallengeMembershipTargetReachedHandler(),
-    instanceName: NotificationMessageType.challengeMembershipTargetReached.toString(),
-  );
+  registerCampaignNotificationHandlers();
 }
 
 class MyApp extends StatelessWidget {

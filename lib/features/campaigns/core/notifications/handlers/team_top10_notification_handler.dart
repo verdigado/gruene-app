@@ -1,10 +1,10 @@
-part of 'notification_handlers.dart';
+part of '../campaign_notification_handlers.dart';
 
 class TeamTop10NotificationHandler extends BaseNotificationHandler {
   @override
   void processMessage(RemoteMessage message, BuildContext? context) {
     var routerLocation = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignStatisticsDetail]);
-    _navigateTo(context, routerLocation);
+    navigateTo(context, routerLocation);
   }
 
   @override
@@ -15,6 +15,6 @@ class TeamTop10NotificationHandler extends BaseNotificationHandler {
   @override
   void processPayload(NotificationResponse response, BuildContext? context) {
     var routerLocation = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignStatisticsDetail]);
-    _navigateTo(context, routerLocation);
+    navigateTo(context, routerLocation);
   }
 }
