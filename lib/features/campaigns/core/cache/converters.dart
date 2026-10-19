@@ -21,6 +21,7 @@ import 'package:gruene_app/app/models/campaigns/route/route_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/enums.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -31,6 +32,7 @@ part 'converters/door_create_model_mapping.dart';
 part 'converters/door_update_model_mapping.dart';
 part 'converters/flyer_create_model_mapping.dart';
 part 'converters/flyer_update_model_mapping.dart';
+part 'converters/poi_cache_type_actions.dart';
 part 'converters/poster_create_model_mapping.dart';
 part 'converters/poster_update_model_mapping.dart';
 part 'converters/route_assignment_update_model_mapping.dart';

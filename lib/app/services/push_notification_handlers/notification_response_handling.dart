@@ -1,4 +1,4 @@
-part of '../converters.dart';
+part of 'notification_handlers.dart';
 
 extension NotificationResponseHandling on NotificationResponse {
   BaseNotificationHandler? getNotificationHandler() {

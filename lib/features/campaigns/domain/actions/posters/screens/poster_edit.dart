@@ -9,6 +9,7 @@ import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart'
 import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';

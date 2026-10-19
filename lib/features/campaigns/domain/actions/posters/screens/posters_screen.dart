@@ -13,6 +13,7 @@ import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/posters/screens/my_poster_list_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/posters/screens/poster_add_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/posters/screens/poster_detail.dart';

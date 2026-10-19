@@ -1,4 +1,4 @@
-part of '../converters.dart';
+part of '../extensions.dart';
 
 extension DateTimeFormatting on DateTime {
   String toLocalDateTimeString() {

@@ -16,6 +16,7 @@ import 'package:gruene_app/app/services/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/features/campaigns/controllers/filter_chip_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';

@@ -1,4 +1,4 @@
-part of '../converters.dart';
+part of '../extensions.dart';
 
 extension IntIterableHelpers on Iterable<int> {
   int sum() {

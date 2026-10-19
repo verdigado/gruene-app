@@ -1,4 +1,4 @@
-part of '../converters.dart';
+part of '../extensions.dart';
 
 extension StringHelpers on String {
   String appendIfNotEmpty(String text) {

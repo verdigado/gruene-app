@@ -1,4 +1,4 @@
-part of '../converters.dart';
+part of '../extensions.dart';
 
 extension JsonMapHelpers on Map<String, dynamic> {
   Map<String, dynamic> convertLatLongField({String fieldName = 'location'}) {

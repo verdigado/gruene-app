@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
 
 typedef OnExecuteSearchCallback = void Function(String searchText);
 typedef OnSearchClearedCallback = void Function();

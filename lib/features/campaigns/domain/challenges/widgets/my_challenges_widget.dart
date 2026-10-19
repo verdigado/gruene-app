@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
+import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_badge.dart';
 import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_time_indicator.dart';
