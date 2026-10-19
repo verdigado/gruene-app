@@ -219,7 +219,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
                           item.memberSince == null
                               ? null
                               : t.campaigns.team.member_statistics_member_info.member_since(
-                                  date: DateFormat(t.campaigns.poster.date_format).format(item.memberSince!),
+                                  date: DateFormat(t.common.dateTime.dateFormat).format(item.memberSince!),
                                 ),
                         ].nonNulls.join(', '),
                         style: theme.textTheme.labelMedium,
