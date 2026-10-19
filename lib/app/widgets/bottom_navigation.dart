@@ -5,6 +5,7 @@ import 'package:gruene_app/app/constants/bottom_navigation_items.dart';
 import 'package:gruene_app/app/enums/badge_source.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
+// TODO decouple from campaigns feature: app layer should not depend on AppTimers, e.g. let the feature subscribe to navigation events instead
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 
 class BottomNavigation extends StatefulWidget {

@@ -6,7 +6,7 @@ import 'package:gruene_app/app/services/push_notification_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/logger.dart';
-import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
+import 'package:gruene_app/app/utils/visual_identifier_helper.dart';
 
 class AuthEvent {}
 

@@ -9,6 +9,7 @@ import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
+// TODO move ProfileFeatureChecker into the profiles feature, it depends on profiles UI (showProfileVisibilitySetting)
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:http/http.dart';
 

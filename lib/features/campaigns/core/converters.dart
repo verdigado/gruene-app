@@ -9,8 +9,8 @@ import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.
 import 'package:gruene_app/app/models/campaigns/team/team_assignment.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/visual_identifier_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
-import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
 import 'package:gruene_app/features/campaigns/models/focus_area_type.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';

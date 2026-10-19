@@ -40,6 +40,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/file_cache_manager.dart';
 import 'package:gruene_app/app/utils/profile_feature_checker.dart';
+import 'package:gruene_app/app/utils/visual_identifier_helper.dart';
 import 'package:gruene_app/app/widgets/clean_layout.dart';
 import 'package:gruene_app/features/campaigns/controllers/map_screen_controller.dart';
 import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
@@ -47,7 +48,6 @@ import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.d
 import 'package:gruene_app/features/campaigns/core/notifications/campaign_notification_handlers.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
-import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';

@@ -12,6 +12,7 @@ import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/map.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/utils/visual_identifier_helper.dart';
 import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/action_areas/screens/action_area_detail.dart';
@@ -23,7 +24,6 @@ import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_edit_w
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';
 import 'package:gruene_app/features/campaigns/helper/map_info.dart';
-import 'package:gruene_app/features/campaigns/helper/visual_identifier_helper.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:turf/circle.dart';
