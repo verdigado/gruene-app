@@ -287,7 +287,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 27.2.0
+            xcode: 27.1.0
         parameters:
             environment:
                 default: production
@@ -393,7 +393,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 27.2.0
+            xcode: 27.1.0
         parameters:
             production_delivery:
                 description: Whether to deliver the build to production.
@@ -478,7 +478,7 @@ jobs:
         environment:
             FASTLANE_SKIP_UPDATE_CHECK: true
         macos:
-            xcode: 27.2.0
+            xcode: 27.1.0
         steps:
             - checkout
             - run:
