@@ -719,5 +719,49 @@
     "attend": "Teilnehmen?",
     "accepted": "Zusagen",
     "declined": "Absagen"
+  },
+  "guests": {
+    "guestAccess": "Gastzugänge",
+    "invitation": "Einladung",
+    "noInvitations": "Noch keine Einladungen",
+    "invite": "Gast einladen",
+    "email": "E-Mail-Adresse",
+    "division": "Gliederung",
+    "allDivisions": "Alle Gliederungen",
+    "status": "Status",
+    "invitedAt": "Eingeladen am",
+    "invitedAtDate": "Eingeladen am ${date}",
+    "invitedBy": "Eingeladen von",
+    "expiresAt": "Einladung gültig bis",
+    "expiredAt": "Einladung abgelaufen am",
+    "validityHint": "Die Einladung ist 7 Tage gültig. Über den Link in der E-Mail legt die eingeladene Person ihren Gastzugang an.",
+    "send": "Einladung senden",
+    "sent": "Einladung an ${email} verschickt",
+    "resend": "Einladung erneut senden",
+    "resent": "Einladung erneut verschickt",
+    "revoke": "Einladung zurückziehen",
+    "revoked": "Einladung zurückgezogen",
+    "confirmRevoke": {
+      "title": "Einladung zurückziehen?",
+      "text": "Der Link in der Einladung funktioniert danach nicht mehr.",
+      "confirm": "Zurückziehen"
+    },
+    "statusLabel": {
+      "open": "Offen",
+      "accepted": "Angenommen",
+      "expired": "Abgelaufen",
+      "revoked": "Zurückgezogen"
+    },
+    "validation": {
+      "emailRequired": "Bitte gib eine E-Mail-Adresse ein.",
+      "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "divisionRequired": "Bitte wähle eine Gliederung aus."
+    },
+    "error": {
+      "openInvitationExists": "Für diese E-Mail-Adresse gibt es bereits eine offene Einladung.",
+      "notOpen": "Die Einladung ist nicht mehr offen.",
+      "resendConflict": "Die Einladung kann nicht erneut verschickt werden. Für diese E-Mail-Adresse gibt es bereits eine andere offene Einladung, oder diese Einladung ist nicht mehr offen.",
+      "failed": "Das hat leider nicht geklappt. Bitte versuche es später erneut."
+    }
   }
 }
