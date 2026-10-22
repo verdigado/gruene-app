@@ -22,6 +22,7 @@ import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
 import 'package:gruene_app/app/services/gruene_api_experience_area_service.dart';
 import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
+import 'package:gruene_app/app/services/gruene_api_guest_service.dart';
 import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/services/gruene_api_route_service.dart';
@@ -142,6 +143,7 @@ void initializeApiServices() {
   GetIt.I.registerFactory<GrueneApiTeamsService>(() => GrueneApiTeamsService());
   GetIt.I.registerFactory<GrueneApiDivisionsService>(() => GrueneApiDivisionsService());
   GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
+  GetIt.I.registerFactory<GrueneApiGuestService>(() => GrueneApiGuestService());
   GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
   GetIt.I.registerFactory<GrueneApiChallengeService>(() => GrueneApiChallengeService());
   GetIt.I.registerFactory<GrueneApiVisualIdentifierService>(() => GrueneApiVisualIdentifierService());
