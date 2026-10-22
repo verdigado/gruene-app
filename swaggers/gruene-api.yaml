@@ -3432,6 +3432,274 @@ paths:
       summary: Find visual identifiers
       tags:
         - campaigns
+  /v1/guest-invitations:
+    post:
+      description: >-
+        Sends the invitation email. Needs a guest manager role on exactly the
+        given division.
+      operationId: createGuestInvitation
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGuestInvitation'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestInvitation'
+        '401':
+          description: ''
+        '403':
+          description: ''
+        '409':
+          description: An open invitation for this email exists
+      security:
+        - bearer: []
+      summary: Invite a guest to a division
+      tags:
+        - guests
+    get:
+      description: Of the given division, or of every division the caller may invite to.
+      operationId: findGuestInvitations
+      parameters:
+        - name: divisionKey
+          required: false
+          in: query
+          description: >-
+            Without it, the invitations of every division the caller may invite
+            to
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindGuestInvitationsResponse'
+        '401':
+          description: ''
+        '403':
+          description: ''
+      security:
+        - bearer: []
+      summary: List guest invitations
+      tags:
+        - guests
+  /v1/guest-invitations/divisions:
+    get:
+      description: Empty if the caller may not invite guests anywhere.
+      operationId: findGuestInvitationDivisions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindGuestInvitationDivisionsResponse'
+        '401':
+          description: ''
+      security:
+        - bearer: []
+      summary: List the divisions the caller may invite guests to
+      tags:
+        - guests
+  /v1/guest-invitations/{invitationId}:
+    delete:
+      operationId: revokeGuestInvitation
+      parameters:
+        - name: invitationId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '401':
+          description: ''
+        '403':
+          description: ''
+        '409':
+          description: The invitation was already used
+      security:
+        - bearer: []
+      summary: Revoke a guest invitation
+      tags:
+        - guests
+  /v1/guest-invitations/{invitationId}/resend:
+    post:
+      description: >-
+        Sends a new link, valid for another 7 days. The previous link stops
+        working.
+      operationId: resendGuestInvitation
+      parameters:
+        - name: invitationId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestInvitation'
+        '401':
+          description: ''
+        '403':
+          description: ''
+        '409':
+          description: >-
+            The invitation is not open, or another open invitation for this
+            email exists
+      security:
+        - bearer: []
+      summary: Send a guest invitation again
+      tags:
+        - guests
+  /v1/guest-invitations/lookup:
+    post:
+      description: >-
+        Public: the invited person has no account yet. Shows who invited them
+        and where.
+      operationId: lookupGuestInvitation
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuestInvitationToken'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestInvitationLookup'
+        '404':
+          description: No open invitation matches the token
+      summary: Look up an invitation by its token
+      tags:
+        - guests
+  /v1/guest-invitations/accept:
+    post:
+      description: >-
+        Public: the invited person has no account yet. A `400` from Sherpa
+        leaves the invitation open so the form can be fixed. On success,
+        Keycloak emails a link to set a password.
+      operationId: acceptGuestInvitation
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcceptGuestInvitation'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptGuestInvitationResponse'
+        '404':
+          description: No open invitation matches the token
+        '409':
+          description: The person already has access to the Grünes Netz
+        '422':
+          description: Several records match the person; they should contact their office
+      summary: Accept an invitation and create the guest account
+      tags:
+        - guests
+  /v1/guests:
+    get:
+      description: Needs a guest manager role on exactly the given division.
+      operationId: findGuests
+      parameters:
+        - name: divisionKey
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindGuestsResponse'
+        '401':
+          description: ''
+        '403':
+          description: ''
+      security:
+        - bearer: []
+      summary: List a division's guests
+      tags:
+        - guests
+  /v1/guests/{userId}/renewal:
+    post:
+      description: >-
+        Needs a guest manager role on the guest's division. Sherpa decides the
+        new expiry.
+      operationId: renewGuest
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guest'
+        '401':
+          description: ''
+        '403':
+          description: ''
+        '409':
+          description: The guest access reached its maximum duration
+      security:
+        - bearer: []
+      summary: Extend a guest's access
+      tags:
+        - guests
+  /v1/guests/{userId}:
+    delete:
+      description: >-
+        Needs a guest manager role on the guest's division. Also ends the
+        guest's sessions.
+      operationId: revokeGuest
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: ''
+        '401':
+          description: ''
+        '403':
+          description: ''
+      security:
+        - bearer: []
+      summary: End a guest's access
+      tags:
+        - guests
   /v1/roles:
     get:
       operationId: findRoles
@@ -7593,6 +7861,196 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/VisualIdentifier'
+      required:
+        - data
+    CreateGuestInvitation:
+      type: object
+      properties:
+        email:
+          type: string
+          description: >-
+            The invitation link is sent here, and the guest account gets this
+            address.
+          format: email
+        divisionKey:
+          type: string
+          description: >-
+            The division the guest will help in. Inviting needs a guest manager
+            role on
+
+            exactly this division.
+      required:
+        - email
+        - divisionKey
+    GuestInvitationStatus:
+      type: string
+      enum:
+        - open
+        - accepted
+        - expired
+        - revoked
+      description: |-
+        A failed acceptance shows as `open` until the invitation expires: the
+        reason could reveal a party membership.
+    GuestInviter:
+      type: object
+      properties:
+        userId:
+          type: string
+        name:
+          type: string
+          nullable: true
+          description: '`null` if Sherpa doesn''t know the user anymore'
+      required:
+        - userId
+        - name
+    GuestInvitation:
+      type: object
+      properties:
+        status:
+          description: >-
+            A failed acceptance shows as `open` until the invitation expires:
+            the
+
+            reason could reveal a party membership.
+          allOf:
+            - $ref: '#/components/schemas/GuestInvitationStatus'
+        id:
+          type: string
+        email:
+          type: string
+        divisionKey:
+          type: string
+        invitedBy:
+          $ref: '#/components/schemas/GuestInviter'
+        createdAt:
+          format: date-time
+          type: string
+        expiresAt:
+          format: date-time
+          type: string
+      required:
+        - status
+        - id
+        - email
+        - divisionKey
+        - invitedBy
+        - createdAt
+        - expiresAt
+    FindGuestInvitationsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GuestInvitation'
+      required:
+        - data
+    FindGuestInvitationDivisionsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Division'
+      required:
+        - data
+    GuestInvitationToken:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token from the invitation link
+      required:
+        - token
+    GuestInvitationLookup:
+      type: object
+      properties:
+        email:
+          type: string
+          description: The guest account gets this address.
+        divisionKey:
+          type: string
+        divisionName:
+          type: string
+          nullable: true
+          description: '`null` if Sherpa doesn''t know the division'
+        inviterName:
+          type: string
+          nullable: true
+          description: '`null` if Sherpa doesn''t know the user anymore'
+        expiresAt:
+          format: date-time
+          type: string
+      required:
+        - email
+        - divisionKey
+        - divisionName
+        - inviterName
+        - expiresAt
+    AcceptGuestInvitation:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token from the invitation link
+        firstName:
+          type: string
+          maxLength: 100
+        lastName:
+          type: string
+          maxLength: 100
+        birthDate:
+          type: string
+          example: '1990-04-17'
+      required:
+        - token
+        - firstName
+        - lastName
+        - birthDate
+    GuestAcceptanceStatus:
+      type: string
+      enum:
+        - accepted
+        - processing
+    AcceptGuestInvitationResponse:
+      type: object
+      properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/GuestAcceptanceStatus'
+      required:
+        - status
+    Guest:
+      type: object
+      properties:
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        expiresOn:
+          format: date-time
+          type: string
+          nullable: true
+          description: When the guest access runs out, `null` if it doesn't
+      required:
+        - userId
+        - firstName
+        - lastName
+        - email
+        - expiresOn
+    FindGuestsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guest'
       required:
         - data
     RoleAssignmentStatus:
