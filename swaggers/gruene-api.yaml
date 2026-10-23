@@ -3622,12 +3622,17 @@ paths:
         - guests
   /v1/guests:
     get:
-      description: Needs a guest manager role on exactly the given division.
+      description: >-
+        Lists the guests who accepted an invitation. Needs a guest manager role
+        on exactly the given division.
       operationId: findGuests
       parameters:
         - name: divisionKey
-          required: true
+          required: false
           in: query
+          description: >-
+            Without it, the guests of every division the caller may manage
+            guests of
           schema:
             type: string
       responses:
@@ -3643,7 +3648,35 @@ paths:
           description: ''
       security:
         - bearer: []
-      summary: List a division's guests
+      summary: List guests
+      tags:
+        - guests
+  /v1/guests/{userId}:
+    get:
+      description: Needs a guest manager role on the guest's division.
+      operationId: findGuest
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestDetail'
+        '401':
+          description: ''
+        '403':
+          description: ''
+        '404':
+          description: Sherpa no longer knows the guest
+      security:
+        - bearer: []
+      summary: Get a guest with their history
       tags:
         - guests
   /v1/guests/{userId}/renewal:
@@ -3670,18 +3703,19 @@ paths:
         '403':
           description: ''
         '409':
-          description: The guest access reached its maximum duration
+          description: The guest is blocked
       security:
         - bearer: []
       summary: Extend a guest's access
       tags:
         - guests
-  /v1/guests/{userId}:
-    delete:
+  /v1/guests/{userId}/block:
+    post:
       description: >-
-        Needs a guest manager role on the guest's division. Also ends the
-        guest's sessions.
-      operationId: revokeGuest
+        Takes the guest's access away right away until they're unblocked. The
+        guest role and its expiry stay. Needs a guest manager role on the
+        guest's division.
+      operationId: blockGuest
       parameters:
         - name: userId
           required: true
@@ -3689,15 +3723,50 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guest'
         '401':
           description: ''
         '403':
           description: ''
+        '409':
+          description: The guest is already blocked
       security:
         - bearer: []
-      summary: End a guest's access
+      summary: Block a guest
+      tags:
+        - guests
+    delete:
+      description: >-
+        Gives the access back, without changing the expiry. Needs a guest
+        manager role on the guest's division.
+      operationId: unblockGuest
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guest'
+        '401':
+          description: ''
+        '403':
+          description: ''
+        '409':
+          description: The guest is not blocked
+      security:
+        - bearer: []
+      summary: Unblock a guest
       tags:
         - guests
   /v1/roles:
@@ -7892,7 +7961,7 @@ components:
       description: |-
         A failed acceptance shows as `open` until the invitation expires: the
         reason could reveal a party membership.
-    GuestInviter:
+    GuestActor:
       type: object
       properties:
         userId:
@@ -7922,7 +7991,7 @@ components:
         divisionKey:
           type: string
         invitedBy:
-          $ref: '#/components/schemas/GuestInviter'
+          $ref: '#/components/schemas/GuestActor'
         createdAt:
           format: date-time
           type: string
@@ -8021,9 +8090,18 @@ components:
             - $ref: '#/components/schemas/GuestAcceptanceStatus'
       required:
         - status
+    GuestStatus:
+      type: string
+      enum:
+        - active
+        - blocked
+        - expired
     Guest:
       type: object
       properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/GuestStatus'
         userId:
           type: string
         firstName:
@@ -8033,16 +8111,20 @@ components:
         email:
           type: string
           nullable: true
+        divisionKey:
+          type: string
         expiresOn:
           format: date-time
           type: string
           nullable: true
-          description: When the guest access runs out, `null` if it doesn't
+          description: When the guest access runs out, `null` if Sherpa has none
       required:
+        - status
         - userId
         - firstName
         - lastName
         - email
+        - divisionKey
         - expiresOn
     FindGuestsResponse:
       type: object
@@ -8053,6 +8135,80 @@ components:
             $ref: '#/components/schemas/Guest'
       required:
         - data
+    GuestHistoryType:
+      type: string
+      enum:
+        - invited
+        - accepted
+        - renewed
+        - expired
+        - blocked
+        - unblocked
+    GuestHistoryEntry:
+      type: object
+      properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/GuestHistoryType'
+        at:
+          format: date-time
+          type: string
+        by:
+          nullable: true
+          description: '`null` for what nobody did, like accepting or expiring'
+          allOf:
+            - $ref: '#/components/schemas/GuestActor'
+      required:
+        - type
+        - at
+        - by
+    GuestDetail:
+      type: object
+      properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/GuestStatus'
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        divisionKey:
+          type: string
+        expiresOn:
+          format: date-time
+          type: string
+          nullable: true
+          description: When the guest access runs out, `null` if Sherpa has none
+        invitedBy:
+          $ref: '#/components/schemas/GuestActor'
+        invitedAt:
+          format: date-time
+          type: string
+        activatedAt:
+          format: date-time
+          type: string
+        history:
+          description: Newest first
+          type: array
+          items:
+            $ref: '#/components/schemas/GuestHistoryEntry'
+      required:
+        - status
+        - userId
+        - firstName
+        - lastName
+        - email
+        - divisionKey
+        - expiresOn
+        - invitedBy
+        - invitedAt
+        - activatedAt
+        - history
     RoleAssignmentStatus:
       type: string
       enum:
