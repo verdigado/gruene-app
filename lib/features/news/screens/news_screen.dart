@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
-import 'package:gruene_app/app/domain/divisions_api_service.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/services/divisions_api_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
-import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/repository/news_repository.dart';
+import 'package:gruene_app/features/news/services/news_api_service.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_filter_dialog.dart';
 import 'package:gruene_app/features/news/widgets/news_list.dart';

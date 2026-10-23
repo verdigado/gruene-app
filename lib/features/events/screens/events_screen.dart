@@ -7,7 +7,7 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
-import 'package:gruene_app/features/events/domain/events_api_service.dart';
+import 'package:gruene_app/features/events/services/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';

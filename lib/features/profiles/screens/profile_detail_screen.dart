@@ -4,7 +4,7 @@ import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
-import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
+import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_details.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
