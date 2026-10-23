@@ -692,8 +692,8 @@
   },
   "guests": {
     "guestAccess": "Gastzugänge",
+    "guest": "Gastzugang",
     "invitation": "Einladung",
-    "noInvitations": "Noch keine Einladungen",
     "invite": "Gast einladen",
     "email": "E-Mail-Adresse",
     "division": "Gliederung",
@@ -719,8 +719,56 @@
     "statusLabel": {
       "open": "Offen",
       "accepted": "Angenommen",
-      "expired": "Abgelaufen",
+      "expired": "Einladung abgelaufen",
       "revoked": "Zurückgezogen"
+    },
+    "section": {
+      "openInvitations": "Offene Einladungen (${count})",
+      "active": "Aktive Gastzugänge (${count})",
+      "blocked": "Gesperrt (${count})",
+      "expired": "Abgelaufen (${count})",
+      "revokedInvitations": "Zurückgezogene Einladungen (${count})"
+    },
+    "noOpenInvitations": "Keine offenen Einladungen.",
+    "noActiveGuests": "Keine aktiven Gastzugänge.",
+    "validUntil": "bis ${date}",
+    "access": "Zugang",
+    "origin": "Herkunft",
+    "history": "Verlauf",
+    "accessValidUntil": "Zugang gültig bis",
+    "accessExpiredAt": "Zugang abgelaufen am",
+    "daysLeft(param=days)": {
+      "one": "noch 1 Tag",
+      "other": "noch ${days} Tage"
+    },
+    "renewals": "Verlängerung",
+    "neverRenewed": "Noch nie verlängert",
+    "renewedTimes": "${count}× verlängert",
+    "acceptedAt": "Angenommen am",
+    "renew": "Um 90 Tage verlängern",
+    "renewedUntil": "Zugang von ${name} verlängert bis ${date}",
+    "block": "Zugang sofort sperren",
+    "blockHint": "Wirkt sofort, ohne Übergangsfrist.",
+    "blocked": "Zugang von ${name} gesperrt",
+    "unblock": "Sperre aufheben",
+    "unblocked": "Sperre für ${name} aufgehoben",
+    "confirmBlock": {
+      "title": "Zugang sperren?",
+      "text": "${name} verliert sofort den Zugang zur App und bekommt darüber eine E-Mail. Erfasste Wahlkampfdaten bleiben erhalten. Du kannst die Sperre später wieder aufheben.",
+      "confirm": "Sperren"
+    },
+    "guestStatusLabel": {
+      "active": "Aktiv",
+      "blocked": "Gesperrt",
+      "expired": "Abgelaufen"
+    },
+    "historyLabel": {
+      "invited": "Eingeladen",
+      "accepted": "Einladung angenommen",
+      "renewed": "Zugang verlängert",
+      "expired": "Zugang abgelaufen",
+      "blocked": "Zugang gesperrt",
+      "unblocked": "Sperre aufgehoben"
     },
     "validation": {
       "emailRequired": "Bitte gib eine E-Mail-Adresse ein.",
@@ -731,7 +779,11 @@
       "openInvitationExists": "Für diese E-Mail-Adresse gibt es bereits eine offene Einladung.",
       "notOpen": "Die Einladung ist nicht mehr offen.",
       "resendConflict": "Die Einladung kann nicht erneut verschickt werden. Für diese E-Mail-Adresse gibt es bereits eine andere offene Einladung, oder diese Einladung ist nicht mehr offen.",
-      "failed": "Das hat leider nicht geklappt. Bitte versuche es später erneut."
+      "failed": "Das hat leider nicht geklappt. Bitte versuche es später erneut.",
+      "forbidden": "Dazu fehlt dir die Berechtigung.",
+      "guestBlocked": "Der Gastzugang ist gesperrt.",
+      "alreadyBlocked": "Der Gastzugang ist bereits gesperrt.",
+      "notBlocked": "Der Gastzugang ist nicht gesperrt."
     }
   }
 }
