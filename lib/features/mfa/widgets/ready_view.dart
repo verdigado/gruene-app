@@ -51,26 +51,29 @@ class _ReadyViewState extends State<ReadyView> {
     final theme = Theme.of(context);
 
     return BlocBuilder<MfaBloc, MfaState>(
-      builder: (context, state) => ExpandingScrollView(
-        spacing: 16,
-        children: [
-          Center(child: SizedBox(height: 160, child: SvgPicture.asset('assets/graphics/mfa_ready.svg'))),
-          NoLoginAttemptCard(lastRefresh: state.lastRefresh),
-          Center(
-            child: FilledButton(
-              onPressed: () => context.read<MfaBloc>().add(RefreshMfa()),
-              child: Text(
-                t.mfa.ready.refresh,
-                style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+      builder: (context, state) {
+        final lastGrantedChallenge = state.lastGrantedChallenge;
+        return ExpandingScrollView(
+          spacing: 16,
+          children: [
+            Center(child: SizedBox(height: 160, child: SvgPicture.asset('assets/graphics/mfa_ready.svg'))),
+            NoLoginAttemptCard(lastRefresh: state.lastRefresh),
+            Center(
+              child: FilledButton(
+                onPressed: () => context.read<MfaBloc>().add(RefreshMfa()),
+                child: Text(
+                  t.mfa.ready.refresh,
+                  style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+                ),
               ),
             ),
-          ),
-          if (state.lastGrantedLoginAttempt != null)
-            LoginAttemptCard(loginAttempt: state.lastGrantedLoginAttempt!, title: t.mfa.ready.lastApprovedLogin),
-          Spacer(),
-          OutlinedButton(onPressed: () => showMfaDeletionDialog(context), child: Text(t.mfa.ready.delete.title)),
-        ],
-      ),
+            if (lastGrantedChallenge != null)
+              LoginAttemptCard(challenge: lastGrantedChallenge, title: t.mfa.ready.lastApprovedLogin),
+            Spacer(),
+            OutlinedButton(onPressed: () => showMfaDeletionDialog(context), child: Text(t.mfa.ready.delete.title)),
+          ],
+        );
+      },
     );
   }
 

@@ -30,7 +30,7 @@ class _VerifyViewState extends State<VerifyView> {
   }
 
   void startTimer(MfaState state) {
-    Timer(Duration(seconds: state.loginAttempt!.expiresIn), () {
+    Timer(Duration(seconds: state.challenge!.expiresIn ?? 60), () {
       context.read<MfaBloc>().add(IdleTimeout());
     });
   }
@@ -77,7 +77,7 @@ class _VerifyViewState extends State<VerifyView> {
           Center(child: SizedBox(height: 128, child: SvgPicture.asset('assets/graphics/mfa_verify.svg'))),
           Text(t.mfa.verify.title, textAlign: TextAlign.center, style: theme.textTheme.displayLarge),
           Text(t.mfa.verify.description, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
-          LoginAttemptCard(loginAttempt: state.loginAttempt!),
+          LoginAttemptCard(challenge: state.challenge!),
           Spacer(),
           FilledButton(
             onPressed: () => onReply(true),
