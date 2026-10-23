@@ -1,4 +1,4 @@
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
