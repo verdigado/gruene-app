@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
+import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';

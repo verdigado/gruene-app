@@ -3,7 +3,7 @@ import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/screens/tab_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/tab_bar.dart';
-import 'package:gruene_app/features/tools/domain/tools_api_service.dart';
+import 'package:gruene_app/features/tools/services/tools_api_service.dart';
 import 'package:gruene_app/features/tools/widgets/tools_list.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';

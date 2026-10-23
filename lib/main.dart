@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
@@ -34,7 +35,6 @@ import 'package:gruene_app/app/services/notification_message_type.dart';
 import 'package:gruene_app/app/services/push_notification_handlers/notification_handlers.dart';
 import 'package:gruene_app/app/services/push_notification_listener.dart';
 import 'package:gruene_app/app/services/push_notification_service.dart';
-import 'package:gruene_app/app/services/secure_storage_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/file_cache_manager.dart';
@@ -50,7 +50,6 @@ import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
-import 'package:gruene_app/features/mfa/domain/mfa_factory.dart';
 import 'package:gruene_app/features/news/bloc/bookmark_cubit.dart';
 import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_bloc.dart';
 import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_event.dart';
@@ -73,11 +72,14 @@ Future<void> main() async {
   timeago.setLocaleMessages(Config.defaultLanguageCode, timeago.DeMessages());
   rruleL10n = await RruleL10nDe.create();
 
-  registerSecureStorage();
+  final secureStorage = const FlutterSecureStorage();
+  GetIt.I.registerSingleton<FlutterSecureStorage>(secureStorage);
 
   final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-  GetIt.I.registerFactory<AuthenticatorService>(MfaFactory.create);
+  GetIt.I.registerFactory<AuthenticatorService>(
+    () => AuthenticatorService(storage: FlutterSecureStorageAdapter(secureStorage)),
+  );
   GetIt.I.registerSingleton<IpService>(IpService());
 
   final pushNotificationService = PushNotificationService();

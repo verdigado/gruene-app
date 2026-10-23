@@ -6,7 +6,7 @@ import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/text_list_item.dart';
-import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
+import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_details.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_header.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';

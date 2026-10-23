@@ -14,7 +14,7 @@ import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
-import 'package:gruene_app/features/events/domain/events_api_service.dart';
+import 'package:gruene_app/features/events/services/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_recurrence_form.dart';
 import 'package:gruene_app/i18n/translations.g.dart';

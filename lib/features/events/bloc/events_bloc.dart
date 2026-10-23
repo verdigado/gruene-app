@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/utils/date.dart';
-import 'package:gruene_app/features/events/domain/events_api_service.dart';
+import 'package:gruene_app/features/events/services/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
