@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/utils.dart';
-import 'package:gruene_app/features/news/models/news_model.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/bookmark_button.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 const double imageHeight = 160;
 
 class NewsCard extends StatelessWidget {
-  final NewsModel news;
+  final News news;
 
   const NewsCard({super.key, required this.news});
 
@@ -18,6 +18,8 @@ class NewsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final division = news.division;
+    final summary = news.summary;
+
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
       child: Card(
@@ -56,7 +58,7 @@ class NewsCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 8),
-                      Text(news.summary, maxLines: 3, overflow: TextOverflow.ellipsis),
+                      if (summary != null) Text(summary, maxLines: 3, overflow: TextOverflow.ellipsis),
                       if (division != null)
                         Container(
                           margin: EdgeInsets.only(top: 16),
@@ -103,13 +105,13 @@ class NewsCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    news.type,
-                    style: theme.textTheme.labelSmall?.copyWith(
+                    news.categories.firstOrNull?.label ?? '',
+                    style: theme.textTheme.labelMedium?.copyWith(
                       color: theme.colorScheme.surface,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  BookmarkButton(newsId: news.id),
+                  BookmarkButton(news: news),
                 ],
               ),
             ),
@@ -119,8 +121,8 @@ class NewsCard extends StatelessWidget {
     );
   }
 
-  DecorationImage featuredImage(NewsModel news) {
-    final image = news.image;
+  DecorationImage featuredImage(News news) {
+    final image = news.featuredImage;
     return DecorationImage(
       image: image != null
           ? CachedNetworkImageProvider(image.variant('large').url)
