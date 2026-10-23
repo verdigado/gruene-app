@@ -28,28 +28,7 @@ class LoginScreen extends StatelessWidget {
           );
         }
 
-        return CleanLayout(
-          showAppBar: false,
-          child: Stack(
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  // #457: disable intro slides for now
-                  // return Container(
-                  //   padding: EdgeInsets.only(bottom: defaultBottomSheetSize * constraints.maxHeight),
-                  //   child: WelcomeView(),
-                  // );
-                  return WelcomeView();
-                },
-              ),
-              SupportButton(),
-              // #457: disable intro slides for now
-              // PersistentBottomSheet(
-              //   child: IntroSlides(),
-              // ),
-            ],
-          ),
-        );
+        return CleanLayout(showAppBar: false, child: Stack(children: [WelcomeView(), SupportButton()]));
       },
     );
   }
