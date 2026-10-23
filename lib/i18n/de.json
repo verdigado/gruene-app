@@ -111,7 +111,8 @@
     "latest": "Aktuelles",
     "bookmarked": "Gespeichert",
     "categories": "Schlagworte",
-    "publicationDate": "Veröffentlichungsdatum"
+    "publicationDate": "Veröffentlichungsdatum",
+    "attachments": "Anhänge"
   },
   "campaigns": {
     "debug": {

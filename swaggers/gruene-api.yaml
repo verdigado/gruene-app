@@ -4370,7 +4370,7 @@ info:
     removed.
 
     API tokens can be obtained from `technik@verdigado.com`.
-  version: 0.2.1
+  version: 0.2.2
   contact: {}
 tags: []
 servers:
@@ -7785,6 +7785,38 @@ components:
       required:
         - id
         - label
+    NewsAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: Display name of the attachment
+        filename:
+          type: string
+          description: Original file name
+          example: programm-2025.pdf
+        url:
+          type: string
+          description: Presigned download url
+          example: >-
+            https://netz.gruene.de/system/files/2026-06/programm-2025.pdf?expires=...&signature=...
+        mimetype:
+          type: string
+          description: File mimetype
+          example: application/pdf
+        filesize:
+          type: number
+          description: File size in bytes
+          example: 13264
+      required:
+        - id
+        - name
+        - filename
+        - url
+        - mimetype
+        - filesize
     NewsBody:
       type: object
       properties:
@@ -7842,6 +7874,10 @@ components:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/ImageSrcSet'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsAttachment'
         body:
           $ref: '#/components/schemas/NewsBody'
         bookmark:
@@ -7856,6 +7892,7 @@ components:
         - categories
         - summary
         - featuredImage
+        - attachments
         - body
         - bookmark
     FindNewsResponse:
