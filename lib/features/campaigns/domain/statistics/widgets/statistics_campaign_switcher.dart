@@ -48,7 +48,7 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
     });
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
-    String? currentCampaignId = await widget.getCurrentContextCampaignId();
+    String? currentCampaignId = widget.getCurrentContextCampaignId();
     var campaignName = switch (currentCampaignId) {
       null => t.common.unknown,
       '-1' => t.campaigns.statistic.poi_statistics.all_time,
