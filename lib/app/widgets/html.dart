@@ -5,8 +5,24 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/widgets/expansion_list_tile.dart';
+import 'package:gruene_app/app/widgets/full_width_image.dart';
 
-final TagExtension accordionTagExtension = TagExtension(
+final fitImageWidthExtension = TagWrapExtension(
+  tagsToWrap: {'img'},
+  builder: (child) => FittedBox(fit: BoxFit.scaleDown, child: child),
+);
+
+OnImageTapExtension imageTapExtension(BuildContext context) => OnImageTapExtension(
+  onImageTap: (String? src, _, element) {
+    // Linked images open the link instead
+    for (var ancestor = element?.parent; ancestor != null; ancestor = ancestor.parent) {
+      if (ancestor.localName == 'a' && ancestor.attributes.containsKey('href')) return;
+    }
+    if (src != null && src.startsWith('http')) showImageDialog(context, src);
+  },
+);
+
+final accordionTagExtension = TagExtension(
   tagsToExtend: {'dl'},
   builder: (extensionContext) {
     final theme = Theme.of(extensionContext.buildContext!);
@@ -39,6 +55,35 @@ final TagExtension accordionTagExtension = TagExtension(
   },
 );
 
+/// Renders tables as stacked blocks as flutter_html has no built-in table support and just drops the content silently
+/// flutter_html_table crashes on block elements inside cells
+/// (https://github.com/Sub6Resources/flutter_html/issues/1188)
+class BlockTableExtension extends HtmlExtension {
+  const BlockTableExtension();
+
+  @override
+  Set<String> get supportedTags => {'table', 'caption', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td'};
+
+  @override
+  StyledElement prepare(ExtensionContext context, List<StyledElement> children) {
+    return StyledElement(
+      name: context.elementName,
+      elementId: context.id,
+      elementClasses: context.classes.toList(),
+      node: context.node,
+      children: children,
+      style: Style(display: Display.block, fontWeight: context.elementName == 'th' ? FontWeight.bold : null),
+    );
+  }
+
+  @override
+  InlineSpan build(ExtensionContext context) {
+    return WidgetSpan(
+      child: CssBoxWidget.withInlineSpanChildren(style: context.style!, children: context.inlineSpanChildren!),
+    );
+  }
+}
+
 class CustomHtml extends StatelessWidget {
   final String data;
 
@@ -49,7 +94,7 @@ class CustomHtml extends StatelessWidget {
     final theme = Theme.of(context);
     return Html(
       data: data,
-      extensions: [accordionTagExtension],
+      extensions: [fitImageWidthExtension, imageTapExtension(context), accordionTagExtension, const BlockTableExtension()],
       onLinkTap: (url, _, _) => url != null ? openUrl(url, context) : null,
       style: {
         'body': Style(margin: Margins.zero),
