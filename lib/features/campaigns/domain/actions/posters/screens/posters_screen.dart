@@ -239,7 +239,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
   }
 
   Future<List<PosterListItemModel>> getAllMyPosters() async {
-    var myPosters = await campaignService.getMyPosters(getCurrentCampaignId() ?? '-1');
+    var myPosters = await campaignService.getMyPosters(getCurrentCampaignId() ?? CampaignConstants.allCampaignsId);
     await campaignActionCache.replaceAndFillUpMyPosterList(myPosters);
     return myPosters;
   }

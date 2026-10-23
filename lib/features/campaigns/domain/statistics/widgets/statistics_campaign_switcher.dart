@@ -3,14 +3,20 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
-import 'package:gruene_app/app/utils/campaign.dart';
-import 'package:gruene_app/features/campaigns/domain/maps/widgets/campaign_select_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/campaign_select_dialog.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class StatisticsCampaignSwitcher extends StatefulWidget {
-  final Future<dynamic> Function() campaignChanged;
+  final VoidCallback campaignChanged;
+  final String? Function() getCurrentContextCampaignId;
+  final Future<void> Function(String campaignId) setCurrentContextCampaignId;
 
-  const StatisticsCampaignSwitcher({super.key, required this.campaignChanged});
+  const StatisticsCampaignSwitcher({
+    super.key,
+    required this.campaignChanged,
+    required this.getCurrentContextCampaignId,
+    required this.setCurrentContextCampaignId,
+  });
 
   @override
   State<StatisticsCampaignSwitcher> createState() => _StatisticsCampaignSwitcherState();
@@ -42,7 +48,7 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
     });
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
-    String? currentCampaignId = getCurrentPoiStatisticsCampaignId();
+    String? currentCampaignId = await widget.getCurrentContextCampaignId();
     var campaignName = switch (currentCampaignId) {
       null => t.common.unknown,
       '-1' => t.campaigns.statistic.poi_statistics.all_time,
@@ -62,41 +68,43 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
       onTap: () {
         _selectCampaign();
       },
-      child: Padding(
-        padding: EdgeInsets.all(12),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(12, 12, 12, 6),
-          decoration: BoxDecoration(color: ThemeColors.background),
-          child: Column(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    t.campaigns.statistic.poi_statistics.stats_for_campaign,
-                    style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
-                  ),
-                  Text(
-                    t.common.actions.change,
-                    style: theme.textTheme.labelMedium!.apply(decoration: TextDecoration.underline, fontWeightDelta: 5),
-                  ),
-                ],
+              Text(
+                t.campaigns.statistic.poi_statistics.stats_for_campaign,
+                style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
               ),
-              _isloading
-                  ? Center(child: CircularProgressIndicator())
-                  : Row(children: [Text(_currentCampaignName ?? '', style: theme.textTheme.bodyMedium)]),
+              Text(
+                t.common.actions.change,
+                style: theme.textTheme.labelMedium!.apply(decoration: TextDecoration.underline, fontWeightDelta: 5),
+              ),
             ],
           ),
-        ),
+          _isloading
+              ? Center(child: CircularProgressIndicator())
+              : Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _currentCampaignName ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
+        ],
       ),
     );
   }
 
   Future<void> _selectCampaign() async {
-    var selectedCampaignId = await showCampaignSelectDialogForStatistics(context);
+    var selectedCampaignId = await showCampaignSelectDialogForStatistics(context, widget.getCurrentContextCampaignId);
     if (selectedCampaignId != null) {
-      var appSettings = GetIt.I<AppSettings>();
-      appSettings.campaign.recentPoiStatisticsCampaignId = selectedCampaignId;
+      widget.setCurrentContextCampaignId(selectedCampaignId);
       _loadData();
       widget.campaignChanged();
     }

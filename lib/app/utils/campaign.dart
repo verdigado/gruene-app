@@ -12,13 +12,14 @@ String? getCurrentCampaignId() {
   return appSettings.campaign.activeCampaign.recentSelectedCampaignId;
 }
 
-String? getCurrentPoiStatisticsCampaignId() {
-  var appSettings = GetIt.I<AppSettings>();
-  var currentCampaignId =
-      appSettings.campaign.recentPoiStatisticsCampaignId ??
-      appSettings.campaign.activeCampaign.recentSelectedCampaignId;
-  return currentCampaignId;
-}
+String? getCurrentPoiStatisticsCampaignId() =>
+    _getStatisticsCampaignId(GetIt.I<AppSettings>().campaign.recentPoiStatisticsCampaignId);
+
+String? getCurrentTeamMembershipStatisticsCampaignId() =>
+    _getStatisticsCampaignId(GetIt.I<AppSettings>().campaign.recentTeamMembershipStatisticsCampaignId);
+
+/// Returns the campaign chosen for a statistics view, falling back to the active campaign
+String? _getStatisticsCampaignId(String? statisticsCampaignId) => statisticsCampaignId ?? getCurrentCampaignId();
 
 void switchCampaign(Campaign? campaign, BuildContext context) {
   var appSettings = GetIt.I<AppSettings>();

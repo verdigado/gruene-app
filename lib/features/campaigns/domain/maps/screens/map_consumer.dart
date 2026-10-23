@@ -433,7 +433,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       lastInfoSnackbar: _lastInfoSnackBar,
       context: context,
       loadCachedLayer: _loadCachedLayer,
-      campaignId: getCurrentCampaignId() ?? '-1',
+      campaignId: getCurrentCampaignId() ?? CampaignConstants.allCampaignsId,
     );
   }
 
