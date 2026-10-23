@@ -21,7 +21,9 @@ class ActiveCampaignSettings extends ChangeNotifier {
 
   set recentSelectedCampaignId(String? recentSelectedCampaignId) {
     _recentSelectedCampaignId = recentSelectedCampaignId;
-    GetIt.I<AppSettings>().campaign.recentPoiStatisticsCampaignId = null;
+    var appCampaignSettings = GetIt.I<AppSettings>().campaign;
+    appCampaignSettings.recentPoiStatisticsCampaignId = null;
+    appCampaignSettings.recentTeamMembershipStatisticsCampaignId = null;
     save();
     notifyListeners();
   }

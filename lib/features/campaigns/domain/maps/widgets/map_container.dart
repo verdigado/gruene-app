@@ -21,10 +21,10 @@ import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.d
 import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/campaign_location_button.dart';
-import 'package:gruene_app/features/campaigns/domain/maps/widgets/campaign_select_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_compass.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller_simplified.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/campaign_select_dialog.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
 import 'package:gruene_app/features/campaigns/helper/map_helper.dart';

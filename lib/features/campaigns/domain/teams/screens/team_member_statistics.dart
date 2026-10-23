@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/statistics_context_switcher.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
@@ -20,8 +22,10 @@ class TeamMemberStatistics extends StatefulWidget {
 
 class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
   bool _loading = true;
+  int _loadRequestId = 0;
   var _selectedPoiType = PoiType.poster;
   late TeamMembershipStatistics _teamStatistics;
+  final _appSettings = GetIt.I<AppSettings>();
 
   @override
   void initState() {
@@ -29,14 +33,26 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
+    _appSettings.campaign.activeCampaign.addListener(_loadData);
   }
 
-  void _loadData() async {
+  @override
+  void dispose() {
+    _appSettings.campaign.activeCampaign.removeListener(_loadData);
+    super.dispose();
+  }
+
+  Future<void> _loadData() async {
+    final requestId = ++_loadRequestId;
     setState(() => _loading = true);
 
     var teamsService = GetIt.I<GrueneApiTeamsService>();
-    var teamStatistics = await teamsService.getTeamMembershipStatistics(campaignId: getCurrentCampaignId() ?? '-1');
+    var teamStatistics = await teamsService.getTeamMembershipStatistics(
+      campaignId: getCurrentTeamMembershipStatisticsCampaignId(),
+    );
 
+    // A newer load started while this one was in flight; drop this result
+    if (!mounted || requestId != _loadRequestId) return;
     setState(() {
       _loading = false;
       _teamStatistics = teamStatistics;
@@ -45,11 +61,6 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator());
-    }
-    if (_teamStatistics.teamStatistics.isEmpty) return SizedBox.shrink();
-
     var theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -59,6 +70,12 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
         decoration: boxShadowDecoration,
         child: Column(
           children: [
+            StatisticsContextSwitcher(
+              campaignChanged: _loadData,
+              getCurrentContextCampaignId: getCurrentTeamMembershipStatisticsCampaignId,
+              setCurrentContextCampaignId: (campaignId) =>
+                  _appSettings.campaign.recentTeamMembershipStatisticsCampaignId = campaignId,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -83,23 +100,27 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
                 ),
               ],
             ),
-            Column(children: _getMemberStats()),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
+            if (_loading)
+              Container(padding: EdgeInsets.fromLTRB(24, 24, 24, 6), child: CircularProgressIndicator())
+            else ...[
+              Column(children: _getMemberStats()),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
 
-                  child: Row(
-                    children: [
-                      Text(
-                        t.common.updatedAt(date: _teamStatistics.lastUpdate.toLocalDateTimeString()),
-                        style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
-                      ),
-                    ],
+                    child: Row(
+                      children: [
+                        Text(
+                          t.common.updatedAt(date: _teamStatistics.lastUpdate.toLocalDateTimeString()),
+                          style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
