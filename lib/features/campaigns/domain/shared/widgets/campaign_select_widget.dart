@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
-import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
@@ -18,6 +15,7 @@ import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -26,8 +24,17 @@ class CampaignSelectWidget extends StatefulWidget {
   final CampaignSelectMode mode;
   final bool storeRecentSeenCampaigns;
   static int showCounter = 0;
+  final String? Function()? getCurrentContextCampaignId;
 
-  const CampaignSelectWidget({super.key, this.mode = CampaignSelectMode.normal, this.storeRecentSeenCampaigns = false});
+  const CampaignSelectWidget({
+    super.key,
+    this.mode = CampaignSelectMode.normal,
+    this.storeRecentSeenCampaigns = false,
+    this.getCurrentContextCampaignId,
+  }) : assert(
+         mode != CampaignSelectMode.statistics || getCurrentContextCampaignId != null,
+         'getCurrentContextCampaignId must be provided when mode is CampaignSelectMode.statistics',
+       );
 
   @override
   State<CampaignSelectWidget> createState() => _CampaignSelectWidgetState();
@@ -52,8 +59,8 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
 
   @override
   dispose() {
-    super.dispose();
     CampaignSelectWidget.showCounter--;
+    super.dispose();
   }
 
   void _loadData() async {
@@ -61,7 +68,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
 
     var selectedCampaignId = switch (widget.mode) {
       CampaignSelectMode.normal || CampaignSelectMode.enforceSelect => getCurrentCampaignId(),
-      CampaignSelectMode.statistics => getCurrentPoiStatisticsCampaignId(),
+      CampaignSelectMode.statistics => widget.getCurrentContextCampaignId?.call(),
     };
 
     var campaignService = GetIt.I<GrueneApiCampaignService>();
@@ -105,6 +112,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       GetIt.I<NewCampaignNotifier>().reset();
     }
 
+    if (!mounted) return;
     setState(() {
       _loading = false;
       _activeCampaigns = selectableCampaigns;
@@ -209,9 +217,9 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       // Don't allow closing without selection if selection is enforced
       return;
     }
-    var selectedCampaign = _selectedCampaignId == '-1'
+    var selectedCampaign = _selectedCampaignId == CampaignConstants.allCampaignsId
         ? Campaign(
-            id: '-1',
+            id: CampaignConstants.allCampaignsId,
             scope: .federal,
             type: .election,
             status: .active,
@@ -224,7 +232,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
   }
 
   Widget _getCampaignRadioTile(Campaign? campaign, ThemeData theme) {
-    var campaignId = '-1',
+    var campaignId = CampaignConstants.allCampaignsId,
         campaignName = t.campaigns.statistic.poi_statistics.all_time,
         campaignSubtitle = t.campaigns.statistic.poi_statistics.all_time_subtitle;
 
@@ -265,15 +273,21 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
               splashRadius: 0,
             ),
             SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                asBadge(
-                  !_previouslySeenCampaignIds.contains(campaignId),
-                  Text(campaignName, style: theme.textTheme.labelLarge),
-                ),
-                Text(campaignSubtitle, style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled)),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  asBadge(
+                    campaignId != CampaignConstants.allCampaignsId && !_previouslySeenCampaignIds.contains(campaignId),
+                    Text(campaignName, overflow: TextOverflow.ellipsis, style: theme.textTheme.labelLarge),
+                  ),
+                  Text(
+                    campaignSubtitle,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
+                  ),
+                ],
+              ),
             ),
             // ),
           ],
@@ -281,63 +295,6 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       ),
     );
   }
-}
-
-Future<void> showCampaignSelectDialog(BuildContext context, {bool enforceSelect = false}) async {
-  if (CampaignSelectWidget.showCounter > 0) {
-    // Prevent multiple dialogs from being opened at the same time
-    return;
-  }
-
-  var isDismissible = !enforceSelect;
-
-  final theme = Theme.of(context);
-  while (true) {
-    var selectCampaignResult = await showModalBottomSheet<CampaignSelectResult>(
-      context: context,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding)),
-        child: CampaignSelectWidget(
-          mode: enforceSelect ? CampaignSelectMode.enforceSelect : CampaignSelectMode.normal,
-          storeRecentSeenCampaigns: true,
-        ),
-      ),
-      isScrollControlled: true,
-      isDismissible: isDismissible,
-      useRootNavigator: true,
-      backgroundColor: theme.colorScheme.surface,
-    );
-    if (enforceSelect &&
-        (selectCampaignResult == null || !selectCampaignResult.success || selectCampaignResult.campaign == null)) {
-      // If selection is enforced, we need to show the dialog again if the user dismissed it without selecting
-      continue;
-    }
-    if (selectCampaignResult != null && selectCampaignResult.success) {
-      // apply selection
-      if (!context.mounted) return;
-      switchCampaign(selectCampaignResult.campaign, context);
-    }
-    break;
-  }
-}
-
-Future<String?> showCampaignSelectDialogForStatistics(BuildContext context) async {
-  final theme = Theme.of(context);
-  var selectCampaignResult = await showModalBottomSheet<CampaignSelectResult>(
-    context: context,
-    builder: (context) => Padding(
-      padding: EdgeInsets.only(bottom: max(MediaQuery.of(context).viewInsets.bottom, DesignConstants.bottomPadding)),
-      child: CampaignSelectWidget(mode: CampaignSelectMode.statistics),
-    ),
-    isScrollControlled: true,
-    isDismissible: true,
-    useRootNavigator: true,
-    backgroundColor: theme.colorScheme.surface,
-  );
-  if (selectCampaignResult != null && selectCampaignResult.success) {
-    return selectCampaignResult.campaign?.id;
-  }
-  return null;
 }
 
 class CampaignSelectResult {

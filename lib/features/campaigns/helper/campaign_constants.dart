@@ -11,6 +11,9 @@ class CampaignConstants {
   static const posterToBeMovedAssetName = 'assets/symbols/posters/poster_to_be_moved.png';
   static const addMarkerAssetName = 'assets/symbols/add_marker.svg';
 
+  /// Pseudo campaign id meaning "all campaigns" / "all time"
+  static const allCampaignsId = '-1';
+
   static const pollingStationAssetName = 'assets/symbols/polling_stations/pollingstation.png';
   static const pollingStationShieldAssetName = 'assets/symbols/polling_stations/polling_station_shield.png';
   static const actionAreaAssignemntAssetName = 'assets/symbols/action_areas/assigned-marker_24x24.png';

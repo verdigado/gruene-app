@@ -11,10 +11,11 @@ import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/domain/challenges/screens/challenge_badge_statistics_detail.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/statistics_context_switcher.dart';
 import 'package:gruene_app/features/campaigns/domain/statistics/screens/badge_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/domain/statistics/screens/poi_statistics_detail.dart';
 import 'package:gruene_app/features/campaigns/domain/statistics/screens/team_statistics_detail.dart';
-import 'package:gruene_app/features/campaigns/domain/statistics/widgets/statistics_campaign_switcher.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class StatisticsScreen extends StatefulWidget {
@@ -67,7 +68,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            StatisticsCampaignSwitcher(campaignChanged: () => reload(overrideCache: true)),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Container(
+                padding: EdgeInsets.fromLTRB(12, 12, 12, 6),
+                decoration: BoxDecoration(color: ThemeColors.background),
+                child: StatisticsContextSwitcher(
+                  campaignChanged: () => reload(overrideCache: true),
+                  getCurrentContextCampaignId: getCurrentPoiStatisticsCampaignId,
+                  setCurrentContextCampaignId: (campaignId) =>
+                      _appSettings.campaign.recentPoiStatisticsCampaignId = campaignId,
+                ),
+              ),
+            ),
             BadgeStatisticsDetail(poiStatistics: _poiStatistics),
             ChallengeBadgeStatisticsDetail(challengeBadges: _challengeBadges),
             TeamStatisticsDetail(teamStatistics: _teamStatistics, ownTeamId: _ownTeam?.id),
@@ -120,7 +133,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     var statApiService = GetIt.I<GrueneApiCampaignsStatisticsService>();
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
     var campaignStatistics = await statApiService.getStatistics(
-      campaigndId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
+      campaigndId: currentPoiStatisticsCampaignId == CampaignConstants.allCampaignsId
+          ? null
+          : currentPoiStatisticsCampaignId,
     );
 
     campaignSettings.recentPoiStatistics = campaignStatistics;
@@ -140,7 +155,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     var teamApiService = GetIt.I<GrueneApiTeamsService>();
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
     var teamStats = await teamApiService.getTeamStatistics(
-      campaignId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
+      campaignId: currentPoiStatisticsCampaignId == CampaignConstants.allCampaignsId
+          ? null
+          : currentPoiStatisticsCampaignId,
     );
 
     campaignSettings.recentTeamStatistics = teamStats;
@@ -164,7 +181,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     try {
       var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
       var teamMembershipStats = await teamApiService.getTeamMembershipStatistics(
-        campaignId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
+        campaignId: currentPoiStatisticsCampaignId == CampaignConstants.allCampaignsId
+            ? null
+            : currentPoiStatisticsCampaignId,
       );
 
       campaignSettings.recentTeamMembershipStatistics = teamMembershipStats;
@@ -188,7 +207,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     var challengeApiService = GetIt.I<GrueneApiChallengeService>();
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
     var challengeBadges = (await challengeApiService.getAllMyChallenges(
-      campaignId: currentPoiStatisticsCampaignId == '-1' ? null : currentPoiStatisticsCampaignId,
+      campaignId: currentPoiStatisticsCampaignId == CampaignConstants.allCampaignsId
+          ? null
+          : currentPoiStatisticsCampaignId,
       onlyCompleted: true,
       sorting: .endDescending,
     ));
