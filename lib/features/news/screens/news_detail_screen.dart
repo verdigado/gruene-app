@@ -11,6 +11,7 @@ import 'package:gruene_app/app/widgets/full_width_image.dart';
 import 'package:gruene_app/app/widgets/html.dart';
 import 'package:gruene_app/features/news/domain/news_api_service.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
+import 'package:gruene_app/features/news/widgets/attachments.dart';
 import 'package:gruene_app/features/news/widgets/bookmark_button.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
@@ -62,6 +63,7 @@ class NewsDetailScreen extends StatelessWidget {
                             style: theme.textTheme.labelSmall,
                           ),
                           CustomHtml(data: news.body.content),
+                          Attachments(attachments: news.attachments),
                         ],
                       ),
                     ),
