@@ -109,7 +109,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<TeamRefreshController>(TeamRefreshController());
   GetIt.I.registerSingleton<VisualIdentifierHelper>(VisualIdentifierHelper());
   initializeApiServices();
-  intializeNotficationHandlers();
+  initializeNotificationHandlers();
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
@@ -148,7 +148,7 @@ void initializeApiServices() {
   GetIt.I.registerFactory<GrueneApiVisualIdentifierService>(() => GrueneApiVisualIdentifierService());
 }
 
-void intializeNotficationHandlers() {
+void initializeNotificationHandlers() {
   GetIt.I.registerFactory<BaseNotificationHandler>(
     () => NewsNotificationHandler(),
     instanceName: NotificationMessageType.news.toString(),
