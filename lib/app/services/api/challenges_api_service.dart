@@ -10,7 +10,7 @@ class ChallengesApiService extends BaseApiService {
     required num offset,
     required num limit,
   }) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsChallengesGet(
+    request: (api) => api.v1CampaignsChallengesGet(
       activityType: activityTypes,
       offset: offset,
       limit: limit,
@@ -29,7 +29,7 @@ class ChallengesApiService extends BaseApiService {
     required num offset,
     required num limit,
   }) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsChallengesSelfGet(
+    request: (api) => api.v1CampaignsChallengesSelfGet(
       state: challengeStatus,
       campaignId: campaignId,
       sort: sorting.getSortString(),
@@ -40,17 +40,16 @@ class ChallengesApiService extends BaseApiService {
     ),
   );
 
-  Future<ChallengeMembership> joinChallenge(String challengeId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsChallengesChallengeIdJoinPost(challengeId: challengeId, body: null),
-  );
+  Future<ChallengeMembership> joinChallenge(String challengeId) async =>
+      getFromApi(request: (api) => api.v1CampaignsChallengesChallengeIdJoinPost(challengeId: challengeId, body: null));
 
   Future<void> leaveChallenge(String challengeId) async =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsChallengesChallengeIdLeavePost(challengeId: challengeId));
+      getFromApi(request: (api) => api.v1CampaignsChallengesChallengeIdLeavePost(challengeId: challengeId));
 
   Future<Challenge> getChallenge(String challengeId) async =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsChallengesChallengeIdGet(challengeId: challengeId));
+      getFromApi(request: (api) => api.v1CampaignsChallengesChallengeIdGet(challengeId: challengeId));
 
   Future<FindChallengeLeaderboardResponse> getChallengeLeaderboard(String challengeId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsChallengesChallengeIdLeaderboardGet(challengeId: challengeId, limit: 99),
+    request: (api) => api.v1CampaignsChallengesChallengeIdLeaderboardGet(challengeId: challengeId, limit: 99),
   );
 }

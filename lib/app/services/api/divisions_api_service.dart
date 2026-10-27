@@ -9,13 +9,13 @@ class DivisionsApiService extends BaseApiService {
     List<String>? divisionKeys,
     HierarchyLevel? level,
   }) async => getFromApi(
-    apiRequest: (api) =>
+    request: (api) =>
         api.v1DivisionsGet(search: searchTerm, offset: offset, limit: limit, divisionKey: divisionKeys, level: level),
     map: (result) => result.data,
   );
 
   Future<List<Division>> loadDivisions([List<String>? divisionKeys]) async => getFromApi(
-    apiRequest: (api) => api.v1DivisionsGet(limit: 100000, divisionKey: divisionKeys),
+    request: (api) => api.v1DivisionsGet(limit: 100000, divisionKey: divisionKeys),
     map: (result) => result.data,
   );
 }

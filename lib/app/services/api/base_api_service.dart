@@ -10,10 +10,10 @@ abstract class BaseApiService {
   }
 
   Future<T> getFromApi<S, T>({
-    required Future<Response<S>> Function(GrueneApi api) apiRequest,
+    required Future<Response<S>> Function(GrueneApi api) request,
     T Function(S data)? map,
   }) async {
-    final response = await apiRequest(grueneApi);
+    final response = await request(grueneApi);
 
     handleApiError(response);
 

@@ -12,7 +12,7 @@ class DoorsApiService extends PoisApiBaseService {
   DoorsApiService() : super(poiType: PoiServiceType.door);
 
   Future<PoiDetailModel> createNewDoor(DoorCreateModel newDoor) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsPoisPost(
+    request: (api) => api.v1CampaignsPoisPost(
       body: CreatePoi(
         campaignId: newDoor.campaignId,
         coords: newDoor.location.toGeoJsonCoords(),
@@ -28,7 +28,7 @@ class DoorsApiService extends PoisApiBaseService {
   );
 
   Future<PoiDetailModel> updateDoor(DoorUpdateModel doorUpdate) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsPoisPoiIdPut(
+    request: (api) => api.v1CampaignsPoisPoiIdPut(
       poiId: doorUpdate.id,
       body: UpdatePoi(
         address: doorUpdate.address.toPoiAddress(),

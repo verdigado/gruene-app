@@ -3,15 +3,15 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ProfilesApiService extends BaseApiService {
-  Future<Profile> getSelf() async => getFromApi(apiRequest: (api) => api.v1ProfilesSelfGet());
+  Future<Profile> getSelf() async => getFromApi(request: (api) => api.v1ProfilesSelfGet());
 
   Future<List<PublicProfile>> searchProfile(String searchText, {int? offset, int? limit}) async => getFromApi(
-    apiRequest: (api) => api.v1ProfilesGet(search: searchText, offset: offset, limit: limit),
+    request: (api) => api.v1ProfilesGet(search: searchText, offset: offset, limit: limit),
     map: (result) => result.data,
   );
 
   Future<PublicProfile> getProfile(String profileId) async =>
-      getFromApi(apiRequest: (api) => api.v1ProfilesProfileIdGet(profileId: profileId));
+      getFromApi(request: (api) => api.v1ProfilesProfileIdGet(profileId: profileId));
 
   Future<FindCompletedChallengesResponse> getCompletedChallenges({
     required String profileId,
@@ -22,7 +22,7 @@ class ProfilesApiService extends BaseApiService {
     required num offset,
     required num limit,
   }) async => getFromApi(
-    apiRequest: (api) => api.v1ProfilesProfileIdCompletedChallengesGet(
+    request: (api) => api.v1ProfilesProfileIdCompletedChallengesGet(
       profileId: profileId,
       state: challengeStatus,
       campaignId: campaignId,

@@ -4,58 +4,58 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class TeamsApiService extends BaseApiService {
-  Future<Team?> getOwnTeam() async => getFromApi<Team?, Team?>(apiRequest: (api) => api.v1CampaignsTeamsSelfGet());
+  Future<Team?> getOwnTeam() async => getFromApi<Team?, Team?>(request: (api) => api.v1CampaignsTeamsSelfGet());
 
   Future<TeamAssignmentResponse> getTeamAssignments({required String teamId}) =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsTeamIdAssignmentsGet(teamId: teamId));
+      getFromApi(request: (api) => api.v1CampaignsTeamsTeamIdAssignmentsGet(teamId: teamId));
 
   Future<Team> updateTeam({required String teamId, required String teamName, String? teamDescription}) async =>
       getFromApi<Team, Team>(
-        apiRequest: (api) => api.v1CampaignsTeamsTeamIdPut(
+        request: (api) => api.v1CampaignsTeamsTeamIdPut(
           teamId: teamId,
           body: UpdateTeam(name: teamName, description: teamDescription),
         ),
       );
 
   Future<Team> createNewTeam(NewTeamDetails newTeamDetails) async =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPost(body: newTeamDetails.toCreateTeam()));
+      getFromApi(request: (api) => api.v1CampaignsTeamsPost(body: newTeamDetails.toCreateTeam()));
 
   Future<List<TeamInvitation>> getOpenInvitations() async =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsPendingInvitationsGet());
+      getFromApi(request: (api) => api.v1CampaignsTeamsPendingInvitationsGet());
 
   Future<Team> acceptTeamMembership(String teamId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
+    request: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
       body: UpdateTeamMembershipStatus(type: TeamMembershipStatusUpdateType.accept),
     ),
   );
 
   Future<Team> rejectTeamMembership(String teamId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
+    request: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
       body: UpdateTeamMembershipStatus(type: TeamMembershipStatusUpdateType.reject),
     ),
   );
 
   Future<Team> leaveTeam(String teamId) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
+    request: (api) => api.v1CampaignsTeamsTeamIdMembershipStatusPut(
       teamId: teamId,
       body: UpdateTeamMembershipStatus(type: TeamMembershipStatusUpdateType.resign),
     ),
   );
 
   Future<void> archiveTeam(String teamId) async =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsTeamIdActionArchivePut(teamId: teamId));
+      getFromApi(request: (api) => api.v1CampaignsTeamsTeamIdActionArchivePut(teamId: teamId));
 
   Future<Team> addTeamMembership({required String teamId, required String userId}) => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipPost(
+    request: (api) => api.v1CampaignsTeamsTeamIdMembershipPost(
       teamId: teamId,
       body: CreateTeamMembership(type: TeamMembershipType.member, userId: userId),
     ),
   );
 
   Future<Team> removeTeamMembership({required String teamId, required String userId}) => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipDelete(
+    request: (api) => api.v1CampaignsTeamsTeamIdMembershipDelete(
       teamId: teamId,
       body: DeleteTeamMembership(userId: userId),
     ),
@@ -66,20 +66,20 @@ class TeamsApiService extends BaseApiService {
     required String userId,
     required TeamMembershipType membershipType,
   }) => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsTeamIdMembershipPut(
+    request: (api) => api.v1CampaignsTeamsTeamIdMembershipPut(
       teamId: teamId,
       body: UpdateTeamMembership(userId: userId, type: membershipType.toUpdateTeamMembershipType()),
     ),
   );
 
   Future<List<FindTeamsItem>> findTeams(List<String> divisionKeys) => getFromApi(
-    apiRequest: (api) => api.v1CampaignsTeamsGet(divisionKeys: divisionKeys),
+    request: (api) => api.v1CampaignsTeamsGet(divisionKeys: divisionKeys),
     map: (data) => data.data,
   );
 
   Future<TeamMembershipStatistics> getTeamMembershipStatistics({required String? campaignId}) =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsSelfMembershipStatisticsGet(campaignId: campaignId));
+      getFromApi(request: (api) => api.v1CampaignsTeamsSelfMembershipStatisticsGet(campaignId: campaignId));
 
   Future<TeamStatistics> getTeamStatistics({required String? campaignId}) =>
-      getFromApi(apiRequest: (api) => api.v1CampaignsTeamsStatisticsGet(campaignId: campaignId));
+      getFromApi(request: (api) => api.v1CampaignsTeamsStatisticsGet(campaignId: campaignId));
 }

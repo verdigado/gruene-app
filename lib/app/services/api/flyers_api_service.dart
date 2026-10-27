@@ -12,7 +12,7 @@ class FlyersApiService extends PoisApiBaseService {
   FlyersApiService() : super(poiType: PoiServiceType.flyer);
 
   Future<PoiDetailModel> createNewFlyer(FlyerCreateModel newFlyer) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsPoisPost(
+    request: (api) => api.v1CampaignsPoisPost(
       body: CreatePoi(
         campaignId: newFlyer.campaignId,
         coords: newFlyer.location.toGeoJsonCoords(),
@@ -25,7 +25,7 @@ class FlyersApiService extends PoisApiBaseService {
   );
 
   Future<PoiDetailModel> updateFlyer(FlyerUpdateModel flyerUpdate) async => getFromApi(
-    apiRequest: (api) => api.v1CampaignsPoisPoiIdPut(
+    request: (api) => api.v1CampaignsPoisPoiIdPut(
       poiId: flyerUpdate.id,
       body: UpdatePoi(
         address: flyerUpdate.address.toPoiAddress(),
