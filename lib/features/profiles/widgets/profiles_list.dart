@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_list_item.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -24,12 +25,17 @@ class ProfilesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profileService = GetIt.I<ProfileApiService>();
     final tags = [...skillsFilter.current, ...interestsFilter.current];
 
     return FutureLoadingScreen(
       refetchKey: (searchFilter.current, divisionFilter.current, skillsFilter.current, interestsFilter.current),
       load: () async => (
-        profiles: await fetchProfiles(query: searchFilter.current, division: divisionFilter.current, tags: tags),
+        profiles: await profileService.getProfiles(
+          search: searchFilter.current,
+          division: divisionFilter.current,
+          tags: tags,
+        ),
         userId: await AuthRepository().getCurrentUserId(),
       ),
       buildChild: (data, extra) {

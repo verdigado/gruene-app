@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/utils/utils.dart';
@@ -31,9 +32,9 @@ class NewsList extends StatelessWidget {
     return FutureLoadingScreen(
       refetchKey: (query, showBookmarked),
       load: query.isNotEmpty || showBookmarked
-          ? () => fetchNews(query: query, bookmarked: showBookmarked)
+          ? () => GetIt.I<NewsApiService>().getNews(query: query, bookmarked: showBookmarked)
           : () async => allNews,
-      buildChild: (data, _) {
+      buildChild: (data, extra) {
         final news = data
             .where(
               (news) =>
@@ -43,7 +44,7 @@ class NewsList extends StatelessWidget {
             )
             .toList();
         if (news.isEmpty) {
-          return ErrorScreen(errorMessage: t.news.noResults, retry: fetchNews);
+          return ErrorScreen(errorMessage: t.news.noResults, retry: extra.refresh);
         }
         return ListView.builder(
           itemCount: news.length,

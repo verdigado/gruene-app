@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
@@ -9,7 +10,7 @@ import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/full_width_image.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
-import 'package:gruene_app/features/events/services/events_api_service.dart';
+import 'package:gruene_app/features/events/services/event_api_service.dart';
 import 'package:gruene_app/features/events/widgets/event_detail.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -120,7 +121,7 @@ class EventDeletionConfirmationDialog extends StatelessWidget {
           onPressed: () async => await tryAndNotify(
             function: () async {
               Navigator.of(context).pop(true);
-              await deleteEvent(event);
+              await GetIt.I<EventApiService>().deleteEvent(event);
             },
             context: context,
             onSuccess: (context, _) => showSnackBar(context: context, text: t.events.deleted),

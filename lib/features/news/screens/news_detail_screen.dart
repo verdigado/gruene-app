@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
@@ -23,15 +24,16 @@ class NewsDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final newsService = GetIt.I<NewsApiService>();
     final newsItem = GoRouterState.of(context).extra as News?;
     final theme = Theme.of(context);
     return Scaffold(
       appBar: MainAppBar(title: t.news.newsDetail),
       body: FutureLoadingScreen<News?>(
-        load: newsItem == null ? () => fetchNewsById(newsId) : () async => newsItem,
-        buildChild: (News? news, _) {
+        load: newsItem == null ? () => newsService.getNewsById(newsId) : () async => newsItem,
+        buildChild: (news, extra) {
           if (news == null) {
-            return ErrorScreen(errorMessage: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
+            return ErrorScreen(errorMessage: t.news.newsNotFound, retry: extra.refresh);
           }
           final division = news.division;
           return SizedBox(

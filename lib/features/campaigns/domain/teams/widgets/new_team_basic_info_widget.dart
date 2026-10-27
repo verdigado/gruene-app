@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
-import 'package:gruene_app/app/services/api/profiles_api_service.dart';
-import 'package:gruene_app/app/services/api/users_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
+import 'package:gruene_app/app/services/api/user_api_service.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/close_save_widget.dart';
@@ -99,9 +99,9 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
   }
 
   Future<PublicProfile> _getCreatingUser() async {
-    var profileService = GetIt.I<ProfilesApiService>();
+    var profileService = GetIt.I<ProfileApiService>();
     try {
-      var currentProfile = await profileService.getSelf();
+      var currentProfile = await profileService.getOwnProfile();
       return PublicProfile(
         id: currentProfile.id,
         userId: currentProfile.userId,
@@ -118,7 +118,7 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
         memberships: [],
       );
     } catch (e) {
-      var userService = GetIt.I<UsersApiService>();
+      var userService = GetIt.I<UserApiService>();
       var user = await userService.getSelf();
       return PublicProfile(
         id: user.id,

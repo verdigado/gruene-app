@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/api/profiles_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/services/api/teams_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
@@ -56,8 +56,8 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
 
     Profile? profile;
     try {
-      var profileService = GetIt.I<ProfilesApiService>();
-      profile = preloadedProfile ?? await profileService.getSelf();
+      var profileService = GetIt.I<ProfileApiService>();
+      profile = preloadedProfile ?? await profileService.getOwnProfile();
     } catch (e) {
       profile = null;
     }

@@ -3,13 +3,13 @@ import 'package:gruene_app/app/models/campaigns/flyer/flyer_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/flyer/flyer_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/flyer/flyer_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
+import 'package:gruene_app/app/services/api/base_poi_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
-import 'package:gruene_app/app/services/api/pois_api_base_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class FlyersApiService extends PoisApiBaseService {
-  FlyersApiService() : super(poiType: PoiServiceType.flyer);
+class FlyerApiService extends BasePoiApiService {
+  FlyerApiService() : super(poiType: PoiServiceType.flyer);
 
   Future<PoiDetailModel> createNewFlyer(FlyerCreateModel newFlyer) async => send(
     request: (api) => api.v1CampaignsPoisPost(

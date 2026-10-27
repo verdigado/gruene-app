@@ -6,8 +6,8 @@ import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_list_item_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart';
+import 'package:gruene_app/app/services/api/base_poi_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
-import 'package:gruene_app/app/services/api/pois_api_base_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/utils/file_cache_manager.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -15,8 +15,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 
-class PostersApiService extends PoisApiBaseService {
-  PostersApiService() : super(poiType: PoiServiceType.poster);
+class PosterApiService extends BasePoiApiService {
+  PosterApiService() : super(poiType: PoiServiceType.poster);
 
   Future<PoiDetailModel> createNewPoster(PosterCreateModel newPoster) async {
     final requestParam = CreatePoi(

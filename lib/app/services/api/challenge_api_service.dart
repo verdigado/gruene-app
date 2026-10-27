@@ -2,7 +2,7 @@ import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class ChallengesApiService extends BaseApiService {
+class ChallengeApiService extends BaseApiService {
   Future<List<Challenge>> getChallenges({
     List<ChallengeActivityType>? activityTypes,
     List<ChallengeStatus>? challengeStatus,
@@ -49,7 +49,6 @@ class ChallengesApiService extends BaseApiService {
   Future<Challenge> getChallenge(String challengeId) async =>
       send(request: (api) => api.v1CampaignsChallengesChallengeIdGet(challengeId: challengeId));
 
-  Future<FindChallengeLeaderboardResponse> getChallengeLeaderboard(String challengeId) async => send(
-    request: (api) => api.v1CampaignsChallengesChallengeIdLeaderboardGet(challengeId: challengeId, limit: 99),
-  );
+  Future<FindChallengeLeaderboardResponse> getChallengeLeaderboard(String challengeId) async =>
+      send(request: (api) => api.v1CampaignsChallengesChallengeIdLeaderboardGet(challengeId: challengeId, limit: 99));
 }

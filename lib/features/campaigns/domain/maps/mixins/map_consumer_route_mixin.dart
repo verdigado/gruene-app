@@ -2,7 +2,7 @@ part of '../mixins.dart';
 
 mixin MapConsumerRouteMixin on InfoBox {
   bool routesVisible = false;
-  PoisApiBaseService get campaignService;
+  BasePoiApiService get campaignService;
   void hideCurrentSnackBar();
   void showInfoToast(String toastText, {void Function()? moreInfoCallback});
 

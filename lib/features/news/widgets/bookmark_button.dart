@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/news/bloc/bookmark_cubit.dart';
-import 'package:gruene_app/features/news/services/bookmark_api_service.dart';
+import 'package:gruene_app/features/news/services/news_api_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class BookmarkButton extends StatefulWidget {
@@ -27,10 +28,10 @@ class _BookmarkButtonState extends State<BookmarkButton> {
     setState(() => _pending = true);
     try {
       if (bookmarkId != null) {
-        await deleteBookmark(bookmarkId);
+        await GetIt.I<NewsApiService>().deleteBookmark(bookmarkId);
         cubit.setBookmark(news.id, null);
       } else {
-        final bookmark = await createBookmark(news.id);
+        final bookmark = await GetIt.I<NewsApiService>().createBookmark(news.id);
         cubit.setBookmark(news.id, bookmark);
       }
     } catch (error) {

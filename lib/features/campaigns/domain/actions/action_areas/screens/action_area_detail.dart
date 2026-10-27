@@ -4,9 +4,9 @@ import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
-import 'package:gruene_app/app/services/api/profiles_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/services/api/teams_api_service.dart';
-import 'package:gruene_app/app/services/api/users_api_service.dart';
+import 'package:gruene_app/app/services/api/user_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
@@ -50,10 +50,10 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    var userService = GetIt.I<UsersApiService>();
-    var profileService = GetIt.I<ProfilesApiService>();
+    var userService = GetIt.I<UserApiService>();
+    var profileService = GetIt.I<ProfileApiService>();
 
-    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
+    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getOwnProfile()).wait;
     var currentUserKV = await currentUser.getOwnKV();
 
     setState(() {

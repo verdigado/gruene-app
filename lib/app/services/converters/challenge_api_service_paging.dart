@@ -1,6 +1,6 @@
 part of '../converters.dart';
 
-extension ChallengesApiServicePaging on ChallengesApiService {
+extension ChallengeApiServicePaging on ChallengeApiService {
   Future<List<JoinedChallenge>> getAllMyChallenges({
     List<ChallengeStatus>? challengeStatus,
     String? campaignId,

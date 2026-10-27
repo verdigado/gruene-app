@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
-import 'package:gruene_app/app/services/api/campaigns_api_service.dart';
+import 'package:gruene_app/app/services/api/campaign_api_service.dart';
 import 'package:gruene_app/app/services/api/teams_api_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
@@ -92,7 +92,7 @@ class ActiveCampaignNotifier extends ChangeNotifier {
       var currentCampaignId = getCurrentCampaignId();
       var isActive = false;
       if (currentCampaignId != null) {
-        var allCampaigns = await GetIt.I<CampaignsApiService>().findCampaigns();
+        var allCampaigns = await GetIt.I<CampaignApiService>().findCampaigns();
         isActive = allCampaigns.any((c) => c.id == currentCampaignId && c.status == CampaignStatus.active);
       }
       _isCurrentCampaignActive = isActive;
@@ -118,7 +118,7 @@ class NewCampaignNotifier extends ChangeNotifier {
 
   void checkNewCampaignsAvailable() async {
     try {
-      var allCampaigns = (await GetIt.I<CampaignsApiService>().findCampaigns()).activeCampaigns();
+      var allCampaigns = (await GetIt.I<CampaignApiService>().findCampaigns()).activeCampaigns();
       var recentlySeenCampaignIds = GetIt.I<AppSettings>().campaign.activeCampaign.recentlySeenCampaignIds ?? [];
 
       var newCampaigns = allCampaigns.where((c) => !recentlySeenCampaignIds.contains(c.id)).toList();

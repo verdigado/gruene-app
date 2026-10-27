@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/utils/date.dart';
-import 'package:gruene_app/features/events/services/events_api_service.dart';
+import 'package:gruene_app/features/events/services/event_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
@@ -124,7 +125,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
 
       if (reload) {
         try {
-          final allEventsInDateRange = await getEvents(state.dateRange);
+          final allEventsInDateRange = await GetIt.I<EventApiService>().getEvents(state.dateRange);
           emit(state.copyWith(allEventsInDateRange: allEventsInDateRange, loading: false, error: Wrapped.value(null)));
         } catch (error) {
           emit(state.copyWith(loading: false, error: Wrapped.value(error)));

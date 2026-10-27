@@ -3,11 +3,11 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/services/api/divisions_api_service.dart';
+import 'package:gruene_app/app/services/api/division_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/hint.dart';
-import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profiles_filter_dialog.dart';
 import 'package:gruene_app/features/profiles/widgets/profiles_list.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -23,8 +23,10 @@ class ProfileSearchScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.search),
       body: FutureLoadingScreen(
-        load: () async =>
-            (divisions: await GetIt.I<DivisionsApiService>().loadDivisions(), tags: await fetchProfileTags()),
+        load: () async => (
+          divisions: await GetIt.I<DivisionApiService>().getDivisions(limit: 100000),
+          tags: await GetIt.I<ProfileApiService>().getProfileTags(),
+        ),
         buildChild: (data, _) =>
             ProfileSearchScreen(divisions: data.divisions, tags: data.tags, preselectedDivision: preselectedDivision),
       ),

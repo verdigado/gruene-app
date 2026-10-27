@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_create_model.dart';
-import 'package:gruene_app/app/services/api/campaigns_api_service.dart';
+import 'package:gruene_app/app/services/api/campaign_api_service.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
@@ -63,7 +63,7 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
   Future<void> _loadData() async {
     var activeCampaign = appSettings.campaign.activeCampaign.recentSelectedCampaignId;
     if (activeCampaign != null) {
-      var campaignService = GetIt.I<CampaignsApiService>();
+      var campaignService = GetIt.I<CampaignApiService>();
       var campaign = await campaignService.getCampaign(activeCampaign);
       setState(() {
         _campaignName = campaign.name;

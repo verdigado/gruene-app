@@ -56,7 +56,7 @@ mixin MapContainerActionAreaMixin {
   }
 
   Future<ActionAreaDetailModel> _getActionArea(String actionAreaId) async {
-    var actionAreaService = GetIt.I<ActionAreasApiService>();
+    var actionAreaService = GetIt.I<ActionAreaApiService>();
     return (await actionAreaService.getActionArea(actionAreaId)).toActionAreaDetail();
   }
 

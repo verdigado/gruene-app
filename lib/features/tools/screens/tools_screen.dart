@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
 import 'package:gruene_app/app/screens/tab_screen.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/tab_bar.dart';
-import 'package:gruene_app/features/tools/services/tools_api_service.dart';
+import 'package:gruene_app/features/tools/services/tool_api_service.dart';
+import 'package:gruene_app/features/tools/utils/utils.dart';
 import 'package:gruene_app/features/tools/widgets/tools_list.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ToolsScreen extends StatelessWidget {
   const ToolsScreen({super.key});
@@ -14,14 +15,14 @@ class ToolsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureLoadingScreen(
-      load: fetchTools,
+      load: GetIt.I<ToolApiService>().getTools,
       loadingLayoutBuilder: (Widget child) => Scaffold(appBar: MainAppBar(title: t.tools.tools)),
-      buildChild: (List<GnetzApplication> data, _) {
-        final tabs = getToolCategories(data)
+      buildChild: (tools, _) {
+        final tabs = tools.categories
             .map(
               (category) => TabModel(
                 label: category.title,
-                view: ToolsList(tools: data.where((tool) => tool.categories.contains(category)).toList()),
+                view: ToolsList(tools: tools.where((tool) => tool.categories.contains(category)).toList()),
               ),
             )
             .toList();

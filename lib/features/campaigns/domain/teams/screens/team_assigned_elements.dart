@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/models/campaigns/team/team_assignment.dart';
-import 'package:gruene_app/app/services/api/campaigns_api_service.dart';
+import 'package:gruene_app/app/services/api/campaign_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/api/teams_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -52,7 +52,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
     campaignIds.addAll(assignedElements.areas.map((a) => a.campaignId));
     campaignIds = campaignIds.groupBy((c) => c).keys.toList();
 
-    var campaignService = GetIt.I<CampaignsApiService>();
+    var campaignService = GetIt.I<CampaignApiService>();
     var activeCampaigns = (await campaignService.findCampaigns()).activeCampaigns();
 
     setState(() {

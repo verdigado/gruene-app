@@ -2,8 +2,8 @@ import 'package:flutter/material.dart' hide Visibility;
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
-import 'package:gruene_app/app/services/api/challenges_api_service.dart';
-import 'package:gruene_app/app/services/api/profiles_api_service.dart';
+import 'package:gruene_app/app/services/api/challenge_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -13,8 +13,8 @@ class ChallengeHelper {
   static Future<ChallengeMembership?> joinChallenge(BuildContext context, Challenge challenge) async {
     Profile? profile;
     try {
-      var profileService = GetIt.I<ProfilesApiService>();
-      profile = await profileService.getSelf();
+      var profileService = GetIt.I<ProfileApiService>();
+      profile = await profileService.getOwnProfile();
     } catch (e) {
       profile = null;
     }
@@ -46,7 +46,7 @@ class ChallengeHelper {
       if (!confirmResult) return null;
     }
 
-    var challengeService = GetIt.I<ChallengesApiService>();
+    var challengeService = GetIt.I<ChallengeApiService>();
     var joinResult = await challengeService.joinChallenge(challenge.id);
     if (!context.mounted) return null;
     showSnackBar(
@@ -73,7 +73,7 @@ class ChallengeHelper {
         false;
     if (!confirmResult) return;
 
-    var challengeService = GetIt.I<ChallengesApiService>();
+    var challengeService = GetIt.I<ChallengeApiService>();
     await challengeService.leaveChallenge(challenge.id);
     if (!context.mounted) return;
     showSnackBar(

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class UsersApiService extends BaseApiService {
+class UserApiService extends BaseApiService {
   Future<User> getSelf() async => send(request: (api) => api.v1UsersSelfGet());
 
   Future<UserRbacStructure> getOwnRbac() async => send(request: (api) => api.v1UsersSelfRbacStructureGet());

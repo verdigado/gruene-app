@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/utils/image.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
-import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
@@ -16,10 +17,11 @@ class ProfileImageEditButton extends StatelessWidget {
   const ProfileImageEditButton({super.key, required this.profile, required this.update, required this.setLoading});
 
   Future<MultipartFile?> _editProfileImage(BuildContext context) async {
+    final profileService = GetIt.I<ProfileApiService>();
     final imageFile = await pickImage(context, CropAspectRatio(ratioX: 1, ratioY: 1));
     if (imageFile == null) return null;
     final image = await multipartImage(imageFile, 'profileImage');
-    final newProfile = await updateProfileImage(profileId: profile.id, profileImage: image);
+    final newProfile = await profileService.updateProfileImage(profileId: profile.id, profileImage: image);
     update(newProfile);
     return image;
   }

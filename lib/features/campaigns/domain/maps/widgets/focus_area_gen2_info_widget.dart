@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/api/campaigns_api_service.dart';
+import 'package:gruene_app/app/services/api/campaign_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
@@ -397,7 +397,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
   }
 
   Future<Campaign> _getCampaignData() async {
-    var campaignService = GetIt.I<CampaignsApiService>();
+    var campaignService = GetIt.I<CampaignApiService>();
     return await campaignService.getCampaign(focusArea.campaignId);
   }
 }

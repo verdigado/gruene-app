@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
-import 'package:gruene_app/app/services/api/profiles_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
@@ -128,9 +128,9 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
   Future<Division?> _getCurrentDivision() async {
     if (currentDivision != null) return currentDivision!;
 
-    var profileService = GetIt.I<ProfilesApiService>();
+    var profileService = GetIt.I<ProfileApiService>();
     try {
-      var currentDivision = (await profileService.getSelf()).getOwnKV();
+      var currentDivision = (await profileService.getOwnProfile()).getOwnKV();
       return await currentDivision;
     } catch (e) {
       return null;

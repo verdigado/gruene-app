@@ -9,32 +9,28 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-abstract class PoisApiBaseService extends BaseApiService {
+abstract class BasePoiApiService extends BaseApiService {
   final PoiServiceType poiType;
 
-  PoisApiBaseService({required this.poiType}) : super();
+  BasePoiApiService({required this.poiType}) : super();
 
-  Future<List<PoiDetailModel>> loadPoisInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async =>
-      send(
-        request: (api) => api.v1CampaignsPoisGet(
-          type: poiType.toApiPoisType(),
-          bbox: locationSW.toGeoJsonBBoxString(locationNE),
-          campaignId: [campaignId],
-        ),
-        map: (result) => result.data.where(filterByCutOffDate).map((p) => p.toMarkerItem()).toList(),
-      );
-
-  Future<List<FocusArea>> loadFocusAreasInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async =>
-      send(
-        request: (api) =>
-            api.v1CampaignsFocusAreasGet(bbox: locationSW.toGeoJsonBBoxString(locationNE), campaignId: campaignId),
-        map: (result) => result.data,
-      );
-
-  Future<FocusArea> loadFocusArea(String focusAreaId) async => send(
-    request: (api) => api.v1CampaignsFocusAreasFocusAreaIdGet(focusAreaId: focusAreaId),
-    map: (result) => result,
+  Future<List<PoiDetailModel>> loadPoisInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async => send(
+    request: (api) => api.v1CampaignsPoisGet(
+      type: poiType.toApiPoisType(),
+      bbox: locationSW.toGeoJsonBBoxString(locationNE),
+      campaignId: [campaignId],
+    ),
+    map: (result) => result.data.where(filterByCutOffDate).map((p) => p.toMarkerItem()).toList(),
   );
+
+  Future<List<FocusArea>> loadFocusAreasInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async => send(
+    request: (api) =>
+        api.v1CampaignsFocusAreasGet(bbox: locationSW.toGeoJsonBBoxString(locationNE), campaignId: campaignId),
+    map: (result) => result.data,
+  );
+
+  Future<FocusArea> loadFocusArea(String focusAreaId) async =>
+      send(request: (api) => api.v1CampaignsFocusAreasFocusAreaIdGet(focusAreaId: focusAreaId));
 
   Future<List<PollingStation>> loadPollingStationsInRegion(
     String campaignId,
@@ -65,15 +61,14 @@ abstract class PoisApiBaseService extends BaseApiService {
     map: (result) => result.data,
   );
 
-  Future<List<Area>> loadActionAreasInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async =>
-      send(
-        request: (api) => api.v1CampaignsAreasGet(
-          bbox: locationSW.toGeoJsonBBoxString(locationNE),
-          type: [poiType.toApiAreasGetType()],
-          campaignId: campaignId,
-        ),
-        map: (result) => result.data,
-      );
+  Future<List<Area>> loadActionAreasInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async => send(
+    request: (api) => api.v1CampaignsAreasGet(
+      bbox: locationSW.toGeoJsonBBoxString(locationNE),
+      type: [poiType.toApiAreasGetType()],
+      campaignId: campaignId,
+    ),
+    map: (result) => result.data,
+  );
 
   Future<T> getPoi<T>(String poiId, T Function(Poi) transform) async => send(
     request: (api) => api.v1CampaignsPoisPoiIdGet(poiId: poiId),

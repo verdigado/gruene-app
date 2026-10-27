@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_model.dart';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/api/campaigns_statistics_api_service.dart';
-import 'package:gruene_app/app/services/api/challenges_api_service.dart';
+import 'package:gruene_app/app/services/api/challenge_api_service.dart';
 import 'package:gruene_app/app/services/api/teams_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -204,7 +204,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             DateTime.now().isBefore(campaignSettings.recentChallengeBadgesFetchTimestamp!.add(Duration(minutes: 5))))) {
       return campaignSettings.recentChallengeBadges!;
     }
-    var challengeApiService = GetIt.I<ChallengesApiService>();
+    var challengeApiService = GetIt.I<ChallengeApiService>();
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
     var challengeBadges = (await challengeApiService.getAllMyChallenges(
       campaignId: currentPoiStatisticsCampaignId == CampaignConstants.allCampaignsId

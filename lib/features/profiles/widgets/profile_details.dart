@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/services/api/divisions_api_service.dart';
-import 'package:gruene_app/app/services/api/profiles_api_service.dart';
+import 'package:gruene_app/app/services/api/division_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
@@ -16,7 +16,6 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/pressable_opacity.dart';
 import 'package:gruene_app/app/widgets/section_card.dart';
 import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_badge.dart';
-import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profile_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide ProfileImage, Image;
@@ -29,7 +28,8 @@ class ProfileDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profileService = GetIt.I<ProfilesApiService>();
+    final profileService = GetIt.I<ProfileApiService>();
+    final divisionService = GetIt.I<DivisionApiService>();
     final email = profile.email;
     final mandateRoles = profile.displayRoles(types: [ProfileRoleType.mandate]);
     final officeRoles = profile.displayRoles(types: [ProfileRoleType.office]);
@@ -48,10 +48,10 @@ class ProfileDetails extends StatelessWidget {
       load: () async => (
         completedChallenges: await profileService.getAllMyChallenges(profileId: profile.id, sorting: .endDescending),
         profiles: partyDivision != null && isOwnProfile
-            ? await fetchProfiles(division: partyDivision, limit: maxProfileCards)
+            ? await profileService.getProfiles(division: partyDivision, limit: maxProfileCards)
             : <PublicProfile>[],
         parentDivisions: parentDivisionKeys.isNotEmpty
-            ? await GetIt.I<DivisionsApiService>().loadDivisions(parentDivisionKeys)
+            ? await divisionService.getDivisions(divisionKeys: parentDivisionKeys)
             : <Division>[],
       ),
       loadingLayoutBuilder: (Widget child) => Padding(padding: screenPadding, child: child),

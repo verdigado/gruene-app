@@ -5,8 +5,8 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
-import 'package:gruene_app/app/services/api/campaigns_api_service.dart';
-import 'package:gruene_app/app/services/api/challenges_api_service.dart';
+import 'package:gruene_app/app/services/api/campaign_api_service.dart';
+import 'package:gruene_app/app/services/api/challenge_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
@@ -55,7 +55,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     });
 
     try {
-      var challengeService = GetIt.I<ChallengesApiService>();
+      var challengeService = GetIt.I<ChallengeApiService>();
       var results = await Future.wait([
         challengeService.getChallenge(widget.challengeId),
         challengeService.getAllMyChallenges(),
@@ -75,7 +75,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
       Campaign? currentCampaign;
       if (currentChallenge.campaignId != null) {
-        var campaignService = GetIt.I<CampaignsApiService>();
+        var campaignService = GetIt.I<CampaignApiService>();
         currentCampaign = await campaignService.getCampaign(currentChallenge.campaignId!);
       }
 
