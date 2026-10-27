@@ -5,5 +5,5 @@ class VisualIdentifiersApiService extends BaseApiService {
   VisualIdentifiersApiService() : super();
 
   Future<List<VisualIdentifier>> getVisualIdentifiers() =>
-      getFromApi(request: (api) => api.v1CampaignsVisualIdentifiersGet(), map: (result) => result.data);
+      send(request: (api) => api.v1CampaignsVisualIdentifiersGet(), map: (result) => result.data);
 }

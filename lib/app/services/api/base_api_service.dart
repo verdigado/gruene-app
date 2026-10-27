@@ -9,7 +9,7 @@ abstract class BaseApiService {
     grueneApi = GetIt.I<GrueneApi>();
   }
 
-  Future<T> getFromApi<S, T>({
+  Future<T> send<S, T>({
     required Future<Response<S>> Function(GrueneApi api) request,
     T Function(S data)? map,
   }) async {
@@ -34,5 +34,6 @@ abstract class BaseApiService {
 class ApiException implements Exception {
   int statusCode;
   String message;
-  ApiException({required this.statusCode, this.message = ''});
+  
+  ApiException({required this.statusCode, required this.message});
 }

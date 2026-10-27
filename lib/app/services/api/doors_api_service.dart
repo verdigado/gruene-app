@@ -11,7 +11,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class DoorsApiService extends PoisApiBaseService {
   DoorsApiService() : super(poiType: PoiServiceType.door);
 
-  Future<PoiDetailModel> createNewDoor(DoorCreateModel newDoor) async => getFromApi(
+  Future<PoiDetailModel> createNewDoor(DoorCreateModel newDoor) async => send(
     request: (api) => api.v1CampaignsPoisPost(
       body: CreatePoi(
         campaignId: newDoor.campaignId,
@@ -27,7 +27,7 @@ class DoorsApiService extends PoisApiBaseService {
     map: (result) => result.toMarkerItem(),
   );
 
-  Future<PoiDetailModel> updateDoor(DoorUpdateModel doorUpdate) async => getFromApi(
+  Future<PoiDetailModel> updateDoor(DoorUpdateModel doorUpdate) async => send(
     request: (api) => api.v1CampaignsPoisPoiIdPut(
       poiId: doorUpdate.id,
       body: UpdatePoi(

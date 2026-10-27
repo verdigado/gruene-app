@@ -8,16 +8,16 @@ class ActionAreasApiService extends BaseApiService {
   ActionAreasApiService() : super();
 
   Future<Area> getActionArea(String actionAreaId) async =>
-      getFromApi(request: (api) => api.v1CampaignsAreasAreaIdGet(areaId: actionAreaId));
+      send(request: (api) => api.v1CampaignsAreasAreaIdGet(areaId: actionAreaId));
 
-  Future<void> updateActionAreaStatus(ActionAreaStatusUpdateModel actionArea) => getFromApi(
+  Future<void> updateActionAreaStatus(ActionAreaStatusUpdateModel actionArea) => send(
     request: (api) => api.v1CampaignsAreasAreaIdStatusPut(
       areaId: actionArea.id,
       body: UpdateAreaStatus(status: actionArea.status.toUpdateAreaStatusStatus()),
     ),
   );
 
-  Future<void> updateActionAreaAssignemnt(ActionAreaAssignmentUpdateModel actionArea) => getFromApi(
+  Future<void> updateActionAreaAssignemnt(ActionAreaAssignmentUpdateModel actionArea) => send(
     request: (api) => api.v1CampaignsAreasAreaIdTeamPut(
       areaId: actionArea.id,
       body: AreaAssignTeam(teamId: actionArea.team?.id),

@@ -8,16 +8,16 @@ class RoutesApiService extends BaseApiService {
   RoutesApiService() : super();
 
   Future<Route> getRoute(String routeId) async =>
-      getFromApi(request: (api) => api.v1CampaignsRoutesRouteIdGet(routeId: routeId));
+      send(request: (api) => api.v1CampaignsRoutesRouteIdGet(routeId: routeId));
 
-  Future<void> updateRouteAssignemnt(RouteAssignmentUpdateModel route) => getFromApi(
+  Future<void> updateRouteAssignemnt(RouteAssignmentUpdateModel route) => send(
     request: (api) => api.v1CampaignsRoutesRouteIdTeamPut(
       routeId: route.id,
       body: RouteAssignTeam(teamId: route.team?.id),
     ),
   );
 
-  Future<void> updateRouteStatus(RouteStatusUpdateModel route) => getFromApi(
+  Future<void> updateRouteStatus(RouteStatusUpdateModel route) => send(
     request: (api) => api.v1CampaignsRoutesRouteIdStatusPut(
       routeId: route.id,
       body: UpdateRouteStatus(status: route.status.toUpdateRouteStatusStatus()),

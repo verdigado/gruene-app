@@ -9,7 +9,7 @@ class ChallengesApiService extends BaseApiService {
     ChallengeSort? sorting,
     required num offset,
     required num limit,
-  }) async => getFromApi(
+  }) async => send(
     request: (api) => api.v1CampaignsChallengesGet(
       activityType: activityTypes,
       offset: offset,
@@ -28,7 +28,7 @@ class ChallengesApiService extends BaseApiService {
     bool? onlyActiveCampaigns,
     required num offset,
     required num limit,
-  }) async => getFromApi(
+  }) async => send(
     request: (api) => api.v1CampaignsChallengesSelfGet(
       state: challengeStatus,
       campaignId: campaignId,
@@ -41,15 +41,15 @@ class ChallengesApiService extends BaseApiService {
   );
 
   Future<ChallengeMembership> joinChallenge(String challengeId) async =>
-      getFromApi(request: (api) => api.v1CampaignsChallengesChallengeIdJoinPost(challengeId: challengeId, body: null));
+      send(request: (api) => api.v1CampaignsChallengesChallengeIdJoinPost(challengeId: challengeId, body: null));
 
   Future<void> leaveChallenge(String challengeId) async =>
-      getFromApi(request: (api) => api.v1CampaignsChallengesChallengeIdLeavePost(challengeId: challengeId));
+      send(request: (api) => api.v1CampaignsChallengesChallengeIdLeavePost(challengeId: challengeId));
 
   Future<Challenge> getChallenge(String challengeId) async =>
-      getFromApi(request: (api) => api.v1CampaignsChallengesChallengeIdGet(challengeId: challengeId));
+      send(request: (api) => api.v1CampaignsChallengesChallengeIdGet(challengeId: challengeId));
 
-  Future<FindChallengeLeaderboardResponse> getChallengeLeaderboard(String challengeId) async => getFromApi(
+  Future<FindChallengeLeaderboardResponse> getChallengeLeaderboard(String challengeId) async => send(
     request: (api) => api.v1CampaignsChallengesChallengeIdLeaderboardGet(challengeId: challengeId, limit: 99),
   );
 }

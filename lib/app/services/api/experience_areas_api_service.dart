@@ -4,7 +4,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class ExperienceAreasApiService extends BaseApiService {
   ExperienceAreasApiService() : super();
 
-  Future<ExperienceArea> getExperienceArea(String experienceAreaId) async => getFromApi(
+  Future<ExperienceArea> getExperienceArea(String experienceAreaId) async => send(
     request: (api) => api.v1CampaignsExperienceAreasExperienceAreaIdGet(experienceAreaId: experienceAreaId),
   );
 }

@@ -89,7 +89,7 @@ class PostersApiService extends PoisApiBaseService {
     return getPoi(poiId, (p) => p.toPosterListItem());
   }
 
-  Future<List<PosterListItemModel>> getMyPosters(String campaignId) async => getFromApi(
+  Future<List<PosterListItemModel>> getMyPosters(String campaignId) async => send(
     request: (api) => api.v1CampaignsPoisSelfGet(type: poiType.toApiPoisType(), campaignId: [campaignId]),
     map: (result) => result.data.where(filterByCutOffDate).map((p) => p.toPosterListItem()).toList(),
   );

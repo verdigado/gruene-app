@@ -11,7 +11,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class FlyersApiService extends PoisApiBaseService {
   FlyersApiService() : super(poiType: PoiServiceType.flyer);
 
-  Future<PoiDetailModel> createNewFlyer(FlyerCreateModel newFlyer) async => getFromApi(
+  Future<PoiDetailModel> createNewFlyer(FlyerCreateModel newFlyer) async => send(
     request: (api) => api.v1CampaignsPoisPost(
       body: CreatePoi(
         campaignId: newFlyer.campaignId,
@@ -24,7 +24,7 @@ class FlyersApiService extends PoisApiBaseService {
     map: (result) => result.toMarkerItem(),
   );
 
-  Future<PoiDetailModel> updateFlyer(FlyerUpdateModel flyerUpdate) async => getFromApi(
+  Future<PoiDetailModel> updateFlyer(FlyerUpdateModel flyerUpdate) async => send(
     request: (api) => api.v1CampaignsPoisPoiIdPut(
       poiId: flyerUpdate.id,
       body: UpdatePoi(

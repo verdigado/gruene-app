@@ -8,13 +8,13 @@ class DivisionsApiService extends BaseApiService {
     int? limit,
     List<String>? divisionKeys,
     HierarchyLevel? level,
-  }) async => getFromApi(
+  }) async => send(
     request: (api) =>
         api.v1DivisionsGet(search: searchTerm, offset: offset, limit: limit, divisionKey: divisionKeys, level: level),
     map: (result) => result.data,
   );
 
-  Future<List<Division>> loadDivisions([List<String>? divisionKeys]) async => getFromApi(
+  Future<List<Division>> loadDivisions([List<String>? divisionKeys]) async => send(
     request: (api) => api.v1DivisionsGet(limit: 100000, divisionKey: divisionKeys),
     map: (result) => result.data,
   );

@@ -6,7 +6,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class CampaignsStatisticsApiService extends BaseApiService {
   CampaignsStatisticsApiService() : super();
 
-  Future<CampaignStatisticsModel> getStatistics({required String? campaigndId}) async => getFromApi(
+  Future<CampaignStatisticsModel> getStatistics({required String? campaigndId}) async => send(
     request: (api) => api.v1CampaignsStatisticsGet(campaignId: campaigndId),
     map: (result) => result.asCampaignStatistics(),
   );
