@@ -15,7 +15,7 @@ import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_core.dart';
-import 'package:gruene_app/app/services/ip_service.dart';
+import 'package:gruene_app/app/services/ip/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/services/push_notifications/handlers/notification_handlers.dart';
 import 'package:gruene_app/app/services/push_notifications/notification_message_type.dart';

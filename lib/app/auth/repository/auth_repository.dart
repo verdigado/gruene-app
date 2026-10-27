@@ -8,7 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
-import 'package:gruene_app/app/services/ip_service.dart';
+import 'package:gruene_app/app/services/ip/ip_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:uuid/uuid.dart';
