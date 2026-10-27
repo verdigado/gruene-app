@@ -8,7 +8,7 @@ import 'package:gruene_app/app/models/campaigns/doors/door_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_door_service.dart';
-import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/screens/door_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/screens/doors_add_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/screens/doors_detail.dart';

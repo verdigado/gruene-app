@@ -8,7 +8,7 @@ import 'package:gruene_app/app/models/campaigns/flyer/flyer_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
-import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flyer_add_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flyer_detail.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flyer_edit.dart';

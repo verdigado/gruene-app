@@ -15,7 +15,7 @@ import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
 import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
 import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
-import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/utils.dart';

@@ -1,4 +1,4 @@
-import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 
 class PosterListItemModel {
   final String id;
