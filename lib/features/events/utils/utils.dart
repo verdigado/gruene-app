@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/utils.dart';
-import 'package:gruene_app/features/events/models/month_group_model.dart';
 import 'package:gruene_app/main.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +9,13 @@ import 'package:rrule/rrule.dart';
 import 'package:turf/along.dart';
 
 const maxRecurrences = 30;
+
+class MonthGroup {
+  final DateTime month;
+  final List<({CalendarEvent event, DateTime recurrence})> events;
+
+  MonthGroup({required this.month, required this.events});
+}
 
 enum RecurrenceEndType { until, count }
 

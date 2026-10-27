@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
-import 'package:gruene_app/app/domain/divisions_api_service.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/services/divisions_api_service.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/hint.dart';
-import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
+import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/widgets/profiles_filter_dialog.dart';
 import 'package:gruene_app/features/profiles/widgets/profiles_list.dart';
 import 'package:gruene_app/i18n/translations.g.dart';

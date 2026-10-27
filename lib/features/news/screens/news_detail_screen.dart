@@ -9,7 +9,7 @@ import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/full_width_image.dart';
 import 'package:gruene_app/app/widgets/html.dart';
-import 'package:gruene_app/features/news/domain/news_api_service.dart';
+import 'package:gruene_app/features/news/services/news_api_service.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/attachments.dart';
 import 'package:gruene_app/features/news/widgets/bookmark_button.dart';

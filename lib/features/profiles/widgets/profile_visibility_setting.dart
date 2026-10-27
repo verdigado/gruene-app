@@ -9,7 +9,7 @@ import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';
-import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
+import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/utils/profile_visibility.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';

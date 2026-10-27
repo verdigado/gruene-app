@@ -4,7 +4,6 @@ import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.da
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_state.dart';
-import 'package:gruene_app/features/mfa/dtos/login_attempt_dto.dart';
 
 class MfaBloc extends Bloc<MfaEvent, MfaState> {
   final AuthenticatorService _service = GetIt.I<AuthenticatorService>();
@@ -33,11 +32,11 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
         state.copyWith(
           status: _authenticator != null ? MfaStatus.ready : MfaStatus.setup,
           error: null,
-          loginAttempt: null,
+          challenge: null,
         ),
       );
     } catch (error) {
-      emit(state.copyWith(error: error, loginAttempt: null));
+      emit(state.copyWith(error: error, challenge: null));
     }
   }
 
@@ -47,7 +46,7 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     try {
       String? firebaseToken = await FirebaseMessaging.instance.getToken();
       _authenticator = await _service.create(event.activationToken, devicePushId: firebaseToken);
-      emit(state.copyWith(status: MfaStatus.ready, isLoading: false, loginAttempt: null));
+      emit(state.copyWith(status: MfaStatus.ready, isLoading: false, challenge: null));
     } catch (error) {
       emit(state.copyWith(error: error, isLoading: false));
     }
@@ -57,7 +56,7 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     if (state.status != MfaStatus.ready || _authenticator == null) return;
     try {
       await _service.delete(_authenticator!);
-      emit(state.copyWith(status: MfaStatus.setup, loginAttempt: null, lastRefresh: null));
+      emit(state.copyWith(status: MfaStatus.setup, challenge: null, lastRefresh: null));
     } catch (error) {
       emit(state.copyWith(error: error));
     }
@@ -67,23 +66,10 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
     if (state.status != MfaStatus.ready || state.isLoading) return;
     emit(state.copyWith(isLoading: true, error: null));
     try {
-      var challenge = await _authenticator!.fetchChallenge();
+      final challenge = await _authenticator!.fetchChallenge();
       if (challenge != null) {
         emit(
-          state.copyWith(
-            loginAttempt: LoginAttemptDto(
-              browser: challenge.browser,
-              ipAddress: challenge.ipAddress,
-              loggedInAt: DateTime.fromMillisecondsSinceEpoch(challenge.updatedTimestamp),
-              os: challenge.os,
-              challenge: challenge,
-              expiresIn: challenge.expiresIn ?? 60,
-              clientName: challenge.clientName,
-            ),
-            status: MfaStatus.verify,
-            lastRefresh: DateTime.now(),
-            isLoading: false,
-          ),
+          state.copyWith(challenge: challenge, status: MfaStatus.verify, lastRefresh: DateTime.now(), isLoading: false),
         );
       } else {
         emit(state.copyWith(isLoading: false, lastRefresh: DateTime.now()));
@@ -96,23 +82,24 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
           emit(state.copyWith(status: MfaStatus.setup));
         } catch (_) {}
       }
-      emit(state.copyWith(error: event.raiseError ? error : null, loginAttempt: null, isLoading: false));
+      emit(state.copyWith(error: event.raiseError ? error : null, challenge: null, isLoading: false));
     } catch (error) {
-      emit(state.copyWith(error: event.raiseError ? error : null, loginAttempt: null, isLoading: false));
+      emit(state.copyWith(error: event.raiseError ? error : null, challenge: null, isLoading: false));
     }
   }
 
   Future<void> _onSendReply(SendReply event, Emitter<MfaState> emit) async {
-    if (state.status != MfaStatus.verify || state.loginAttempt == null || state.isLoading) return;
+    final challenge = state.challenge;
+    if (state.status != MfaStatus.verify || challenge == null || state.isLoading) return;
     emit(state.copyWith(isLoading: true, error: null));
     try {
-      await _authenticator!.reply(challenge: state.loginAttempt!.challenge, granted: event.granted);
+      await _authenticator!.reply(challenge: challenge, granted: event.granted);
       emit(
         state.copyWith(
           status: MfaStatus.ready,
-          loginAttempt: null,
+          challenge: null,
           isLoading: false,
-          lastGrantedLoginAttempt: event.granted ? state.loginAttempt : null,
+          lastGrantedChallenge: event.granted ? challenge : null,
         ),
       );
     } catch (error) {
@@ -121,8 +108,8 @@ class MfaBloc extends Bloc<MfaEvent, MfaState> {
   }
 
   void _onIdleTimeout(IdleTimeout event, Emitter<MfaState> emit) {
-    if (state.status != MfaStatus.verify || state.loginAttempt == null || state.isLoading) return;
-    emit(state.copyWith(status: MfaStatus.ready, loginAttempt: null));
+    if (state.status != MfaStatus.verify || state.challenge == null || state.isLoading) return;
+    emit(state.copyWith(status: MfaStatus.ready, challenge: null));
   }
 
   Future<void> _updateDevicePushId(String? devicePushId) async {

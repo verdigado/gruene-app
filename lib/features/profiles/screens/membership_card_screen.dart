@@ -6,7 +6,7 @@ import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
-import 'package:gruene_app/features/profiles/domain/profiles_api_service.dart';
+import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:qr_flutter/qr_flutter.dart';

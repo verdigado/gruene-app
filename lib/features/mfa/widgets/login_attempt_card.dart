@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.dart';
 import 'package:gruene_app/app/utils/date.dart';
-import 'package:gruene_app/features/mfa/dtos/login_attempt_dto.dart';
+import 'package:gruene_app/features/mfa/util/utils.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
 
 class LoginAttemptCard extends StatelessWidget {
-  final LoginAttemptDto loginAttempt;
+  final Challenge challenge;
   final String? title;
 
-  const LoginAttemptCard({super.key, required this.loginAttempt, this.title});
+  const LoginAttemptCard({super.key, required this.challenge, this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +39,19 @@ class LoginAttemptCard extends StatelessWidget {
                     children: [
                       Text(t.mfa.verify.application),
                       Text(
-                        loginAttempt.clientName,
+                        challenge.clientName,
                         style: title == null ? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700) : null,
                       ),
                     ],
                   ),
-                  TableRow(children: [Text(t.mfa.verify.device), Text('${loginAttempt.browser} ${loginAttempt.os}')]),
-                  TableRow(children: [Text(t.mfa.verify.date), Text(loginAttempt.loggedInAt.formattedDate)]),
+                  TableRow(children: [Text(t.mfa.verify.device), Text('${challenge.browser} ${challenge.os}')]),
+                  TableRow(children: [Text(t.mfa.verify.date), Text(challenge.loginDateTime.formattedDate)]),
                   TableRow(
                     children: [
                       Text(t.mfa.verify.time),
                       Text(
                         t.mfa.verify.pointInTime(
-                          time: DateFormat(DateFormat.HOUR_MINUTE_SECOND).format(loginAttempt.loggedInAt),
+                          time: DateFormat(DateFormat.HOUR_MINUTE_SECOND).format(challenge.loginDateTime),
                         ),
                       ),
                     ],

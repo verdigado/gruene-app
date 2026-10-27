@@ -624,9 +624,7 @@
     "mfa": "Zur 2-Faktor-Authentifizierung",
     "dataProtection": "Datenschutz",
     "legalNotice": "Impressum",
-    "termsOfUse": "Nutzungsbedingungen",
-    "discover": "App erkunden",
-    "discoverDescription": "Erfahre hier, was Dich erwartet."
+    "termsOfUse": "Nutzungsbedingungen"
   },
   "events": {
     "events": "Events",
