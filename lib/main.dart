@@ -13,7 +13,7 @@ import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
-import 'package:gruene_app/app/services/api/api_core.dart';
+import 'package:gruene_app/app/services/api/client/api_client.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/ip/ip_service.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:chopper/chopper.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
-import 'package:gruene_app/app/services/interceptors/auth_interceptor.dart';
+import 'package:gruene_app/app/services/api/client/interceptors/auth_interceptor.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 
 const retryCountHeader = 'Retry-Count';
