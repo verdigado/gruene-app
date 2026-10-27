@@ -83,7 +83,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: horizontalScreenPadding.copyWith(right: 8),
+            padding: horizontalScreenPadding,
             child: Row(
               spacing: 8,
               children: [
