@@ -302,7 +302,7 @@ jobs:
                 command: softwareupdate --install-rosetta --agree-to-license
                 name: Install rosetta
             - run:
-                command: rbenv global 3.3.11
+                command: rbenv global 3.3.12
                 name: Set Ruby version
             - restore_environment_variables
             - install_flutter:
@@ -402,7 +402,7 @@ jobs:
             - checkout
             - prepare_workspace
             - run:
-                command: rbenv global 3.3.11
+                command: rbenv global 3.3.12
                 name: Set Ruby version
             - restore_environment_variables
             - install_fastlane:
@@ -482,7 +482,7 @@ jobs:
         steps:
             - checkout
             - run:
-                command: rbenv global 3.3.11
+                command: rbenv global 3.3.12
                 name: Set Ruby version
             - install_fastlane:
                 directory: ios

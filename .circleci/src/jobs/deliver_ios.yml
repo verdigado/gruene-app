@@ -11,7 +11,7 @@ steps:
   - prepare_workspace
   - run:
       name: Set Ruby version
-      command: rbenv global 3.3.11
+      command: rbenv global 3.3.12
   - restore_environment_variables
   - install_fastlane:
       directory: ios
