@@ -15,18 +15,18 @@ import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/services/gruene_api_visual_identifier_service.dart';
 
 void initializeApiServices() {
-  GetIt.I.registerFactory<GrueneApiPosterService>(() => GrueneApiPosterService());
-  GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
-  GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());
-  GetIt.I.registerFactory<GrueneApiRouteService>(() => GrueneApiRouteService());
-  GetIt.I.registerFactory<GrueneApiActionAreaService>(() => GrueneApiActionAreaService());
-  GetIt.I.registerFactory<GrueneApiExperienceAreaService>(() => GrueneApiExperienceAreaService());
-  GetIt.I.registerFactory<GrueneApiCampaignsStatisticsService>(() => GrueneApiCampaignsStatisticsService());
-  GetIt.I.registerFactory<GrueneApiCampaignService>(() => GrueneApiCampaignService());
-  GetIt.I.registerFactory<GrueneApiTeamsService>(() => GrueneApiTeamsService());
-  GetIt.I.registerFactory<GrueneApiDivisionsService>(() => GrueneApiDivisionsService());
-  GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
-  GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
-  GetIt.I.registerFactory<GrueneApiChallengeService>(() => GrueneApiChallengeService());
-  GetIt.I.registerFactory<GrueneApiVisualIdentifierService>(() => GrueneApiVisualIdentifierService());
+  GetIt.I.registerFactory(GrueneApiPosterService.new);
+  GetIt.I.registerFactory(GrueneApiDoorService.new);
+  GetIt.I.registerFactory(GrueneApiFlyerService.new);
+  GetIt.I.registerFactory(GrueneApiRouteService.new);
+  GetIt.I.registerFactory(GrueneApiActionAreaService.new);
+  GetIt.I.registerFactory(GrueneApiExperienceAreaService.new);
+  GetIt.I.registerFactory(GrueneApiCampaignsStatisticsService.new);
+  GetIt.I.registerFactory(GrueneApiCampaignService.new);
+  GetIt.I.registerFactory(GrueneApiTeamsService.new);
+  GetIt.I.registerFactory(GrueneApiDivisionsService.new);
+  GetIt.I.registerFactory(GrueneApiProfileService.new);
+  GetIt.I.registerFactory(GrueneApiUserService.new);
+  GetIt.I.registerFactory(GrueneApiChallengeService.new);
+  GetIt.I.registerFactory(GrueneApiVisualIdentifierService.new);
 }
