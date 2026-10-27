@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/services/divisions_api_service.dart';
+import 'package:gruene_app/app/services/api/divisions_api_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
@@ -22,7 +23,8 @@ class NewsScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.news.news),
       body: FutureLoadingScreen(
-        load: () async => (await fetchNews(), await loadDivisions(), await readDivisionFilterKeys()),
+        load: () async =>
+            (await fetchNews(), await GetIt.I<DivisionsApiService>().loadDivisions(), await readDivisionFilterKeys()),
         buildChild: (params, _) {
           final (news, divisions, divisionFilterKeys) = params;
           final initialDivisionFilters = divisionFilterKeys == null

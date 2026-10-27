@@ -1,7 +1,7 @@
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiDivisionsService extends GrueneApiBaseService {
+class DivisionsApiService extends BaseApiService {
   Future<List<Division>> searchDivision({
     String? searchTerm,
     int? offset,
@@ -11,6 +11,11 @@ class GrueneApiDivisionsService extends GrueneApiBaseService {
   }) async => getFromApi(
     apiRequest: (api) =>
         api.v1DivisionsGet(search: searchTerm, offset: offset, limit: limit, divisionKey: divisionKeys, level: level),
+    map: (result) => result.data,
+  );
+
+  Future<List<Division>> loadDivisions([List<String>? divisionKeys]) async => getFromApi(
+    apiRequest: (api) => api.v1DivisionsGet(limit: 100000, divisionKey: divisionKeys),
     map: (result) => result.data,
   );
 }

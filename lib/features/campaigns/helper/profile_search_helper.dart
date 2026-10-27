@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
+import 'package:gruene_app/app/services/api/profiles_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/app_route.dart';
@@ -40,7 +40,7 @@ class ProfileSearchHelper {
   }
 
   static Future<List<PublicProfile>> _searchProfile(String searchText, int pageKey, int pageSize) async {
-    var profileService = GetIt.I<GrueneApiProfileService>();
+    var profileService = GetIt.I<ProfilesApiService>();
     return await profileService.searchProfile(
       searchText,
       offset: PagingHelper.getOffsetForPage(pageKey, pageSize),

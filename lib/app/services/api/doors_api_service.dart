@@ -3,13 +3,13 @@ import 'package:gruene_app/app/models/campaigns/doors/door_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/api/pois_api_base_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiDoorService extends GrueneApiCampaignsPoiBaseService {
-  GrueneApiDoorService() : super(poiType: PoiServiceType.door);
+class DoorsApiService extends PoisApiBaseService {
+  DoorsApiService() : super(poiType: PoiServiceType.door);
 
   Future<PoiDetailModel> createNewDoor(DoorCreateModel newDoor) async => getFromApi(
     apiRequest: (api) => api.v1CampaignsPoisPost(

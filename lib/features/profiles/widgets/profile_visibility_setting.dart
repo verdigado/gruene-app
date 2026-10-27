@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Visibility;
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
-import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/services/api/teams_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
@@ -39,7 +39,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
       return;
     }
 
-    final teamsService = GetIt.I<GrueneApiTeamsService>();
+    final teamsService = GetIt.I<TeamsApiService>();
     final newProfile = widget.profile.copyWith(privacy: widget.profile.privacy.copyWith(overall: _selectedVisibility));
 
     final team = await tryAndNotify(

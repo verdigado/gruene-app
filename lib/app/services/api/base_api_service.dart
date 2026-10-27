@@ -2,10 +2,10 @@ import 'package:chopper/chopper.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-abstract class GrueneApiBaseService {
+abstract class BaseApiService {
   late GrueneApi grueneApi;
 
-  GrueneApiBaseService() {
+  BaseApiService() {
     grueneApi = GetIt.I<GrueneApi>();
   }
 

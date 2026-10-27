@@ -1,6 +1,6 @@
 part of '../converters.dart';
 
-extension GrueneApiProfileServicePaging on GrueneApiProfileService {
+extension ProfilesApiServicePaging on ProfilesApiService {
   Future<List<CompletedChallenge>> getAllMyChallenges({
     required String profileId,
     List<ChallengeStatus>? challengeStatus,

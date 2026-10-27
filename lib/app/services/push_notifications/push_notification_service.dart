@@ -8,7 +8,7 @@ import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/enums/push_notification_topic_enum.dart';
 import 'package:gruene_app/app/models/push_notification_settings_model.dart';
-import 'package:gruene_app/app/services/gruene_api_user_service.dart';
+import 'package:gruene_app/app/services/api/users_api_service.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -105,7 +105,7 @@ class PushNotificationService {
 
     if (fbToken != null) {
       // register device on api for api controlled events
-      var userService = GetIt.I<GrueneApiUserService>();
+      var userService = GetIt.I<UsersApiService>();
       await userService.addDeviceToken(fbToken);
     }
 

@@ -8,7 +8,7 @@ mixin MapConsumerPollingStationMixin {
     CircleDefinition(distance: 30, color: ThemeColors.himmel600, opacity: 0.3, withLabels: false),
   ];
 
-  GrueneApiCampaignsPoiBaseService get campaignService;
+  PoisApiBaseService get campaignService;
   void hideCurrentSnackBar();
   void showInfoToast(String toastText, {void Function()? moreInfoCallback});
 

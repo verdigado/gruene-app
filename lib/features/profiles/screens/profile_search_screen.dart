@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/services/divisions_api_service.dart';
+import 'package:gruene_app/app/services/api/divisions_api_service.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/app/widgets/hint.dart';
@@ -22,7 +23,8 @@ class ProfileSearchScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.search),
       body: FutureLoadingScreen(
-        load: () async => (divisions: await loadDivisions(), tags: await fetchProfileTags()),
+        load: () async =>
+            (divisions: await GetIt.I<DivisionsApiService>().loadDivisions(), tags: await fetchProfileTags()),
         buildChild: (data, _) =>
             ProfileSearchScreen(divisions: data.divisions, tags: data.tags, preselectedDivision: preselectedDivision),
       ),

@@ -7,9 +7,9 @@ import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_list_item_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/api/posters_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
@@ -38,14 +38,14 @@ class PostersScreen extends StatefulWidget {
 
 class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, PosterDetailModel, PosterUpdateModel> {
   static const _poiType = PoiServiceType.poster;
-  final _grueneApiService = GetIt.I<GrueneApiPosterService>();
+  final _grueneApiService = GetIt.I<PostersApiService>();
 
   late List<FilterChipModel> postersFilter;
 
   _PostersScreenState() : super(_poiType);
 
   @override
-  GrueneApiPosterService get campaignService => _grueneApiService;
+  PostersApiService get campaignService => _grueneApiService;
 
   @override
   void initState() {

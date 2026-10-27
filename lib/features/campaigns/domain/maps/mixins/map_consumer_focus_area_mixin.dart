@@ -2,7 +2,7 @@ part of '../mixins.dart';
 
 mixin MapConsumerFocusAreaMixin on InfoBox {
   bool focusAreasVisible = false;
-  GrueneApiCampaignsPoiBaseService get campaignService;
+  PoisApiBaseService get campaignService;
   void hideCurrentSnackBar();
   void showInfoToast(String toastText, {void Function()? moreInfoCallback});
 

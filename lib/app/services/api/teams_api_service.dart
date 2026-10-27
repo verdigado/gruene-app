@@ -1,9 +1,9 @@
 import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiTeamsService extends GrueneApiBaseService {
+class TeamsApiService extends BaseApiService {
   Future<Team?> getOwnTeam() async => getFromApi<Team?, Team?>(apiRequest: (api) => api.v1CampaignsTeamsSelfGet());
 
   Future<TeamAssignmentResponse> getTeamAssignments({required String teamId}) =>

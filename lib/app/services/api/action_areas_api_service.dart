@@ -1,11 +1,11 @@
 import 'package:gruene_app/app/models/campaigns/action_area/action_area_assignment_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/action_area/action_area_status_update_model.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiActionAreaService extends GrueneApiBaseService {
-  GrueneApiActionAreaService() : super();
+class ActionAreasApiService extends BaseApiService {
+  ActionAreasApiService() : super();
 
   Future<Area> getActionArea(String actionAreaId) async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsAreasAreaIdGet(areaId: actionAreaId));

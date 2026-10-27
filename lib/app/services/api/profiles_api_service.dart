@@ -1,8 +1,8 @@
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiProfileService extends GrueneApiBaseService {
+class ProfilesApiService extends BaseApiService {
   Future<Profile> getSelf() async => getFromApi(apiRequest: (api) => api.v1ProfilesSelfGet());
 
   Future<List<PublicProfile>> searchProfile(String searchText, {int? offset, int? limit}) async => getFromApi(

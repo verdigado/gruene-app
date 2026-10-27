@@ -26,7 +26,7 @@ extension ProfileHelpers on Profile {
         return division;
       case HierarchyLevel.ov:
         final parentKey = division!.parentDivisionKey(HierarchyLevel.kv);
-        final parentDivisions = await GetIt.I<GrueneApiDivisionsService>().searchDivision(
+        final parentDivisions = await GetIt.I<DivisionsApiService>().searchDivision(
           divisionKeys: [parentKey],
           level: HierarchyLevel.kv,
         );

@@ -1,11 +1,11 @@
 import 'package:gruene_app/app/models/campaigns/route/route_assignment_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiRouteService extends GrueneApiBaseService {
-  GrueneApiRouteService() : super();
+class RoutesApiService extends BaseApiService {
+  RoutesApiService() : super();
 
   Future<Route> getRoute(String routeId) async =>
       getFromApi(apiRequest: (api) => api.v1CampaignsRoutesRouteIdGet(routeId: routeId));

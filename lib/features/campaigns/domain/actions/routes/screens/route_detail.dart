@@ -3,11 +3,11 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_detail_model.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/api/profiles_api_service.dart';
+import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/users_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
-import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
-import 'package:gruene_app/app/services/gruene_api_user_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
@@ -49,8 +49,8 @@ class _RouteDetailState extends State<RouteDetail> {
 
   void _loadData() async {
     setState(() => _loading = true);
-    var profileService = GetIt.I<GrueneApiProfileService>();
-    var userService = GetIt.I<GrueneApiUserService>();
+    var profileService = GetIt.I<ProfilesApiService>();
+    var userService = GetIt.I<UsersApiService>();
 
     final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
     var currentUserKV = await currentUser.getOwnKV();
@@ -226,7 +226,7 @@ class _RouteDetailState extends State<RouteDetail> {
 
   Future<void> _selectTeam(RouteDetailModel route) async {
     if (_currentUserKV == null) return;
-    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var teamsService = GetIt.I<TeamsApiService>();
 
     var userTeams = await teamsService.findTeams([_currentUserKV!.divisionKey]);
     if (!mounted) return;

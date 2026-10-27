@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/services/api/divisions_api_service.dart';
+import 'package:gruene_app/app/services/api/profiles_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/divisions_api_service.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
@@ -29,7 +29,7 @@ class ProfileDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profileService = GetIt.I<GrueneApiProfileService>();
+    final profileService = GetIt.I<ProfilesApiService>();
     final email = profile.email;
     final mandateRoles = profile.displayRoles(types: [ProfileRoleType.mandate]);
     final officeRoles = profile.displayRoles(types: [ProfileRoleType.office]);
@@ -50,7 +50,9 @@ class ProfileDetails extends StatelessWidget {
         profiles: partyDivision != null && isOwnProfile
             ? await fetchProfiles(division: partyDivision, limit: maxProfileCards)
             : <PublicProfile>[],
-        parentDivisions: parentDivisionKeys.isNotEmpty ? await loadDivisions(parentDivisionKeys) : <Division>[],
+        parentDivisions: parentDivisionKeys.isNotEmpty
+            ? await GetIt.I<DivisionsApiService>().loadDivisions(parentDivisionKeys)
+            : <Division>[],
       ),
       loadingLayoutBuilder: (Widget child) => Padding(padding: screenPadding, child: child),
       buildChild: (data, _) {

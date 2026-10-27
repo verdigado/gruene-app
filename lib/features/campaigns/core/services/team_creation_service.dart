@@ -1,13 +1,13 @@
 import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/services/api/teams_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
-import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 /// Service responsible for team creation business logic.
 /// This is pure domain logic without any UI dependencies.
 class TeamCreationService {
-  final GrueneApiTeamsService _apiService;
+  final TeamsApiService _apiService;
 
   TeamCreationService(this._apiService);
 

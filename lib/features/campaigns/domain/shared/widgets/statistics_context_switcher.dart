@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
+import 'package:gruene_app/app/services/api/campaigns_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/campaign_select_dialog.dart';
@@ -50,7 +50,7 @@ class _StatisticsContextSwitcherState extends State<StatisticsContextSwitcher> {
       _isloading = true;
     });
 
-    var campaignService = GetIt.I<GrueneApiCampaignService>();
+    var campaignService = GetIt.I<CampaignsApiService>();
     String? currentCampaignId = widget.getCurrentContextCampaignId();
     var campaignName = switch (currentCampaignId) {
       null => t.common.unknown,

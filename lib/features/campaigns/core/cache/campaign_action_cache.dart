@@ -21,14 +21,14 @@ import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart
 import 'package:gruene_app/app/models/campaigns/route/route_assignment_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.dart';
+import 'package:gruene_app/app/services/api/action_areas_api_service.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/services/api/doors_api_service.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/api/flyers_api_service.dart';
+import 'package:gruene_app/app/services/api/posters_api_service.dart';
+import 'package:gruene_app/app/services/api/routes_api_service.dart';
 import 'package:gruene_app/app/services/campaign_action_database.dart';
-import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
-import 'package:gruene_app/app/services/gruene_api_door_service.dart';
-import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
-import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
-import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/core/cache/converters.dart';
@@ -487,11 +487,11 @@ class CampaignActionCache extends ChangeNotifier {
       _isflushing = true;
       notifyListeners();
 
-      var posterApiService = GetIt.I<GrueneApiPosterService>();
-      var doorApiService = GetIt.I<GrueneApiDoorService>();
-      var flyerApiService = GetIt.I<GrueneApiFlyerService>();
-      var routeApiService = GetIt.I<GrueneApiRouteService>();
-      var areaApiService = GetIt.I<GrueneApiActionAreaService>();
+      var posterApiService = GetIt.I<PostersApiService>();
+      var doorApiService = GetIt.I<DoorsApiService>();
+      var flyerApiService = GetIt.I<FlyersApiService>();
+      var routeApiService = GetIt.I<RoutesApiService>();
+      var areaApiService = GetIt.I<ActionAreasApiService>();
       final allActions = await campaignActionDatabase.readAll();
       var failingPoiIds = <int>[];
 

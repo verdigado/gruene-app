@@ -7,11 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
+import 'package:gruene_app/app/services/api/action_areas_api_service.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/api/pois_api_base_service.dart';
+import 'package:gruene_app/app/services/api/routes_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_base_service.dart';
-import 'package:gruene_app/app/services/gruene_api_route_service.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
@@ -82,7 +82,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
   }
 
   @override
-  GrueneApiCampaignsPoiBaseService get campaignService;
+  PoisApiBaseService get campaignService;
 
   @override
   void initState() {
@@ -443,14 +443,14 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       final scaleFactor = 1.2;
       if (mapScreenController.routeId != null) {
         filterController.enableFilterChip(t.campaigns.filters.routes);
-        var routeService = GetIt.I<GrueneApiRouteService>();
+        var routeService = GetIt.I<RoutesApiService>();
         var route = await routeService.getRoute(mapScreenController.routeId!);
         var bbox = turf.bbox(route.lineString.toTurfLine()).scale(scaleFactor);
         mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
         mapContainerController.showRoute(route);
       } else if (mapScreenController.areaId != null) {
         filterController.enableFilterChip(t.campaigns.filters.action_areas);
-        var areaService = GetIt.I<GrueneApiActionAreaService>();
+        var areaService = GetIt.I<ActionAreasApiService>();
         var area = await areaService.getActionArea(mapScreenController.areaId!);
         var bbox = turf.bbox(area.polygon.toTurfPolygon()).scale(scaleFactor);
         mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());

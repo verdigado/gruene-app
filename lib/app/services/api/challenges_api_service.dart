@@ -1,8 +1,8 @@
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GrueneApiChallengeService extends GrueneApiBaseService {
+class ChallengesApiService extends BaseApiService {
   Future<List<Challenge>> getChallenges({
     List<ChallengeActivityType>? activityTypes,
     List<ChallengeStatus>? challengeStatus,
