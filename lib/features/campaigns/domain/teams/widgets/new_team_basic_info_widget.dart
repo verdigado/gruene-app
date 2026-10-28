@@ -101,7 +101,7 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
   Future<PublicProfile> _getCreatingUser() async {
     var profileService = GetIt.I<ProfileApiService>();
     try {
-      var currentProfile = await profileService.getOwnProfile();
+      var currentProfile = await profileService.getSelf();
       return PublicProfile(
         id: currentProfile.id,
         userId: currentProfile.userId,

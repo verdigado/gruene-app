@@ -91,7 +91,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
         selectedCampaignId == null &&
         selectableCampaigns.isNotEmpty) {
       var profileService = GetIt.I<ProfileApiService>();
-      var currentProfile = await profileService.getOwnProfile();
+      var currentProfile = await profileService.getSelf();
       var userDivisionKeys = (currentProfile.memberships).map((m) => m.division.divisionKey).toList();
       var preSelectCandidates = selectableCampaigns
           .where((c) => userDivisionKeys.any((d) => d.startsWith(c.divisionKey.stripRight('0'))))

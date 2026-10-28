@@ -52,7 +52,7 @@ class _RouteDetailState extends State<RouteDetail> {
     var profileService = GetIt.I<ProfileApiService>();
     var userService = GetIt.I<UserApiService>();
 
-    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getOwnProfile()).wait;
+    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
     var currentUserKV = await currentUser.getOwnKV();
 
     setState(() {

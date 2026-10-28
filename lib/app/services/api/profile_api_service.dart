@@ -6,7 +6,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
 
 class ProfileApiService extends BaseApiService {
-  Future<Profile> getOwnProfile() async => send(request: (api) => api.v1ProfilesSelfGet());
+  Future<Profile> getSelf() async => send(request: (api) => api.v1ProfilesSelfGet());
 
   Future<PublicProfile> getProfile(String profileId) async =>
       send(request: (api) => api.v1ProfilesProfileIdGet(profileId: profileId));

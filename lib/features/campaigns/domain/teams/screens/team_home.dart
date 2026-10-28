@@ -57,7 +57,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     Profile? profile;
     try {
       var profileService = GetIt.I<ProfileApiService>();
-      profile = preloadedProfile ?? await profileService.getOwnProfile();
+      profile = preloadedProfile ?? await profileService.getSelf();
     } catch (e) {
       profile = null;
     }

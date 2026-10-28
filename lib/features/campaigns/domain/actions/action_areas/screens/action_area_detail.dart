@@ -53,7 +53,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
     var userService = GetIt.I<UserApiService>();
     var profileService = GetIt.I<ProfileApiService>();
 
-    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getOwnProfile()).wait;
+    final (userInfo, currentUser) = await (userService.getOwnRbac(), profileService.getSelf()).wait;
     var currentUserKV = await currentUser.getOwnKV();
 
     setState(() {

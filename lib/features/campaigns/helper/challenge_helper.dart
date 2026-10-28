@@ -14,7 +14,7 @@ class ChallengeHelper {
     Profile? profile;
     try {
       var profileService = GetIt.I<ProfileApiService>();
-      profile = await profileService.getOwnProfile();
+      profile = await profileService.getSelf();
     } catch (e) {
       profile = null;
     }

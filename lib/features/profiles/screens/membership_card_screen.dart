@@ -22,7 +22,7 @@ class MembershipCardScreen extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.myMembershipCard),
       body: FutureLoadingScreen(
-        load: GetIt.I<ProfileApiService>().getOwnProfile,
+        load: GetIt.I<ProfileApiService>().getSelf,
         buildChild: (profile, _) {
           Division? partyDivision = profile.partyDivision;
 

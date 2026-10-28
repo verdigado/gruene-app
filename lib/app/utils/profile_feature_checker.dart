@@ -45,7 +45,7 @@ class ProfileFeatureChecker {
     if (!latestProfileCheckSettings!.hasProfilePrivacyCheckCompleted) {
       try {
         var profileService = GetIt.I<ProfileApiService>();
-        var currentProfile = await profileService.getOwnProfile();
+        var currentProfile = await profileService.getSelf();
         if (!currentProfile.isVisibleInKV()) {
           if (!context.mounted) return;
           showProfileVisibilitySetting(context, currentProfile, explicitTeamHint: true);
