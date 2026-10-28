@@ -24,7 +24,7 @@ class ProfileSearchScreenContainer extends StatelessWidget {
       appBar: MainAppBar(title: t.profiles.search),
       body: FutureLoadingScreen(
         load: () async => (
-          divisions: await GetIt.I<DivisionApiService>().getDivisions(limit: 100000),
+          divisions: await GetIt.I<DivisionApiService>().getAllDivisions(),
           tags: await GetIt.I<ProfileApiService>().getProfileTags(),
         ),
         buildChild: (data, _) =>

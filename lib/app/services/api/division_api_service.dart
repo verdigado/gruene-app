@@ -13,4 +13,6 @@ class DivisionApiService extends BaseApiService {
         api.v1DivisionsGet(search: search, offset: offset, limit: limit, divisionKey: divisionKeys, level: level),
     map: (result) => result.data,
   );
+
+  Future<List<Division>> getAllDivisions() async => getDivisions(limit: 100000);
 }

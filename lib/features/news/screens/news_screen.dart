@@ -25,7 +25,7 @@ class NewsScreenContainer extends StatelessWidget {
       body: FutureLoadingScreen(
         load: () async => (
           await GetIt.I<NewsApiService>().getNews(),
-          await GetIt.I<DivisionApiService>().getDivisions(limit: 100000),
+          await GetIt.I<DivisionApiService>().getAllDivisions(),
           await readDivisionFilterKeys(),
         ),
         buildChild: (params, _) {
