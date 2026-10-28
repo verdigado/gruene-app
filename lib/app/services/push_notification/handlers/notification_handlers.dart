@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
-import 'package:gruene_app/app/services/push_notifications/notification_message_type.dart';
+import 'package:gruene_app/app/services/push_notification/notification_message_type.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 
 part 'base_notification_handler.dart';

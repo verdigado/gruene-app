@@ -2,9 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/enums/push_notification_topic_enum.dart';
 import 'package:gruene_app/app/models/push_notification_settings_model.dart';
-import 'package:gruene_app/app/services/push_notifications/push_notification_service.dart';
-import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_event.dart';
-import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_state.dart';
+import 'package:gruene_app/app/services/push_notification/push_notification_service.dart';
+import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_event.dart';
+import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_state.dart';
 
 class PushNotificationSettingsBloc extends Bloc<PushNotificationSettingsEvent, PushNotificationSettingsState> {
   final PushNotificationService _pushNotificationService = GetIt.instance<PushNotificationService>();
