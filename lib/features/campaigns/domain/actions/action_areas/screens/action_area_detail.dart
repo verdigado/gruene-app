@@ -5,7 +5,7 @@ import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/action_area/action_area_detail_model.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
-import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/services/api/user_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -218,7 +218,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
 
   Future<void> _selectTeam(ActionAreaDetailModel actionArea) async {
     if (_currentUserKV == null) return;
-    var teamsService = GetIt.I<TeamsApiService>();
+    var teamsService = GetIt.I<TeamApiService>();
 
     var userTeams = await teamsService.findTeams([_currentUserKV!.divisionKey]);
     if (!mounted) return;

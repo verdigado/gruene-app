@@ -6,7 +6,7 @@ import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/models/campaigns/team/team_assignment.dart';
 import 'package:gruene_app/app/services/api/campaign_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
-import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
@@ -45,7 +45,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
   Future<void> _loadData() async {
     setState(() => _loading = true);
 
-    var teamsService = GetIt.I<TeamsApiService>();
+    var teamsService = GetIt.I<TeamApiService>();
     var assignedElements = await teamsService.getTeamAssignments(teamId: widget.currentTeam.id);
 
     var campaignIds = assignedElements.routes.map((r) => r.campaignId).toList();

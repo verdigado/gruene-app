@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
@@ -39,7 +39,7 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    var teamsService = GetIt.I<TeamsApiService>();
+    var teamsService = GetIt.I<TeamApiService>();
     var openInvitations = await teamsService.getOpenInvitations();
 
     setState(() {
@@ -177,14 +177,14 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
       );
       if (!confirmed) return;
     }
-    var teamService = GetIt.I<TeamsApiService>();
+    var teamService = GetIt.I<TeamApiService>();
     await teamService.acceptTeamMembership(invitation.teamId);
     GetIt.I<OpenInvitationCampaignValueStore>().reloadOpenInvitations();
     widget.reload();
   }
 
   Future<void> _rejectInvitation(TeamInvitation invitation) async {
-    var teamService = GetIt.I<TeamsApiService>();
+    var teamService = GetIt.I<TeamApiService>();
     await teamService.rejectTeamMembership(invitation.teamId);
     GetIt.I<OpenInvitationCampaignValueStore>().reloadOpenInvitations();
     widget.reload();

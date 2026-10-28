@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
@@ -46,7 +46,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
     final requestId = ++_loadRequestId;
     setState(() => _loading = true);
 
-    var teamsService = GetIt.I<TeamsApiService>();
+    var teamsService = GetIt.I<TeamApiService>();
     var teamStatistics = await teamsService.getTeamMembershipStatistics(
       campaignId: getCurrentTeamMembershipStatisticsCampaignId(),
     );

@@ -3,8 +3,8 @@ import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_s
 import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class CampaignsStatisticsApiService extends BaseApiService {
-  CampaignsStatisticsApiService() : super();
+class CampaignStatisticApiService extends BaseApiService {
+  CampaignStatisticApiService() : super();
 
   Future<CampaignStatisticsModel> getStatistics({required String? campaigndId}) async => send(
     request: (api) => api.v1CampaignsStatisticsGet(campaignId: campaigndId),

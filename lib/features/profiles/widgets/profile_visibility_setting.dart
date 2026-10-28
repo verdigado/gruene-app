@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Visibility;
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
-import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
@@ -40,13 +40,13 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
     }
 
     final profileService = GetIt.I<ProfileApiService>();
-    final teamsService = GetIt.I<TeamsApiService>();
+    final teamService = GetIt.I<TeamApiService>();
     final newProfile = widget.profile.copyWith(privacy: widget.profile.privacy.copyWith(overall: _selectedVisibility));
 
     final team = await tryAndNotify(
       function: () async {
         await profileService.updateProfile(newProfile);
-        return await teamsService.getOwnTeam();
+        return await teamService.getOwnTeam();
       },
       context: context,
       onSuccess: (context, _) => showSnackBar(context: context, text: t.profiles.visibility.updated),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
-import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/features/campaigns/controllers/team_refresh_controller.dart';
@@ -62,7 +62,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
       profile = null;
     }
 
-    var teamsService = GetIt.I<TeamsApiService>();
+    var teamsService = GetIt.I<TeamApiService>();
     var team = preloadedTeam ?? await teamsService.getOwnTeam();
 
     setState(() {
@@ -184,7 +184,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
 
   void _leaveTeam() {
     Future<void> executeLeaveTeam() async {
-      var teamsService = GetIt.I<TeamsApiService>();
+      var teamsService = GetIt.I<TeamApiService>();
       teamsService.leaveTeam(_currentTeam!.id);
       _loadData(preloadedProfile: _currentProfile);
     }
@@ -200,7 +200,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
 
   void _archiveTeam() {
     Future<void> executeArchiveTeam() async {
-      var teamsService = GetIt.I<TeamsApiService>();
+      var teamsService = GetIt.I<TeamApiService>();
       teamsService.archiveTeam(_currentTeam!.id);
       _loadData(preloadedProfile: _currentProfile);
     }

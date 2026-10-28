@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/services/api/campaign_api_service.dart';
-import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/logger.dart';
@@ -72,7 +72,7 @@ class OpenInvitationCampaignValueStore extends ChangeNotifier {
 
   void reloadOpenInvitations() async {
     try {
-      var openInvitations = await GetIt.I<TeamsApiService>().getOpenInvitations();
+      var openInvitations = await GetIt.I<TeamApiService>().getOpenInvitations();
       if (openInvitations.length != _openInvitationCount) {
         _openInvitationCount = openInvitations.length;
         notifyListeners();

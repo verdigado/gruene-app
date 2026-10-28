@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/api/teams_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
@@ -83,7 +83,7 @@ class _EditTeamBasicInfoWidgetState extends State<EditTeamBasicInfoWidget> {
       return;
     }
 
-    var teamsService = GetIt.I<TeamsApiService>();
+    var teamsService = GetIt.I<TeamApiService>();
     var updatedTeam = await teamsService.updateTeam(
       teamId: widget.team.id,
       teamName: teamNameTextController.text,
