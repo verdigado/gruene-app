@@ -16,7 +16,11 @@ abstract class BaseApiService {
 
   Response<T> handleApiError<T>(Response<T> response) {
     if (!response.isSuccessful || (!_isNullable<T>() && response.body == null)) {
-      throw ApiException(statusCode: response.statusCode, message: response.error.toString());
+      throw ApiException(
+        statusCode: response.statusCode,
+        message: response.error?.toString(),
+        url: response.base.request?.url,
+      );
     }
     return response;
   }
@@ -25,8 +29,12 @@ abstract class BaseApiService {
 }
 
 class ApiException implements Exception {
-  int statusCode;
-  String message;
+  final int statusCode;
+  final String? message;
+  final Uri? url;
 
-  ApiException({required this.statusCode, required this.message});
+  ApiException({required this.statusCode, this.message, this.url});
+
+  @override
+  String toString() => 'ApiException($statusCode) on $url: $message';
 }
