@@ -79,7 +79,7 @@ class TeamProfile extends StatelessWidget {
                       GestureDetector(
                         onTap: () => _onEditTeamMembers(context),
                         child: Text(
-                          t.campaigns.team.edit_team_members,
+                          t.campaigns.team.editMembers.action,
                           style: theme.textTheme.labelMedium?.apply(
                             color: ThemeColors.textDark,
                             decoration: TextDecoration.underline,

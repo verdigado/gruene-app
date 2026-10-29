@@ -16,10 +16,7 @@ class TeamHelper {
       builder: (context) {
         return AlertDialog(
           content: Text(
-            t.campaigns.team.invitations.warning_user_already_in_team(
-              current_team: currentTeamName,
-              inviting_team: newTeamName,
-            ),
+            t.campaigns.team.invitations.warningAlreadyInTeam(currentTeam: currentTeamName, invitingTeam: newTeamName),
             textAlign: TextAlign.center,
             style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
@@ -48,15 +45,15 @@ class TeamHelper {
 
   static void validateTeamName(String name) {
     if (name.isEmpty) {
-      throw ValidationError(getMessage: () => t.campaigns.team.errors.no_name);
+      throw ValidationError(getMessage: () => t.campaigns.team.errors.noName);
     }
     const minLength = 5;
     const maxLength = 45;
     if (name.length < minLength) {
-      throw ValidationError(getMessage: () => t.campaigns.team.errors.team_name_short(count: minLength));
+      throw ValidationError(getMessage: () => t.campaigns.team.errors.nameTooShort(count: minLength));
     }
     if (name.length > maxLength) {
-      throw ValidationError(getMessage: () => t.campaigns.team.errors.team_name_long(count: maxLength));
+      throw ValidationError(getMessage: () => t.campaigns.team.errors.nameTooLong(count: maxLength));
     }
   }
 }

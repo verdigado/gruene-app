@@ -259,7 +259,7 @@ class _RouteDetailState extends State<RouteDetail> {
 
       showToastAsSnack(
         context,
-        t.campaigns.team.assignment_suspended(team: previousTeamData.name),
+        t.campaigns.team.assignmentSuspended(team: previousTeamData.name),
         onActionPressed: () async => await _assignTeam(route, previousTeamData),
       );
     }

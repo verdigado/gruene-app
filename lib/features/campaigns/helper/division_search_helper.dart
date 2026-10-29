@@ -82,7 +82,7 @@ class DivisionSearchHelper {
                       ),
                       onPressed: () => closeSearchScreen(item),
                       child: Text(
-                        t.campaigns.team.select_as_division,
+                        t.campaigns.team.selectDivision.action,
                         style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background),
                       ),
                     ),

@@ -95,7 +95,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  t.campaigns.team.team_assigned_elements(count: assignedElementDisplayList.length),
+                  t.campaigns.team.assignedElements.title(count: assignedElementDisplayList.length),
                   style: theme.textTheme.titleMedium,
                 ),
                 GestureDetector(
@@ -104,8 +104,8 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
                   }),
                   child: Text(
                     _showClosedElements
-                        ? t.campaigns.team.team_assigned_elements_hide_closed
-                        : t.campaigns.team.team_assigned_elements_show_closed,
+                        ? t.campaigns.team.assignedElements.hideClosed
+                        : t.campaigns.team.assignedElements.showClosed,
                     style: theme.textTheme.labelMedium?.apply(
                       decoration: TextDecoration.underline,
                       color: ThemeColors.text,
@@ -179,18 +179,18 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
   }
 
   String _getAssignmentInfoText(AssignedElement assignedElement) {
-    var assignmentInfo = t.campaigns.team.team_assigned_elements_assignment_info(
+    var assignmentInfo = t.campaigns.team.assignedElements.assignmentInfo(
       date: assignedElement.assignmentDate.toLocalDateString(),
       assignee: assignedElement.assignee,
     );
     var formatter = NumberFormat.decimalPatternDigits(locale: t.$meta.locale.languageCode, decimalDigits: 1);
     if (assignedElement.elementType == AssignedElementType.area) {
       var areaData = turf.area(assignedElement.coords)! / 1000 / 1000;
-      var areaInfo = t.campaigns.team.team_assigned_elements_area_info(area: formatter.format(areaData));
+      var areaInfo = t.campaigns.team.assignedElements.areaInfo(area: formatter.format(areaData));
       return '$areaInfo | $assignmentInfo';
     } else {
       var routeLength = turf.length(turf.Feature(geometry: assignedElement.coords as turf.LineString));
-      var routeInfo = t.campaigns.team.team_assigned_elements_route_info(distance: formatter.format(routeLength));
+      var routeInfo = t.campaigns.team.assignedElements.routeInfo(distance: formatter.format(routeLength));
       return '$routeInfo | $assignmentInfo';
     }
   }
@@ -247,9 +247,9 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(t.campaigns.team.team_target_campaign_conflict),
+          title: Text(t.campaigns.team.campaignConflict.title),
           content: Text(
-            t.campaigns.team.team_target_campaign_conflict_message(
+            t.campaigns.team.campaignConflict.message(
               currentCampaign: currentCampaign.name,
               targetCampaign: targetCampaign.name,
             ),
@@ -265,7 +265,7 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
             TextButton(
               onPressed: () => Navigator.maybePop(context, true),
               child: Text(
-                t.campaigns.team.team_target_campaign_conflict_action,
+                t.campaigns.team.campaignConflict.action,
                 style: theme.textTheme.labelLarge?.apply(color: theme.colorScheme.primary, fontWeightDelta: -8),
               ),
             ),

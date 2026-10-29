@@ -116,8 +116,8 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
             Center(child: Icon(Icons.groups_outlined, color: ThemeColors.grey200, size: 64)),
             Text(
               widget.currentUser.isCampaignManager()
-                  ? t.campaigns.team.no_team_yet_hint_privileged
-                  : t.campaigns.team.no_team_yet_hint,
+                  ? t.campaigns.team.noTeamYet.hintPrivileged
+                  : t.campaigns.team.noTeamYet.hint,
               style: theme.textTheme.labelLarge,
             ),
           ],
@@ -146,7 +146,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
           children: [
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(t.campaigns.team.leave_team, style: theme.textTheme.bodyLarge),
+              child: Text(t.campaigns.team.leave.action, style: theme.textTheme.bodyLarge),
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -168,7 +168,7 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(t.campaigns.team.archive_team, style: theme.textTheme.bodyLarge),
+                    child: Text(t.campaigns.team.archive.action, style: theme.textTheme.bodyLarge),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
@@ -192,8 +192,8 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     confirmDelete(
       context,
       onDeletePressed: executeLeaveTeam,
-      title: t.campaigns.team.leave_team,
-      confirmationDialogText: t.campaigns.team.leave_team_confirmation_dialog,
+      title: t.campaigns.team.leave.action,
+      confirmationDialogText: t.campaigns.team.leave.confirmation,
       actionTitle: t.common.actions.confirm,
     );
   }
@@ -208,8 +208,8 @@ class _TeamHomeState extends State<TeamHome> with ConfirmDelete {
     confirmDelete(
       context,
       onDeletePressed: executeArchiveTeam,
-      title: t.campaigns.team.archive_team,
-      confirmationDialogText: t.campaigns.team.archive_team_confirmation_dialog,
+      title: t.campaigns.team.archive.action,
+      confirmationDialogText: t.campaigns.team.archive.confirmation,
       actionTitle: t.common.actions.confirm,
     );
   }

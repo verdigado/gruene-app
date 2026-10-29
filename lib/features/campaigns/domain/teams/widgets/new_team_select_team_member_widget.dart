@@ -40,12 +40,12 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(t.campaigns.team.select_team_member_label, style: theme.textTheme.titleMedium),
+                  child: Text(t.campaigns.team.selectTeamMembers.title, style: theme.textTheme.titleMedium),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    t.campaigns.team.select_team_member_hint,
+                    t.campaigns.team.selectTeamMembers.hint,
                     style: theme.textTheme.labelMedium?.apply(color: ThemeColors.text),
                   ),
                 ),
@@ -68,7 +68,7 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: Text(
-                                    t.campaigns.team.team_lead_label,
+                                    t.campaigns.team.teamLead,
                                     style: theme.textTheme.labelMedium?.apply(color: ThemeColors.text),
                                   ),
                                 ),
@@ -179,11 +179,11 @@ class _NewTeamSelectTeamMemberWidgetState extends State<NewTeamSelectTeamMemberW
     if (userMemberships.length == 1) {
       var userMembership = userMemberships.single;
       if (userMembership == widget.newTeamDetails.creatingUser.userId) {
-        return SearchActionState.disabled(actionText: t.campaigns.team.team_member);
+        return SearchActionState.disabled(actionText: t.campaigns.team.teamMember);
       } else {
-        return SearchActionState.disabled(actionText: t.campaigns.team.invitation_pending);
+        return SearchActionState.disabled(actionText: t.campaigns.team.invitationPending);
       }
     }
-    return SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_member);
+    return SearchActionState.enabled(actionText: t.campaigns.team.selectTeamMembers.action);
   }
 }

@@ -253,7 +253,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
 
       showToastAsSnack(
         context,
-        t.campaigns.team.assignment_suspended(team: previousTeamData.name),
+        t.campaigns.team.assignmentSuspended(team: previousTeamData.name),
         onActionPressed: () async => await _assignTeam(actionArea, previousTeamData),
       );
     }
