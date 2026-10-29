@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/services/api/client/news_api_service.dart';
+import 'package:gruene_app/app/services/api/news_api_service.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_card.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
