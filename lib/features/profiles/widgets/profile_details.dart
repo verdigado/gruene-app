@@ -45,18 +45,20 @@ class ProfileDetails extends StatelessWidget {
     final theme = Theme.of(context);
 
     return FutureLoadingScreen(
-      load: () async => (
-        completedChallenges: await profileService.getAllMyChallenges(profileId: profile.id, sorting: .endDescending),
-        profiles: partyDivision != null && isOwnProfile
-            ? await profileService.getProfiles(division: partyDivision, limit: maxProfileCards)
-            : <PublicProfile>[],
-        parentDivisions: parentDivisionKeys.isNotEmpty
-            ? await divisionService.getDivisions(divisionKeys: parentDivisionKeys)
-            : <Division>[],
-      ),
+      load: () async {
+        final challenges = profileService.getAllMyChallenges(profileId: profile.id, sorting: .endDescending);
+        final profiles = partyDivision != null && isOwnProfile
+            ? profileService.getProfiles(division: partyDivision, limit: maxProfileCards)
+            : Future.value(<PublicProfile>[]);
+        final parentDivisions = parentDivisionKeys.isNotEmpty
+            ? divisionService.getDivisions(divisionKeys: parentDivisionKeys)
+            : Future.value(<Division>[]);
+        await Future.wait([challenges, profiles, parentDivisions]);
+        return (challenges: await challenges, profiles: await profiles, parentDivisions: await parentDivisions);
+      },
       loadingLayoutBuilder: (Widget child) => Padding(padding: screenPadding, child: child),
       buildChild: (data, _) {
-        final completedChallenges = data.completedChallenges;
+        final completedChallenges = data.challenges;
         completedChallenges.sort((a, b) => b.end.compareTo(a.end));
 
         return Column(

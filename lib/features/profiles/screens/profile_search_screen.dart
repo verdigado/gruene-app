@@ -23,10 +23,12 @@ class ProfileSearchScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.search),
       body: FutureLoadingScreen(
-        load: () async => (
-          divisions: await GetIt.I<DivisionApiService>().getAllDivisions(),
-          tags: await GetIt.I<ProfileApiService>().getProfileTags(),
-        ),
+        load: () async {
+          final divisions = GetIt.I<DivisionApiService>().getAllDivisions();
+          final tags = GetIt.I<ProfileApiService>().getProfileTags();
+          await Future.wait([divisions, tags]);
+          return (divisions: await divisions, tags: await tags);
+        },
         buildChild: (data, _) =>
             ProfileSearchScreen(divisions: data.divisions, tags: data.tags, preselectedDivision: preselectedDivision),
       ),

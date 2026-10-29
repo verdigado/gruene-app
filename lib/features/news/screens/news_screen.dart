@@ -23,11 +23,13 @@ class NewsScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.news.news),
       body: FutureLoadingScreen(
-        load: () async => (
-          await GetIt.I<NewsApiService>().getNews(),
-          await GetIt.I<DivisionApiService>().getAllDivisions(),
-          await readDivisionFilterKeys(),
-        ),
+        load: () async {
+          final news = GetIt.I<NewsApiService>().getNews();
+          final divisions = GetIt.I<DivisionApiService>().getAllDivisions();
+          final divisionFilterKeys = readDivisionFilterKeys();
+          await Future.wait([news, divisions, divisionFilterKeys]);
+          return (await news, await divisions, await divisionFilterKeys);
+        },
         buildChild: (params, _) {
           final (news, divisions, divisionFilterKeys) = params;
           final initialDivisionFilters = divisionFilterKeys == null
