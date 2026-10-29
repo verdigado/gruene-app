@@ -5,8 +5,6 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class RouteApiService extends BaseApiService {
-  RouteApiService() : super();
-
   Future<Route> getRoute(String routeId) async =>
       send(request: (api) => api.v1CampaignsRoutesRouteIdGet(routeId: routeId));
 

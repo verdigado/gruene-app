@@ -5,8 +5,6 @@ import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class ActionAreaApiService extends BaseApiService {
-  ActionAreaApiService() : super();
-
   Future<Area> getActionArea(String actionAreaId) async =>
       send(request: (api) => api.v1CampaignsAreasAreaIdGet(areaId: actionAreaId));
 

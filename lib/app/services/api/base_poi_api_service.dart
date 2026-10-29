@@ -12,7 +12,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 abstract class BasePoiApiService extends BaseApiService {
   final PoiServiceType poiType;
 
-  BasePoiApiService({required this.poiType}) : super();
+  BasePoiApiService({required this.poiType});
 
   Future<List<PoiDetailModel>> loadPoisInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async => send(
     request: (api) => api.v1CampaignsPoisGet(
