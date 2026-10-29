@@ -26,7 +26,7 @@ extension DateTimeFormatting on DateTime {
   String toTimeStamp() {
     DateTime utcDateTime = this;
     DateTime localDateTime = utcDateTime.toLocal();
-    final timestampString = DateFormat(t.common.dateTime.timestampFormat).format(localDateTime);
+    final timestampString = DateFormat(fileTimestampFormat).format(localDateTime);
     return timestampString;
   }
 

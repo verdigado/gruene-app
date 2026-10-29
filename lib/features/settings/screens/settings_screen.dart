@@ -35,17 +35,13 @@ class SettingsScreen extends StatelessWidget {
             isExternal: true,
           ),
           SectionTitle(title: t.settings.legalSettings),
-          TextListItem(
-            title: t.settings.legalNotice,
-            onPress: () => openUrl(legalNoticeUrl, context),
-            isExternal: true,
-          ),
+          TextListItem(title: t.common.legalNotice, onPress: () => openUrl(legalNoticeUrl, context), isExternal: true),
           TextListItem(
             title: t.settings.dataProtectionStatement,
             onPress: () => openUrl(dataProtectionStatementUrl, context),
             isExternal: true,
           ),
-          TextListItem(title: t.settings.termsOfUse, onPress: () => openUrl(termsOfUseUrl, context), isExternal: true),
+          TextListItem(title: t.common.termsOfUse, onPress: () => openUrl(termsOfUseUrl, context), isExternal: true),
           Spacer(),
           isLoggedIn
               ? Padding(

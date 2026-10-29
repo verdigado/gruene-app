@@ -37,7 +37,7 @@ class ChallengeHelper {
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(t.campaigns.challenges.joinDialog.accept),
+                  child: Text(t.campaigns.challenges.actions.participate),
                 ),
               ],
             ),

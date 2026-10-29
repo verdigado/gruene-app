@@ -29,7 +29,7 @@ class CreateAddressWidget extends StatelessWidget {
               Expanded(
                 child: TextInputField(
                   textController: streetTextController,
-                  labelText: t.campaigns.address.street,
+                  labelText: t.common.address.street,
                   borderColor: inputBorderColor,
                 ),
               ),
@@ -37,7 +37,7 @@ class CreateAddressWidget extends StatelessWidget {
                 padding: EdgeInsets.only(left: 6),
                 child: TextInputField(
                   width: 75,
-                  labelText: t.campaigns.address.houseNumber,
+                  labelText: t.common.address.houseNumber,
                   textController: houseNumberTextController,
                   borderColor: inputBorderColor,
                 ),
@@ -53,7 +53,7 @@ class CreateAddressWidget extends StatelessWidget {
                 padding: EdgeInsets.only(right: 6),
                 child: TextInputField(
                   width: 75,
-                  labelText: t.campaigns.address.zipCode,
+                  labelText: t.common.address.zipCode,
                   textController: zipCodeTextController,
                   inputType: InputFieldType.numbers,
                   borderColor: inputBorderColor,
@@ -61,7 +61,7 @@ class CreateAddressWidget extends StatelessWidget {
               ),
               Expanded(
                 child: TextInputField(
-                  labelText: t.campaigns.address.cityOrPlace,
+                  labelText: t.common.address.cityOrPlace,
                   textController: cityTextController,
                   borderColor: inputBorderColor,
                 ),

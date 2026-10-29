@@ -65,11 +65,11 @@ class WelcomeView extends StatelessWidget {
             ),
             TextButton(
               onPressed: () => openUrl(legalNoticeUrl, context),
-              child: Text(t.login.legalNotice, style: theme.textTheme.labelSmall),
+              child: Text(t.common.legalNotice, style: theme.textTheme.labelSmall),
             ),
             TextButton(
               onPressed: () => openUrl(termsOfUseUrl, context),
-              child: Text(t.login.termsOfUse, style: theme.textTheme.labelSmall),
+              child: Text(t.common.termsOfUse, style: theme.textTheme.labelSmall),
             ),
           ].withDividers(HorizontalDivider()),
         ),

@@ -15,6 +15,8 @@
     "notAvailable": "N/A",
     "unknown": "Unbekannt",
     "noResults": "Keine Ergebnisse",
+    "legalNotice": "Impressum",
+    "termsOfUse": "Nutzungsbedingungen",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
@@ -33,16 +35,17 @@
       "crop": "Ausschnitt wählen",
       "remove": "Entfernen",
       "select": "Auswählen",
-      "done": "Fertig"
+      "done": "Fertig",
+      "next": "Weiter"
     },
     "map": {
       "mapData": "Kartendaten",
-      "osmContributors": "OpenStreetMap Mitwirkende"
+      "osmContributors": "OpenStreetMap Mitwirkende",
+      "searchLanguage": "de-de"
     },
     "dateTime": {
       "dateFormat": "dd.MM.yyyy",
       "timeFormat": "HH:mm",
-      "timestampFormat": "yyyyMMdd_HHmmss",
       "displayTemplate": "${date} um ${time}",
       "timeRemaining": {
         "minutes(param=minutes)": {
@@ -69,6 +72,12 @@
       "m": "m",
       "sqKm": "km²",
       "formatString": "${value} ${unit}"
+    },
+    "address": {
+      "street": "Straße",
+      "houseNumber": "Hausnr.",
+      "zipCode": "PLZ",
+      "cityOrPlace": "Stadt/Ort"
     }
   },
   "divisions": {
@@ -126,8 +135,7 @@
       "hintTextAddress": "Ort oder Straße finden",
       "hintTextDivision": "Gliederung finden",
       "hintTextProfile": "Nutzerprofil finden",
-      "noEntriesFound": "Leider nichts gefunden",
-      "countryCode": "de-de"
+      "noEntriesFound": "Leider nichts gefunden"
     },
     "filters": {
       "focusAreas": "Fokusgebiete",
@@ -340,7 +348,6 @@
       "joinDialog": {
         "title": "Challenge-Funktion nutzen",
         "text": "Bitte beachte, dass du als Challenge-Teilnehmer*in namentlich in der Rangliste aufgeführt werden kannst. Deine Sichtbarkeits-Einstellungen greifen hier nicht.",
-        "accept": "Teilnehmen",
         "toast": "Challenge \"${title}\" beigetreten. Viel Erfolg!"
       },
       "leaveDialog": {
@@ -370,7 +377,6 @@
         "active": "läuft - ${timeagoLabel}"
       },
       "timeago": {
-        "languageCode": "${code}_challenges",
         "prefixAgo": "vor",
         "prefixFromNow": "noch",
         "suffixAgo": "",
@@ -415,17 +421,7 @@
         "flyer": "Flyer"
       },
       "asAt": "Stand",
-      "noTeams": {
-        "kv": "In deinem KV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne.",
-        "lv": "In deinem LV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne.",
-        "bv": "In deinem BV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
-      }
-    },
-    "address": {
-      "street": "Straße",
-      "houseNumber": "Hausnr.",
-      "zipCode": "PLZ",
-      "cityOrPlace": "Stadt/Ort"
+      "noTeams": "In deinem ${division} existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
     },
     "team": {
       "label": "Team",
@@ -434,7 +430,6 @@
       "nameLabel": "Team Name",
       "descriptionLabel": "Beschreibung (nur für Mitglieder sichtbar)",
       "selfJoin": "Selber beitreten",
-      "nextStep": "Weiter",
       "invitationPending": "Einladung ausstehend",
       "appointAsTeamLead": "Zum Team-Lead ernennen",
       "cancelInvitation": "Einladung zurückziehen",
@@ -597,8 +592,7 @@
     "tokenInput": {
       "title": "2FA - Manuelle Einrichtung",
       "intro": "Manuelle Einrichtung",
-      "token": "Action Token URL",
-      "submit": "Speichern"
+      "token": "Action Token URL"
     },
     "ready": {
       "refresh": "Aktualisieren",
@@ -640,9 +634,7 @@
       "title": "Support & Feedback"
     },
     "legalSettings": "Rechtliches",
-    "legalNotice": "Impressum",
     "dataProtectionStatement": "Datenschutzerklärung",
-    "termsOfUse": "Nutzungsbedingungen",
     "logout": "Abmelden",
     "version": "Version ${version}"
   },
@@ -656,9 +648,7 @@
     "loginMembers": "Jetzt anmelden",
     "loginNonMembers": "Anmeldung für Nicht-Parteimitglieder",
     "mfa": "Zur 2-Faktor-Authentifizierung",
-    "dataProtection": "Datenschutz",
-    "legalNotice": "Impressum",
-    "termsOfUse": "Nutzungsbedingungen"
+    "dataProtection": "Datenschutz"
   },
   "events": {
     "title": "Events",
@@ -710,7 +700,6 @@
     "urlRequired": "Gib einen gültigen Link ein",
     "urlHelp": "Link zu einer Website mit weiterführenden Informationen. Für digitale Events nutze bitte das Feld bei \"Veranstaltungsort\".",
     "create": "Event erstellen",
-    "update": "Speichern",
     "updated": "Event gespeichert",
     "delete": "Event löschen",
     "deleteDescription": "Bist du sicher, dass du das Event endgültig löschen willst?",

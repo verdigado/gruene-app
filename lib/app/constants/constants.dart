@@ -15,3 +15,6 @@ EdgeInsets screenPaddingSymmetric({double? horizontal, double? vertical}) => Edg
   horizontal: horizontal ?? horizontalScreenPaddingValue,
   vertical: vertical ?? verticalScreenPaddingValue,
 );
+
+// Used for file names, so it must not depend on the app language.
+const String fileTimestampFormat = 'yyyyMMdd_HHmmss';
