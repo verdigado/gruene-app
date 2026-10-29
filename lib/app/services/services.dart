@@ -18,21 +18,21 @@ import 'package:gruene_app/app/services/api/user_api_service.dart';
 import 'package:gruene_app/app/services/api/visual_identifier_api_service.dart';
 
 void initializeApiServices() {
-  GetIt.I.registerFactory(DivisionApiService.new);
-  GetIt.I.registerFactory(ProfileApiService.new);
-  GetIt.I.registerFactory(EventApiService.new);
-  GetIt.I.registerFactory(NewsApiService.new);
-  GetIt.I.registerFactory(ToolApiService.new);
-  GetIt.I.registerFactory(PosterApiService.new);
-  GetIt.I.registerFactory(DoorApiService.new);
-  GetIt.I.registerFactory(FlyerApiService.new);
-  GetIt.I.registerFactory(RouteApiService.new);
-  GetIt.I.registerFactory(ActionAreaApiService.new);
-  GetIt.I.registerFactory(ExperienceAreaApiService.new);
-  GetIt.I.registerFactory(CampaignStatisticApiService.new);
-  GetIt.I.registerFactory(CampaignApiService.new);
-  GetIt.I.registerFactory(TeamApiService.new);
-  GetIt.I.registerFactory(UserApiService.new);
-  GetIt.I.registerFactory(ChallengeApiService.new);
-  GetIt.I.registerFactory(VisualIdentifierApiService.new);
+  GetIt.I.registerLazySingleton(DivisionApiService.new);
+  GetIt.I.registerLazySingleton(ProfileApiService.new);
+  GetIt.I.registerLazySingleton(EventApiService.new);
+  GetIt.I.registerLazySingleton(NewsApiService.new);
+  GetIt.I.registerLazySingleton(ToolApiService.new);
+  GetIt.I.registerLazySingleton(PosterApiService.new);
+  GetIt.I.registerLazySingleton(DoorApiService.new);
+  GetIt.I.registerLazySingleton(FlyerApiService.new);
+  GetIt.I.registerLazySingleton(RouteApiService.new);
+  GetIt.I.registerLazySingleton(ActionAreaApiService.new);
+  GetIt.I.registerLazySingleton(ExperienceAreaApiService.new);
+  GetIt.I.registerLazySingleton(CampaignStatisticApiService.new);
+  GetIt.I.registerLazySingleton(CampaignApiService.new);
+  GetIt.I.registerLazySingleton(TeamApiService.new);
+  GetIt.I.registerLazySingleton(UserApiService.new);
+  GetIt.I.registerLazySingleton(ChallengeApiService.new);
+  GetIt.I.registerLazySingleton(VisualIdentifierApiService.new);
 }
