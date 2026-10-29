@@ -221,7 +221,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
         ),
         Text(
           t.campaigns.challenges.detailScreen.leaderboard.version(
-            last_udpate: _lastLeaderboardUpdate.toLocalDateTimeString(),
+            last_update: _lastLeaderboardUpdate.toLocalDateTimeString(),
           ),
           style: theme.textTheme.labelSmall,
         ).withOpacity(0.8),
