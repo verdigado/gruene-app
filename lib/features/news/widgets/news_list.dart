@@ -34,7 +34,7 @@ class NewsList extends StatelessWidget {
       load: query.isNotEmpty || showBookmarked
           ? () => GetIt.I<NewsApiService>().getNews(query: query, bookmarked: showBookmarked)
           : () async => allNews,
-      buildChild: (data, extra) {
+      buildChild: (data, _) {
         final news = data
             .where(
               (news) =>
@@ -44,7 +44,7 @@ class NewsList extends StatelessWidget {
             )
             .toList();
         if (news.isEmpty) {
-          return ErrorScreen<void>(errorMessage: t.news.noResults);
+          return ErrorScreen(errorMessage: t.news.noResults);
         }
         return ListView.builder(
           itemCount: news.length,

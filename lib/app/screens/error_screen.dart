@@ -3,11 +3,11 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
-class ErrorScreen<T> extends StatelessWidget {
+class ErrorScreen extends StatelessWidget {
   final Object? error;
   final String? errorMessage;
   final IconData? icon;
-  final T Function()? retry;
+  final void Function()? retry;
 
   const ErrorScreen({super.key, this.retry, this.error, this.errorMessage, this.icon})
     : assert((error == null) != (errorMessage == null) && error is! String);
