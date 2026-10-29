@@ -1,0 +1,15 @@
+{
+  "label": "Flyer",
+  "count": {
+    "other": "${n} Flyer"
+  },
+  "add": {
+    "title": "Wahlkampfstand eintragen"
+  },
+  "edit": {
+    "title": "Wahlkampfstand bearbeiten"
+  },
+  "countLabel": "Anzahl der Flyer",
+  "noFlyerWarning": "Bitte gib mindestens einen Flyer ein!",
+  "guidelinesInfo": "Solltest Du Flyer in Briefkästen verteilen, zählt dies zum Haustürwahlkampf. Zukünftig wird es im Haustür-Bereich eine Eintragungsmöglichkeit dazu geben. An dieser Stelle (Flyer) werden nur Flyer dokumentiert, die Menschen persönlich in die Hand gegeben wurden."
+}

@@ -1,0 +1,45 @@
+{
+  "title": "2-Faktor-Authentifizierung",
+  "label": "2FA",
+  "intro": {
+    "title": "Nutze die App als 2-Faktor-Authentifizierung!",
+    "description(rich)": "Mit der App ${appName} als zweiten Faktor kannst Du Dich ganz einfach im Grünen Netz anmelden.\n\nFür die Einrichtung musst Du nur mit Deiner Kamera den QR-Code in ${openAccountSettings(Deiner Account-Verwaltung)} einscannen.\n\nIm Anschluss öffne die App jedes Mal, wenn Du eine Anmeldung im Grünen Netz freigeben willst.\n\nMehr Informationen zur Einrichtung findest Du ${openMfaInformation(hier)}.",
+    "startSetup": "Jetzt einrichten"
+  },
+  "tokenScan": {
+    "title": "2FA - QR-Code scannen",
+    "intro": "Scanne den QR-Code des Accounts, für den Du den zweiten Faktor aktivieren willst.",
+    "doManual": "Einrichtungsschlüssel manuell eingeben",
+    "oidcIssuerMismatch": "Die Authenticator-Funktion kann nur mit dem Grünen Netz verwendet werden."
+  },
+  "tokenInput": {
+    "title": "2FA - Manuelle Einrichtung",
+    "intro": "Manuelle Einrichtung",
+    "token": "Action Token URL"
+  },
+  "ready": {
+    "refresh": "Aktualisieren",
+    "noLoginAttempt": "Es liegen aktuell keine Anmeldeversuche vor.",
+    "lastRefresh": "zuletzt aktualisiert: ${time}",
+    "never": "nie",
+    "lastApprovedLogin": "Letzte freigegebene Anmeldung",
+    "delete": {
+      "title": "App als zweiten Faktor löschen",
+      "description(rich)": "Bitte entferne die App in ${openAccountSettings(Deiner Account-Verwaltung)} und richte eine neue Methode ein, bevor Du sie hier deaktivierst.\n\nSollte die App ${appName} Deine einzige 2FA-Methode sein, wirst Du Dich ansonsten nach dem Deaktivieren nicht mehr anmelden können!",
+      "submit": "Jetzt löschen"
+    }
+  },
+  "verify": {
+    "title": "Bist Du das?",
+    "description": "Eine Anwendung fordert Zugriff auf Deinen Account an.",
+    "application": "Anwendung:",
+    "device": "Gerät:",
+    "date": "Datum:",
+    "time": "Uhrzeit:",
+    "pointInTime": "${time} Uhr",
+    "authenticateForApproval": "Bitte authentifiziere dich, um die Anmeldung zu bestätigen.",
+    "authenticationFailed": "Authentifizierung fehlgeschlagen. Bitte versuche es erneut.",
+    "approve": "Anmeldung erlauben",
+    "deny": "Anmeldung verweigern"
+  }
+}

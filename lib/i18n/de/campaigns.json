@@ -1,0 +1,108 @@
+{
+  "title": "Wahlkampf",
+  "label": "Wahlkampf",
+  "debug": {
+    "confirmStoringCache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
+    "storingCacheSuccess": "Die lokalen Änderungen wurden nun gespeichert. Bitte sende diese per E-Mail an beteiligung@gruene.de. Damit unterstützt Du uns bei der Problemlösung!"
+  },
+  "map": {
+    "noMapDataInfo": "Bitte zoome in die Karte, um mehr Informationen zu sehen.",
+    "identicalPositions": "Identische Position"
+  },
+  "general": {
+    "createdAt": "Erstellt"
+  },
+  "search": {
+    "hintTextAddress": "Ort oder Straße finden",
+    "hintTextDivision": "Gliederung finden",
+    "hintTextProfile": "Nutzerprofil finden",
+    "noEntriesFound": "Leider nichts gefunden"
+  },
+  "filters": {
+    "focusAreas": "Fokusgebiete",
+    "routes": "Routen",
+    "pollingStations": "Wahllokale",
+    "experienceAreas": "Erfahrungsgebiete",
+    "actionAreas": "Einsatzgebiete"
+  },
+  "select": {
+    "title": "Kampagne auswählen",
+    "hint": "In welcher Kampagne bist du gerade aktiv? Du kannst die Kampagne jederzeit in deinen Einstellungen ändern.",
+    "enforceSelectHint": "Deine bisherige Kampagne '${previousCampaignName}' ist beendet. Bitte wähle eine neue Kampagne aus!",
+    "electionDate": "Wahltermin",
+    "statistics": {
+      "title": "Statistik anzeigen",
+      "hint": "Wähle die Kampagne aus, für die du die Statistiken anzeigen möchtest."
+    },
+    "reportMissingCampaign": "Fehlende Kampagne melden"
+  },
+  "infoToast": {
+    "focusAreas": {
+      "activated": "Fokusgebiete aktiviert",
+      "deactivated": "Fokusgebiete deaktiviert",
+      "aboutTitle": "Über Fokusgebiete",
+      "aboutText": "Fokusgebiete zeigen Dir, wo sich Wahlkampf in welcher Form besonders lohnt. Diese Fokusgebiete sind in Level 1 (wenig) bis 5 (viel) aufgeteilt.\nKlicke auf ein Fokusgebiet, um mehr Infos zu erhalten."
+    },
+    "routes": {
+      "activated": "Routen aktiviert",
+      "deactivated": "Routen deaktiviert",
+      "aboutTitle": "Über Routen",
+      "aboutText": "Routen zeigen Dir, welche Wege Du am besten ablaufen kannst, um Haustüren zu besuchen, Plakate aufzuhängen oder Flyer zu verteilen. Die Routen werden von Wahlkampfkoordinator*innen im Grünen Atlas erstellt. Für mehr Informationen wende Dich bitte an Deinen Orts- oder Kreisverband."
+    },
+    "campaignChanged": "Kampagne ausgewählt: ${campaignName}",
+    "more": "mehr Info"
+  },
+  "pollingStation": {
+    "label": "Wahllokal",
+    "reportCorrection": "Korrektur melden",
+    "hint": "Bitte beachte, dass es je nach Region unterschiedliche Vorgaben und Regeln für das Aufhängen von Plakaten in der Nähe von Wahllokalen gibt. Bitte wende Dich für mehr Informationen an Deinen Orts- oder Kreisverband."
+  },
+  "route": {
+    "label": "Route",
+    "lengthLabel": "Länge",
+    "typeLabel": "Typ",
+    "quickAction": {
+      "status": "Route abgearbeitet",
+      "assignTeam": "Einem Team zuweisen"
+    }
+  },
+  "actionArea": {
+    "label": "Einsatzgebiet",
+    "areaLabel": "Fläche",
+    "quickAction": {
+      "status": "Gebiet abgearbeitet"
+    }
+  },
+  "experienceArea": {
+    "label": "Erfahrungsgebiet",
+    "suppliedBy": "Bereitgestellt von:",
+    "generalSupplier": "nutzer*innengeneriert"
+  },
+  "focusArea": {
+    "locationKv": "KV ${name}",
+    "intensityRecommendation": "Intensitätsempfehlung",
+    "activities": {
+      "door": {
+        "label": "Haustür-Wahlkampf",
+        "recommendation": "Empfehlungen für den Haustürwahlkampf"
+      },
+      "poster": {
+        "label": "Plakatieren",
+        "recommendation": "Empfehlungen für die Plakatauswahl"
+      },
+      "flyer": {
+        "label": "Flyer",
+        "recommendation": "Empfehlungen fürs Flyern"
+      }
+    },
+    "milieu": "Wählerschaft",
+    "progressive": "progressiv",
+    "conservative": "konservativ",
+    "specialCompetition": "Besondere Wettbewerbssituation",
+    "metaInfo": "Kampagne ${campaign}. Zuletzt aktualisiert: ${updatedAt} (ID: ${focusAreaId})"
+  },
+  "deleteEntry": {
+    "label": "Eintrag löschen",
+    "confirmation": "Möchtest Du diesen Eintrag wirklich löschen? Dies kann nicht rückgängig gemacht werden."
+  }
+}

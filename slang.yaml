@@ -3,3 +3,5 @@ fallback_strategy: base_locale
 input_file_pattern: .json
 input_directory: lib/i18n
 output_file_name: translations.g.dart
+namespaces: true
+output_directory: lib/i18n
