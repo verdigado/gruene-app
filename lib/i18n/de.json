@@ -67,7 +67,7 @@
     },
     "units": {
       "m": "m",
-      "sq_km": "km²",
+      "sqKm": "km²",
       "formatString": "${value} ${unit}"
     }
   },
@@ -97,10 +97,10 @@
     "unknownError": "Ein unbekannter Fehler ist aufgetreten.",
     "offlineError": "Du bist offline. Keine Verbindung zum Internet möglich.",
     "retry": "Erneut versuchen",
-    "error_try_again": "Etwas ist schiefgelaufen. Tippe hier, um es erneut zu versuchen."
+    "tapToRetry": "Etwas ist schiefgelaufen. Tippe hier, um es erneut zu versuchen."
   },
   "news": {
-    "news": "News",
+    "title": "News",
     "label": "Artikel",
     "newsDetail": "Artikel",
     "noResults": "Es wurden leider keine Artikel gefunden.",
@@ -531,7 +531,7 @@
     "locationPermission": "Standortberechtigung"
   },
   "profiles": {
-    "profiles": "Mitglieder",
+    "title": "Mitglieder",
     "label": "Mitglieder",
     "search": "Mitgliedersuche",
     "searchHint": "Du findest nur Profile, die für Dich sichtbar sind",
@@ -548,7 +548,7 @@
       }
     },
     "visibility": {
-      "visibility": "Profil-Sichtbarkeit",
+      "title": "Profil-Sichtbarkeit",
       "private": "Privat",
       "privateHint": "Dein Profil ist nur für Dich selbst sichtbar.\nAchtung: Mit einem privaten Profil kannst Du nicht zu Wahlkampf-Teams hinzugefügt werden.",
       "ovHint": "Dein Profil ist sichtbar für Mitglieder in Deinem Ortsverband.",
@@ -581,7 +581,7 @@
     "personalId": "Personen-/Kommunikations-Nr."
   },
   "mfa": {
-    "mfa": "2-Faktor-Authentifizierung",
+    "title": "2-Faktor-Authentifizierung",
     "label": "2FA",
     "intro": {
       "title": "Nutze die App als 2-Faktor-Authentifizierung!",
@@ -627,17 +627,17 @@
     }
   },
   "settings": {
-    "settings": "App-Einstellungen",
+    "title": "App-Einstellungen",
     "generalSettings": "App",
     "pushNotifications": {
-      "pushNotifications": "Push Nachrichten",
+      "title": "Push Nachrichten",
       "disableAll": "Vollständig deaktivieren",
       "pushNotificationsBV": "News Bundesverband",
       "pushNotificationsLV": "News Landesverband",
       "pushNotificationsKV": "News Kreisverband"
     },
     "support": {
-      "support": "Support & Feedback"
+      "title": "Support & Feedback"
     },
     "legalSettings": "Rechtliches",
     "legalNotice": "Impressum",
@@ -647,11 +647,10 @@
     "version": "Version ${version}"
   },
   "tools": {
-    "tools": "Tools",
+    "title": "Tools",
     "label": "Tools"
   },
   "login": {
-    "login": "Anmeldung",
     "support": "Unterstützen",
     "welcome": "Willkommen!",
     "loginMembers": "Jetzt anmelden",
@@ -662,7 +661,7 @@
     "termsOfUse": "Nutzungsbedingungen"
   },
   "events": {
-    "events": "Events",
+    "title": "Events",
     "label": "Events",
     "calendars": "Kalender",
     "dateRange": "Zeitraum",

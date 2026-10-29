@@ -80,7 +80,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
 
     var actionAreaSurface = t.common.units.formatString(
       value: formatter.format(widget.actionAreaDetail.polygon.toTurfPolygon().toSquareKilometers()),
-      unit: t.common.units.sq_km,
+      unit: t.common.units.sqKm,
     );
     return Container(
       constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .30),

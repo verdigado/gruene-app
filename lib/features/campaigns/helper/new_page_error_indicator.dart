@@ -17,7 +17,7 @@ class NewPageErrorIndicator extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(t.error.error_try_again, textAlign: TextAlign.center),
+          Text(t.error.tapToRetry, textAlign: TextAlign.center),
           const SizedBox(height: 4),
           const Icon(Icons.refresh_outlined, size: 16),
         ],

@@ -16,7 +16,7 @@ class ToolsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureLoadingScreen(
       load: GetIt.I<ToolApiService>().getTools,
-      loadingLayoutBuilder: (Widget child) => Scaffold(appBar: MainAppBar(title: t.tools.tools)),
+      loadingLayoutBuilder: (Widget child) => Scaffold(appBar: MainAppBar(title: t.tools.title)),
       buildChild: (tools, _) {
         final tabs = tools.sortedCategories
             .map(
@@ -28,7 +28,7 @@ class ToolsScreen extends StatelessWidget {
             .toList();
 
         return TabScreen(
-          appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(title: t.tools.tools, tabBar: tabBar),
+          appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(title: t.tools.title, tabBar: tabBar),
           tabs: tabs,
         );
       },

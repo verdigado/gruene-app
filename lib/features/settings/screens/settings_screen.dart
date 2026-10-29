@@ -20,17 +20,17 @@ class SettingsScreen extends StatelessWidget {
     final authBloc = context.read<AuthBloc>();
     final isLoggedIn = authBloc.state is Authenticated;
     return Scaffold(
-      appBar: MainAppBar(title: t.settings.settings),
+      appBar: MainAppBar(title: t.settings.title),
       body: ExpandingScrollView(
         padding: const EdgeInsets.fromLTRB(0, 16, 0, 32),
         children: [
           SectionTitle(title: t.settings.generalSettings),
           TextListItem(
-            title: t.settings.pushNotifications.pushNotifications,
+            title: t.settings.pushNotifications.title,
             onPress: () => context.pushNested(Routes.pushNotifications.path),
           ),
           TextListItem(
-            title: t.settings.support.support,
+            title: t.settings.support.title,
             onPress: () => openUrl(grueneAppFeedbackUrl, context),
             isExternal: true,
           ),

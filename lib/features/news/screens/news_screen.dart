@@ -21,7 +21,7 @@ class NewsScreenContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MainAppBar(title: t.news.news),
+      appBar: MainAppBar(title: t.news.title),
       body: FutureLoadingScreen(
         load: () async {
           final news = GetIt.I<NewsApiService>().getNews();

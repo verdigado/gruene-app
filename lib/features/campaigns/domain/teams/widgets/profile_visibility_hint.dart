@@ -56,7 +56,7 @@ class ProfileVisibilityHint extends StatelessWidget {
                     }
                   },
                   child: Text(
-                    t.profiles.visibility.visibility,
+                    t.profiles.visibility.title,
                     style: theme.textTheme.labelMedium?.apply(
                       decoration: TextDecoration.underline,
                       color: ThemeColors.textDark,

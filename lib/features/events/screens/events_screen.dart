@@ -23,7 +23,7 @@ class EventsScreenContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MainAppBar(title: t.events.events),
+      appBar: MainAppBar(title: t.events.title),
       body: FutureLoadingScreen(
         load: GetIt.I<EventApiService>().getCalendars,
         buildChild: (calendars, _) => EventsScreen(calendars: calendars),
