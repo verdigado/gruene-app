@@ -368,6 +368,19 @@ jobs:
             - run:
                 command: fvm flutter analyze --fatal-infos --fatal-warnings
                 name: Check Analyzer and Linting
+            - run:
+                command: |
+                    mkdir -p /tmp/slang-analysis
+                    fvm dart run slang analyze --full --outdir=/tmp/slang-analysis
+                    node -e '
+                      const { "@@info": _, ...locales } = require("/tmp/slang-analysis/_unused_translations.json")
+                      const unused = Object.entries(locales).filter(([, keys]) => Object.keys(keys).length > 0)
+                      if (unused.length > 0) {
+                        console.error("Unused translations found:\n" + JSON.stringify(Object.fromEntries(unused), null, 2))
+                        process.exit(1)
+                      }
+                    '
+                name: Check Unused Translations
     deliver_android:
         docker:
             - image: cimg/android:2026.03.1-node
