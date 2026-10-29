@@ -3,11 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 abstract class BaseApiService {
-  late GrueneApi grueneApi;
-
-  BaseApiService() {
-    grueneApi = GetIt.I<GrueneApi>();
-  }
+  final grueneApi = GetIt.I<GrueneApi>();
 
   Future<T> send<S, T>({required Future<Response<S>> Function(GrueneApi api) request, T Function(S data)? map}) async {
     final response = await request(grueneApi);
