@@ -7,9 +7,9 @@ class ErrorScreen<T> extends StatelessWidget {
   final Object? error;
   final String? errorMessage;
   final IconData? icon;
-  final T Function() retry;
+  final T Function()? retry;
 
-  const ErrorScreen({super.key, required this.retry, this.error, this.errorMessage, this.icon})
+  const ErrorScreen({super.key, this.retry, this.error, this.errorMessage, this.icon})
     : assert((error == null) != (errorMessage == null) && error is! String);
 
   @override
@@ -22,16 +22,17 @@ class ErrorScreen<T> extends StatelessWidget {
         children: [
           Icon(icon, color: ThemeColors.grey200, size: 48),
           Text(errorMessage ?? getErrorMessage(error!), textAlign: TextAlign.center, style: theme.textTheme.bodyLarge),
-          TextButton(
-            onPressed: retry,
-            style: ButtonStyle(
-              foregroundColor: WidgetStatePropertyAll(ThemeColors.text),
-              textStyle: WidgetStatePropertyAll(
-                theme.textTheme.labelLarge!.apply(decoration: TextDecoration.underline),
+          if (retry != null)
+            TextButton(
+              onPressed: retry,
+              style: ButtonStyle(
+                foregroundColor: WidgetStatePropertyAll(ThemeColors.text),
+                textStyle: WidgetStatePropertyAll(
+                  theme.textTheme.labelLarge!.apply(decoration: TextDecoration.underline),
+                ),
               ),
+              child: Text(t.error.retry),
             ),
-            child: Text(t.error.retry),
-          ),
         ],
       ),
     );

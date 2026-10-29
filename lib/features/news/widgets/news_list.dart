@@ -44,7 +44,7 @@ class NewsList extends StatelessWidget {
             )
             .toList();
         if (news.isEmpty) {
-          return ErrorScreen(errorMessage: t.news.noResults, retry: extra.refresh);
+          return ErrorScreen<void>(errorMessage: t.news.noResults);
         }
         return ListView.builder(
           itemCount: news.length,
