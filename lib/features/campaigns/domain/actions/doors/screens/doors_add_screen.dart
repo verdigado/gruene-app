@@ -86,7 +86,7 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      t.campaigns.door.addDoor,
+                      t.campaigns.door.add.title,
                       style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
                     ),
                     Text(
@@ -111,7 +111,7 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
               children: [
                 Flexible(
                   child: Text(
-                    t.campaigns.door.createDoor.hint,
+                    t.campaigns.door.add.hint,
                     style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface),
                   ),
                 ),

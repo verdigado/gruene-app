@@ -17,7 +17,7 @@ mixin ConfirmDelete {
         return AlertDialog(
           title: Center(child: Text('${title ?? t.campaigns.deleteEntry.label}?', style: theme.textTheme.titleMedium)),
           content: Text(
-            confirmationDialogText ?? t.campaigns.deleteEntry.confirmation_dialog,
+            confirmationDialogText ?? t.campaigns.deleteEntry.confirmation,
             textAlign: TextAlign.center,
             style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),

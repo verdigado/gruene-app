@@ -83,7 +83,7 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      t.campaigns.flyer.addFlyer,
+                      t.campaigns.flyer.add.title,
                       style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
                     ),
                     Text(
@@ -109,7 +109,7 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
                 Expanded(child: SizedBox()),
                 Flexible(
                   child: EnhancedWheelSlider(
-                    labelText: t.campaigns.flyer.countFlyer,
+                    labelText: t.campaigns.flyer.countLabel,
                     textController: flyerCountTextController,
                     labelColor: theme.colorScheme.surface,
                     sliderColor: theme.colorScheme.surface,
@@ -131,7 +131,7 @@ class _FlyerAddScreenState extends State<FlyerAddScreen> with AddressExtension, 
               SizedBox(
                 width: mediaQuery.size.width - 82,
                 child: Text(
-                  t.campaigns.flyer.info_flyer_guidelines,
+                  t.campaigns.flyer.guidelinesInfo,
                   style: theme.textTheme.labelMedium!.apply(
                     color: ThemeColors.background,
                     fontWeightDelta: 3,

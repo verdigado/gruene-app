@@ -212,11 +212,11 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
   String _getTitle() {
     switch (widget.category) {
       case TeamAssignmentType.poster:
-        return t.campaigns.statistic.recorded_posters;
+        return t.campaigns.statistics.recorded.posters;
       case TeamAssignmentType.door:
-        return t.campaigns.statistic.recorded_doors;
+        return t.campaigns.statistics.recorded.doors;
       case TeamAssignmentType.flyer:
-        return t.campaigns.statistic.recorded_flyer;
+        return t.campaigns.statistics.recorded.flyer;
     }
   }
 
@@ -279,11 +279,11 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
     getEmptyText() {
       switch (_selectedDivisionType) {
         case HierarchyLevel.kv:
-          return t.campaigns.statistic.no_teams.kv;
+          return t.campaigns.statistics.noTeams.kv;
         case HierarchyLevel.lv:
-          return t.campaigns.statistic.no_teams.lv;
+          return t.campaigns.statistics.noTeams.lv;
         case HierarchyLevel.bv:
-          return t.campaigns.statistic.no_teams.bv;
+          return t.campaigns.statistics.noTeams.bv;
         case HierarchyLevel.ov:
         case HierarchyLevel.swaggerGeneratedUnknown:
           throw UnimplementedError();

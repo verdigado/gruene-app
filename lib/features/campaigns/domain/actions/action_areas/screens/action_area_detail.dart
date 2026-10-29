@@ -120,7 +120,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.action_area.area_label}: $actionAreaSurface',
+                        '${t.campaigns.actionArea.areaLabel}: $actionAreaSurface',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],
@@ -151,7 +151,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
                   onChanged: (bool state) => _changeActionAreaStatus(_currentActionAreaDetail, state),
                 ),
                 SizedBox(width: 12),
-                Text(t.campaigns.action_area.quick_action_status, style: theme.textTheme.bodyLarge),
+                Text(t.campaigns.actionArea.quickAction.status, style: theme.textTheme.bodyLarge),
               ],
             ),
           ),
@@ -183,7 +183,7 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
                         ? _selectTeam(_currentActionAreaDetail)
                         : null,
                     child: Text(
-                      _currentActionAreaDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
+                      _currentActionAreaDetail.team?.name ?? t.campaigns.route.quickAction.assignTeam,
                       style: theme.textTheme.bodyLarge,
                       softWrap: true,
                     ),

@@ -63,7 +63,7 @@ class _FlyerEditState extends State<FlyerEdit> with AddressExtension, FlyerValid
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(children: [Text(t.campaigns.flyer.editFlyer, style: theme.textTheme.titleLarge)]),
+            child: Row(children: [Text(t.campaigns.flyer.edit.title, style: theme.textTheme.titleLarge)]),
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -86,7 +86,7 @@ class _FlyerEditState extends State<FlyerEdit> with AddressExtension, FlyerValid
                 Expanded(child: SizedBox()),
                 Flexible(
                   child: EnhancedWheelSlider(
-                    labelText: t.campaigns.flyer.countFlyer,
+                    labelText: t.campaigns.flyer.countLabel,
                     textController: flyerCountTextController,
                     initialValue: widget.flyer.flyerCount,
                     labelColor: ThemeColors.textDisabled,

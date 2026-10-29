@@ -38,7 +38,7 @@ class PosterDetail extends StatelessWidget {
         PosterModelStatus.ok => t.campaigns.poster.status.ok.description,
         PosterModelStatus.damaged => t.campaigns.poster.status.damaged.description,
         PosterModelStatus.missing => t.campaigns.poster.status.missing.description,
-        PosterModelStatus.toBeMoved => t.campaigns.poster.status.to_be_moved.description,
+        PosterModelStatus.toBeMoved => t.campaigns.poster.status.toBeMoved.description,
         PosterModelStatus.removed => t.campaigns.poster.status.removed.description,
       };
     }
@@ -67,7 +67,7 @@ class PosterDetail extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    t.campaigns.poster.status.removed.quick_action_label,
+                    t.campaigns.poster.status.removed.quickActionLabel,
                     style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background),
                   ),
                 ),
@@ -170,7 +170,7 @@ class PosterDetail extends StatelessWidget {
             onSave(poiReverted);
           },
         ),
-        content: Text(t.campaigns.poster.status.removed.quick_action_result),
+        content: Text(t.campaigns.poster.status.removed.quickActionResult),
       ),
     );
   }

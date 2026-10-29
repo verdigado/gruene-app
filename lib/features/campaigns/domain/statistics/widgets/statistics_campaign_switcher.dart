@@ -51,7 +51,7 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
     String? currentCampaignId = widget.getCurrentContextCampaignId();
     var campaignName = switch (currentCampaignId) {
       null => t.common.unknown,
-      '-1' => t.campaigns.statistic.poi_statistics.all_time,
+      '-1' => t.campaigns.statistics.poi.allTime,
       _ => (await campaignService.getCampaign(currentCampaignId)).name,
     };
 
@@ -74,7 +74,7 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                t.campaigns.statistic.poi_statistics.stats_for_campaign,
+                t.campaigns.statistics.poi.statsForCampaign,
                 style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
               ),
               Text(

@@ -144,7 +144,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         children: [
           Row(
             children: [
-              Text(t.campaigns.challenges.availableChallengeLabel, style: Theme.of(context).textTheme.titleMedium),
+              Text(t.campaigns.challenges.availableChallenges.title, style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
           FilterChipCampaign(
@@ -165,11 +165,11 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                t.campaigns.challenges.no_challenges_found_title,
+                t.campaigns.challenges.noChallengesFound.title,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight(700)),
               ),
               SizedBox(height: 12),
-              Text(t.campaigns.challenges.no_challenges_found, style: Theme.of(context).textTheme.labelMedium),
+              Text(t.campaigns.challenges.noChallengesFound.hint, style: Theme.of(context).textTheme.labelMedium),
             ],
           ),
         ),
@@ -308,7 +308,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                               maxLines: 1,
                             ),
                             Text(
-                              t.campaigns.challenges.challengeSubTitle(
+                              t.campaigns.challenges.subtitle(
                                 startDate: challenge.start.formattedDate,
                                 endDate: challenge.end.formattedDate,
                                 participants: challenge.participantCount.round(),

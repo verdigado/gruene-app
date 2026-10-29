@@ -449,7 +449,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
         mapController.navigateMapToBounds(bbox.getSouthWest(), bbox.getNorthEast());
         mapContainerController.showRoute(route);
       } else if (mapScreenController.areaId != null) {
-        filterController.enableFilterChip(t.campaigns.filters.action_areas);
+        filterController.enableFilterChip(t.campaigns.filters.actionAreas);
         var areaService = GetIt.I<ActionAreaApiService>();
         var area = await areaService.getActionArea(mapScreenController.areaId!);
         var bbox = turf.bbox(area.polygon.toTurfPolygon()).scale(scaleFactor);

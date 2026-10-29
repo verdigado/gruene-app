@@ -38,9 +38,7 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              children: [Text(t.campaigns.statistic.poi_statistics.title, style: theme.textTheme.titleMedium)],
-            ),
+            child: Row(children: [Text(t.campaigns.statistics.poi.title, style: theme.textTheme.titleMedium)]),
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
@@ -74,17 +72,17 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
 
                   _getCategoryRow(
                     TeamAssignmentType.door,
-                    t.campaigns.statistic.recorded_doors,
+                    t.campaigns.statistics.recorded.doors,
                     widget.poiStatistics.houseStats,
                   ),
                   _getCategoryRow(
                     TeamAssignmentType.poster,
-                    t.campaigns.statistic.recorded_posters,
+                    t.campaigns.statistics.recorded.posters,
                     widget.poiStatistics.posterStats,
                   ),
                   _getCategoryRow(
                     TeamAssignmentType.flyer,
-                    t.campaigns.statistic.recorded_flyer,
+                    t.campaigns.statistics.recorded.flyer,
                     widget.poiStatistics.flyerStats,
                   ),
                 ],
@@ -95,7 +93,7 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
           Row(
             children: [
               Text(
-                '${t.campaigns.statistic.as_at}: ${lastUpdateTime.toLocalDateTimeString()} (${t.campaigns.statistic.poi_statistics.update_info})',
+                '${t.campaigns.statistics.asAt}: ${lastUpdateTime.toLocalDateTimeString()} (${t.campaigns.statistics.poi.updateInfo})',
                 style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
               ),
             ],
@@ -124,9 +122,9 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
     ].toList().any((v) => v != null);
 
     return [
-      getButtonSegment(OverallStatTypes.me, t.campaigns.statistic.poi_statistics.me),
+      getButtonSegment(OverallStatTypes.me, t.campaigns.statistics.poi.me),
       widget.teamMembershipStatistics.teamStatistics.isNotEmpty
-          ? getButtonSegment(OverallStatTypes.team, t.campaigns.statistic.poi_statistics.team)
+          ? getButtonSegment(OverallStatTypes.team, t.campaigns.statistics.poi.team)
           : null,
       hasSubDivisionData ? getButtonSegment(OverallStatTypes.ov, t.divisions.level.ov.short) : null,
       getButtonSegment(OverallStatTypes.kv, t.divisions.level.kv.short),

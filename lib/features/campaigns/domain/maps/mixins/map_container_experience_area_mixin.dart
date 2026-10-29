@@ -81,7 +81,7 @@ mixin MapContainerExperienceAreaMixin {
                       Icon(Icons.radar_outlined),
                       SizedBox(width: 7),
                       Text(
-                        t.campaigns.experience_areas.label,
+                        t.campaigns.experienceArea.label,
                         style: theme.textTheme.labelLarge!.copyWith(
                           color: ThemeColors.textDark,
                           fontWeight: FontWeight.w700,
@@ -102,7 +102,7 @@ mixin MapContainerExperienceAreaMixin {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.experience_areas.supplied_by}: ${t.campaigns.experience_areas.general_supplier}',
+                        '${t.campaigns.experienceArea.suppliedBy}: ${t.campaigns.experienceArea.generalSupplier}',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],

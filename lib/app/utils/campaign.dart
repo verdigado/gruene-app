@@ -26,7 +26,7 @@ void switchCampaign(Campaign? campaign, BuildContext context) {
   appSettings.campaign.activeCampaign.recentSelectedCampaignId = campaign?.id;
   showSnackBar(
     context: context,
-    text: t.campaigns.infoToast.campaigns_changed(campaignName: campaign?.name ?? t.common.notAvailable),
+    text: t.campaigns.infoToast.campaignChanged(campaignName: campaign?.name ?? t.common.notAvailable),
   );
   GetIt.I<ActiveCampaignNotifier>().reset();
 }

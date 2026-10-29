@@ -18,13 +18,13 @@ class ChallengeTimeIndicator extends StatelessWidget {
     TimeIndicatorState? state;
     String indicatorText = '';
     final locale = LocaleSettings.currentLocale.languageCode;
-    timeago.setLocaleMessages(t.campaigns.challenges.timeago.language_code(code: locale), ChallengeTimeMessages());
+    timeago.setLocaleMessages(t.campaigns.challenges.timeago.languageCode(code: locale), ChallengeTimeMessages());
     if (now.isBetween(DateTimeRange(start: start, end: end))) {
       state = TimeIndicatorState.active;
-      indicatorText = t.campaigns.challenges.timeIndicator.activeLabel(
-        timeago_label: timeago.format(
+      indicatorText = t.campaigns.challenges.timeIndicator.active(
+        timeagoLabel: timeago.format(
           end,
-          locale: t.campaigns.challenges.timeago.language_code(code: locale),
+          locale: t.campaigns.challenges.timeago.languageCode(code: locale),
           allowFromNow: true,
         ),
       );

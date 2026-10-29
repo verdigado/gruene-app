@@ -66,7 +66,7 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(children: [Text(t.campaigns.door.editDoor, style: theme.textTheme.titleLarge)]),
+            child: Row(children: [Text(t.campaigns.door.edit.title, style: theme.textTheme.titleLarge)]),
           ),
           Align(
             alignment: Alignment.centerLeft,

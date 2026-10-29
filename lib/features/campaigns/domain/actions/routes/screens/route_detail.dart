@@ -122,7 +122,7 @@ class _RouteDetailState extends State<RouteDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.route.routeType_label}: ${_currentRouteDetail.type.toLabel()}',
+                        '${t.campaigns.route.typeLabel}: ${_currentRouteDetail.type.toLabel()}',
                         style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
                       ),
                     ],
@@ -130,7 +130,7 @@ class _RouteDetailState extends State<RouteDetail> {
                   Row(
                     children: [
                       Text(
-                        '${t.campaigns.route.length_label}: $routeLength',
+                        '${t.campaigns.route.lengthLabel}: $routeLength',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),
                     ],
@@ -160,7 +160,7 @@ class _RouteDetailState extends State<RouteDetail> {
                   onChanged: (bool state) => _changeRouteStatus(_currentRouteDetail, state),
                 ),
                 SizedBox(width: 12),
-                Text(t.campaigns.route.quick_action_status, style: theme.textTheme.bodyLarge),
+                Text(t.campaigns.route.quickAction.status, style: theme.textTheme.bodyLarge),
               ],
             ),
           ),
@@ -192,7 +192,7 @@ class _RouteDetailState extends State<RouteDetail> {
                         ? _selectTeam(_currentRouteDetail)
                         : null,
                     child: Text(
-                      _currentRouteDetail.team?.name ?? t.campaigns.route.quick_action_assign_team,
+                      _currentRouteDetail.team?.name ?? t.campaigns.route.quickAction.assignTeam,
                       style: theme.textTheme.bodyLarge,
                       softWrap: true,
                     ),

@@ -116,17 +116,17 @@ mixin MapConsumerRouteMixin on InfoBox {
     if (routesVisible) {
       loadRouteLayer(mapInfo, true);
       showInfoToast(
-        t.campaigns.infoToast.routes_activated,
+        t.campaigns.infoToast.routes.activated,
         moreInfoCallback: () => showAboutInfoBox(
           mapInfo.context,
-          t.campaigns.infoToast.routes_aboutTitle,
-          t.campaigns.infoToast.routes_aboutText,
+          t.campaigns.infoToast.routes.aboutTitle,
+          t.campaigns.infoToast.routes.aboutText,
         ),
       );
     } else {
       await mapInfo.mapController.removeLayerSource(CampaignConstants.routesSourceName);
       await mapInfo.mapController.removeLayerSource(CampaignConstants.routesSelectedSourceName);
-      showInfoToast(t.campaigns.infoToast.routes_deactivated);
+      showInfoToast(t.campaigns.infoToast.routes.deactivated);
     }
   }
 

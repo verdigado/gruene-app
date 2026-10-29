@@ -19,7 +19,7 @@ class CampaignsScreen extends StatelessWidget {
     TabModelBase(label: t.campaigns.flyer.label),
     TabModelBase(label: t.campaigns.challenges.label),
     TabModelBase(label: t.campaigns.team.label, badgeSource: BadgeSource.openInvitations),
-    TabModelBase(label: t.campaigns.statistic.label),
+    TabModelBase(label: t.campaigns.statistics.label),
   ];
 
   final StatefulNavigationShell navigationShell;
@@ -42,7 +42,7 @@ class CampaignsScreen extends StatelessWidget {
 
     return RouterTabScreen(
       appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(
-        title: t.campaigns.campaigns,
+        title: t.campaigns.title,
         appBarAction: RefreshButton(),
         tabBar: tabBar,
         leadingAction: CampaignSelectButton(),

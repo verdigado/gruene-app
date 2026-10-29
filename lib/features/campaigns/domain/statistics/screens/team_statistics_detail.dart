@@ -25,9 +25,7 @@ class _TeamStatisticsDetailState extends State<TeamStatisticsDetail> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              children: [Text(t.campaigns.statistic.team_statistics.title, style: theme.textTheme.titleMedium)],
-            ),
+            child: Row(children: [Text(t.campaigns.statistics.team.title, style: theme.textTheme.titleMedium)]),
           ),
           TeamStatisticsCategoryDetail(
             category: TeamAssignmentType.door,
@@ -47,7 +45,7 @@ class _TeamStatisticsDetailState extends State<TeamStatisticsDetail> {
           Row(
             children: [
               Text(
-                t.campaigns.statistic.team_statistics.update_info,
+                t.campaigns.statistics.team.updateInfo,
                 style: theme.textTheme.labelMedium!.apply(color: ThemeColors.textDisabled),
               ),
             ],

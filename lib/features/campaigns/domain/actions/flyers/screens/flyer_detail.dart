@@ -20,7 +20,7 @@ class FlyerDetail extends StatelessWidget {
           padding: EdgeInsets.only(left: 2, right: 2, top: 6),
           child: Row(
             children: [
-              Expanded(child: Text(t.campaigns.flyer.countFlyer, style: labelTextStyle)),
+              Expanded(child: Text(t.campaigns.flyer.countLabel, style: labelTextStyle)),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(

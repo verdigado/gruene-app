@@ -20,7 +20,7 @@ class DivisionSearchHelper {
       AppRoute<Division?>(
         builder: (context) {
           return ContentPage(
-            title: t.campaigns.label,
+            title: t.campaigns.title,
             showBackButton: true,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,

@@ -95,7 +95,7 @@ class _RefreshButtonState extends State<RefreshButton> {
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text(
-            t.campaigns.debug.confirm_storing_cache,
+            t.campaigns.debug.confirmStoringCache,
             textAlign: TextAlign.center,
             style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
@@ -130,7 +130,7 @@ class _RefreshButtonState extends State<RefreshButton> {
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text(
-            t.campaigns.debug.storing_cache_success,
+            t.campaigns.debug.storingCacheSuccess,
             textAlign: TextAlign.center,
             style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),

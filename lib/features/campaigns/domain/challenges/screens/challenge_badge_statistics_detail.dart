@@ -25,9 +25,7 @@ class ChallengeBadgeStatisticsDetail extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Row(
-                children: [Text(t.campaigns.statistic.challenge_statistics.title, style: theme.textTheme.titleMedium)],
-              ),
+              child: Row(children: [Text(t.campaigns.statistics.challenges.title, style: theme.textTheme.titleMedium)]),
             ),
             SingleChildScrollView(
               scrollDirection: .horizontal,

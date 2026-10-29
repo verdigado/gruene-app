@@ -30,7 +30,7 @@ class MyChallengesWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [Text(t.campaigns.challenges.myChallengeLabel, style: Theme.of(context).textTheme.titleMedium)],
+            children: [Text(t.campaigns.challenges.myChallenges.title, style: Theme.of(context).textTheme.titleMedium)],
           ),
           SizedBox(
             width: mediaQuery.size.width - 16,
@@ -132,7 +132,7 @@ class MyChallengesWidget extends StatelessWidget {
                             maxLines: 1,
                           ),
                           Text(
-                            t.campaigns.challenges.challengeSubTitle(
+                            t.campaigns.challenges.subtitle(
                               startDate: challenge.start.formattedDate,
                               endDate: challenge.end.formattedDate,
                               participants: challenge.participantCount.round(),

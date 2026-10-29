@@ -205,7 +205,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
-                child: Row(children: [Text(t.campaigns.poster.editPoster, style: theme.textTheme.titleLarge)]),
+                child: Row(children: [Text(t.campaigns.poster.edit.title, style: theme.textTheme.titleLarge)]),
               ),
               Align(
                 alignment: Alignment.centerLeft,
@@ -252,7 +252,7 @@ class _PosterEditState extends State<PosterEdit> with AddressExtension, ConfirmD
                   children: [
                     Flexible(
                       child: Text(
-                        t.campaigns.poster.deletePoster.hint,
+                        t.campaigns.poster.delete.hint,
                         style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
                       ),
                     ),
