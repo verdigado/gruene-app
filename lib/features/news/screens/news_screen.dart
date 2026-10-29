@@ -68,7 +68,7 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = widget.news.categories();
+    final categories = widget.news.sortedCategories;
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', current: _query);
     final bookmarkFilter = FilterModel(

@@ -18,7 +18,7 @@ class ToolsScreen extends StatelessWidget {
       load: GetIt.I<ToolApiService>().getTools,
       loadingLayoutBuilder: (Widget child) => Scaffold(appBar: MainAppBar(title: t.tools.tools)),
       buildChild: (tools, _) {
-        final tabs = tools.categories
+        final tabs = tools.sortedCategories
             .map(
               (category) => TabModel(
                 label: category.title,

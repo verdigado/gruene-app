@@ -6,8 +6,8 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 const prominentCategoryIds = ['2680259', '88764', '653'];
 
 extension NewsListExtension on List<News> {
-  List<NewsCategory> categories() {
-    final categories = map((it) => it.categories).expand((it) => it).nonNulls.toSet().toList();
+  List<NewsCategory> get sortedCategories {
+    final categories = map((news) => news.categories).expand((it) => it).nonNulls.toSet().toList();
     categories.sort((a, b) {
       if (prominentCategoryIds.contains(a.id) && !prominentCategoryIds.contains(b.id)) {
         return -1;
