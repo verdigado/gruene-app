@@ -3,19 +3,19 @@ import 'package:gruene_app/app/services/api/action_area_api_service.dart';
 import 'package:gruene_app/app/services/api/campaign_api_service.dart';
 import 'package:gruene_app/app/services/api/campaign_statistic_api_service.dart';
 import 'package:gruene_app/app/services/api/challenge_api_service.dart';
+import 'package:gruene_app/app/services/api/client/news_api_service.dart';
 import 'package:gruene_app/app/services/api/division_api_service.dart';
 import 'package:gruene_app/app/services/api/door_api_service.dart';
+import 'package:gruene_app/app/services/api/event_api_service.dart';
 import 'package:gruene_app/app/services/api/experience_area_api_service.dart';
 import 'package:gruene_app/app/services/api/flyer_api_service.dart';
 import 'package:gruene_app/app/services/api/poster_api_service.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/services/api/route_api_service.dart';
 import 'package:gruene_app/app/services/api/team_api_service.dart';
+import 'package:gruene_app/app/services/api/tool_api_service.dart';
 import 'package:gruene_app/app/services/api/user_api_service.dart';
 import 'package:gruene_app/app/services/api/visual_identifier_api_service.dart';
-import 'package:gruene_app/features/events/services/event_api_service.dart';
-import 'package:gruene_app/features/news/services/news_api_service.dart';
-import 'package:gruene_app/features/tools/services/tool_api_service.dart';
 
 void initializeApiServices() {
   GetIt.I.registerFactory(DivisionApiService.new);
