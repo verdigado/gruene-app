@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
@@ -142,7 +142,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
   }
 
   Future<void> _appointAsTeamLead(TeamMembership teamMembership) async {
-    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var teamsService = GetIt.I<TeamApiService>();
     var updatedTeam = await teamsService.updateTeamMembership(
       teamId: widget.team.id,
       userId: teamMembership.userId,
@@ -155,7 +155,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
   }
 
   Future<void> _removeFromTeam(TeamMembership teamMembership) async {
-    var teamsService = GetIt.I<GrueneApiTeamsService>();
+    var teamsService = GetIt.I<TeamApiService>();
     var updatedTeam = await teamsService.removeTeamMembership(teamId: widget.team.id, userId: teamMembership.userId);
 
     setState(() {
@@ -168,7 +168,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
 
     if (newTeamMember != null) {
       if (!_activeMemberships.map((m) => m.userId).contains(newTeamMember.userId)) {
-        var teamService = GetIt.I<GrueneApiTeamsService>();
+        var teamService = GetIt.I<TeamApiService>();
         var newTeam = await teamService.addTeamMembership(teamId: widget.team.id, userId: newTeamMember.userId);
         setState(() {
           _activeMemberships = _getActiveMemberships(newTeam.memberships);

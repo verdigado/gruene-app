@@ -13,28 +13,15 @@ import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/router.dart';
-import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_action_area_service.dart';
-import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
-import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
-import 'package:gruene_app/app/services/gruene_api_core.dart';
-import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
-import 'package:gruene_app/app/services/gruene_api_door_service.dart';
-import 'package:gruene_app/app/services/gruene_api_experience_area_service.dart';
-import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
-import 'package:gruene_app/app/services/gruene_api_poster_service.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
-import 'package:gruene_app/app/services/gruene_api_route_service.dart';
-import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
-import 'package:gruene_app/app/services/gruene_api_user_service.dart';
-import 'package:gruene_app/app/services/gruene_api_visual_identifier_service.dart';
-import 'package:gruene_app/app/services/ip_service.dart';
-import 'package:gruene_app/app/services/nominatim_service.dart';
-import 'package:gruene_app/app/services/notification_message_type.dart';
-import 'package:gruene_app/app/services/push_notification_handlers/notification_handlers.dart';
-import 'package:gruene_app/app/services/push_notification_listener.dart';
-import 'package:gruene_app/app/services/push_notification_service.dart';
+import 'package:gruene_app/app/services/api/client/api_client.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/ip/ip_service.dart';
+import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
+import 'package:gruene_app/app/services/push_notification/handlers/notification_handlers.dart';
+import 'package:gruene_app/app/services/push_notification/notification_message_type.dart';
+import 'package:gruene_app/app/services/push_notification/push_notification_listener.dart';
+import 'package:gruene_app/app/services/push_notification/push_notification_service.dart';
+import 'package:gruene_app/app/services/services.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/file_cache_manager.dart';
@@ -51,8 +38,8 @@ import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/news/bloc/bookmark_cubit.dart';
-import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_bloc.dart';
-import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_event.dart';
+import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_bloc.dart';
+import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_event.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -109,7 +96,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<TeamRefreshController>(TeamRefreshController());
   GetIt.I.registerSingleton<VisualIdentifierHelper>(VisualIdentifierHelper());
   initializeApiServices();
-  intializeNotficationHandlers();
+  initializeNotificationHandlers();
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
@@ -131,24 +118,7 @@ void initializeTimers() {
   );
 }
 
-void initializeApiServices() {
-  GetIt.I.registerFactory<GrueneApiPosterService>(() => GrueneApiPosterService());
-  GetIt.I.registerFactory<GrueneApiDoorService>(() => GrueneApiDoorService());
-  GetIt.I.registerFactory<GrueneApiFlyerService>(() => GrueneApiFlyerService());
-  GetIt.I.registerFactory<GrueneApiRouteService>(() => GrueneApiRouteService());
-  GetIt.I.registerFactory<GrueneApiActionAreaService>(() => GrueneApiActionAreaService());
-  GetIt.I.registerFactory<GrueneApiExperienceAreaService>(() => GrueneApiExperienceAreaService());
-  GetIt.I.registerFactory<GrueneApiCampaignsStatisticsService>(() => GrueneApiCampaignsStatisticsService());
-  GetIt.I.registerFactory<GrueneApiCampaignService>(() => GrueneApiCampaignService());
-  GetIt.I.registerFactory<GrueneApiTeamsService>(() => GrueneApiTeamsService());
-  GetIt.I.registerFactory<GrueneApiDivisionsService>(() => GrueneApiDivisionsService());
-  GetIt.I.registerFactory<GrueneApiProfileService>(() => GrueneApiProfileService());
-  GetIt.I.registerFactory<GrueneApiUserService>(() => GrueneApiUserService());
-  GetIt.I.registerFactory<GrueneApiChallengeService>(() => GrueneApiChallengeService());
-  GetIt.I.registerFactory<GrueneApiVisualIdentifierService>(() => GrueneApiVisualIdentifierService());
-}
-
-void intializeNotficationHandlers() {
+void initializeNotificationHandlers() {
   GetIt.I.registerFactory<BaseNotificationHandler>(
     () => NewsNotificationHandler(),
     instanceName: NotificationMessageType.news.toString(),

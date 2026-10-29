@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/services/api/event_api_service.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
-import 'package:gruene_app/features/events/services/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_edit_dialog.dart';
 import 'package:gruene_app/features/events/widgets/events_filter_dialog.dart';
@@ -24,7 +25,7 @@ class EventsScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.events.events),
       body: FutureLoadingScreen(
-        load: getCalendars,
+        load: GetIt.I<EventApiService>().getCalendars,
         buildChild: (calendars, _) => EventsScreen(calendars: calendars),
       ),
     );

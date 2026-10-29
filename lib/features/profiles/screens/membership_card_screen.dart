@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
-import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -21,7 +22,7 @@ class MembershipCardScreen extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.myMembershipCard),
       body: FutureLoadingScreen(
-        load: fetchOwnProfile,
+        load: GetIt.I<ProfileApiService>().getSelf,
         buildChild: (profile, _) {
           Division? partyDivision = profile.partyDivision;
 

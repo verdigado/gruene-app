@@ -1,12 +1,12 @@
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/gruene_api_visual_identifier_service.dart';
+import 'package:gruene_app/app/services/api/visual_identifier_api_service.dart';
 
 class VisualIdentifierHelper {
   static Map<int, String>? _visualIdentifierMap;
 
   Future<void> ensureInitialized() async {
     if (_visualIdentifierMap == null) {
-      var visualIdentifierService = GetIt.I.get<GrueneApiVisualIdentifierService>();
+      var visualIdentifierService = GetIt.I.get<VisualIdentifierApiService>();
       var visualIdentifiersData = (await visualIdentifierService.getVisualIdentifiers());
       _visualIdentifierMap = {for (var e in visualIdentifiersData) e.id: e.color};
     }

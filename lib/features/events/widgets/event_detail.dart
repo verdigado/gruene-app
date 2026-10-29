@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/api/event_api_service.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
-import 'package:gruene_app/features/events/services/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_attendance_selection.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -87,7 +88,8 @@ class EventDetail extends StatelessWidget {
               attendanceStatus: attendanceStatus != null ? {attendanceStatus} : {},
               setAttendanceStatus: (attendanceStatus) async => await tryAndNotify(
                 function: () async {
-                  final updatedEvent = await updateEventAttendance(event, attendanceStatus.firstOrNull);
+                  final eventService = GetIt.I<EventApiService>();
+                  final updatedEvent = await eventService.updateEventAttendance(event, attendanceStatus.firstOrNull);
                   if (context.mounted) {
                     context.read<EventsBloc>().add(AddOrUpdateEvent(calendarEvent: updatedEvent));
                   }

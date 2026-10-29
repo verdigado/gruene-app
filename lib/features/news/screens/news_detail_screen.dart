@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/constants.dart';
-import 'package:gruene_app/app/screens/error_screen.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/services/api/news_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/full_width_image.dart';
 import 'package:gruene_app/app/widgets/html.dart';
-import 'package:gruene_app/features/news/services/news_api_service.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/attachments.dart';
 import 'package:gruene_app/features/news/widgets/bookmark_button.dart';
@@ -23,16 +23,14 @@ class NewsDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final newsService = GetIt.I<NewsApiService>();
     final newsItem = GoRouterState.of(context).extra as News?;
     final theme = Theme.of(context);
     return Scaffold(
       appBar: MainAppBar(title: t.news.newsDetail),
-      body: FutureLoadingScreen<News?>(
-        load: newsItem == null ? () => fetchNewsById(newsId) : () async => newsItem,
-        buildChild: (News? news, _) {
-          if (news == null) {
-            return ErrorScreen(errorMessage: t.news.newsNotFound, retry: () => fetchNewsById(newsId));
-          }
+      body: FutureLoadingScreen(
+        load: newsItem == null ? () => newsService.getNewsById(newsId) : () async => newsItem,
+        buildChild: (news, extra) {
           final division = news.division;
           return SizedBox(
             width: double.infinity,

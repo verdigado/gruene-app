@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/models/filter_model.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
-import 'package:gruene_app/app/services/divisions_api_service.dart';
+import 'package:gruene_app/app/services/api/division_api_service.dart';
+import 'package:gruene_app/app/services/api/news_api_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
 import 'package:gruene_app/features/news/repository/news_repository.dart';
-import 'package:gruene_app/features/news/services/news_api_service.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_filter_dialog.dart';
 import 'package:gruene_app/features/news/widgets/news_list.dart';
@@ -22,7 +23,13 @@ class NewsScreenContainer extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.news.news),
       body: FutureLoadingScreen(
-        load: () async => (await fetchNews(), await loadDivisions(), await readDivisionFilterKeys()),
+        load: () async {
+          final news = GetIt.I<NewsApiService>().getNews();
+          final divisions = GetIt.I<DivisionApiService>().getAllDivisions();
+          final divisionFilterKeys = readDivisionFilterKeys();
+          await Future.wait([news, divisions, divisionFilterKeys]);
+          return (await news, await divisions, await divisionFilterKeys);
+        },
         buildChild: (params, _) {
           final (news, divisions, divisionFilterKeys) = params;
           final initialDivisionFilters = divisionFilterKeys == null
@@ -61,7 +68,7 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = widget.news.categories();
+    final categories = widget.news.sortedCategories;
 
     final searchFilter = FilterModel(update: (query) => setState(() => _query = query), initial: '', current: _query);
     final bookmarkFilter = FilterModel(

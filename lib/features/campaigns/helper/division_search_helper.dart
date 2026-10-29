@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
+import 'package:gruene_app/app/services/api/division_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/app_route.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/content_page.dart';
@@ -103,9 +103,9 @@ class DivisionSearchHelper {
     HierarchyLevel? level,
     List<String>? divisionKeysFilter,
   }) async {
-    var divisionService = GetIt.I<GrueneApiDivisionsService>();
-    var searchResult = await divisionService.searchDivision(
-      searchTerm: searchText,
+    var divisionService = GetIt.I<DivisionApiService>();
+    var searchResult = await divisionService.getDivisions(
+      search: searchText,
       offset: PagingHelper.getOffsetForPage(pageKey, pageSize),
       limit: pageSize,
       level: level,

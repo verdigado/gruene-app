@@ -6,9 +6,9 @@ import 'package:gruene_app/app/models/campaigns/flyer/flyer_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/flyer/flyer_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/flyer/flyer_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
-import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_flyer_service.dart';
-import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/api/flyer_api_service.dart';
+import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flyer_add_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flyer_detail.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/flyers/screens/flyer_edit.dart';
@@ -29,7 +29,7 @@ class FlyerScreen extends StatefulWidget {
 
 class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, FlyerDetailModel, FlyerUpdateModel> {
   static const _poiType = PoiServiceType.flyer;
-  final _grueneApiService = GetIt.I<GrueneApiFlyerService>();
+  final _grueneApiService = GetIt.I<FlyerApiService>();
 
   late List<FilterChipModel> flyerFilter;
 
@@ -139,7 +139,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
   }
 
   @override
-  GrueneApiFlyerService get campaignService => _grueneApiService;
+  FlyerApiService get campaignService => _grueneApiService;
 
   FlyerAddScreen _getAddScreen(LatLng location, AddressModel? address, Object? additionalData) {
     return FlyerAddScreen(location: location, address: address!);

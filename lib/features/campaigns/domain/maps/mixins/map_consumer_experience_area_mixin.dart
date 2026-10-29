@@ -2,7 +2,7 @@ part of '../mixins.dart';
 
 mixin MapConsumerExperienceAreaMixin {
   bool experienceAreasVisible = false;
-  GrueneApiCampaignsPoiBaseService get campaignService;
+  BasePoiApiService get campaignService;
 
   Future<void> addExperienceAreaLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
     final data = <turf.Feature>{}.toList();

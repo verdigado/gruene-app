@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart' hide Visibility;
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
-import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
@@ -9,7 +10,6 @@ import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';
-import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
 import 'package:gruene_app/features/profiles/utils/profile_visibility.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -39,13 +39,14 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
       return;
     }
 
-    final teamsService = GetIt.I<GrueneApiTeamsService>();
+    final profileService = GetIt.I<ProfileApiService>();
+    final teamService = GetIt.I<TeamApiService>();
     final newProfile = widget.profile.copyWith(privacy: widget.profile.privacy.copyWith(overall: _selectedVisibility));
 
     final team = await tryAndNotify(
       function: () async {
-        await updateProfile(newProfile);
-        return await teamsService.getOwnTeam();
+        await profileService.updateProfile(newProfile);
+        return await teamService.getOwnTeam();
       },
       context: context,
       onSuccess: (context, _) => showSnackBar(context: context, text: t.profiles.visibility.updated),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
-import 'package:gruene_app/app/services/push_notification_service.dart';
+import 'package:gruene_app/app/services/push_notification/push_notification_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/logger.dart';

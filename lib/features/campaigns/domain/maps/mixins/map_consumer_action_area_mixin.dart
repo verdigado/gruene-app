@@ -2,7 +2,7 @@ part of '../mixins.dart';
 
 mixin MapConsumerActionAreaMixin on InfoBox {
   bool actionAreasVisible = true;
-  GrueneApiCampaignsPoiBaseService get campaignService;
+  BasePoiApiService get campaignService;
 
   Future<void> addActionAreaLayer(MapLibreMapController mapLibreController, MapInfo mapInfo) async {
     final data = <turf.Feature>{}.toList();

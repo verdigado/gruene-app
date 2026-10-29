@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/services/gruene_api_user_service.dart';
+import 'package:gruene_app/app/services/api/user_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/domain/teams/mixins.dart';
@@ -29,7 +29,7 @@ class _TeamsScreenState extends State<TeamsScreen> with NewTeamFlowMixin {
   void _loadData() async {
     setState(() => _loading = true);
 
-    var userInfo = await GetIt.I<GrueneApiUserService>().getOwnRbac();
+    var userInfo = await GetIt.I<UserApiService>().getOwnRbac();
 
     setState(() {
       _loading = false;

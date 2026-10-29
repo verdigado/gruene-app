@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/api/campaign_api_service.dart';
+import 'package:gruene_app/app/services/api/challenge_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
-import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
@@ -76,14 +76,14 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   void _loadData() async {
     setState(() => _loading = true);
 
-    var challengeService = GetIt.I<GrueneApiChallengeService>();
+    var challengeService = GetIt.I<ChallengeApiService>();
     var joinedChallenges = await challengeService.getAllMyChallenges(
       challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,
       onlyActiveCampaigns: true,
       sorting: .endDescending,
     );
 
-    var campaignService = GetIt.I<GrueneApiCampaignService>();
+    var campaignService = GetIt.I<CampaignApiService>();
     var knownCampaigns = await campaignService.findCampaigns();
 
     setState(() {
@@ -102,7 +102,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
 
     try {
       final newKey = (_pagingState.keys?.last ?? 0) + 1;
-      var challengeService = GetIt.I<GrueneApiChallengeService>();
+      var challengeService = GetIt.I<ChallengeApiService>();
       final newItems = await challengeService.getChallenges(
         activityTypes: challengeActivityFilter,
         challengeStatus: CampaignConstants.currentlyOngoingChallengeFilter,

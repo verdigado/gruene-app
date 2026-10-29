@@ -19,8 +19,8 @@ import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart
 import 'package:gruene_app/app/models/campaigns/route/route_assignment_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/enums.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';

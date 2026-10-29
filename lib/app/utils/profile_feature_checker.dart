@@ -7,8 +7,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
 // TODO move ProfileFeatureChecker into the profiles feature, it depends on profiles UI (showProfileVisibilitySetting)
 import 'package:gruene_app/features/profiles/widgets/profile_visibility_setting.dart';
 import 'package:http/http.dart';
@@ -44,7 +44,7 @@ class ProfileFeatureChecker {
 
     if (!latestProfileCheckSettings!.hasProfilePrivacyCheckCompleted) {
       try {
-        var profileService = GetIt.I<GrueneApiProfileService>();
+        var profileService = GetIt.I<ProfileApiService>();
         var currentProfile = await profileService.getSelf();
         if (!currentProfile.isVisibleInKV()) {
           if (!context.mounted) return;

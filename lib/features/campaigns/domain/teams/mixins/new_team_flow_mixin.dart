@@ -49,7 +49,7 @@ mixin NewTeamFlowMixin {
 
   /// Handles the complete team creation flow with all steps
   Future<void> _handleTeamCreationFlow(BuildContext context, NewTeamDetails initialDetails) async {
-    final teamService = GetIt.I<GrueneApiTeamsService>();
+    final teamService = GetIt.I<TeamApiService>();
     final creationService = TeamCreationService(teamService);
     final currentUser = getCurrentUserInfo();
 
@@ -110,7 +110,7 @@ mixin NewTeamFlowMixin {
     var canceledOrSaved = false;
     NewTeamDetails? newDetails = newTeamDetails;
 
-    final teamService = GetIt.I<GrueneApiTeamsService>();
+    final teamService = GetIt.I<TeamApiService>();
     final creationService = TeamCreationService(teamService);
     final currentUser = getCurrentUserInfo();
 

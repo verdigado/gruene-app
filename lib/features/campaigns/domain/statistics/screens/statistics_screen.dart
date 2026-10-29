@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/statistics/campaign_statistics_model.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/services/api/campaign_statistic_api_service.dart';
+import 'package:gruene_app/app/services/api/challenge_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/services/converters.dart';
-import 'package:gruene_app/app/services/gruene_api_base_service.dart';
-import 'package:gruene_app/app/services/gruene_api_campaigns_statistics_service.dart';
-import 'package:gruene_app/app/services/gruene_api_challenge_service.dart';
-import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
@@ -130,7 +130,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             DateTime.now().isBefore(campaignSettings.recentPoiStatisticsFetchTimestamp!.add(Duration(minutes: 5))))) {
       return campaignSettings.recentPoiStatistics!;
     }
-    var statApiService = GetIt.I<GrueneApiCampaignsStatisticsService>();
+    var statApiService = GetIt.I<CampaignStatisticApiService>();
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
     var campaignStatistics = await statApiService.getStatistics(
       campaigndId: currentPoiStatisticsCampaignId == CampaignConstants.allCampaignsId
@@ -152,7 +152,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             DateTime.now().isBefore(campaignSettings.recentTeamStatisticsFetchTimestamp!.add(Duration(minutes: 5))))) {
       return campaignSettings.recentTeamStatistics!;
     }
-    var teamApiService = GetIt.I<GrueneApiTeamsService>();
+    var teamApiService = GetIt.I<TeamApiService>();
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
     var teamStats = await teamApiService.getTeamStatistics(
       campaignId: currentPoiStatisticsCampaignId == CampaignConstants.allCampaignsId
@@ -176,7 +176,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ))) {
       return campaignSettings.recentTeamMembershipStatistics!;
     }
-    var teamApiService = GetIt.I<GrueneApiTeamsService>();
+    var teamApiService = GetIt.I<TeamApiService>();
 
     try {
       var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
@@ -204,7 +204,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             DateTime.now().isBefore(campaignSettings.recentChallengeBadgesFetchTimestamp!.add(Duration(minutes: 5))))) {
       return campaignSettings.recentChallengeBadges!;
     }
-    var challengeApiService = GetIt.I<GrueneApiChallengeService>();
+    var challengeApiService = GetIt.I<ChallengeApiService>();
     var currentPoiStatisticsCampaignId = getCurrentPoiStatisticsCampaignId();
     var challengeBadges = (await challengeApiService.getAllMyChallenges(
       campaignId: currentPoiStatisticsCampaignId == CampaignConstants.allCampaignsId
@@ -228,7 +228,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             DateTime.now().isBefore(campaignSettings.recentOwnTeamFetchTimestamp!.add(Duration(minutes: 5))))) {
       return campaignSettings.recentOwnTeam;
     }
-    var teamApiService = GetIt.I<GrueneApiTeamsService>();
+    var teamApiService = GetIt.I<TeamApiService>();
     var ownTeam = (await teamApiService.getOwnTeam());
 
     campaignSettings.recentOwnTeam = ownTeam;

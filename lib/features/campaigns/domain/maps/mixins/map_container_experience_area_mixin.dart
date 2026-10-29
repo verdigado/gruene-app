@@ -58,7 +58,7 @@ mixin MapContainerExperienceAreaMixin {
 
   Future<Widget> _getExperienceAreaDetailWidget(turf.Feature experienceAreaFeature, BuildContext context) async {
     var theme = Theme.of(context);
-    var experienceAreaService = GetIt.I<GrueneApiExperienceAreaService>();
+    var experienceAreaService = GetIt.I<ExperienceAreaApiService>();
     var experienceArea = await experienceAreaService.getExperienceArea(experienceAreaFeature.id.toString());
 
     onClose() => Navigator.maybePop(context);

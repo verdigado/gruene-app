@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
-import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
-import 'package:gruene_app/app/services/gruene_api_divisions_service.dart';
-import 'package:gruene_app/app/services/gruene_api_profile_service.dart';
+import 'package:gruene_app/app/services/api/campaign_api_service.dart';
+import 'package:gruene_app/app/services/api/division_api_service.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
@@ -71,7 +71,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       CampaignSelectMode.statistics => widget.getCurrentContextCampaignId?.call(),
     };
 
-    var campaignService = GetIt.I<GrueneApiCampaignService>();
+    var campaignService = GetIt.I<CampaignApiService>();
     var allCampaigns = await campaignService.findCampaigns();
     var selectableCampaigns = switch (widget.mode) {
       CampaignSelectMode.normal || CampaignSelectMode.enforceSelect => allCampaigns.activeCampaigns(),
@@ -80,8 +80,8 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
     selectableCampaigns.sort((a, b) => a.electionDate.compareTo(b.electionDate));
 
     var divisionKeys = selectableCampaigns.groupBy((c) => c.divisionKey).keys.toList();
-    var divisionService = GetIt.I<GrueneApiDivisionsService>();
-    var activeCampaignDivisions = await divisionService.searchDivision(divisionKeys: divisionKeys);
+    var divisionService = GetIt.I<DivisionApiService>();
+    var activeCampaignDivisions = await divisionService.getDivisions(divisionKeys: divisionKeys);
 
     var previousCampaignName = widget.mode == CampaignSelectMode.enforceSelect && selectedCampaignId != null
         ? allCampaigns.firstWhereOrNull((c) => c.id == selectedCampaignId)?.name ?? t.common.unknown
@@ -90,7 +90,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
     if (widget.mode == CampaignSelectMode.enforceSelect &&
         selectedCampaignId == null &&
         selectableCampaigns.isNotEmpty) {
-      var profileService = GetIt.I<GrueneApiProfileService>();
+      var profileService = GetIt.I<ProfileApiService>();
       var currentProfile = await profileService.getSelf();
       var userDivisionKeys = (currentProfile.memberships).map((m) => m.division.divisionKey).toList();
       var preSelectCandidates = selectableCampaigns

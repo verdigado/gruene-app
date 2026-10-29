@@ -6,9 +6,9 @@ import 'package:gruene_app/app/models/campaigns/doors/door_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
-import 'package:gruene_app/app/services/enums.dart';
-import 'package:gruene_app/app/services/gruene_api_door_service.dart';
-import 'package:gruene_app/app/services/nominatim_service.dart';
+import 'package:gruene_app/app/services/api/door_api_service.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/screens/door_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/screens/doors_add_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/screens/doors_detail.dart';
@@ -30,12 +30,12 @@ class DoorsScreen extends StatefulWidget {
 class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDetailModel, DoorUpdateModel> {
   static const _poiType = PoiServiceType.door;
   late List<FilterChipModel> doorsFilter;
-  final _grueneApiService = GetIt.I<GrueneApiDoorService>();
+  final _grueneApiService = GetIt.I<DoorApiService>();
 
   _DoorsScreenState() : super(_poiType);
 
   @override
-  GrueneApiDoorService get campaignService => _grueneApiService;
+  DoorApiService get campaignService => _grueneApiService;
 
   @override
   void initState() {

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gruene_app/app/enums/push_notification_topic_enum.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/toggle_list_item.dart';
-import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_bloc.dart';
-import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_event.dart';
-import 'package:gruene_app/features/settings/bloc/push_notifications/push_notification_settings_state.dart';
+import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_bloc.dart';
+import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_event.dart';
+import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_state.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class PushNotificationsScreen extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
-import 'package:gruene_app/app/services/gruene_api_campaign_service.dart';
-import 'package:gruene_app/app/services/gruene_api_teams_service.dart';
+import 'package:gruene_app/app/services/api/campaign_api_service.dart';
+import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/logger.dart';
@@ -72,7 +72,7 @@ class OpenInvitationCampaignValueStore extends ChangeNotifier {
 
   void reloadOpenInvitations() async {
     try {
-      var openInvitations = await GetIt.I<GrueneApiTeamsService>().getOpenInvitations();
+      var openInvitations = await GetIt.I<TeamApiService>().getOpenInvitations();
       if (openInvitations.length != _openInvitationCount) {
         _openInvitationCount = openInvitations.length;
         notifyListeners();
@@ -92,7 +92,7 @@ class ActiveCampaignNotifier extends ChangeNotifier {
       var currentCampaignId = getCurrentCampaignId();
       var isActive = false;
       if (currentCampaignId != null) {
-        var allCampaigns = await GetIt.I<GrueneApiCampaignService>().findCampaigns();
+        var allCampaigns = await GetIt.I<CampaignApiService>().findCampaigns();
         isActive = allCampaigns.any((c) => c.id == currentCampaignId && c.status == CampaignStatus.active);
       }
       _isCurrentCampaignActive = isActive;
@@ -118,7 +118,7 @@ class NewCampaignNotifier extends ChangeNotifier {
 
   void checkNewCampaignsAvailable() async {
     try {
-      var allCampaigns = (await GetIt.I<GrueneApiCampaignService>().findCampaigns()).activeCampaigns();
+      var allCampaigns = (await GetIt.I<CampaignApiService>().findCampaigns()).activeCampaigns();
       var recentlySeenCampaignIds = GetIt.I<AppSettings>().campaign.activeCampaign.recentlySeenCampaignIds ?? [];
 
       var newCampaigns = allCampaigns.where((c) => !recentlySeenCampaignIds.contains(c.id)).toList();

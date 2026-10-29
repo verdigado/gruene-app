@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/api/event_api_service.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/image.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
@@ -14,7 +16,6 @@ import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
 import 'package:gruene_app/app/widgets/selection_view.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/constants/index.dart';
-import 'package:gruene_app/features/events/services/events_api_service.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/features/events/widgets/event_recurrence_form.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -309,13 +310,15 @@ Future<CalendarEvent?> save({
   final image = images.isNotEmpty ? images[0] : null;
   return await tryAndNotify(
     function: () async {
+      final eventService = GetIt.I<EventApiService>();
       final event = await _saveEvent(formKey, calendar, previousEvent);
+
       if (image != null && image != previousEvent?.image) {
         final imagePath = (image as XFile).path;
         final imageFile = await multipartImage(File(imagePath), 'image');
-        return uploadEventImage(event, imageFile);
+        return eventService.uploadEventImage(event, imageFile);
       } else if (image == null && previousEvent?.image != null) {
-        return deleteEventImage(event);
+        return eventService.deleteEventImage(event);
       }
       return event;
     },
@@ -325,6 +328,7 @@ Future<CalendarEvent?> save({
 }
 
 Future<CalendarEvent> _saveEvent(GlobalKey<FormBuilderState> formKey, Calendar calendar, CalendarEvent? previousEvent) {
+  final eventService = GetIt.I<EventApiService>();
   final state = formKey.currentState!;
   final title = state.value[nameField] as String;
   final description = state.value[descriptionField] as String?;
@@ -351,7 +355,7 @@ Future<CalendarEvent> _saveEvent(GlobalKey<FormBuilderState> formKey, Calendar c
       : null;
 
   return previousEvent == null
-      ? createEvent(
+      ? eventService.createEvent(
           calendar,
           CreateCalendarEvent(
             title: title,
@@ -366,7 +370,7 @@ Future<CalendarEvent> _saveEvent(GlobalKey<FormBuilderState> formKey, Calendar c
             recurring: rrule?.toString(),
           ),
         )
-      : updateEvent(
+      : eventService.updateEvent(
           previousEvent,
           UpdateCalendarEvent(
             title: title,

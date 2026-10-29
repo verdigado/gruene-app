@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/features/profiles/services/profiles_api_service.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
@@ -21,7 +22,7 @@ class ProfileImageDeleteButton extends StatelessWidget {
     setLoading(true);
 
     try {
-      final response = await deleteProfileImage(profileId: profile.id);
+      final response = await GetIt.I<ProfileApiService>().deleteProfileImage(profileId: profile.id);
       update(response);
     } catch (error) {
       scaffoldMessenger.showSnackBar(
