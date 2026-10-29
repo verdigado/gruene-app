@@ -14,7 +14,7 @@ class ProfileApiService extends BaseApiService {
   Future<List<PublicProfile>> getProfiles({
     String? search,
     Division? division,
-    List<ProfileTag>? tags = const [],
+    List<ProfileTag>? tags,
     int? limit = 100,
     int? offset,
   }) async => send(
