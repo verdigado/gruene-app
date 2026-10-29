@@ -73,8 +73,8 @@
     }
   },
   "divisions": {
-    "divisions": "Verbände",
-    "division": "Verband",
+    "divisions": "Gliederungen",
+    "division": "Gliederung",
     "level": {
       "ov": {
         "label": "Ortsverband",
