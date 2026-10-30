@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
-import 'package:gruene_app/app/services/api/guest_api_service.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
-import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
-import 'package:gruene_app/app/widgets/section_card.dart';
-import 'package:gruene_app/app/widgets/small_button_spinner.dart';
-import 'package:gruene_app/app/widgets/text_list_item.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/guests/utils/guest_invitations.dart';
+import 'package:gruene_app/features/guests/widgets/action_buttons.dart';
+import 'package:gruene_app/features/guests/widgets/guest_invitation_status_chip.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GuestInvitationDetailExtra {
   final GuestInvitation invitation;
-  final Division? division;
+  final Division division;
   final void Function(GuestInvitation updated) onChanged;
 
   const GuestInvitationDetailExtra({required this.invitation, required this.division, required this.onChanged});
@@ -30,11 +27,8 @@ class GuestInvitationDetailScreen extends StatefulWidget {
   State<GuestInvitationDetailScreen> createState() => _GuestInvitationDetailScreenState();
 }
 
-enum _Action { resend, revoke }
-
 class _GuestInvitationDetailScreenState extends State<GuestInvitationDetailScreen> {
   late GuestInvitation _invitation;
-  _Action? _running;
 
   @override
   void initState() {
@@ -42,107 +36,62 @@ class _GuestInvitationDetailScreenState extends State<GuestInvitationDetailScree
     _invitation = widget.extra.invitation;
   }
 
-  Future<void> _run(_Action action, Future<GuestInvitation> Function() request, String successText) async {
-    if (_running != null) return;
-    setState(() => _running = action);
-    try {
-      final updated = await request();
-      if (!mounted) return;
-      setState(() => _invitation = updated);
-      widget.extra.onChanged(updated);
-      showSnackBar(context: context, text: successText);
-    } catch (error) {
-      if (!mounted) return;
-      final conflict = action == _Action.resend ? t.guests.error.resendConflict : t.guests.error.notOpen;
-      showSnackBar(
-        context: context,
-        text: guestErrorMessage(error, byStatusCode: {409: conflict}),
-      );
-    } finally {
-      if (mounted) setState(() => _running = null);
-    }
+  void onChanged(GuestInvitation invitation) {
+    setState(() => _invitation = invitation);
+    widget.extra.onChanged(invitation);
   }
-
-  Future<void> _resend() =>
-      _run(_Action.resend, () => GetIt.I<GuestApiService>().resendInvitation(_invitation.id), t.guests.resent);
-
-  Future<void> _revoke() async {
-    if (await showRevokeConfirmationDialog(context) != true) return;
-    await _run(_Action.revoke, () async {
-      await GetIt.I<GuestApiService>().revokeInvitation(_invitation.id);
-      return _invitation.copyWith(status: GuestInvitationStatus.revoked);
-    }, t.guests.revoked);
-  }
-
-  Widget _trailing(_Action action, IconData icon) =>
-      _running == action ? SmallButtonSpinner() : Icon(icon, color: Theme.of(context).disabledColor);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final invitation = _invitation;
     final division = widget.extra.division;
-    final status = invitation.status;
+    final expiryDate = invitation.expiresAt.formattedDateTime;
 
     return Scaffold(
-      appBar: MainAppBar(title: t.guests.invitation),
-      body: SingleChildScrollView(
-        padding: verticalScreenPadding,
-        child: Column(
-          spacing: 16,
-          children: [
-            SectionCard(
-              children: [
-                SectionCardListItem(title: t.guests.email, value: invitation.email),
-                SectionCardListItem(
-                  title: t.guests.division,
-                  value: division?.shortDisplayName ?? invitation.divisionKey,
-                ),
-                SectionCardListItem(title: t.guests.status, value: status.label),
-                SectionCardListItem(title: t.guests.invitedAt, value: invitation.createdAt.formattedDate),
-                SectionCardListItem(title: t.guests.invitedBy, value: invitation.invitedBy.name ?? t.common.unknown),
-                if (status == GuestInvitationStatus.open || status == GuestInvitationStatus.expired)
-                  SectionCardListItem(
-                    title: status == GuestInvitationStatus.expired ? t.guests.expiredAt : t.guests.expiresAt,
-                    value: invitation.expiresAt.formattedDateTime,
-                  ),
-              ],
+      appBar: MainAppBar(title: t.guests.invitation.title),
+      body: ExpandingScrollView(
+        padding: EdgeInsets.only(bottom: bottomScreenPaddingValue),
+        spacing: 16,
+        children: [
+          ListTile(
+            title: Text(invitation.email, style: theme.textTheme.titleLarge),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(division.shortDisplayName, style: theme.textTheme.bodyLarge),
             ),
-            if (status == GuestInvitationStatus.open)
-              Column(
-                children: [
-                  TextListItem(
-                    title: t.guests.resend,
-                    onPress: _resend,
-                    trailing: _trailing(_Action.resend, Icons.send),
-                  ),
-                  TextListItem(
-                    title: t.guests.revoke,
-                    onPress: _revoke,
-                    trailing: _trailing(_Action.revoke, Icons.block),
-                  ),
-                ],
+            trailing: GuestInvitationStatusChip(status: invitation.status),
+            tileColor: theme.colorScheme.surface,
+            contentPadding: screenPadding.copyWith(bottom: 16),
+          ),
+          ListTile(
+            title: Text(
+              invitation.status == GuestInvitationStatus.expired
+                  ? t.guests.invitation.expiredAt
+                  : t.guests.invitation.validUntil,
+              style: theme.textTheme.titleMedium,
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                invitation.status == GuestInvitationStatus.revoked ? t.guests.invitation.status.revoked : expiryDate,
+                style: theme.textTheme.bodyLarge,
               ),
-          ],
-        ),
+            ),
+            tileColor: theme.colorScheme.surface,
+          ),
+          ListTile(
+            title: Text(t.guests.history.title, style: theme.textTheme.titleMedium),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(invitation.invitedAtFrom, style: theme.textTheme.bodyLarge),
+            ),
+            tileColor: theme.colorScheme.surface,
+          ),
+          Spacer(),
+          ActionButtons(actions: invitation.actions(context), onSuccess: onChanged),
+        ],
       ),
     );
   }
 }
-
-Future<bool?> showRevokeConfirmationDialog(BuildContext context) => showDialog<bool>(
-  context: context,
-  builder: (context) {
-    final theme = Theme.of(context);
-    return AlertDialog(
-      title: Text(t.guests.confirmRevoke.title, style: theme.textTheme.titleLarge),
-      content: Text(t.guests.confirmRevoke.text),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-      contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 8),
-      actionsPadding: EdgeInsets.all(8),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(t.common.actions.cancel)),
-        TextButton(onPressed: () => Navigator.of(context).pop(true), child: Text(t.guests.confirmRevoke.confirm)),
-      ],
-    );
-  },
-);

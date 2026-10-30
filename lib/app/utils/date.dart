@@ -17,6 +17,8 @@ extension DateTimeExtension on DateTime {
   DateTime get startOfDay => DateTime(year, month, day);
 
   DateTime get startOfHour => DateTime(year, month, day, hour);
+
+  int get daysUntil => DateUtils.dateOnly(toLocal()).difference(DateUtils.dateOnly(DateTime.now())).inDays;
 }
 
 DateTime dateInfinity() => DateTime(2100);

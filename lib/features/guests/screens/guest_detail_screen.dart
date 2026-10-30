@@ -6,40 +6,38 @@ import 'package:gruene_app/app/services/api/guest_api_service.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/app/widgets/section_card.dart';
-import 'package:gruene_app/app/widgets/small_button_spinner.dart';
-import 'package:gruene_app/app/widgets/text_list_item.dart';
-import 'package:gruene_app/features/guests/utils/guest_actions.dart';
 import 'package:gruene_app/features/guests/utils/guests.dart';
+import 'package:gruene_app/features/guests/widgets/action_buttons.dart';
 import 'package:gruene_app/features/guests/widgets/guest_status_chip.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GuestDetailExtra {
-  final Division? division;
+  final Division division;
   final void Function(Guest updated) onChanged;
 
   const GuestDetailExtra({required this.division, required this.onChanged});
 }
 
 class GuestDetailScreen extends StatelessWidget {
-  final String userId;
-  final GuestDetailExtra? extra;
+  final String guestId;
+  final GuestDetailExtra extra;
 
-  const GuestDetailScreen({super.key, required this.userId, this.extra});
+  const GuestDetailScreen({super.key, required this.guestId, required this.extra});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(title: t.guests.guest),
       body: FutureLoadingScreen(
-        load: () => GetIt.I<GuestApiService>().getGuest(userId),
+        load: () => GetIt.I<GuestApiService>().getGuest(guestId),
         buildChild: (guest, loading) => _GuestDetailView(
           guest: guest,
-          division: extra?.division,
+          division: extra.division,
           onChanged: (updated) {
-            extra?.onChanged(updated);
-            // The history changed too, so it is loaded again.
+            extra.onChanged(updated);
             loading.refresh();
           },
         ),
@@ -48,120 +46,97 @@ class GuestDetailScreen extends StatelessWidget {
   }
 }
 
-class _GuestDetailView extends StatefulWidget {
+class _GuestDetailView extends StatelessWidget {
   final GuestDetail guest;
-  final Division? division;
+  final Division division;
   final void Function(Guest updated) onChanged;
 
   const _GuestDetailView({required this.guest, required this.division, required this.onChanged});
 
-  @override
-  State<_GuestDetailView> createState() => _GuestDetailViewState();
-}
-
-class _GuestDetailViewState extends State<_GuestDetailView> {
-  GuestAction? _running;
-
-  Future<void> _run(GuestAction action) async {
-    if (_running != null) return;
-    final updated = await action.run(
-      context,
-      widget.guest.toGuest(),
-      onConfirmed: () => setState(() => _running = action),
-    );
-    if (!mounted) return;
-    setState(() => _running = null);
-    if (updated != null) widget.onChanged(updated);
-  }
+  void onGuestChanged(Guest guest) => onChanged(guest);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final guest = widget.guest;
     final email = guest.email;
     final expiresOn = guest.expiresOn;
     final renewals = guest.history.where((entry) => entry.type == GuestHistoryType.renewed).length;
     final expired = expiresOn == null || !expiresOn.isAfter(DateTime.now());
 
-    return SingleChildScrollView(
-      padding: verticalScreenPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 16,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+    return ExpandingScrollView(
+      padding: EdgeInsets.only(bottom: bottomScreenPaddingValue),
+      spacing: 16,
+      children: [
+        ListTile(
+          title: Text(guest.fullName, style: theme.textTheme.titleLarge),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 4,
+              spacing: 8,
               children: [
-                Text(guest.fullName, style: theme.textTheme.titleLarge),
-                if (email != null) Text(email, style: theme.textTheme.bodySmall),
-                GuestStatusChip(status: guest.status),
+                if (email != null) Text(email, style: theme.textTheme.bodyLarge),
+                Text(division.shortDisplayName, style: theme.textTheme.bodyLarge),
               ],
             ),
           ),
-          SectionCard(
-            title: t.guests.access,
-            children: [
-              SectionCardListItem(
-                title: t.guests.division,
-                value: widget.division?.shortDisplayName ?? guest.divisionKey,
-              ),
-              if (expiresOn != null)
-                SectionCardListItem(
-                  title: expired ? t.guests.accessExpiredAt : t.guests.accessValidUntil,
-                  value: expired
-                      ? expiresOn.formattedDate
-                      : '${expiresOn.formattedDate} · ${t.guests.daysLeft(days: _daysUntil(expiresOn))}',
-                ),
-              SectionCardListItem(
-                title: t.guests.renewals,
-                value: renewals == 0 ? t.guests.neverRenewed : t.guests.renewedTimes(count: renewals),
-              ),
-            ],
+          trailing: GuestStatusChip(status: guest.status),
+          tileColor: theme.colorScheme.surface,
+          contentPadding: screenPadding.copyWith(bottom: 16),
+        ),
+        ListTile(
+          title: Text(
+            expired ? t.guests.expiredAt : t.guests.validUntil,
+            style: theme.textTheme.titleMedium,
           ),
-          SectionCard(
-            title: t.guests.origin,
-            children: [
-              SectionCardListItem(title: t.guests.invitedBy, value: guest.invitedBy.name ?? t.common.unknown),
-              SectionCardListItem(title: t.guests.invitedAt, value: guest.invitedAt.formattedDate),
-              SectionCardListItem(title: t.guests.acceptedAt, value: guest.activatedAt.formattedDate),
-            ],
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              expired ? t.guests.expiredAt : t.guests.validUntil,
+              style: theme.textTheme.bodyLarge,
+            ),
           ),
-          SectionCard(
-            title: t.guests.history,
-            children: guest.history.map(
-              (entry) => ListTile(
-                title: Text(entry.type.label),
-                subtitle: Text(
-                  [entry.at.formattedDate, entry.by?.name].nonNulls.join(' · '),
-                  style: theme.textTheme.bodySmall,
-                ),
+          tileColor: theme.colorScheme.surface,
+        ),
+        SectionCard(
+          title: t.guests.validUntil,
+          children: [
+            if (expiresOn != null)
+              SectionCardListItem(
+                title: expired ? t.guests.expiredAt : t.guests.validUntil,
+                value: expired
+                    ? expiresOn.formattedDate
+                    : '${expiresOn.formattedDate} · ${t.guests.daysLeft(days: expiresOn.daysUntil)}',
+              ),
+            SectionCardListItem(
+              title: t.guests.renewals.title,
+              value: t.guests.renewals.times(count: renewals),
+            ),
+          ],
+        ),
+        // SectionCard(
+        //   title: t.guests.origin,
+        //   children: [
+            // SectionCardListItem(title: t.guests.invitedBy, value: guest.invitedBy.name ?? t.common.unknown),
+            // SectionCardListItem(title: t.guests.invitedAt, value: guest.invitedAt.formattedDate),
+            // SectionCardListItem(title: t.guests.acceptedAt, value: guest.activatedAt.formattedDate),
+        //   ],
+        // ),
+        SectionCard(
+          title: t.guests.history.title,
+          children: guest.history.map(
+            (entry) => ListTile(
+              title: Text(entry.type.label),
+              subtitle: Text(
+                [entry.at.formattedDate, entry.by?.name].nonNulls.join(' · '),
+                style: theme.textTheme.bodySmall,
               ),
             ),
           ),
-          Column(
-            children: GuestAction.availableFor(guest.status)
-                .map(
-                  (action) => TextListItem(
-                    title: action.label,
-                    onPress: () => _run(action),
-                    trailing: _running == action
-                        ? SmallButtonSpinner()
-                        : Icon(
-                            action.icon,
-                            color: action == GuestAction.block ? theme.colorScheme.error : theme.disabledColor,
-                          ),
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
+        ),
+        Spacer(),
+        ActionButtons(actions: guest.toGuest().actions(context), onSuccess: onChanged),
+      ],
     );
   }
 }
-
-int _daysUntil(DateTime date) =>
-    DateUtils.dateOnly(date.toLocal()).difference(DateUtils.dateOnly(DateTime.now())).inDays;

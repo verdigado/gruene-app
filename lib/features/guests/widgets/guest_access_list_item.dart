@@ -30,7 +30,7 @@ class _GuestAccessListItemState extends State<GuestAccessListItem> {
       future: _divisions,
       builder: (context, snapshot) {
         if (snapshot.data?.isNotEmpty != true) return SizedBox.shrink();
-        return TextListItem(title: t.guests.guestAccess, onPress: () => context.pushNested(RouteLocations.guestAccess));
+        return TextListItem(title: t.guests.title, onPress: () => context.pushNested(RouteLocations.guests));
       },
     );
   }

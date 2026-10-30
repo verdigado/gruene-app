@@ -2,6 +2,8 @@ import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.da
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:http/http.dart';
 
+// Handle common errors
+// 403 Forbidden
 String getErrorMessage(Object error, {String? defaultMessage}) {
   if (error is KeycloakClientException) {
     return switch (error.type) {

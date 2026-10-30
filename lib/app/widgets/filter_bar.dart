@@ -6,7 +6,7 @@ import 'package:gruene_app/app/widgets/rounded_icon_button.dart';
 import 'package:gruene_app/app/widgets/search_bar.dart';
 
 class FilterBar extends StatelessWidget {
-  final Widget filterDialog;
+  final Widget? filterDialog;
   final bool modified;
   final FilterModel<String> searchFilter;
   final FilterModel<bool>? bookmarkFilter;
@@ -25,6 +25,7 @@ class FilterBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bookmarkFilter = this.bookmarkFilter;
+    final filterDialog = this.filterDialog;
 
     return SizedBox(
       height: 40,
@@ -33,14 +34,15 @@ class FilterBar extends StatelessWidget {
         spacing: 8,
         children: [
           Flexible(child: CustomSearchBar(searchFilter: searchFilter)),
-          loading
-              ? CircularProgressIndicator()
-              : RoundedIconButton(
-                  icon: Icons.filter_list,
-                  iconColor: modified ? theme.colorScheme.secondary : ThemeColors.textDisabled,
-                  backgroundColor: theme.colorScheme.surface,
-                  onPressed: () => showFullScreenDialog(context, (_) => filterDialog),
-                ),
+          if (filterDialog != null)
+            loading
+                ? CircularProgressIndicator()
+                : RoundedIconButton(
+                    icon: Icons.filter_list,
+                    iconColor: modified ? theme.colorScheme.secondary : ThemeColors.textDisabled,
+                    backgroundColor: theme.colorScheme.surface,
+                    onPressed: () => showFullScreenDialog(context, (_) => filterDialog),
+                  ),
           if (bookmarkFilter != null)
             RoundedIconButton(
               onPressed: () => bookmarkFilter.update(!bookmarkFilter.current),
