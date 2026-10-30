@@ -69,7 +69,32 @@ its own file in a subdirectory; the keys stay the same.
 - Use `common` for texts that are shared across features (e.g. `common.actions.save`) instead of duplicating them.
 - Only put text shown to users in translation files. Technical values like file name formats or identifiers belong
   in Dart code, e.g. in [constants.dart](../lib/app/constants/constants.dart).
-- Remove keys that are no longer used. `fvm dart run slang analyze --full` lists candidates.
+- Use `@key` entries to add context for a key, e.g. where the text is shown. They are not translated, but rendered
+  as doc comments in the generated code:
+  ```json
+  "loginMembers": "Jetzt anmelden",
+  "@loginMembers": "Button on the welcome screen"
+  ```
+
+### Unused Translations
+
+The CI fails if there are unused translations. To check locally, run
+
+```shell
+mkdir -p build/slang && fvm dart run slang analyze --full --outdir=build/slang
+```
+
+and look at `build/slang/_unused_translations.json`.
+
+Remove keys that are no longer used. If a key is kept deliberately, mark it with the `(ignoreUnused)` modifier and
+explain why in an `@key` comment:
+
+```json
+"loginNonMembers(ignoreUnused)": "Anmeldung für Nicht-Parteimitglieder",
+"@loginNonMembers": "Reserved for a guest login for non-members (see #203), currently not used."
+```
+
+The modifier is not part of the key, so the translation is still accessed as `t.login.loginNonMembers`.
 
 ## Versioning
 

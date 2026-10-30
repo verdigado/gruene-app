@@ -36,18 +36,6 @@ class WelcomeView extends StatelessWidget {
             ),
           ),
         ),
-        // TODO #203: Uncomment for guest login
-        // https://github.com/verdigado/gruene_app/issues/203
-        // Container(
-        //   padding: const EdgeInsets.symmetric(horizontal: 24),
-        //   child: OutlinedButton(
-        //     onPressed: () => {},
-        //     child: Text(
-        //       t.login.loginNonMembers,
-        //       style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
-        //     ),
-        //   ),
-        // ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: OutlinedButton(
