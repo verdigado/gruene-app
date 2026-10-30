@@ -4,6 +4,7 @@
 
 - [Code Style](#code-style)
 - [Commits, Branches and Pull Requests](#commits-branches-and-pull-requests)
+- [Translations](#translations)
 - [Versioning](#versioning)
 
 ## Code Style
@@ -31,6 +32,44 @@ Commit messages and PR names should have the following schema:
 
 See [this guide](https://github.com/erlang/otp/wiki/Writing-good-commit-messages) for a general reference on how to
 write good commit messages.
+
+## Translations
+
+Translations are managed with [slang](https://pub.dev/packages/slang). After changing a translation file, regenerate
+the Dart code with `fvm dart run slang`.
+
+### File Structure
+
+There is one directory per language in [lib/i18n](../lib/i18n). Each file is a namespace, and each subdirectory adds
+a key level:
+
+```
+lib/i18n/de/
+├── common.json            t.common.*
+├── campaigns.json         t.campaigns.*
+├── campaigns/
+│   ├── poster.json        t.campaigns.poster.*
+│   └── team.json          t.campaigns.team.*
+└── events.json            t.events.*
+```
+
+Add new keys to the file of the feature that uses them. If a feature's file gets too large, move a sub-section into
+its own file in a subdirectory; the keys stay the same.
+
+### Keys
+
+- Use camelCase for keys and placeholders: `noTeamYet.hintPrivileged`, `${invitingUser}`.
+- Group related keys by nesting them instead of using a common prefix: `assignedElements.hideClosed`, not
+  `team_assigned_elements_hide_closed`.
+- Name keys after their role in the UI:
+  - `title` for headings (screen, section or dialog titles)
+  - `label` for navigation/tab labels and form field labels
+  - `action` for buttons and other tappable elements
+  - `hint` for explanatory text
+- Use `common` for texts that are shared across features (e.g. `common.actions.save`) instead of duplicating them.
+- Only put text shown to users in translation files. Technical values like file name formats or identifiers belong
+  in Dart code, e.g. in [constants.dart](../lib/app/constants/constants.dart).
+- Remove keys that are no longer used. `fvm dart run slang analyze --full` lists candidates.
 
 ## Versioning
 

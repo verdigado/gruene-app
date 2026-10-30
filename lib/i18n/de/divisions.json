@@ -1,0 +1,22 @@
+{
+  "title": "Gliederungen",
+  "division": "Gliederung",
+  "level": {
+    "ov": {
+      "label": "Ortsverband",
+      "short": "OV"
+    },
+    "kv": {
+      "label": "Kreisverband",
+      "short": "KV"
+    },
+    "lv": {
+      "label": "Landesverband",
+      "short": "LV"
+    },
+    "bv": {
+      "label": "Bundesverband",
+      "short": "BV"
+    }
+  }
+}

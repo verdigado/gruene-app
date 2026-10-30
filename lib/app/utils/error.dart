@@ -5,13 +5,13 @@ import 'package:http/http.dart';
 String getErrorMessage(Object error, {String? defaultMessage}) {
   if (error is KeycloakClientException) {
     return switch (error.type) {
-      KeycloakExceptionType.networkError => t.error.offlineError,
-      _ => defaultMessage ?? t.error.unknownError,
+      KeycloakExceptionType.networkError => t.error.offline,
+      _ => defaultMessage ?? t.error.unknown,
     };
   }
 
   if (error is ClientException || error.toString().contains('Failed host lookup')) {
-    return t.error.offlineError;
+    return t.error.offline;
   }
-  return defaultMessage ?? t.error.unknownError;
+  return defaultMessage ?? t.error.unknown;
 }

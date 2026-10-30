@@ -1,0 +1,75 @@
+{
+  "label": "Plakat",
+  "count": {
+    "one": "${n} Plakat",
+    "other": "${n} Plakate"
+  },
+  "add": {
+    "title": "Plakat eintragen"
+  },
+  "edit": {
+    "title": "Plakat bearbeiten"
+  },
+  "myPosters": {
+    "action": "Meine Plakate",
+    "title": "Meine aufgehängten Plakate (${count})"
+  },
+  "created": "aufgehängt",
+  "updated": "aktualisiert",
+  "noPhotoWarning": {
+    "message": "Hinweis: Es wurde kein Foto hochgeladen! Trotzdem speichern?",
+    "confirm": "Ja, trotzdem speichern",
+    "decline": "Nein, zurück"
+  },
+  "photoConsentMessage": "Bitte achte darauf, dass keine Personen, Kennzeichen oder andere sensible, personenbezogene Daten auf Deinen Plakatfotos zu sehen sind.",
+  "guidelinesInfo": "Wusstest Du, dass es je nach Region unterschiedliche gesetzliche Vorgaben und Regeln für das Aufhängen von Plakaten gibt? Bitte wende Dich an Deinen Orts- oder Kreisverband für weitere Informationen, bevor Du Plakate aufhängst!",
+  "status": {
+    "damaged": {
+      "label": "Beschädigt (Als zu ersetzen melden)",
+      "description": "Plakat ist beschädigt, bitte ersetzen!"
+    },
+    "missing": {
+      "label": "Verschollen",
+      "description": "Plakat ist verschollen, bitte ersetzen!"
+    },
+    "removed": {
+      "label": "Abgehängt",
+      "description": "Plakat wurde abgehängt.",
+      "quickActionLabel": "Plakat abgehängt",
+      "quickActionResult": "Als abgehängt markiert"
+    },
+    "toBeMoved": {
+      "label": "Umzuhängen",
+      "description": "Plakat hängt falsch, bitte umhängen!"
+    },
+    "ok": {
+      "label": "Plakat hängt",
+      "description": "Plakat hängt, kein Handlungsbedarf."
+    }
+  },
+  "photoEditActions": {
+    "acquireNewPhoto": "Foto aufnehmen",
+    "uploadFile": "Datei hochladen",
+    "downloadPicture": "Foto herunterladen",
+    "replacePhoto": "Foto ersetzen",
+    "deletePhoto": "Foto löschen",
+    "confirmDelete": {
+      "title": "Wirklich löschen?",
+      "text": "Fotos sind wichtig, um die Plakate zuordnen und den Verlauf nachvollziehen zu können. Bitte lösche sie mit Bedacht!"
+    },
+    "confirmReplace": {
+      "title": "Wirklich ersetzen?",
+      "text": "Bist Du Dir sicher, dass Du das Bild unwiderruflich ersetzen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden."
+    }
+  },
+  "pictureView": {
+    "currentPictureLabel": "Aktuelles Bild"
+  },
+  "comment": {
+    "label": "Beschreibung",
+    "hint": "Bitte gib hierzu weitere Informationen an"
+  },
+  "delete": {
+    "hint": "Bitte lösche Einträge ausschließlich, wenn es nicht anders geht. Markiere abgehängte Plakate als \"Abgehängt\"."
+  }
+}

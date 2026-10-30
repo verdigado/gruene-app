@@ -127,7 +127,7 @@ mixin NewTeamFlowMixin {
           if (isCreatingUserInNewTeam) reload();
           canceledOrSaved = true;
         } on ApiException {
-          if (context.mounted) showToastAsSnack(context, t.error.unknownError);
+          if (context.mounted) showToastAsSnack(context, t.error.unknown);
         }
       } else {
         canceledOrSaved = true;

@@ -1,0 +1,64 @@
+{
+  "label": "Challenges",
+  "myChallenges": {
+    "title": "Meine Challenges"
+  },
+  "availableChallenges": {
+    "title": "Verfügbare Challenges"
+  },
+  "subtitle": "${startDate} - ${endDate} | ${participants} Teilnehmende",
+  "subtitleLong": "${startDate} - ${endDate} | ${activities} | ${participants} Teilnehmende",
+  "noChallengesFound": {
+    "title": "Keine passenden Challenges gefunden.",
+    "hint": "Wende Dich an die Lokalkoordinator*in Deiner Gliederung, um neue Challenges anlegen zu lassen!"
+  },
+  "joinDialog": {
+    "title": "Challenge-Funktion nutzen",
+    "text": "Bitte beachte, dass du als Challenge-Teilnehmer*in namentlich in der Rangliste aufgeführt werden kannst. Deine Sichtbarkeits-Einstellungen greifen hier nicht.",
+    "toast": "Challenge \"${title}\" beigetreten. Viel Erfolg!"
+  },
+  "leaveDialog": {
+    "text": "Diese Challenge wirklich verlassen?",
+    "toast": "Challenge \"${title}\" verlassen."
+  },
+  "actions": {
+    "join": "Beitreten",
+    "participate": "Teilnehmen",
+    "participated": "Teilgenommen",
+    "leave": "Challenge verlassen"
+  },
+  "detail": {
+    "title": "Challenge",
+    "myProgress": "Mein Fortschritt",
+    "remaining": "noch **${timeLeft}** für **${leftoverActivities}!**",
+    "leaderboard": {
+      "title": "Challenge Leaderboard",
+      "updateInfo": "Aktueller Zwischenstand ${lastUpdate}",
+      "targetReached": "Ziel erreicht",
+      "plannedChallengeNotReadyYet": "Geplante Challenge, noch keine Platzierungen vorhanden.",
+      "empty": "Noch keine Platzierungen vorhanden."
+    }
+  },
+  "timeIndicator": {
+    "startingSoon": "startet bald",
+    "active": "läuft - ${timeagoLabel}"
+  },
+  "timeago": {
+    "prefixAgo": "vor",
+    "prefixFromNow": "noch",
+    "suffixAgo": "",
+    "suffixFromNow": "",
+    "lessThanOneMinute": "weniger als einer Minute",
+    "aboutAMinute": "einer Minute",
+    "minutes": "${minutes} Minuten",
+    "aboutAnHour": "~1 Stunde",
+    "hours": "${hours} Stunden",
+    "aDay": "~1 Tag",
+    "days": "${days} Tage",
+    "aboutAMonth": "~1 Monat",
+    "months": "${months} Monate",
+    "aboutAYear": "~1 Jahr",
+    "years": "${years} Jahre",
+    "wordSeparator": " "
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "label": "Team",
+  "teamMember": "Team-Mitglied",
+  "teamLead": "Team-Lead",
+  "nameLabel": "Team Name",
+  "descriptionLabel": "Beschreibung (nur für Mitglieder sichtbar)",
+  "selfJoin": "Selber beitreten",
+  "invitationPending": "Einladung ausstehend",
+  "appointAsTeamLead": "Zum Team-Lead ernennen",
+  "cancelInvitation": "Einladung zurückziehen",
+  "addTeamMember": "Teammitglied hinzufügen",
+  "assignmentSuspended": "Zuweisung an ${team} aufgehoben",
+  "errors": {
+    "noName": "Team-Name darf nicht leer sein",
+    "nameTooShort": "Team-Name darf nicht kürzer als ${count} Zeichen sein",
+    "nameTooLong": "Team-Name darf nicht länger als ${count} Zeichen sein",
+    "noDivision": "Eine Gliederung muss gewählt werden",
+    "noAccessOnDivision": "Du darfst diese Gliederung nicht wählen",
+    "noTeamLead": "Ein Team-Lead muss gewählt werden"
+  },
+  "create": {
+    "title": "Neues Team erstellen",
+    "action": "Team erstellen"
+  },
+  "edit": {
+    "title": "Team bearbeiten"
+  },
+  "editMembers": {
+    "title": "Teammitglieder bearbeiten",
+    "action": "Teammitglieder bearbeiten"
+  },
+  "leave": {
+    "action": "Team verlassen",
+    "confirmation": "Möchtest Du dein Team wirklich verlassen? Du kannst nur mit einer erneuten Einladung wieder beitreten."
+  },
+  "archive": {
+    "action": "Team archivieren",
+    "confirmation": "Bist du sicher, dass du das Team archivieren möchtest? Dieser Schritt kann nicht rückgängig gemacht werden."
+  },
+  "selectDivision": {
+    "title": "Gliederung auswählen",
+    "hint": "Zu welcher Gliederung gehört dieses Team? In der Regel ist das dein Kreis- oder Ortsverband.",
+    "action": "Als Gliederung wählen"
+  },
+  "selectTeamLead": {
+    "title": "Team-Lead benennen",
+    "hint": "Wenn du nicht selbst beitrittst, benenne zunächst die Team-Lead-Rolle. Team-Leads können das Team bearbeiten, Mitglieder einladen, etc.",
+    "action": "Als Teamlead einladen"
+  },
+  "selectTeamMembers": {
+    "title": "Team-Mitglieder einladen",
+    "hint": "Lade jetzt weitere Team-Mitglieder ein. Teams können maximal 10 Mitglieder haben.",
+    "action": "Ins Team einladen"
+  },
+  "selectTeam": {
+    "title": "Team auswählen",
+    "hintRoute": "Wähle das Team aus, dem du diese Route zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
+    "hintArea": "Wähle das Team aus, dem du dieses Einsatzgebiet zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen"
+  },
+  "noTeamYet": {
+    "hint": "Du bist momentan in keinem Team Mitglied. Bitte eine*n Lokalkoordinator*in deiner Gliederung, dich in ein Team einzuladen.",
+    "hintPrivileged": "Du bist momentan in keinem Team Mitglied. Du kannst von Lokalkoordinator*innen in ein Team eingeladen werden oder selbst ein neues Team anlegen."
+  },
+  "invitations": {
+    "title": "Offene Einladungen",
+    "description": {
+      "one": "Du hast ${n} Team-Einladung! Wichtig: Du kannst immer nur in einem Team Mitglied sein!",
+      "other": "Du hast ${n} Team-Einladungen! Wichtig: Du kannst immer nur in einem Team Mitglied sein!"
+    },
+    "meta": "Eingeladen von: ${invitingUser} am ${invitationDate} um ${invitationTime}",
+    "accept": "Einladung annehmen",
+    "reject": "Ablehnen",
+    "warningAlreadyInTeam": "Du kannst nur in einem Team Mitglied sein. Wenn du dem Team '${invitingTeam}' beitrittst, verlässt du automatisch dein bisheriges Team '${currentTeam}'."
+  },
+  "assignedElements": {
+    "title": "Uns zugewiesen (${count})",
+    "hideClosed": "Erledigte ausblenden",
+    "showClosed": "Erledigte einblenden",
+    "areaInfo": "${area} km² Gebiet",
+    "routeInfo": "${distance} km Route",
+    "assignmentInfo": "zugewiesen am ${date} von ${assignee}"
+  },
+  "campaignConflict": {
+    "title": "Kampagnen-Konflikt",
+    "message": "Du bist momentan in '${currentCampaign}' aktiv. Das ausgewählte Element gehört zu einer anderen Kampagne.\n\nZu '${targetCampaign}' wechseln?",
+    "action": "Kampagne\nwechseln"
+  },
+  "memberStatistics": {
+    "title": "Mitglieder-Statistik",
+    "memberSince": "Team-Mitglied seit ${date}"
+  }
+}

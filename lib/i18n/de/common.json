@@ -1,0 +1,81 @@
+{
+  "appName": "B90/DIE GRÜNEN",
+  "party": "BÜNDNIS 90/DIE GRÜNEN",
+  "dateFrom": "von",
+  "dateUntil": "bis",
+  "search": "Suche",
+  "multiSelect": "Mehrfachauswahl (${count})",
+  "optional": "optional",
+  "updatedAt": "Stand: ${date}",
+  "yes": "Ja",
+  "maybe": "Vielleicht",
+  "no": "Nein",
+  "saved": "Gespeichert",
+  "notAvailable": "N/A",
+  "unknown": "Unbekannt",
+  "noResults": "Keine Ergebnisse",
+  "legalNotice": "Impressum",
+  "termsOfUse": "Nutzungsbedingungen",
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "undo": "Rückgängig",
+    "consent": "Verstanden",
+    "confirm": "Bestätigen",
+    "settings": "Einstellungen",
+    "openSettings": "Einstellungen öffnen",
+    "close": "Schließen",
+    "applyFilter": "Filter anwenden",
+    "resetFilter": "Filter zurücksetzen",
+    "change": "Ändern",
+    "loading": "Laden ...",
+    "crop": "Ausschnitt wählen",
+    "remove": "Entfernen",
+    "select": "Auswählen",
+    "done": "Fertig",
+    "next": "Weiter"
+  },
+  "map": {
+    "mapData": "Kartendaten",
+    "osmContributors": "OpenStreetMap Mitwirkende",
+    "searchLanguage": "de-de"
+  },
+  "dateTime": {
+    "dateFormat": "dd.MM.yyyy",
+    "timeFormat": "HH:mm",
+    "displayTemplate": "${date} um ${time}",
+    "timeRemaining": {
+      "minutes(param=minutes)": {
+        "one": "1 Minute",
+        "other": "${minutes} Minuten"
+      },
+      "hours(param=hours)": {
+        "other": "${hours} Std"
+      },
+      "hoursWithHalfHours(param=hours)": {
+        "other": "${hours},5 Std"
+      },
+      "days(param=days)": {
+        "one": "1 Tag",
+        "other": "${days} Tage"
+      },
+      "weeks(param=weeks)": {
+        "one": "1 Woche",
+        "other": "${weeks} Wochen"
+      }
+    }
+  },
+  "units": {
+    "m": "m",
+    "sqKm": "km²",
+    "formatString": "${value} ${unit}"
+  },
+  "address": {
+    "street": "Straße",
+    "houseNumber": "Hausnr.",
+    "zipCode": "PLZ",
+    "cityOrPlace": "Stadt/Ort"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "label": "Statistik",
+  "poi": {
+    "title": "Gesamtstatistik",
+    "me": "Ich",
+    "team": "Team",
+    "myBadges": "Meine Abzeichen",
+    "myBadgesCampaignSubtitle": "",
+    "updateInfo": "wird alle 5 Minuten aktualisiert",
+    "statsForCampaign": "Statistiken für",
+    "allTime": "Alle",
+    "allTimeSubtitle": "Alle Wahlkampf-Aktivitäten ab Januar 2025"
+  },
+  "team": {
+    "title": "Team Top-10",
+    "updateInfo": "Team-Statistiken werden mehrmals am Tag aktualisiert"
+  },
+  "challenges": {
+    "title": "Challenges"
+  },
+  "recorded": {
+    "posters": "Plakate",
+    "doors": "Haustüren",
+    "flyer": "Flyer"
+  },
+  "asAt": "Stand",
+  "noTeams": "In deinem ${division} existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
+}

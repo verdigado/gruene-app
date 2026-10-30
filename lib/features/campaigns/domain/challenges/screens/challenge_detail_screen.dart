@@ -124,7 +124,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
       );
     }
     if (_hasError) {
-      return ErrorScreen(errorMessage: t.error.unknownError, retry: () => _loadData());
+      return ErrorScreen(errorMessage: t.error.unknown, retry: () => _loadData());
     }
     String challengeCampaignName = _currentCampaign == null ? ' ' : _currentCampaign?.name ?? t.common.unknown;
     var theme = Theme.of(context);

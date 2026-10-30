@@ -26,7 +26,7 @@ class ProfileImageDeleteButton extends StatelessWidget {
       update(response);
     } catch (error) {
       scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text(error is ClientException ? t.error.offlineError : t.profiles.profileImage.deleteError)),
+        SnackBar(content: Text(error is ClientException ? t.error.offline : t.profiles.profileImage.deleteError)),
       );
     }
 

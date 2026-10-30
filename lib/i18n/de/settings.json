@@ -1,0 +1,18 @@
+{
+  "title": "App-Einstellungen",
+  "generalSettings": "App",
+  "pushNotifications": {
+    "title": "Push Nachrichten",
+    "disableAll": "Vollständig deaktivieren",
+    "pushNotificationsBV": "News Bundesverband",
+    "pushNotificationsLV": "News Landesverband",
+    "pushNotificationsKV": "News Kreisverband"
+  },
+  "support": {
+    "title": "Support & Feedback"
+  },
+  "legalSettings": "Rechtliches",
+  "dataProtectionStatement": "Datenschutzerklärung",
+  "logout": "Abmelden",
+  "version": "Version ${version}"
+}

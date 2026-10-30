@@ -1,0 +1,9 @@
+{
+  "activateLocationAccess": "Standortermittlung aktivieren",
+  "activateLocationAccessRationale": "Erlaube der App Deinen Standort zu benutzen, um diesen auf der Karte anzuzeigen.",
+  "activateLocationAccessSettings": "Aktiviere die Standortermittlung in den Einstellungen.",
+  "askPermissionsAgain": "Soll noch einmal nach der Berechtigung gefragt werden?",
+  "grantPermission": "Berechtigung erteilen",
+  "locationAccessDeactivated": "Die Standortfreigabe ist deaktiviert.",
+  "locationPermission": "Standortberechtigung"
+}

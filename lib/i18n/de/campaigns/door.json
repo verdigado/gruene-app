@@ -1,0 +1,17 @@
+{
+  "label": "Haustür",
+  "count": {
+    "one": "${n} Haustür",
+    "other": "${n} Haustüren"
+  },
+  "add": {
+    "title": "Haustüren eintragen",
+    "hint": "Bitte trage sowohl geöffnete als auch verschlossen gebliebene Türen ein, damit wir eine genauere Statistik erhalten."
+  },
+  "edit": {
+    "title": "Haustüren bearbeiten"
+  },
+  "closedDoors": "Ungeöffnete Türen",
+  "openedDoors": "Geöffnete Türen",
+  "noDoorsWarning": "Bitte gib mindestens eine Tür ein!"
+}

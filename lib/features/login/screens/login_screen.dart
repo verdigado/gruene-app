@@ -22,7 +22,7 @@ class LoginScreen extends StatelessWidget {
           return CleanLayout(
             showAppBar: false,
             child: ErrorScreen(
-              errorMessage: t.error.offlineError,
+              errorMessage: t.error.offline,
               retry: () => context.read<AuthBloc>().add(CheckTokenRequested()),
             ),
           );
