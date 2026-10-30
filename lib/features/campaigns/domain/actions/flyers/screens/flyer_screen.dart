@@ -44,7 +44,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
         stateChanged: (state) => onRouteLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),
       FilterChipModel(
-        text: t.campaigns.filters.action_areas,
+        text: t.campaigns.filters.actionAreas,
         isEnabled: true,
         isActive: true,
         stateChanged: (state) => onActionAreaLayerStateChanged(state, getMapInfo(MapInfoType.actionArea)),
@@ -55,7 +55,7 @@ class _FlyerScreenState extends MapConsumer<FlyerScreen, FlyerCreateModel, Flyer
         stateChanged: (state) => onFocusAreaLayerStateChanged(state, getMapInfo(MapInfoType.focusArea)),
       ),
       FilterChipModel(
-        text: t.campaigns.filters.experience_areas,
+        text: t.campaigns.filters.experienceAreas,
         isEnabled: true,
         stateChanged: (state) => onExperienceAreaLayerStateChanged(state, getMapInfo(MapInfoType.experienceArea)),
       ),

@@ -67,7 +67,7 @@
     },
     "units": {
       "m": "m",
-      "sq_km": "km²",
+      "sqKm": "km²",
       "formatString": "${value} ${unit}"
     }
   },
@@ -97,10 +97,10 @@
     "unknownError": "Ein unbekannter Fehler ist aufgetreten.",
     "offlineError": "Du bist offline. Keine Verbindung zum Internet möglich.",
     "retry": "Erneut versuchen",
-    "error_try_again": "Etwas ist schiefgelaufen. Tippe hier, um es erneut zu versuchen."
+    "tapToRetry": "Etwas ist schiefgelaufen. Tippe hier, um es erneut zu versuchen."
   },
   "news": {
-    "news": "News",
+    "title": "News",
     "label": "Artikel",
     "newsDetail": "Artikel",
     "noResults": "Es wurden leider keine Artikel gefunden.",
@@ -109,16 +109,16 @@
     "attachments": "Anhänge"
   },
   "campaigns": {
+    "title": "Wahlkampf",
+    "label": "Wahlkampf",
     "debug": {
-      "confirm_storing_cache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
-      "storing_cache_success": "Die lokalen Änderungen wurden nun gespeichert. Bitte sende diese per E-Mail an beteiligung@gruene.de. Damit unterstützt Du uns bei der Problemlösung!"
+      "confirmStoringCache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
+      "storingCacheSuccess": "Die lokalen Änderungen wurden nun gespeichert. Bitte sende diese per E-Mail an beteiligung@gruene.de. Damit unterstützt Du uns bei der Problemlösung!"
     },
     "map": {
       "noMapDataInfo": "Bitte zoome in die Karte, um mehr Informationen zu sehen.",
       "identicalPositions": "Identische Position"
     },
-    "campaigns": "Wahlkampf",
-    "label": "Wahlkampf",
     "general": {
       "createdAt": "Erstellt"
     },
@@ -126,35 +126,41 @@
       "hintTextAddress": "Ort oder Straße finden",
       "hintTextDivision": "Gliederung finden",
       "hintTextProfile": "Nutzerprofil finden",
-      "no_entries_found": "Leider nichts gefunden",
-      "country_code": "de-de"
+      "noEntriesFound": "Leider nichts gefunden",
+      "countryCode": "de-de"
     },
     "filters": {
       "focusAreas": "Fokusgebiete",
       "routes": "Routen",
-      "polling_stations": "Wahllokale",
-      "experience_areas": "Erfahrungsgebiete",
-      "action_areas": "Einsatzgebiete"
+      "pollingStations": "Wahllokale",
+      "experienceAreas": "Erfahrungsgebiete",
+      "actionAreas": "Einsatzgebiete"
     },
     "select": {
       "title": "Kampagne auswählen",
       "hint": "In welcher Kampagne bist du gerade aktiv? Du kannst die Kampagne jederzeit in deinen Einstellungen ändern.",
       "enforceSelectHint": "Deine bisherige Kampagne '${previousCampaignName}' ist beendet. Bitte wähle eine neue Kampagne aus!",
       "electionDate": "Wahltermin",
-      "statisticsTitle": "Statistik anzeigen",
-      "statisticsHint": "Wähle die Kampagne aus, für die du die Statistiken anzeigen möchtest.",
+      "statistics": {
+        "title": "Statistik anzeigen",
+        "hint": "Wähle die Kampagne aus, für die du die Statistiken anzeigen möchtest."
+      },
       "reportMissingCampaign": "Fehlende Kampagne melden"
     },
     "infoToast": {
-      "focusAreas_activated": "Fokusgebiete aktiviert",
-      "focusAreas_deactivated": "Fokusgebiete deaktiviert",
-      "focusAreas_aboutTitle": "Über Fokusgebiete",
-      "focusAreas_aboutText": "Fokusgebiete zeigen Dir, wo sich Wahlkampf in welcher Form besonders lohnt. Diese Fokusgebiete sind in Level 1 (wenig) bis 5 (viel) aufgeteilt.\nKlicke auf ein Fokusgebiet, um mehr Infos zu erhalten.",
-      "routes_activated": "Routen aktiviert",
-      "routes_deactivated": "Routen deaktiviert",
-      "routes_aboutTitle": "Über Routen",
-      "routes_aboutText": "Routen zeigen Dir, welche Wege Du am besten ablaufen kannst, um Haustüren zu besuchen, Plakate aufzuhängen oder Flyer zu verteilen. Die Routen werden von Wahlkampfkoordinator*innen im Grünen Atlas erstellt. Für mehr Informationen wende Dich bitte an Deinen Orts- oder Kreisverband.",
-      "campaigns_changed": "Kampagne ausgewählt: ${campaignName}",
+      "focusAreas": {
+        "activated": "Fokusgebiete aktiviert",
+        "deactivated": "Fokusgebiete deaktiviert",
+        "aboutTitle": "Über Fokusgebiete",
+        "aboutText": "Fokusgebiete zeigen Dir, wo sich Wahlkampf in welcher Form besonders lohnt. Diese Fokusgebiete sind in Level 1 (wenig) bis 5 (viel) aufgeteilt.\nKlicke auf ein Fokusgebiet, um mehr Infos zu erhalten."
+      },
+      "routes": {
+        "activated": "Routen aktiviert",
+        "deactivated": "Routen deaktiviert",
+        "aboutTitle": "Über Routen",
+        "aboutText": "Routen zeigen Dir, welche Wege Du am besten ablaufen kannst, um Haustüren zu besuchen, Plakate aufzuhängen oder Flyer zu verteilen. Die Routen werden von Wahlkampfkoordinator*innen im Grünen Atlas erstellt. Für mehr Informationen wende Dich bitte an Deinen Orts- oder Kreisverband."
+      },
+      "campaignChanged": "Kampagne ausgewählt: ${campaignName}",
       "more": "mehr Info"
     },
     "pollingStation": {
@@ -164,53 +170,73 @@
     },
     "route": {
       "label": "Route",
-      "length_label": "Länge",
-      "routeType_label": "Typ",
-      "quick_action_status": "Route abgearbeitet",
-      "quick_action_assign_team": "Einem Team zuweisen"
+      "lengthLabel": "Länge",
+      "typeLabel": "Typ",
+      "quickAction": {
+        "status": "Route abgearbeitet",
+        "assignTeam": "Einem Team zuweisen"
+      }
     },
-    "action_area": {
+    "actionArea": {
       "label": "Einsatzgebiet",
-      "area_label": "Fläche",
-      "quick_action_status": "Gebiet abgearbeitet"
+      "areaLabel": "Fläche",
+      "quickAction": {
+        "status": "Gebiet abgearbeitet"
+      }
     },
-    "experience_areas": {
+    "experienceArea": {
       "label": "Erfahrungsgebiet",
-      "supplied_by": "Bereitgestellt von:",
-      "general_supplier": "nutzer*innengeneriert"
+      "suppliedBy": "Bereitgestellt von:",
+      "generalSupplier": "nutzer*innengeneriert"
     },
-    "focus_area": {
-      "location_kv": "KV ${name}",
-      "intensity_recommendation": "Intensitätsempfehlung",
-      "activity1_label": "Haustür-Wahlkampf",
-      "activity2_label": "Plakatieren",
-      "activity3_label": "Flyer",
-      "activity1_recommendation_label": "Empfehlungen für den Haustürwahlkampf",
-      "activity2_recommendation_label": "Empfehlungen für die Plakatauswahl",
-      "activity3_recommendation_label": "Empfehlungen fürs Flyern",
+    "focusArea": {
+      "locationKv": "KV ${name}",
+      "intensityRecommendation": "Intensitätsempfehlung",
+      "activities": {
+        "door": {
+          "label": "Haustür-Wahlkampf",
+          "recommendation": "Empfehlungen für den Haustürwahlkampf"
+        },
+        "poster": {
+          "label": "Plakatieren",
+          "recommendation": "Empfehlungen für die Plakatauswahl"
+        },
+        "flyer": {
+          "label": "Flyer",
+          "recommendation": "Empfehlungen fürs Flyern"
+        }
+      },
       "milieu": "Wählerschaft",
       "progressive": "progressiv",
       "conservative": "konservativ",
-      "special_competition": "Besondere Wettbewerbssituation",
-      "meta_info": "Kampagne ${campaign}. Zuletzt aktualisiert: ${updatedAt} (ID: ${focusAreaId})"
+      "specialCompetition": "Besondere Wettbewerbssituation",
+      "metaInfo": "Kampagne ${campaign}. Zuletzt aktualisiert: ${updatedAt} (ID: ${focusAreaId})"
     },
     "poster": {
       "label": "Plakat",
-      "label_cardinal": {
+      "count": {
         "one": "${n} Plakat",
         "other": "${n} Plakate"
       },
-      "addPoster": "Plakat eintragen",
-      "editPoster": "Plakat bearbeiten",
-      "my_posters_action": "Meine Plakate",
-      "my_posters_title": "Meine aufgehängten Plakate (${count})",
+      "add": {
+        "title": "Plakat eintragen"
+      },
+      "edit": {
+        "title": "Plakat bearbeiten"
+      },
+      "myPosters": {
+        "action": "Meine Plakate",
+        "title": "Meine aufgehängten Plakate (${count})"
+      },
       "created": "aufgehängt",
       "updated": "aktualisiert",
-      "noPhotoWarning": "Hinweis: Es wurde kein Foto hochgeladen! Trotzdem speichern?",
-      "noPhotoWarningConfirm": "Ja, trotzdem speichern",
-      "noPhotoWarningDecline": "Nein, zurück",
+      "noPhotoWarning": {
+        "message": "Hinweis: Es wurde kein Foto hochgeladen! Trotzdem speichern?",
+        "confirm": "Ja, trotzdem speichern",
+        "decline": "Nein, zurück"
+      },
       "photoConsentMessage": "Bitte achte darauf, dass keine Personen, Kennzeichen oder andere sensible, personenbezogene Daten auf Deinen Plakatfotos zu sehen sind.",
-      "info_poster_guidelines": "Wusstest Du, dass es je nach Region unterschiedliche gesetzliche Vorgaben und Regeln für das Aufhängen von Plakaten gibt? Bitte wende Dich an Deinen Orts- oder Kreisverband für weitere Informationen, bevor Du Plakate aufhängst!",
+      "guidelinesInfo": "Wusstest Du, dass es je nach Region unterschiedliche gesetzliche Vorgaben und Regeln für das Aufhängen von Plakaten gibt? Bitte wende Dich an Deinen Orts- oder Kreisverband für weitere Informationen, bevor Du Plakate aufhängst!",
       "status": {
         "damaged": {
           "label": "Beschädigt (Als zu ersetzen melden)",
@@ -223,10 +249,10 @@
         "removed": {
           "label": "Abgehängt",
           "description": "Plakat wurde abgehängt.",
-          "quick_action_label": "Plakat abgehängt",
-          "quick_action_result": "Als abgehängt markiert"
+          "quickActionLabel": "Plakat abgehängt",
+          "quickActionResult": "Als abgehängt markiert"
         },
-        "to_be_moved": {
+        "toBeMoved": {
           "label": "Umzuhängen",
           "description": "Plakat hängt falsch, bitte umhängen!"
         },
@@ -241,140 +267,85 @@
         "downloadPicture": "Foto herunterladen",
         "replacePhoto": "Foto ersetzen",
         "deletePhoto": "Foto löschen",
-        "confirmation_dialog": {
-          "title_delete": "Wirklich löschen?",
-          "text_delete": "Fotos sind wichtig, um die Plakate zuordnen und den Verlauf nachvollziehen zu können. Bitte lösche sie mit Bedacht!",
-          "title_replace": "Wirklich ersetzen?",
-          "text_replace": "Bist Du Dir sicher, dass Du das Bild unwiderruflich ersetzen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden."
+        "confirmDelete": {
+          "title": "Wirklich löschen?",
+          "text": "Fotos sind wichtig, um die Plakate zuordnen und den Verlauf nachvollziehen zu können. Bitte lösche sie mit Bedacht!"
+        },
+        "confirmReplace": {
+          "title": "Wirklich ersetzen?",
+          "text": "Bist Du Dir sicher, dass Du das Bild unwiderruflich ersetzen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden."
         }
       },
       "pictureView": {
-        "currentPicture_label": "Aktuelles Bild"
+        "currentPictureLabel": "Aktuelles Bild"
       },
       "comment": {
         "label": "Beschreibung",
         "hint": "Bitte gib hierzu weitere Informationen an"
       },
-      "deletePoster": {
+      "delete": {
         "hint": "Bitte lösche Einträge ausschließlich, wenn es nicht anders geht. Markiere abgehängte Plakate als \"Abgehängt\"."
       }
     },
     "door": {
       "label": "Haustür",
-      "label_cardinal": {
+      "count": {
         "one": "${n} Haustür",
         "other": "${n} Haustüren"
       },
-      "addDoor": "Haustüren eintragen",
-      "closedDoors": "Ungeöffnete Türen",
-      "editDoor": "Haustüren bearbeiten",
-      "openedDoors": "Geöffnete Türen",
-      "noDoorsWarning": "Bitte gib mindestens eine Tür ein!",
-      "createDoor": {
+      "add": {
+        "title": "Haustüren eintragen",
         "hint": "Bitte trage sowohl geöffnete als auch verschlossen gebliebene Türen ein, damit wir eine genauere Statistik erhalten."
-      }
+      },
+      "edit": {
+        "title": "Haustüren bearbeiten"
+      },
+      "closedDoors": "Ungeöffnete Türen",
+      "openedDoors": "Geöffnete Türen",
+      "noDoorsWarning": "Bitte gib mindestens eine Tür ein!"
     },
     "flyer": {
       "label": "Flyer",
-      "label_cardinal": {
+      "count": {
         "other": "${n} Flyer"
       },
-      "addFlyer": "Wahlkampfstand eintragen",
-      "editFlyer": "Wahlkampfstand bearbeiten",
-      "countFlyer": "Anzahl der Flyer",
+      "add": {
+        "title": "Wahlkampfstand eintragen"
+      },
+      "edit": {
+        "title": "Wahlkampfstand bearbeiten"
+      },
+      "countLabel": "Anzahl der Flyer",
       "noFlyerWarning": "Bitte gib mindestens einen Flyer ein!",
-      "info_flyer_guidelines": "Solltest Du Flyer in Briefkästen verteilen, zählt dies zum Haustürwahlkampf. Zukünftig wird es im Haustür-Bereich eine Eintragungsmöglichkeit dazu geben. An dieser Stelle (Flyer) werden nur Flyer dokumentiert, die Menschen persönlich in die Hand gegeben wurden."
+      "guidelinesInfo": "Solltest Du Flyer in Briefkästen verteilen, zählt dies zum Haustürwahlkampf. Zukünftig wird es im Haustür-Bereich eine Eintragungsmöglichkeit dazu geben. An dieser Stelle (Flyer) werden nur Flyer dokumentiert, die Menschen persönlich in die Hand gegeben wurden."
     },
     "deleteEntry": {
       "label": "Eintrag löschen",
-      "confirmation_dialog": "Möchtest Du diesen Eintrag wirklich löschen? Dies kann nicht rückgängig gemacht werden."
-    },
-    "team": {
-      "errors": {
-        "no_name": "Team-Name darf nicht leer sein",
-        "team_name_short": "Team-Name darf nicht kürzer als ${count} Zeichen sein",
-        "team_name_long": "Team-Name darf nicht länger als ${count} Zeichen sein",
-        "no_division": "Eine Gliederung muss gewählt werden",
-        "no_access_on_division": "Du darfst diese Gliederung nicht wählen",
-        "no_team_lead": "Ein Team-Lead muss gewählt werden"
-      },
-      "label": "Team",
-      "create_team": "Team erstellen",
-      "create_new_team": "Neues Team erstellen",
-      "leave_team": "Team verlassen",
-      "leave_team_confirmation_dialog": "Möchtest Du dein Team wirklich verlassen? Du kannst nur mit einer erneuten Einladung wieder beitreten.",
-      "archive_team": "Team archivieren",
-      "archive_team_confirmation_dialog": "Bist du sicher, dass du das Team archivieren möchtest? Dieser Schritt kann nicht rückgängig gemacht werden.",
-      "team_name_label": "Team Name",
-      "team_description_label": "Beschreibung (nur für Mitglieder sichtbar)",
-      "team_self_join": "Selber beitreten",
-      "next_step": "Weiter",
-      "select_division_label": "Gliederung auswählen",
-      "select_division_hint": "Zu welcher Gliederung gehört dieses Team? In der Regel ist das dein Kreis- oder Ortsverband.",
-      "select_as_division": "Als Gliederung wählen",
-      "team_lead_label": "Team-Lead",
-      "select_team_lead_label": "Team-Lead benennen",
-      "select_team_lead_hint": "Wenn du nicht selbst beitrittst, benenne zunächst die Team-Lead-Rolle. Team-Leads können das Team bearbeiten, Mitglieder einladen, etc.",
-      "select_as_team_lead": "Als Teamlead einladen",
-      "select_team_member_label": "Team-Mitglieder einladen",
-      "select_team_member_hint": "Lade jetzt weitere Team-Mitglieder ein. Teams können maximal 10 Mitglieder haben.",
-      "select_as_team_member": "Ins Team einladen",
-      "team_member": "Team-Mitglied",
-      "invitation_pending": "Einladung ausstehend",
-      "edit_team_members": "Teammitglieder bearbeiten",
-      "team_assigned_elements": "Uns zugewiesen (${count})",
-      "team_assigned_elements_hide_closed": "Erledigte ausblenden",
-      "team_assigned_elements_show_closed": "Erledigte einblenden",
-      "team_assigned_elements_area_info": "${area} km² Gebiet",
-      "team_assigned_elements_route_info": "${distance} km Route",
-      "team_assigned_elements_assignment_info": "zugewiesen am ${date} von ${assignee}",
-      "team_target_campaign_conflict": "Kampagnen-Konflikt",
-      "team_target_campaign_conflict_message": "Du bist momentan in '${currentCampaign}' aktiv. Das ausgewählte Element gehört zu einer anderen Kampagne.\n\nZu '${targetCampaign}' wechseln?",
-      "team_target_campaign_conflict_action": "Kampagne\nwechseln",
-      "member_statistics": "Mitglieder-Statistik",
-      "member_statistics_member_info": {
-        "member_since": "Team-Mitglied seit ${date}"
-      },
-      "edit_team": "Team bearbeiten",
-      "edit_team_member_label": "Teammitglieder bearbeiten",
-      "appoint_as_team_lead": "Zum Team-Lead ernennen",
-      "cancel_invitation": "Einladung zurückziehen",
-      "add_team_member": "Teammitglied hinzufügen",
-      "no_team_yet_hint": "Du bist momentan in keinem Team Mitglied. Bitte eine*n Lokalkoordinator*in deiner Gliederung, dich in ein Team einzuladen.",
-      "no_team_yet_hint_privileged": "Du bist momentan in keinem Team Mitglied. Du kannst von Lokalkoordinator*innen in ein Team eingeladen werden oder selbst ein neues Team anlegen.",
-      "invitations": {
-        "open_invitations_label": "Offene Einladungen",
-        "open_invitations_description": {
-          "one": "Du hast $n Team-Einladung! Wichtig: Du kannst immer nur in einem Team Mitglied sein!",
-          "other": "Du hast $n Team-Einladungen! Wichtig: Du kannst immer nur in einem Team Mitglied sein!"
-        },
-        "invitation_meta": "Eingeladen von: ${inviting_user} am ${invitation_date} um ${invitation_time}",
-        "accept": "Einladung annehmen",
-        "reject": "Ablehnen",
-        "warning_user_already_in_team": "Du kannst nur in einem Team Mitglied sein. Wenn du dem Team '${inviting_team}' beitrittst, verlässt du automatisch dein bisheriges Team '${current_team}'."
-      },
-      "select_team": "Team auswählen",
-      "select_team_hint_route": "Wähle das Team aus, dem du diese Route zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
-      "select_team_hint_area": "Wähle das Team aus, dem du dieses Einsatzgebiet zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
-      "assignment_suspended": "Zuweisung an ${team} aufgehoben"
+      "confirmation": "Möchtest Du diesen Eintrag wirklich löschen? Dies kann nicht rückgängig gemacht werden."
     },
     "challenges": {
       "label": "Challenges",
-      "myChallengeLabel": "Meine Challenges",
-      "availableChallengeLabel": "Verfügbare Challenges",
-      "challengeSubTitle": "${startDate} - ${endDate} | ${participants} Teilnehmende",
-      "challengeSubTitleLong": "${startDate} - ${endDate} | ${activities} | ${participants} Teilnehmende",
-      "no_challenges_found_title": "Keine passenden Challenges gefunden.",
-      "no_challenges_found": "Wende Dich an die Lokalkoordinator*in Deiner Gliederung, um neue Challenges anlegen zu lassen!",
-      "joinConfirmationDialog": {
-        "dialogTitle": "Challenge-Funktion nutzen",
-        "dialogText": "Bitte beachte, dass du als Challenge-Teilnehmer*in namentlich in der Rangliste aufgeführt werden kannst. Deine Sichtbarkeits-Einstellungen greifen hier nicht.",
-        "dialogAccept": "Teilnehmen",
-        "joinToast": "Challenge \"${title}\" beigetreten. Viel Erfolg!"
+      "myChallenges": {
+        "title": "Meine Challenges"
       },
-      "leaveConfirmationDialog": {
-        "dialogText": "Diese Challenge wirklich verlassen?",
-        "leaveToast": "Challenge \"${title}\" verlassen."
+      "availableChallenges": {
+        "title": "Verfügbare Challenges"
+      },
+      "subtitle": "${startDate} - ${endDate} | ${participants} Teilnehmende",
+      "subtitleLong": "${startDate} - ${endDate} | ${activities} | ${participants} Teilnehmende",
+      "noChallengesFound": {
+        "title": "Keine passenden Challenges gefunden.",
+        "hint": "Wende Dich an die Lokalkoordinator*in Deiner Gliederung, um neue Challenges anlegen zu lassen!"
+      },
+      "joinDialog": {
+        "title": "Challenge-Funktion nutzen",
+        "text": "Bitte beachte, dass du als Challenge-Teilnehmer*in namentlich in der Rangliste aufgeführt werden kannst. Deine Sichtbarkeits-Einstellungen greifen hier nicht.",
+        "accept": "Teilnehmen",
+        "toast": "Challenge \"${title}\" beigetreten. Viel Erfolg!"
+      },
+      "leaveDialog": {
+        "text": "Diese Challenge wirklich verlassen?",
+        "toast": "Challenge \"${title}\" verlassen."
       },
       "actions": {
         "join": "Beitreten",
@@ -382,26 +353,24 @@
         "participated": "Teilgenommen",
         "leave": "Challenge verlassen"
       },
-      "detailScreen": {
+      "detail": {
+        "title": "Challenge",
         "myProgress": "Mein Fortschritt",
-        "leftOverLabel": "noch **${timeleft}** für **${leftover_activities}!**",
+        "remaining": "noch **${timeLeft}** für **${leftoverActivities}!**",
         "leaderboard": {
           "title": "Challenge Leaderboard",
-          "version": "Aktueller Zwischenstand ${last_update}",
+          "updateInfo": "Aktueller Zwischenstand ${lastUpdate}",
           "targetReached": "Ziel erreicht",
           "plannedChallengeNotReadyYet": "Geplante Challenge, noch keine Platzierungen vorhanden.",
-          "leaderboardEmpty": "Noch keine Platzierungen vorhanden."
+          "empty": "Noch keine Platzierungen vorhanden."
         }
       },
       "timeIndicator": {
         "startingSoon": "startet bald",
-        "activeLabel": "läuft - ${timeago_label}"
-      },
-      "challengeDetail": {
-        "title": "Challenge"
+        "active": "läuft - ${timeagoLabel}"
       },
       "timeago": {
-        "language_code": "${code}_challenges",
+        "languageCode": "${code}_challenges",
         "prefixAgo": "vor",
         "prefixFromNow": "noch",
         "suffixAgo": "",
@@ -420,31 +389,33 @@
         "wordSeparator": " "
       }
     },
-    "statistic": {
+    "statistics": {
       "label": "Statistik",
-      "poi_statistics": {
+      "poi": {
         "title": "Gesamtstatistik",
         "me": "Ich",
         "team": "Team",
-        "my_badges": "Meine Abzeichen",
-        "my_badges_campaign_subtitle": "",
-        "update_info": "wird alle 5 Minuten aktualisiert",
-        "stats_for_campaign": "Statistiken für",
-        "all_time": "Alle",
-        "all_time_subtitle": "Alle Wahlkampf-Aktivitäten ab Januar 2025"
+        "myBadges": "Meine Abzeichen",
+        "myBadgesCampaignSubtitle": "",
+        "updateInfo": "wird alle 5 Minuten aktualisiert",
+        "statsForCampaign": "Statistiken für",
+        "allTime": "Alle",
+        "allTimeSubtitle": "Alle Wahlkampf-Aktivitäten ab Januar 2025"
       },
-      "team_statistics": {
+      "team": {
         "title": "Team Top-10",
-        "update_info": "Team-Statistiken werden mehrmals am Tag aktualisiert"
+        "updateInfo": "Team-Statistiken werden mehrmals am Tag aktualisiert"
       },
-      "challenge_statistics": {
+      "challenges": {
         "title": "Challenges"
       },
-      "recorded_posters": "Plakate",
-      "recorded_doors": "Haustüren",
-      "recorded_flyer": "Flyer",
-      "as_at": "Stand",
-      "no_teams": {
+      "recorded": {
+        "posters": "Plakate",
+        "doors": "Haustüren",
+        "flyer": "Flyer"
+      },
+      "asAt": "Stand",
+      "noTeams": {
         "kv": "In deinem KV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne.",
         "lv": "In deinem LV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne.",
         "bv": "In deinem BV existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
@@ -452,9 +423,102 @@
     },
     "address": {
       "street": "Straße",
-      "housenumber": "Hausnr.",
-      "zipcode": "PLZ",
-      "city_or_place": "Stadt/Ort"
+      "houseNumber": "Hausnr.",
+      "zipCode": "PLZ",
+      "cityOrPlace": "Stadt/Ort"
+    },
+    "team": {
+      "label": "Team",
+      "teamMember": "Team-Mitglied",
+      "teamLead": "Team-Lead",
+      "nameLabel": "Team Name",
+      "descriptionLabel": "Beschreibung (nur für Mitglieder sichtbar)",
+      "selfJoin": "Selber beitreten",
+      "nextStep": "Weiter",
+      "invitationPending": "Einladung ausstehend",
+      "appointAsTeamLead": "Zum Team-Lead ernennen",
+      "cancelInvitation": "Einladung zurückziehen",
+      "addTeamMember": "Teammitglied hinzufügen",
+      "assignmentSuspended": "Zuweisung an ${team} aufgehoben",
+      "errors": {
+        "noName": "Team-Name darf nicht leer sein",
+        "nameTooShort": "Team-Name darf nicht kürzer als ${count} Zeichen sein",
+        "nameTooLong": "Team-Name darf nicht länger als ${count} Zeichen sein",
+        "noDivision": "Eine Gliederung muss gewählt werden",
+        "noAccessOnDivision": "Du darfst diese Gliederung nicht wählen",
+        "noTeamLead": "Ein Team-Lead muss gewählt werden"
+      },
+      "create": {
+        "title": "Neues Team erstellen",
+        "action": "Team erstellen"
+      },
+      "edit": {
+        "title": "Team bearbeiten"
+      },
+      "editMembers": {
+        "title": "Teammitglieder bearbeiten",
+        "action": "Teammitglieder bearbeiten"
+      },
+      "leave": {
+        "action": "Team verlassen",
+        "confirmation": "Möchtest Du dein Team wirklich verlassen? Du kannst nur mit einer erneuten Einladung wieder beitreten."
+      },
+      "archive": {
+        "action": "Team archivieren",
+        "confirmation": "Bist du sicher, dass du das Team archivieren möchtest? Dieser Schritt kann nicht rückgängig gemacht werden."
+      },
+      "selectDivision": {
+        "title": "Gliederung auswählen",
+        "hint": "Zu welcher Gliederung gehört dieses Team? In der Regel ist das dein Kreis- oder Ortsverband.",
+        "action": "Als Gliederung wählen"
+      },
+      "selectTeamLead": {
+        "title": "Team-Lead benennen",
+        "hint": "Wenn du nicht selbst beitrittst, benenne zunächst die Team-Lead-Rolle. Team-Leads können das Team bearbeiten, Mitglieder einladen, etc.",
+        "action": "Als Teamlead einladen"
+      },
+      "selectTeamMembers": {
+        "title": "Team-Mitglieder einladen",
+        "hint": "Lade jetzt weitere Team-Mitglieder ein. Teams können maximal 10 Mitglieder haben.",
+        "action": "Ins Team einladen"
+      },
+      "selectTeam": {
+        "title": "Team auswählen",
+        "hintRoute": "Wähle das Team aus, dem du diese Route zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen",
+        "hintArea": "Wähle das Team aus, dem du dieses Einsatzgebiet zuweisen möchtest. Beachte: Du kannst nur Teams aus deiner eigenen Gliederung auswählen"
+      },
+      "noTeamYet": {
+        "hint": "Du bist momentan in keinem Team Mitglied. Bitte eine*n Lokalkoordinator*in deiner Gliederung, dich in ein Team einzuladen.",
+        "hintPrivileged": "Du bist momentan in keinem Team Mitglied. Du kannst von Lokalkoordinator*innen in ein Team eingeladen werden oder selbst ein neues Team anlegen."
+      },
+      "invitations": {
+        "title": "Offene Einladungen",
+        "description": {
+          "one": "Du hast ${n} Team-Einladung! Wichtig: Du kannst immer nur in einem Team Mitglied sein!",
+          "other": "Du hast ${n} Team-Einladungen! Wichtig: Du kannst immer nur in einem Team Mitglied sein!"
+        },
+        "meta": "Eingeladen von: ${invitingUser} am ${invitationDate} um ${invitationTime}",
+        "accept": "Einladung annehmen",
+        "reject": "Ablehnen",
+        "warningAlreadyInTeam": "Du kannst nur in einem Team Mitglied sein. Wenn du dem Team '${invitingTeam}' beitrittst, verlässt du automatisch dein bisheriges Team '${currentTeam}'."
+      },
+      "assignedElements": {
+        "title": "Uns zugewiesen (${count})",
+        "hideClosed": "Erledigte ausblenden",
+        "showClosed": "Erledigte einblenden",
+        "areaInfo": "${area} km² Gebiet",
+        "routeInfo": "${distance} km Route",
+        "assignmentInfo": "zugewiesen am ${date} von ${assignee}"
+      },
+      "campaignConflict": {
+        "title": "Kampagnen-Konflikt",
+        "message": "Du bist momentan in '${currentCampaign}' aktiv. Das ausgewählte Element gehört zu einer anderen Kampagne.\n\nZu '${targetCampaign}' wechseln?",
+        "action": "Kampagne\nwechseln"
+      },
+      "memberStatistics": {
+        "title": "Mitglieder-Statistik",
+        "memberSince": "Team-Mitglied seit ${date}"
+      }
     }
   },
   "location": {
@@ -467,7 +531,7 @@
     "locationPermission": "Standortberechtigung"
   },
   "profiles": {
-    "profiles": "Mitglieder",
+    "title": "Mitglieder",
     "label": "Mitglieder",
     "search": "Mitgliedersuche",
     "searchHint": "Du findest nur Profile, die für Dich sichtbar sind",
@@ -484,7 +548,7 @@
       }
     },
     "visibility": {
-      "visibility": "Profil-Sichtbarkeit",
+      "title": "Profil-Sichtbarkeit",
       "private": "Privat",
       "privateHint": "Dein Profil ist nur für Dich selbst sichtbar.\nAchtung: Mit einem privaten Profil kannst Du nicht zu Wahlkampf-Teams hinzugefügt werden.",
       "ovHint": "Dein Profil ist sichtbar für Mitglieder in Deinem Ortsverband.",
@@ -517,7 +581,7 @@
     "personalId": "Personen-/Kommunikations-Nr."
   },
   "mfa": {
-    "mfa": "2-Faktor-Authentifizierung",
+    "title": "2-Faktor-Authentifizierung",
     "label": "2FA",
     "intro": {
       "title": "Nutze die App als 2-Faktor-Authentifizierung!",
@@ -563,17 +627,17 @@
     }
   },
   "settings": {
-    "settings": "App-Einstellungen",
+    "title": "App-Einstellungen",
     "generalSettings": "App",
     "pushNotifications": {
-      "pushNotifications": "Push Nachrichten",
+      "title": "Push Nachrichten",
       "disableAll": "Vollständig deaktivieren",
       "pushNotificationsBV": "News Bundesverband",
       "pushNotificationsLV": "News Landesverband",
       "pushNotificationsKV": "News Kreisverband"
     },
     "support": {
-      "support": "Support & Feedback"
+      "title": "Support & Feedback"
     },
     "legalSettings": "Rechtliches",
     "legalNotice": "Impressum",
@@ -583,11 +647,10 @@
     "version": "Version ${version}"
   },
   "tools": {
-    "tools": "Tools",
+    "title": "Tools",
     "label": "Tools"
   },
   "login": {
-    "login": "Anmeldung",
     "support": "Unterstützen",
     "welcome": "Willkommen!",
     "loginMembers": "Jetzt anmelden",
@@ -598,7 +661,7 @@
     "termsOfUse": "Nutzungsbedingungen"
   },
   "events": {
-    "events": "Events",
+    "title": "Events",
     "label": "Events",
     "calendars": "Kalender",
     "dateRange": "Zeitraum",

@@ -137,8 +137,8 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
         hintText = t.campaigns.select.enforceSelectHint(previousCampaignName: _previousCampaignName);
         break;
       case CampaignSelectMode.statistics:
-        titleText = t.campaigns.select.statisticsTitle;
-        hintText = t.campaigns.select.statisticsHint;
+        titleText = t.campaigns.select.statistics.title;
+        hintText = t.campaigns.select.statistics.hint;
         height = 450;
         break;
     }
@@ -233,8 +233,8 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
 
   Widget _getCampaignRadioTile(Campaign? campaign, ThemeData theme) {
     var campaignId = CampaignConstants.allCampaignsId,
-        campaignName = t.campaigns.statistic.poi_statistics.all_time,
-        campaignSubtitle = t.campaigns.statistic.poi_statistics.all_time_subtitle;
+        campaignName = t.campaigns.statistics.poi.allTime,
+        campaignSubtitle = t.campaigns.statistics.poi.allTimeSubtitle;
 
     if (campaign != null) {
       campaignId = campaign.id;

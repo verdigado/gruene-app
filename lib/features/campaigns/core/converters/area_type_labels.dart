@@ -8,6 +8,6 @@ extension AreaTypeLabels on AreaType {
       AreaType.poster => t.campaigns.poster.label,
       AreaType.swaggerGeneratedUnknown => throw UnimplementedError(),
     };
-    return '$typeLabel-${t.campaigns.action_area.label}';
+    return '$typeLabel-${t.campaigns.actionArea.label}';
   }
 }

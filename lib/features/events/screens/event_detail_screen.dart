@@ -58,7 +58,7 @@ class EventDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: MainAppBar(
-        title: t.events.events,
+        title: t.events.title,
         appBarAction: !calendar.readOnly
             ? IconButton(
                 icon: Icon(Icons.delete),

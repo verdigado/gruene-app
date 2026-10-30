@@ -53,18 +53,18 @@ mixin MapConsumerFocusAreaMixin on InfoBox {
     if (focusAreasVisible) {
       loadFocusAreaLayer(mapInfo);
       showInfoToast(
-        t.campaigns.infoToast.focusAreas_activated,
+        t.campaigns.infoToast.focusAreas.activated,
         moreInfoCallback: () => showAboutInfoBox(
           mapInfo.context,
-          t.campaigns.infoToast.focusAreas_aboutTitle,
-          t.campaigns.infoToast.focusAreas_aboutText,
+          t.campaigns.infoToast.focusAreas.aboutTitle,
+          t.campaigns.infoToast.focusAreas.aboutText,
         ),
       );
     } else {
       await mapInfo.mapController.removeLayerSource(CampaignConstants.focusAreaSourceName);
       await mapInfo.mapController.removeLayerSource(CampaignConstants.focusAreaSelectedSourceName);
       hideCurrentSnackBar();
-      showInfoToast(t.campaigns.infoToast.focusAreas_deactivated);
+      showInfoToast(t.campaigns.infoToast.focusAreas.deactivated);
     }
   }
 

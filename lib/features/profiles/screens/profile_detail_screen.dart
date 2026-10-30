@@ -20,7 +20,7 @@ class ProfileDetailScreen extends StatelessWidget {
     final profile = GoRouterState.of(context).extra as PublicProfile?;
 
     return Scaffold(
-      appBar: MainAppBar(title: t.profiles.profiles),
+      appBar: MainAppBar(title: t.profiles.title),
       body: FutureLoadingScreen(
         load: profile == null ? () => GetIt.I<ProfileApiService>().getProfile(profileId) : () async => profile,
         buildChild: (profile, extra) => SingleChildScrollView(

@@ -243,14 +243,14 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
   Future<bool> _showConfirmationDialog(BuildContext context, PictureViewConfirmationDialogOptions options) async {
     var optionSet = switch (options) {
       PictureViewConfirmationDialogOptions.replace => (
-        title: t.campaigns.poster.photoEditActions.confirmation_dialog.title_replace,
-        text: t.campaigns.poster.photoEditActions.confirmation_dialog.text_replace,
+        title: t.campaigns.poster.photoEditActions.confirmReplace.title,
+        text: t.campaigns.poster.photoEditActions.confirmReplace.text,
         actionText: t.campaigns.poster.photoEditActions.replacePhoto,
         icon: Icons.camera_alt_outlined,
       ),
       PictureViewConfirmationDialogOptions.delete => (
-        title: t.campaigns.poster.photoEditActions.confirmation_dialog.title_delete,
-        text: t.campaigns.poster.photoEditActions.confirmation_dialog.text_delete,
+        title: t.campaigns.poster.photoEditActions.confirmDelete.title,
+        text: t.campaigns.poster.photoEditActions.confirmDelete.text,
         actionText: t.campaigns.poster.photoEditActions.deletePhoto,
         icon: Icons.delete_outlined,
       ),
@@ -294,7 +294,7 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
 
   String getImageText(List<PosterPhotoModel> allImages) {
     var title = '';
-    if (_currentImageIndex == 0) title += t.campaigns.poster.pictureView.currentPicture_label;
+    if (_currentImageIndex == 0) title += t.campaigns.poster.pictureView.currentPictureLabel;
     return title;
   }
 }

@@ -16,7 +16,7 @@ class MfaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MainAppBar(title: t.mfa.mfa),
+      appBar: MainAppBar(title: t.mfa.title),
       body: SafeArea(
         child: BlocConsumer<MfaBloc, MfaState>(
           listener: (context, state) {

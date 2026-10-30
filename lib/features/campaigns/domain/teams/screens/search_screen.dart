@@ -90,7 +90,7 @@ class _SearchScreenState<T> extends State<SearchScreen<T>> {
       fetchNextPage: _fetchNextPage,
       builderDelegate: PagedChildBuilderDelegate(
         noItemsFoundIndicatorBuilder: (context) =>
-            _searchText == null ? SizedBox.shrink() : Center(child: Text(t.campaigns.search.no_entries_found)),
+            _searchText == null ? SizedBox.shrink() : Center(child: Text(t.campaigns.search.noEntriesFound)),
         newPageErrorIndicatorBuilder: (context) => NewPageErrorIndicator(onTap: _fetchNextPage),
         itemBuilder: (context, item, index) =>
             widget.getSearchItemWidget(item, index, context, (item) => Navigator.pop(context, item)),

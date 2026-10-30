@@ -18,9 +18,7 @@ class BadgeStatisticsDetail extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              children: [Text(t.campaigns.statistic.poi_statistics.my_badges, style: theme.textTheme.titleMedium)],
-            ),
+            child: Row(children: [Text(t.campaigns.statistics.poi.myBadges, style: theme.textTheme.titleMedium)]),
           ),
           _getBadgeBox(poiStatistics, context, theme),
         ],
@@ -36,10 +34,7 @@ class BadgeStatisticsDetail extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              t.campaigns.statistic.poi_statistics.my_badges_campaign_subtitle,
-              style: theme.textTheme.labelSmall,
-            ),
+            child: Text(t.campaigns.statistics.poi.myBadgesCampaignSubtitle, style: theme.textTheme.labelSmall),
           ),
           ..._getBadges(statistics, theme),
         ],
@@ -49,9 +44,9 @@ class BadgeStatisticsDetail extends StatelessWidget {
 
   List<Widget> _getBadges(CampaignStatisticsModel statistics, ThemeData theme) {
     return [
-      _getBadgeRow(t.campaigns.statistic.recorded_doors, statistics.houseStats.own.toInt(), theme),
-      _getBadgeRow(t.campaigns.statistic.recorded_posters, statistics.posterStats.own.toInt(), theme),
-      _getBadgeRow(t.campaigns.statistic.recorded_flyer, statistics.flyerStats.own.toInt(), theme),
+      _getBadgeRow(t.campaigns.statistics.recorded.doors, statistics.houseStats.own.toInt(), theme),
+      _getBadgeRow(t.campaigns.statistics.recorded.posters, statistics.posterStats.own.toInt(), theme),
+      _getBadgeRow(t.campaigns.statistics.recorded.flyer, statistics.flyerStats.own.toInt(), theme),
     ];
   }
 

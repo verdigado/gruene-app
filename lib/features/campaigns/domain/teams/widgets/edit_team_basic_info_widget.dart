@@ -54,11 +54,11 @@ class _EditTeamBasicInfoWidgetState extends State<EditTeamBasicInfoWidget> {
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(t.campaigns.team.edit_team, style: theme.textTheme.titleMedium),
+                  child: Text(t.campaigns.team.edit.title, style: theme.textTheme.titleMedium),
                 ),
-                TextInputField(labelText: t.campaigns.team.team_name_label, textController: teamNameTextController),
+                TextInputField(labelText: t.campaigns.team.nameLabel, textController: teamNameTextController),
                 MultiLineTextInputField(
-                  labelText: t.campaigns.team.team_description_label,
+                  labelText: t.campaigns.team.descriptionLabel,
                   textController: teamDescriptionTextController,
                   hint: '',
                   maxLength: 400,

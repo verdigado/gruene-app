@@ -23,13 +23,13 @@ class SelectTeamWidget extends StatelessWidget {
             CloseSaveWidget(onClose: () => _onClose(context)),
             Padding(
               padding: EdgeInsetsGeometry.symmetric(vertical: 4),
-              child: Text(t.campaigns.team.select_team, style: theme.textTheme.titleMedium),
+              child: Text(t.campaigns.team.selectTeam.title, style: theme.textTheme.titleMedium),
             ),
             Padding(
               padding: EdgeInsetsGeometry.symmetric(vertical: 4),
               child: Text(switch (routeOrArea) {
-                TeamAssignmentType.route => t.campaigns.team.select_team_hint_route,
-                TeamAssignmentType.area => t.campaigns.team.select_team_hint_area,
+                TeamAssignmentType.route => t.campaigns.team.selectTeam.hintRoute,
+                TeamAssignmentType.area => t.campaigns.team.selectTeam.hintArea,
               }),
             ),
             Expanded(

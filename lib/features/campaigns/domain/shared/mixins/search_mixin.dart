@@ -130,11 +130,7 @@ mixin SearchMixin<T extends StatefulWidget> on State<T> {
     if (distinctAddresses.isEmpty && context.mounted) {
       scaffoldMessenger.removeCurrentSnackBar();
       scaffoldMessenger.showSnackBar(
-        SnackBar(
-          content: Text(t.campaigns.search.no_entries_found),
-          duration: Duration(seconds: 2),
-          showCloseIcon: true,
-        ),
+        SnackBar(content: Text(t.campaigns.search.noEntriesFound), duration: Duration(seconds: 2), showCloseIcon: true),
       );
     }
     setState(() {

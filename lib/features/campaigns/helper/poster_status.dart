@@ -6,7 +6,7 @@ class PosterStatusHelper {
     (PosterModelStatus.ok, t.campaigns.poster.status.ok.label),
     (PosterModelStatus.damaged, t.campaigns.poster.status.damaged.label),
     (PosterModelStatus.missing, t.campaigns.poster.status.missing.label),
-    (PosterModelStatus.toBeMoved, t.campaigns.poster.status.to_be_moved.label),
+    (PosterModelStatus.toBeMoved, t.campaigns.poster.status.toBeMoved.label),
     (PosterModelStatus.removed, t.campaigns.poster.status.removed.label),
   ];
 }

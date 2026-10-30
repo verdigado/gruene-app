@@ -21,7 +21,7 @@ class ProfileSearchHelper {
       AppRoute<PublicProfile?>(
         builder: (context) {
           return ContentPage(
-            title: t.campaigns.label,
+            title: t.campaigns.title,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
             withScroll: false,

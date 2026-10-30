@@ -44,7 +44,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(t.campaigns.team.edit_team_member_label, style: theme.textTheme.titleMedium),
+                  child: Text(t.campaigns.team.editMembers.title, style: theme.textTheme.titleMedium),
                 ),
                 SizedBox(height: 16),
 
@@ -80,11 +80,11 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     if (teamMembership.userId != widget.currentUser.userId) {
       if (teamMembership.status == TeamMembershipStatus.accepted) {
         if (teamMembership.type == TeamMembershipType.member) {
-          actions.add(_getActionLink(t.campaigns.team.appoint_as_team_lead, () => _appointAsTeamLead(teamMembership)));
+          actions.add(_getActionLink(t.campaigns.team.appointAsTeamLead, () => _appointAsTeamLead(teamMembership)));
         }
         actions.add(_getActionLink(t.common.actions.remove, () => _removeFromTeam(teamMembership)));
       } else if (teamMembership.status == TeamMembershipStatus.pending) {
-        actions.add(_getActionLink(t.campaigns.team.cancel_invitation, () => _removeFromTeam(teamMembership)));
+        actions.add(_getActionLink(t.campaigns.team.cancelInvitation, () => _removeFromTeam(teamMembership)));
       }
     }
     // Insert in between each action some spacing
@@ -191,7 +191,7 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(t.campaigns.team.add_team_member, style: theme.textTheme.bodyLarge),
+                child: Text(t.campaigns.team.addTeamMember, style: theme.textTheme.bodyLarge),
               ),
               Align(
                 alignment: Alignment.centerRight,
@@ -211,11 +211,11 @@ class _EditTeamMembersWidgetState extends State<EditTeamMembersWidget> {
     if (activeUserMemberships.length == 1) {
       var activeUserMembership = activeUserMemberships.single;
       if (activeUserMembership.status == TeamMembershipStatus.accepted) {
-        return SearchActionState.disabled(actionText: t.campaigns.team.team_member);
+        return SearchActionState.disabled(actionText: t.campaigns.team.teamMember);
       } else if (activeUserMembership.status == TeamMembershipStatus.pending) {
-        return SearchActionState.disabled(actionText: t.campaigns.team.invitation_pending);
+        return SearchActionState.disabled(actionText: t.campaigns.team.invitationPending);
       }
     }
-    return SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_member);
+    return SearchActionState.enabled(actionText: t.campaigns.team.selectTeamMembers.action);
   }
 }

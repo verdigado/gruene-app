@@ -55,17 +55,17 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            CloseSaveWidget(onClose: onClose, onSave: onSave, saveLabelText: t.campaigns.team.next_step),
+            CloseSaveWidget(onClose: onClose, onSave: onSave, saveLabelText: t.campaigns.team.nextStep),
             Column(
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(t.campaigns.team.select_division_label, style: theme.textTheme.titleMedium),
+                  child: Text(t.campaigns.team.selectDivision.title, style: theme.textTheme.titleMedium),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    t.campaigns.team.select_division_hint,
+                    t.campaigns.team.selectDivision.hint,
                     style: theme.textTheme.labelMedium?.apply(color: ThemeColors.text),
                   ),
                 ),
@@ -110,11 +110,11 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
 
   void onSave() {
     if (currentDivision == null) {
-      showToastAsSnack(context, t.campaigns.team.errors.no_division);
+      showToastAsSnack(context, t.campaigns.team.errors.noDivision);
       return;
     }
     if (!widget.currentUserInfo.isCampaignManagerInDivision(currentDivision!.divisionKey)) {
-      showToastAsSnack(context, t.campaigns.team.errors.no_access_on_division);
+      showToastAsSnack(context, t.campaigns.team.errors.noAccessOnDivision);
       return;
     }
 

@@ -29,17 +29,17 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            CloseSaveWidget(onClose: onClose, onSave: onSave, saveLabelText: t.campaigns.team.next_step),
+            CloseSaveWidget(onClose: onClose, onSave: onSave, saveLabelText: t.campaigns.team.nextStep),
             Column(
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(t.campaigns.team.select_team_lead_label, style: theme.textTheme.titleMedium),
+                  child: Text(t.campaigns.team.selectTeamLead.title, style: theme.textTheme.titleMedium),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    t.campaigns.team.select_team_lead_hint,
+                    t.campaigns.team.selectTeamLead.hint,
                     style: theme.textTheme.labelMedium?.apply(color: ThemeColors.text),
                   ),
                 ),
@@ -91,7 +91,7 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
 
   void onSave() {
     if (currentTeamLeadProfile == null) {
-      showToastAsSnack(context, t.campaigns.team.errors.no_team_lead);
+      showToastAsSnack(context, t.campaigns.team.errors.noTeamLead);
       return;
     }
     Navigator.pop(context, widget.newTeamDetails.copyWith(assignedTeamLead: currentTeamLeadProfile));
@@ -104,7 +104,7 @@ class _NewTeamSelectTeamLeadWidgetState extends State<NewTeamSelectTeamLeadWidge
   Future<void> onChangeTeamLead() async {
     final result = await ProfileSearchHelper.searchProfile(
       context,
-      (userId) => SearchActionState.enabled(actionText: t.campaigns.team.select_as_team_lead),
+      (userId) => SearchActionState.enabled(actionText: t.campaigns.team.selectTeamLead.action),
     );
 
     if (result != null) {

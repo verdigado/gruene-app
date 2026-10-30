@@ -24,7 +24,7 @@ class PushNotificationsScreen extends StatelessWidget {
         final bloc = context.read<PushNotificationSettingsBloc>();
 
         return Scaffold(
-          appBar: MainAppBar(title: t.settings.settings),
+          appBar: MainAppBar(title: t.settings.title),
           body: ListView(
             children: [
               SizedBox(height: 36),

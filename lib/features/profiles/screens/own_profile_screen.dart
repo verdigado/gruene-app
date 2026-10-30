@@ -19,7 +19,7 @@ class OwnProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MainAppBar(title: t.profiles.profiles),
+      appBar: MainAppBar(title: t.profiles.title),
       body: FutureLoadingScreen(
         load: GetIt.I<ProfileApiService>().getSelf,
         buildChild: (profile, extra) => SingleChildScrollView(
@@ -36,7 +36,7 @@ class OwnProfileScreen extends StatelessWidget {
                     onPress: () => context.pushNested(Routes.membershipCard.path),
                   ),
                   TextListItem(
-                    title: t.profiles.visibility.visibility,
+                    title: t.profiles.visibility.title,
                     onPress: () async {
                       final newProfile = await showProfileVisibilitySetting(context, profile);
                       if (newProfile != null) {

@@ -20,7 +20,7 @@ class DivisionSearchHelper {
       AppRoute<Division?>(
         builder: (context) {
           return ContentPage(
-            title: t.campaigns.label,
+            title: t.campaigns.title,
             showBackButton: true,
             contentBackgroundColor: ThemeColors.backgroundSecondary,
             alignment: Alignment.topCenter,
@@ -82,7 +82,7 @@ class DivisionSearchHelper {
                       ),
                       onPressed: () => closeSearchScreen(item),
                       child: Text(
-                        t.campaigns.team.select_as_division,
+                        t.campaigns.team.selectDivision.action,
                         style: theme.textTheme.titleSmall?.apply(color: ThemeColors.background),
                       ),
                     ),

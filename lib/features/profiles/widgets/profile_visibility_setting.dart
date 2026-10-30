@@ -89,7 +89,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
               spacing: 8,
               children: [
                 Icon(Icons.visibility),
-                Text(t.profiles.visibility.visibility, style: Theme.of(context).textTheme.titleMedium),
+                Text(t.profiles.visibility.title, style: Theme.of(context).textTheme.titleMedium),
                 Spacer(),
                 DialogCloseButton(onClose: _updateProfile),
               ],

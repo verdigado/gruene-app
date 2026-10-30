@@ -104,7 +104,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
   Widget build(BuildContext context) {
     var data = MediaQuery.of(context);
     return Scaffold(
-      appBar: MainAppBar(title: t.campaigns.challenges.challengeDetail.title, showSettings: false),
+      appBar: MainAppBar(title: t.campaigns.challenges.detail.title, showSettings: false),
       body: Container(
         padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding + 12),
         height: data.size.height,
@@ -216,12 +216,12 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          t.campaigns.challenges.detailScreen.leaderboard.title,
+          t.campaigns.challenges.detail.leaderboard.title,
           style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         Text(
-          t.campaigns.challenges.detailScreen.leaderboard.version(
-            last_update: _lastLeaderboardUpdate.toLocalDateTimeString(),
+          t.campaigns.challenges.detail.leaderboard.updateInfo(
+            lastUpdate: _lastLeaderboardUpdate.toLocalDateTimeString(),
           ),
           style: theme.textTheme.labelSmall,
         ).withOpacity(0.8),
@@ -248,7 +248,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
           Text(_currentChallenge.title, style: theme.textTheme.titleLarge?.copyWith(fontSize: 26)),
           SizedBox(height: 10),
           Text(
-            t.campaigns.challenges.challengeSubTitleLong(
+            t.campaigns.challenges.subtitleLong(
               startDate: _currentChallenge.start.formattedDateTime,
               endDate: _currentChallenge.end.formattedDateTime,
               activities: activitiesText,
@@ -296,7 +296,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  t.campaigns.challenges.detailScreen.myProgress,
+                  t.campaigns.challenges.detail.myProgress,
                   style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 DateTime.now().isBetween(DateTimeRange(start: _currentChallenge.start, end: _currentChallenge.end)) &&
@@ -305,9 +305,9 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                         color: ThemeColors.sun,
                         padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
                         child: MarkdownBody(
-                          data: t.campaigns.challenges.detailScreen.leftOverLabel(
-                            timeleft: _currentChallenge.end.getTimeRemaining(),
-                            leftover_activities: leftOverActivitiesLabel,
+                          data: t.campaigns.challenges.detail.remaining(
+                            timeLeft: _currentChallenge.end.getTimeRemaining(),
+                            leftoverActivities: leftOverActivitiesLabel,
                           ),
 
                           styleSheet: MarkdownStyleSheet.fromTheme(theme)
@@ -365,18 +365,18 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
   String getActivityLabel(ChallengeActivityType type, int count) {
     var typeLabel = switch (type) {
       ChallengeActivityType.swaggerGeneratedUnknown => null,
-      ChallengeActivityType.poster => t.campaigns.poster.label_cardinal(n: count),
-      ChallengeActivityType.flyerSpot => t.campaigns.flyer.label_cardinal(n: count),
-      ChallengeActivityType.house => t.campaigns.door.label_cardinal(n: count),
+      ChallengeActivityType.poster => t.campaigns.poster.count(n: count),
+      ChallengeActivityType.flyerSpot => t.campaigns.flyer.count(n: count),
+      ChallengeActivityType.house => t.campaigns.door.count(n: count),
     };
     return typeLabel ?? '';
   }
 
   List<Widget> _getChallengeLeaderboard() {
     if (DateTime.now().isBefore(_currentChallenge.start)) {
-      return _getEmptyStatInfo(t.campaigns.challenges.detailScreen.leaderboard.plannedChallengeNotReadyYet);
+      return _getEmptyStatInfo(t.campaigns.challenges.detail.leaderboard.plannedChallengeNotReadyYet);
     } else if (_currentChallengeLeaderboard.isEmpty) {
-      return _getEmptyStatInfo(t.campaigns.challenges.detailScreen.leaderboard.leaderboardEmpty);
+      return _getEmptyStatInfo(t.campaigns.challenges.detail.leaderboard.empty);
     } else {
       return _currentChallengeLeaderboard.map(_getLeaderboardRow).toList();
     }
@@ -436,7 +436,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                                 ...(index == 1
                                     ? [
                                         Text(
-                                          t.campaigns.challenges.detailScreen.leaderboard.targetReached,
+                                          t.campaigns.challenges.detail.leaderboard.targetReached,
                                           style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
                                         ),
                                         SizedBox(width: 5),

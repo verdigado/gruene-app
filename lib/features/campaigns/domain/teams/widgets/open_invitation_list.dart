@@ -73,15 +73,13 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Column(
         children: [
-          Row(
-            children: [Text(t.campaigns.team.invitations.open_invitations_label, style: theme.textTheme.titleMedium)],
-          ),
+          Row(children: [Text(t.campaigns.team.invitations.title, style: theme.textTheme.titleMedium)]),
           SizedBox(height: 8),
           Row(
             children: [
               Expanded(
                 child: Text(
-                  t.campaigns.team.invitations.open_invitations_description(n: _openInvitations.length),
+                  t.campaigns.team.invitations.description(n: _openInvitations.length),
                   softWrap: true,
                   style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textDark),
                 ),
@@ -125,10 +123,10 @@ class _OpenInvitationListState extends State<OpenInvitationList> {
               children: [
                 Expanded(
                   child: Text(
-                    t.campaigns.team.invitations.invitation_meta(
-                      inviting_user: invitation.invitingUser.safe(),
-                      invitation_date: invitation.invitationDate.toLocalDateString(),
-                      invitation_time: invitation.invitationDate.toLocalTimeString(),
+                    t.campaigns.team.invitations.meta(
+                      invitingUser: invitation.invitingUser.safe(),
+                      invitationDate: invitation.invitationDate.toLocalDateString(),
+                      invitationTime: invitation.invitationDate.toLocalTimeString(),
                     ),
                     style: theme.textTheme.labelSmall,
                     softWrap: true,

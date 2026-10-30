@@ -71,16 +71,16 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
     int? activityKey;
     switch (poiType) {
       case PoiServiceType.door:
-        labelActivityType = t.campaigns.focus_area.activity1_label;
-        labelActivityRecommendation = t.campaigns.focus_area.activity1_recommendation_label;
+        labelActivityType = t.campaigns.focusArea.activities.door.label;
+        labelActivityRecommendation = t.campaigns.focusArea.activities.door.recommendation;
         activityKey = 1;
       case PoiServiceType.poster:
-        labelActivityType = t.campaigns.focus_area.activity2_label;
-        labelActivityRecommendation = t.campaigns.focus_area.activity2_recommendation_label;
+        labelActivityType = t.campaigns.focusArea.activities.poster.label;
+        labelActivityRecommendation = t.campaigns.focusArea.activities.poster.recommendation;
         activityKey = 2;
       case PoiServiceType.flyer:
-        labelActivityType = t.campaigns.focus_area.activity3_label;
-        labelActivityRecommendation = t.campaigns.focus_area.activity3_recommendation_label;
+        labelActivityType = t.campaigns.focusArea.activities.flyer.label;
+        labelActivityRecommendation = t.campaigns.focusArea.activities.flyer.recommendation;
         activityKey = 3;
     }
 
@@ -147,7 +147,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
               children: [
                 Icon(Icons.campaign_outlined),
                 SizedBox(width: 8),
-                Text(t.campaigns.focus_area.intensity_recommendation, style: theme.textTheme.titleSmall),
+                Text(t.campaigns.focusArea.intensityRecommendation, style: theme.textTheme.titleSmall),
               ],
             ),
             ...content,
@@ -217,7 +217,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
                     bottom: 0,
                     left: 0,
                     child: Text(
-                      t.campaigns.focus_area.progressive,
+                      t.campaigns.focusArea.progressive,
                       style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
                     ),
                   ),
@@ -225,7 +225,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
                     bottom: 0,
                     right: 0,
                     child: Text(
-                      t.campaigns.focus_area.conservative,
+                      t.campaigns.focusArea.conservative,
                       style: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
                     ),
                   ),
@@ -292,7 +292,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
               children: [
                 Icon(Icons.speed_outlined),
                 SizedBox(width: 8),
-                Text(t.campaigns.focus_area.milieu, style: theme.textTheme.titleSmall),
+                Text(t.campaigns.focusArea.milieu, style: theme.textTheme.titleSmall),
               ],
             ),
             ...content,
@@ -341,7 +341,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
               children: [
                 Icon(Icons.error_outlined),
                 SizedBox(width: 8),
-                Text(t.campaigns.focus_area.special_competition, style: theme.textTheme.titleSmall),
+                Text(t.campaigns.focusArea.specialCompetition, style: theme.textTheme.titleSmall),
               ],
             ),
             ...content,
@@ -357,7 +357,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) return CircularProgressIndicator();
         return Text(
-          t.campaigns.focus_area.meta_info(
+          t.campaigns.focusArea.metaInfo(
             campaign: snapshot.data!.name,
             updatedAt: focusArea.createdAt.toLocalDateString(),
             focusAreaId: focusArea.key,
@@ -372,7 +372,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
     var locationKV = _getAttribute(CampaignConstants.focusAreaAttributeLocationKV);
     var textItems = [
       _getAttribute(CampaignConstants.focusAreaAttributeLocationMunicipality),
-      locationKV != null ? t.campaigns.focus_area.location_kv(name: locationKV) : null,
+      locationKV != null ? t.campaigns.focusArea.locationKv(name: locationKV) : null,
     ];
     return textItems.where((x) => x != null).join(', ');
   }

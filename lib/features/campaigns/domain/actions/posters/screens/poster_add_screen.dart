@@ -84,7 +84,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      t.campaigns.poster.addPoster,
+                      t.campaigns.poster.add.title,
                       style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
                     ),
                     Text(
@@ -149,7 +149,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
               SizedBox(
                 width: mediaQuery.size.width - 82,
                 child: Text(
-                  t.campaigns.poster.info_poster_guidelines,
+                  t.campaigns.poster.guidelinesInfo,
                   style: theme.textTheme.labelMedium!.apply(
                     color: ThemeColors.background,
                     fontWeightDelta: 3,
@@ -243,7 +243,7 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
       builder: (context) {
         return AlertDialog(
           content: Text(
-            t.campaigns.poster.noPhotoWarning,
+            t.campaigns.poster.noPhotoWarning.message,
             textAlign: TextAlign.center,
             style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
@@ -251,14 +251,14 @@ class _PostersAddState extends State<PosterAddScreen> with AddressExtension {
             TextButton(
               onPressed: () => Navigator.maybePop(context, true),
               child: Text(
-                t.campaigns.poster.noPhotoWarningConfirm,
+                t.campaigns.poster.noPhotoWarning.confirm,
                 style: theme.textTheme.labelLarge?.apply(color: ThemeColors.textWarning),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.maybePop(context, false),
               child: Text(
-                t.campaigns.poster.noPhotoWarningDecline,
+                t.campaigns.poster.noPhotoWarning.decline,
                 style: theme.textTheme.labelLarge?.apply(color: theme.colorScheme.secondary),
               ),
             ),

@@ -83,7 +83,7 @@ Future<void> main() async {
   // Therefore this should be last
   GetIt.I.registerSingleton<GrueneApi>(await createGrueneApiClient());
   GetIt.I.registerSingleton<ProfileFeatureChecker>(ProfileFeatureChecker());
-  GetIt.I.registerFactory<NominatimService>(() => NominatimService(countryCode: t.campaigns.search.country_code));
+  GetIt.I.registerFactory<NominatimService>(() => NominatimService(countryCode: t.campaigns.search.countryCode));
   GetIt.I.registerSingleton<CampaignActionCache>(CampaignActionCache());
   GetIt.I.registerSingleton<OpenInvitationCampaignValueStore>(OpenInvitationCampaignValueStore());
   GetIt.I.registerSingleton<ActiveCampaignNotifier>(ActiveCampaignNotifier());

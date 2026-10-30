@@ -27,8 +27,8 @@ class ChallengeHelper {
           await showDialog<bool>(
             context: context,
             builder: (dialogContext) => AlertDialog(
-              title: Text(t.campaigns.challenges.joinConfirmationDialog.dialogTitle),
-              content: Text(t.campaigns.challenges.joinConfirmationDialog.dialogText),
+              title: Text(t.campaigns.challenges.joinDialog.title),
+              content: Text(t.campaigns.challenges.joinDialog.text),
               actionsAlignment: MainAxisAlignment.spaceBetween,
               actions: [
                 TextButton(
@@ -37,7 +37,7 @@ class ChallengeHelper {
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(t.campaigns.challenges.joinConfirmationDialog.dialogAccept),
+                  child: Text(t.campaigns.challenges.joinDialog.accept),
                 ),
               ],
             ),
@@ -51,7 +51,7 @@ class ChallengeHelper {
     if (!context.mounted) return null;
     showSnackBar(
       context: context,
-      text: t.campaigns.challenges.joinConfirmationDialog.joinToast(title: challenge.title),
+      text: t.campaigns.challenges.joinDialog.toast(title: challenge.title),
     );
     return joinResult;
   }
@@ -62,7 +62,7 @@ class ChallengeHelper {
         await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            content: Text(t.campaigns.challenges.leaveConfirmationDialog.dialogText),
+            content: Text(t.campaigns.challenges.leaveDialog.text),
             actionsAlignment: MainAxisAlignment.spaceBetween,
             actions: [
               TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(t.common.actions.cancel)),
@@ -78,7 +78,7 @@ class ChallengeHelper {
     if (!context.mounted) return;
     showSnackBar(
       context: context,
-      text: t.campaigns.challenges.leaveConfirmationDialog.leaveToast(title: challenge.title),
+      text: t.campaigns.challenges.leaveDialog.toast(title: challenge.title),
     );
   }
 

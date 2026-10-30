@@ -18,7 +18,7 @@ extension PosterStatusMapping on PosterStatus {
       PosterStatus.damaged => t.campaigns.poster.status.damaged.label,
       PosterStatus.removed => t.campaigns.poster.status.removed.label,
       PosterStatus.missing => t.campaigns.poster.status.missing.label,
-      PosterStatus.toBeMoved => t.campaigns.poster.status.to_be_moved.label,
+      PosterStatus.toBeMoved => t.campaigns.poster.status.toBeMoved.label,
       PosterStatus.swaggerGeneratedUnknown => throw UnimplementedError(),
     };
   }

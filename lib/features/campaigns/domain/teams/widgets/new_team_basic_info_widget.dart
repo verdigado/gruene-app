@@ -40,23 +40,23 @@ class _NewTeamBasicInfoWidgetState extends State<NewTeamBasicInfoWidget> {
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            CloseSaveWidget(onClose: onClose, onSave: onSave, saveLabelText: t.campaigns.team.next_step),
+            CloseSaveWidget(onClose: onClose, onSave: onSave, saveLabelText: t.campaigns.team.nextStep),
             Column(
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(t.campaigns.team.create_new_team, style: theme.textTheme.titleMedium),
+                  child: Text(t.campaigns.team.create.title, style: theme.textTheme.titleMedium),
                 ),
-                TextInputField(labelText: t.campaigns.team.team_name_label, textController: teamNameTextController),
+                TextInputField(labelText: t.campaigns.team.nameLabel, textController: teamNameTextController),
                 MultiLineTextInputField(
-                  labelText: t.campaigns.team.team_description_label,
+                  labelText: t.campaigns.team.descriptionLabel,
                   textController: teamDescriptionTextController,
                   hint: '',
                   maxLength: 400,
                 ),
                 Row(
                   children: [
-                    Expanded(child: Text(t.campaigns.team.team_self_join, style: theme.textTheme.labelMedium)),
+                    Expanded(child: Text(t.campaigns.team.selfJoin, style: theme.textTheme.labelMedium)),
                     Switch(
                       value: selfJoin,
                       onChanged: (value) => setState(() {

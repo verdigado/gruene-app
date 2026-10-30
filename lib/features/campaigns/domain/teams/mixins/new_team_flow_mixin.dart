@@ -24,7 +24,7 @@ mixin NewTeamFlowMixin {
           children: [
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(t.campaigns.team.create_team, style: theme.textTheme.bodyLarge),
+              child: Text(t.campaigns.team.create.action, style: theme.textTheme.bodyLarge),
             ),
             Align(
               alignment: Alignment.centerRight,

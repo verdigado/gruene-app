@@ -79,7 +79,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(t.campaigns.team.member_statistics, style: theme.textTheme.titleMedium),
+                Text(t.campaigns.team.memberStatistics.title, style: theme.textTheme.titleMedium),
                 SegmentedButton<PoiType>(
                   style: SegmentedButton.styleFrom(
                     selectedForegroundColor: ThemeColors.background,
@@ -239,7 +239,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
                           item.divisionName == '' ? null : (item.divisionName),
                           item.memberSince == null
                               ? null
-                              : t.campaigns.team.member_statistics_member_info.member_since(
+                              : t.campaigns.team.memberStatistics.memberSince(
                                   date: DateFormat(t.common.dateTime.dateFormat).format(item.memberSince!),
                                 ),
                         ].nonNulls.join(', '),
