@@ -2,7 +2,6 @@
   "common": {
     "appName": "B90/DIE GRÜNEN",
     "party": "BÜNDNIS 90/DIE GRÜNEN",
-    "error": "Fehler",
     "dateFrom": "von",
     "dateUntil": "bis",
     "search": "Suche",
@@ -104,11 +103,7 @@
     "news": "News",
     "label": "Artikel",
     "newsDetail": "Artikel",
-    "writtenBy": "Von ${author}",
     "noResults": "Es wurden leider keine Artikel gefunden.",
-    "newsNotFound": "Dieser Artiekl wurde leider nicht gefunden.",
-    "latest": "Aktuelles",
-    "bookmarked": "Gespeichert",
     "categories": "Schlagworte",
     "publicationDate": "Veröffentlichungsdatum",
     "attachments": "Anhänge"
@@ -392,7 +387,7 @@
         "leftOverLabel": "noch **${timeleft}** für **${leftover_activities}!**",
         "leaderboard": {
           "title": "Challenge Leaderboard",
-          "version": "Aktueller Zwischenstand ${last_udpate}",
+          "version": "Aktueller Zwischenstand ${last_update}",
           "targetReached": "Ziel erreicht",
           "plannedChallengeNotReadyYet": "Geplante Challenge, noch keine Platzierungen vorhanden.",
           "leaderboardEmpty": "Noch keine Platzierungen vorhanden."
@@ -433,10 +428,6 @@
         "team": "Team",
         "my_badges": "Meine Abzeichen",
         "my_badges_campaign_subtitle": "",
-        "by_me": "von mir erfasst",
-        "by_my_KV": "von meinem Kreisverband",
-        "by_my_LV": "von meinem Landesverband",
-        "in_germany": "deutschlandweit",
         "update_info": "wird alle 5 Minuten aktualisiert",
         "stats_for_campaign": "Statistiken für",
         "all_time": "Alle",
@@ -450,7 +441,6 @@
         "title": "Challenges"
       },
       "recorded_posters": "Plakate",
-      "including_damaged_or_taken_down": "inkl. beschädigt und abgehängt",
       "recorded_doors": "Haustüren",
       "recorded_flyer": "Flyer",
       "as_at": "Stand",
@@ -472,18 +462,13 @@
     "activateLocationAccessRationale": "Erlaube der App Deinen Standort zu benutzen, um diesen auf der Karte anzuzeigen.",
     "activateLocationAccessSettings": "Aktiviere die Standortermittlung in den Einstellungen.",
     "askPermissionsAgain": "Soll noch einmal nach der Berechtigung gefragt werden?",
-    "grantLocation": "Ich möchte meinen Standort freigeben.",
     "grantPermission": "Berechtigung erteilen",
     "locationAccessDeactivated": "Die Standortfreigabe ist deaktiviert.",
-    "locationGranted": "Standort ist freigegeben.",
-    "locationPermission": "Standortberechtigung",
-    "checkSettings": "Prüfe Einstellungen..."
+    "locationPermission": "Standortberechtigung"
   },
   "profiles": {
     "profiles": "Mitglieder",
     "label": "Mitglieder",
-    "noResult": "Leider gab es einen Fehler beim Laden des Profils.",
-    "profileNotFound": "Dieses Profil wurde leider nicht gefunden",
     "search": "Mitgliedersuche",
     "searchHint": "Du findest nur Profile, die für Dich sichtbar sind",
     "noResults": "Keine Mitglieder gefunden",
@@ -527,7 +512,6 @@
       "twitter": "Twitter",
       "chatbegruenung": "Chatbegrünung"
     },
-    "homepage": "Homepage",
     "membershipCard": "Mitgliedskarte",
     "myMembershipCard": "Meine Mitgliedskarte",
     "personalId": "Personen-/Kommunikations-Nr."
@@ -544,7 +528,7 @@
       "title": "2FA - QR-Code scannen",
       "intro": "Scanne den QR-Code des Accounts, für den Du den zweiten Faktor aktivieren willst.",
       "doManual": "Einrichtungsschlüssel manuell eingeben",
-      "oidcIssuerMissmatch": "Die Authenticator-Funktion kann nur mit dem Grünen Netz verwendet werden."
+      "oidcIssuerMismatch": "Die Authenticator-Funktion kann nur mit dem Grünen Netz verwendet werden."
     },
     "tokenInput": {
       "title": "2FA - Manuelle Einrichtung",
@@ -558,7 +542,6 @@
       "lastRefresh": "zuletzt aktualisiert: ${time}",
       "never": "nie",
       "lastApprovedLogin": "Letzte freigegebene Anmeldung",
-      "oclock": "Uhr",
       "delete": {
         "title": "App als zweiten Faktor löschen",
         "description(rich)": "Bitte entferne die App in ${openAccountSettings(Deiner Account-Verwaltung)} und richte eine neue Methode ein, bevor Du sie hier deaktivierst.\n\nSollte die App ${appName} Deine einzige 2FA-Methode sein, wirst Du Dich ansonsten nach dem Deaktivieren nicht mehr anmelden können!",
@@ -581,9 +564,6 @@
   },
   "settings": {
     "settings": "App-Einstellungen",
-    "campaignsSettings": "Wahlkampf",
-    "inviteNonMember": "Nicht-Mitglied einladen",
-    "offlineMaps": "Offline-Karten",
     "generalSettings": "App",
     "pushNotifications": {
       "pushNotifications": "Push Nachrichten",
@@ -593,16 +573,8 @@
       "pushNotificationsKV": "News Kreisverband"
     },
     "support": {
-      "support": "Support & Feedback",
-      "contacts": "Kontakte für Support & Feedback zur App",
-      "generalFeedback": "Allgemeines Feedback",
-      "campaignSupport": "Support Wahlkampf-Bereich",
-      "otherSupport": "Support andere Bereiche",
-      "supportDisabledHint(rich)": "Aufgrund der hohen Anzahl an Anfragen bitten wir darum, keine Anfragen per E-Mail zu senden.\nMehr Informationen zum Prozess \"Feedback & Fehlermeldungen\" findest Du im ${openGrueneAppArticle(Wissenswerk-Artikel)} zur App. Danke für Dein Verständnis!",
-      "appFeedbackFormLabel": "zum Feedback-Formular"
+      "support": "Support & Feedback"
     },
-    "actionNetwork": "Action Network",
-    "newsletter": "Newsletter",
     "legalSettings": "Rechtliches",
     "legalNotice": "Impressum",
     "dataProtectionStatement": "Datenschutzerklärung",
@@ -633,7 +605,6 @@
     "list": "Liste",
     "noEvents": "In deinem KV gibt es aktuell keine Events.",
     "map": "Karte",
-    "eventNotFound": "Dieses Event wurde leider nicht gefunden.",
     "digital": "digital",
     "createTitle": "Neues Event erstellen",
     "updateTitle": "Event bearbeiten",
@@ -670,14 +641,12 @@
     "address": "Adresse",
     "locationUrl": "Link zum digitalen Event",
     "categories": "Kategorien",
-    "searchCategories": "Kategorien suchen",
     "other": "Sonstiges",
     "image": "Bild",
     "url": "Website",
     "urlRequired": "Gib einen gültigen Link ein",
     "urlHelp": "Link zu einer Website mit weiterführenden Informationen. Für digitale Events nutze bitte das Feld bei \"Veranstaltungsort\".",
     "create": "Event erstellen",
-    "created": "Event erstellt",
     "update": "Speichern",
     "updated": "Event gespeichert",
     "delete": "Event löschen",
