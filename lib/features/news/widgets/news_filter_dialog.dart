@@ -72,7 +72,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
       modified: filtersModified,
       children: [
         FilterSection(
-          title: t.divisions.divisions,
+          title: t.divisions.title,
           child: MultiSelection(
             selected: _localSelectedDivisions,
             setSelected: setDivisions,
@@ -80,7 +80,7 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
             compare: (division1, division2) => division1.id == division2.id,
             filter: (division, query) => division.matches(query),
             itemAsString: widget.getDivisionLabel,
-            label: t.divisions.divisions,
+            label: t.divisions.title,
           ),
         ),
         FilterSection(
