@@ -279,11 +279,11 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
     getEmptyText() {
       switch (_selectedDivisionType) {
         case HierarchyLevel.kv:
-          return t.campaigns.statistics.noTeams.kv;
+          return t.campaigns.statistics.noTeams(division: t.divisions.level.kv.short);
         case HierarchyLevel.lv:
-          return t.campaigns.statistics.noTeams.lv;
+          return t.campaigns.statistics.noTeams(division: t.divisions.level.lv.short);
         case HierarchyLevel.bv:
-          return t.campaigns.statistics.noTeams.bv;
+          return t.campaigns.statistics.noTeams(division: t.divisions.level.bv.short);
         case HierarchyLevel.ov:
         case HierarchyLevel.swaggerGeneratedUnknown:
           throw UnimplementedError();

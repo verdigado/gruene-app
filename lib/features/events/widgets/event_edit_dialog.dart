@@ -284,7 +284,7 @@ class _EventEditDialogState extends State<EventEditDialog> {
                           }
                         },
                         child: Text(
-                          widget.event == null ? t.events.create : t.events.update,
+                          widget.event == null ? t.events.create : t.common.actions.save,
                           style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
                         ),
                       ),

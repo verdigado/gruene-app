@@ -49,7 +49,7 @@ class _TokenInputScreenState extends State<TokenInputScreen> {
               onPressed: () => onSubmit(context),
               style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
               child: Text(
-                t.mfa.tokenInput.submit,
+                t.common.actions.save,
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
               ),
             ),

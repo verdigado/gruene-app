@@ -55,7 +55,7 @@ class _NewTeamSelectDivisionWidgetState extends State<NewTeamSelectDivisionWidge
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            CloseSaveWidget(onClose: onClose, onSave: onSave, saveLabelText: t.campaigns.team.nextStep),
+            CloseSaveWidget(onClose: onClose, onSave: onSave, saveLabelText: t.common.actions.next),
             Column(
               children: [
                 Align(
