@@ -1,6 +1,6 @@
 {
-  "unknownError": "Ein unbekannter Fehler ist aufgetreten.",
-  "offlineError": "Du bist offline. Keine Verbindung zum Internet möglich.",
+  "unknown": "Ein unbekannter Fehler ist aufgetreten.",
+  "offline": "Du bist offline. Keine Verbindung zum Internet möglich.",
   "retry": "Erneut versuchen",
   "tapToRetry": "Etwas ist schiefgelaufen. Tippe hier, um es erneut zu versuchen."
 }
