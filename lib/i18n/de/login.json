@@ -2,8 +2,6 @@
   "support": "Unterstützen",
   "welcome": "Willkommen!",
   "loginMembers": "Jetzt anmelden",
-  "loginNonMembers(ignoreUnused)": "Anmeldung für Nicht-Parteimitglieder",
-  "@loginNonMembers": "Reserved for a guest login for non-members (see #203), currently not used.",
   "mfa": "Zur 2-Faktor-Authentifizierung",
   "dataProtection": "Datenschutz"
 }
