@@ -52,6 +52,12 @@ class ThemeColors {
   static const Color disabledShadow = Color(0xFFFBFCFC);
 
   static const Color himmel600 = Color(0xFF0BA1DD);
+
+  // Alpha for light backgrounds tinted with a foreground color, e.g. status tags and history icons
+  static const int tintedBackgroundAlpha = 30;
+
+  // Alpha for borders around backgrounds tinted with tintedBackgroundAlpha
+  static const int tintedBorderAlpha = 90;
 }
 
 class _ThemeTextStyles {

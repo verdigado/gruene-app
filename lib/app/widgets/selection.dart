@@ -16,6 +16,7 @@ class Selection<T> extends StatelessWidget {
   final List<T> items;
   final T? selected;
   final String label;
+  final FormFieldValidator<T>? validator;
 
   const Selection({
     super.key,
@@ -26,6 +27,7 @@ class Selection<T> extends StatelessWidget {
     required this.items,
     required this.selected,
     required this.label,
+    this.validator,
   });
 
   @override
@@ -48,6 +50,7 @@ class Selection<T> extends StatelessWidget {
       itemAsString: itemAsString,
       textProps: TextProps(style: theme.textTheme.bodyLarge),
       popupProps: PopupProps.modalBottomSheet(
+        modalBottomSheetProps: ModalBottomSheetProps(useRootNavigator: true),
         showSearchBox: true,
         searchFieldProps: searchFieldProps,
         containerBuilder: containerBuilder,
@@ -61,6 +64,8 @@ class Selection<T> extends StatelessWidget {
       ),
       suffixProps: DropdownSuffixProps(clearButtonProps: ClearButtonProps(isVisible: true)),
       decoratorProps: decoratorProps,
+      validator: validator,
+      autoValidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }
@@ -126,6 +131,7 @@ class MultiSelection<T> extends StatelessWidget {
       itemAsString: itemAsString,
       selectedItemsWrapProps: WrapProps(spacing: 4, runSpacing: -8),
       popupProps: MultiSelectionPopupProps.modalBottomSheet(
+        modalBottomSheetProps: ModalBottomSheetProps(useRootNavigator: true),
         showSearchBox: true,
         searchFieldProps: searchFieldProps,
         containerBuilder: containerBuilder,
