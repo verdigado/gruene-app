@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/routes.dart';
-import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
@@ -33,10 +32,7 @@ class ProfileListItem extends StatelessWidget {
             if (division != null) Text(division.shortDisplayName, maxLines: 1, overflow: TextOverflow.ellipsis),
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
-              children: profile
-                  .displayRoles()
-                  .map((role) => Text(role))
-                  .withDividers(HorizontalDivider(color: ThemeColors.textDisabled)),
+              children: profile.displayRoles().map((role) => Text(role)).withDividers(HorizontalDivider()),
             ),
           ],
         ),

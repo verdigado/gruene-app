@@ -12,6 +12,10 @@ import 'package:gruene_app/features/campaigns/domain/statistics/screens/statisti
 import 'package:gruene_app/features/campaigns/domain/teams/screens/teams_screen.dart';
 import 'package:gruene_app/features/events/screens/event_detail_screen.dart';
 import 'package:gruene_app/features/events/screens/events_screen.dart';
+import 'package:gruene_app/features/guests/screens/guest_detail_screen.dart';
+import 'package:gruene_app/features/guests/screens/guest_invitation_detail_screen.dart';
+import 'package:gruene_app/features/guests/screens/guest_invite_screen.dart';
+import 'package:gruene_app/features/guests/screens/guests_screen.dart';
 import 'package:gruene_app/features/login/screens/login_screen.dart';
 import 'package:gruene_app/features/mfa/screens/mfa_screen.dart';
 import 'package:gruene_app/features/mfa/screens/token_input_screen.dart';
@@ -127,10 +131,39 @@ class Routes {
     ),
     routes: [profileDetail],
   );
+  static GoRoute guestInvite = GoRoute(
+    path: RouteLocations.guestInvite,
+    pageBuilder: (context, state) => buildPageWithoutAnimation(
+      context: context,
+      state: state,
+      child: GuestInviteScreen(divisions: state.extra as List<Division>),
+    ),
+  );
+  static GoRoute guestInvitationDetail = GoRoute(
+    path: '${RouteLocations.guestInvitations}/:invitationId',
+    pageBuilder: (context, state) => buildPageWithoutAnimation(
+      context: context,
+      state: state,
+      child: GuestInvitationDetailScreen(extra: state.extra as GuestInvitationDetailExtra),
+    ),
+  );
+  static GoRoute guestDetail = GoRoute(
+    path: ':guestId',
+    pageBuilder: (context, state) => buildPageWithoutAnimation(
+      context: context,
+      state: state,
+      child: GuestDetailScreen(guestId: state.pathParameters['guestId']!, extra: state.extra as GuestDetailExtra),
+    ),
+  );
+  static GoRoute guests = buildRoute(
+    RouteLocations.guests,
+    GuestsScreenContainer(),
+    routes: [guestInvite, guestDetail, guestInvitationDetail],
+  );
   static GoRoute profiles = buildRoute(
     RouteLocations.getRoute([RouteLocations.profiles]),
     OwnProfileScreen(),
-    routes: [membershipCard, profileSearch, profileDetail],
+    routes: [membershipCard, profileSearch, guests, profileDetail],
   );
   static GoRoute mfaTokenInput = buildRoute(RouteLocations.tokenInput, TokenInputScreen());
   static GoRoute mfaTokenScan = buildRoute(RouteLocations.tokenScan, TokenScanScreen(), routes: [mfaTokenInput]);

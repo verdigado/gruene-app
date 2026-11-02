@@ -35,7 +35,7 @@ class ThemeColors {
   // Middle Grey (#9CABAF)
   static const Color textDisabled = Color(0xFF9CABAF);
 
-  static const Color warning = Colors.amber;
+  static const Color warning = Color(0xFFA16207);
 
   static const Color textWarning = Color(0xFFCB4040);
 
@@ -52,6 +52,12 @@ class ThemeColors {
   static const Color disabledShadow = Color(0xFFFBFCFC);
 
   static const Color himmel600 = Color(0xFF0BA1DD);
+
+  // Alpha for light backgrounds tinted with a foreground color, e.g. status tags and history icons
+  static const int tintedBackgroundAlpha = 30;
+
+  // Alpha for borders around backgrounds tinted with tintedBackgroundAlpha
+  static const int tintedBorderAlpha = 90;
 }
 
 class _ThemeTextStyles {
