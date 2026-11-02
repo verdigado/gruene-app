@@ -28,7 +28,6 @@
     "privateProfileInTeamTitle": "Sichtbarkeit im Team",
     "privateProfileInTeamHint": "Achtung: Private Profile können in Wahlkampf-Teams weiterhin sichtbar sein. Wenn Du auch in deinem aktuellen Team \"${team}\" nicht mehr sichtbar sein möchtest, verlasse bitte das Team."
   },
-  "email": "E-Mail Adresse",
   "phoneNumber": "Telefonnummer",
   "memberships": "Mitgliedschaften",
   "officeRoles": "Parteifunktionen",

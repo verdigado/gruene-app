@@ -100,7 +100,7 @@ class ProfileDetails extends StatelessWidget {
                 children: [
                   if (email != null)
                     SectionCardListItem(
-                      title: t.profiles.email,
+                      title: t.common.email,
                       value: email,
                       onTap: isOwnProfile ? null : () => openMail(email, context),
                     ),

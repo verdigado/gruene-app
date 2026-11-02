@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/constants.dart';
+import 'package:gruene_app/app/constants/route_locations.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/screens/future_loading_screen.dart';
+import 'package:gruene_app/app/services/api/guest_api_service.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/utils.dart';
@@ -21,16 +23,25 @@ class OwnProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: MainAppBar(title: t.profiles.title),
       body: FutureLoadingScreen(
-        load: GetIt.I<ProfileApiService>().getSelf,
-        buildChild: (profile, extra) => SingleChildScrollView(
+        load: () async {
+          final profile = GetIt.I<ProfileApiService>().getSelf();
+          final invitationDivisions = GetIt.I<GuestApiService>().getInvitationDivisions();
+          return (profile: await profile, invitationDivisions: await invitationDivisions);
+        },
+        buildChild: (data, extra) => SingleChildScrollView(
           padding: verticalScreenPadding,
           child: Column(
             spacing: 16,
             children: [
-              OwnProfileHeader(profile: profile, update: extra.update),
+              OwnProfileHeader(
+                profile: data.profile,
+                update: (profile) => extra.update((profile: profile, invitationDivisions: data.invitationDivisions)),
+              ),
               Column(
                 children: [
                   TextListItem(title: t.profiles.search, onPress: () => context.pushNested(Routes.profileSearch.path)),
+                  if (data.invitationDivisions.isNotEmpty)
+                    TextListItem(title: t.guests.title, onPress: () => context.pushNested(RouteLocations.guests)),
                   TextListItem(
                     title: t.profiles.myMembershipCard,
                     onPress: () => context.pushNested(Routes.membershipCard.path),
@@ -38,15 +49,15 @@ class OwnProfileScreen extends StatelessWidget {
                   TextListItem(
                     title: t.profiles.visibility.title,
                     onPress: () async {
-                      final newProfile = await showProfileVisibilitySetting(context, profile);
+                      final newProfile = await showProfileVisibilitySetting(context, data.profile);
                       if (newProfile != null) {
-                        extra.update(newProfile);
+                        extra.update((profile: newProfile, invitationDivisions: data.invitationDivisions));
                       }
                     },
                   ),
                 ],
               ),
-              ProfileDetails(profile: profile.publicProfile, isOwnProfile: true),
+              ProfileDetails(profile: data.profile.publicProfile, isOwnProfile: true),
             ],
           ),
         ),
