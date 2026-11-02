@@ -35,6 +35,8 @@ extension SortExtension on List<Division> {
     });
     return divisions;
   }
+
+  Division byKey(String divisionKey) => firstWhere((division) => division.divisionKey == divisionKey);
 }
 
 extension FilterExtension on Iterable<Division> {

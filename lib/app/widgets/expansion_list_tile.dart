@@ -4,13 +4,14 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 
 class ExpansionListTile extends StatelessWidget {
-  final List<Widget> children;
+  final Iterable<Widget> children;
   final String? titleText;
   final Widget? title;
   final EdgeInsetsGeometry titlePadding;
   final Color? backgroundColor;
   final Widget? icon;
   final Color? iconColor;
+  final bool initiallyExpanded;
 
   const ExpansionListTile({
     super.key,
@@ -21,6 +22,7 @@ class ExpansionListTile extends StatelessWidget {
     this.backgroundColor,
     this.icon,
     this.iconColor,
+    this.initiallyExpanded = false,
   }) : assert(titleText != null || title != null);
 
   @override
@@ -37,6 +39,8 @@ class ExpansionListTile extends StatelessWidget {
         trailing: icon,
         iconColor: iconColor ?? ThemeColors.textDisabled,
         collapsedIconColor: iconColor ?? ThemeColors.textDisabled,
+        initiallyExpanded: initiallyExpanded,
+        expandedAlignment: Alignment.centerLeft,
         children: children.withDividers(),
       ),
     );

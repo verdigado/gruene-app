@@ -1,6 +1,10 @@
 {
   "unknown": "Ein unbekannter Fehler ist aufgetreten.",
   "offline": "Du bist offline. Keine Verbindung zum Internet möglich.",
+  "sessionExpired": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+  "forbidden": "Dafür fehlt dir die Berechtigung.",
+  "notFound": "Dieser Inhalt wurde nicht gefunden.",
+  "serverUnavailable": "Der Server ist gerade nicht erreichbar. Bitte versuche es später erneut.",
   "retry": "Erneut versuchen",
   "tapToRetry": "Etwas ist schiefgelaufen. Tippe hier, um es erneut zu versuchen."
 }

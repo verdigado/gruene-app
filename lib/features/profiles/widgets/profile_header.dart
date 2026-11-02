@@ -96,8 +96,6 @@ class _OwnProfileHeaderState extends State<OwnProfileHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return ProfileHeader(
       profile: widget.profile.publicProfile,
       imageLoading: _imageLoading,
@@ -109,7 +107,7 @@ class _OwnProfileHeaderState extends State<OwnProfileHeader> {
             ProfileImageEditButton(profile: widget.profile, update: widget.update, setLoading: _setLoading),
             if (widget.profile.image != null)
               ProfileImageDeleteButton(profile: widget.profile, update: widget.update, setLoading: _setLoading),
-          ].withDividers(HorizontalDivider(color: theme.disabledColor)),
+          ].withDividers(HorizontalDivider()),
         ),
       ],
     );

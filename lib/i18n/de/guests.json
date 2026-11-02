@@ -1,0 +1,92 @@
+{
+  "title": "Gastzugänge",
+  "guest": "Gastzugang",
+  "noResults": "Keine Gastzugänge oder Einladungen gefunden",
+  "invitation": {
+    "title": "Einladung",
+    "validityHint": "Die Einladung ist 7 Tage gültig. Über den Link in der E-Mail legt die eingeladene Person ihren Gastzugang an.",
+    "invitedAtFrom": "Eingeladen am ${date} von ${name}",
+    "validUntil": "Einladung gültig bis",
+    "validUntilDate": "Einladung gültig bis ${date}",
+    "expiredAt": "Einladung abgelaufen am",
+    "actions": {
+      "send": {
+        "title": "Gast einladen",
+        "success": "Einladung an ${email} gesendet",
+        "error": "Für diese E-Mail-Adresse gibt es bereits eine offene Einladung."
+      },
+      "resend": {
+        "title": "Einladung erneut senden",
+        "success": "Einladung an ${email} erneut gesendet",
+        "error": "Die Einladung ist nicht mehr offen, oder für diese E-Mail-Adresse gibt es bereits eine andere offene Einladung."
+      },
+      "revoke": {
+        "title": "Einladung zurückziehen",
+        "description": "Der Link in der Einladung funktioniert danach nicht mehr.",
+        "success": "Einladung an ${email} zurückgezogen",
+        "error": "Die Einladung wurde bereits angenommen."
+      }
+    },
+    "status": {
+      "open": "Einladung offen",
+      "accepted": "Einladung angenommen",
+      "revoked": "Einladung zurückgezogen",
+      "expired": "Einladung abgelaufen"
+    },
+    "sections": {
+      "open": "Offene Einladungen (${count})",
+      "revoked": "Zurückgezogene Einladungen (${count})",
+      "expired": "Abgelaufene Einladungen (${count})"
+    }
+  },
+  "validUntil": "Zugang gültig bis",
+  "validUntilDate": "Zugang gültig bis ${date}",
+  "expiredAt": "Zugang abgelaufen am",
+  "actions": {
+    "renew": {
+      "title": "Um 90 Tage verlängern",
+      "success": "Zugang von ${name} verlängert bis ${date}",
+      "error": "Der Zugang ist gesperrt und kann nicht verlängert werden."
+    },
+    "block": {
+      "title": "Zugang sofort sperren",
+      "description": "${name} verliert sofort den Zugang zur App und bekommt darüber eine E-Mail. Erfasste Wahlkampfdaten bleiben erhalten. Du kannst die Sperre später wieder aufheben.",
+      "success": "Zugang von ${name} gesperrt",
+      "error": "Der Zugang ist bereits gesperrt."
+    },
+    "unblock": {
+      "title": "Sperre sofort aufheben",
+      "description": "Die Sperre von ${name} wird sofort aufgehoben. Der Gastzugang ist danach wieder aktiv, falls er nicht in der Zwischenzeit abgelaufen ist.",
+      "success": "Sperre von ${name} aufgehoben",
+      "error": "Der Zugang ist nicht mehr gesperrt."
+    }
+  },
+  "status": {
+    "active": "Aktiv",
+    "blocked": "Gesperrt",
+    "expired": "Abgelaufen"
+  },
+  "sections": {
+    "active": "Aktive Gastzugänge (${count})",
+    "blocked": "Gesperrte Gastzugänge (${count})",
+    "expired": "Abgelaufene Gastzugänge (${count})"
+  },
+  "daysLeft(param=days)": {
+    "zero": "bis heute",
+    "one": "bis morgen",
+    "other": "noch ${days} Tage"
+  },
+  "renewalCount(param=count)": {
+    "zero": "Noch nie verlängert",
+    "other": "${count} mal verlängert"
+  },
+  "history": {
+    "title": "Verlauf",
+    "invited": "Eingeladen",
+    "accepted": "Einladung angenommen",
+    "renewed": "Zugang verlängert",
+    "expired": "Zugang abgelaufen",
+    "blocked": "Zugang gesperrt",
+    "unblocked": "Sperre aufgehoben"
+  }
+}

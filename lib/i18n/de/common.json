@@ -16,6 +16,7 @@
   "noResults": "Keine Ergebnisse",
   "legalNotice": "Impressum",
   "termsOfUse": "Nutzungsbedingungen",
+  "email": "E-Mail Adresse",
   "actions": {
     "save": "Speichern",
     "cancel": "Abbrechen",
@@ -77,5 +78,10 @@
     "houseNumber": "Hausnr.",
     "zipCode": "PLZ",
     "cityOrPlace": "Stadt/Ort"
+  },
+  "validation": {
+    "emailRequired": "Bitte gib eine E-Mail-Adresse ein.",
+    "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "divisionRequired": "Bitte wähle eine Gliederung aus."
   }
 }

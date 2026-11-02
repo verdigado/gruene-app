@@ -25,8 +25,8 @@ void hideLoadingOverlay() {
 Future<T?> tryAndNotify<T>({
   required Future<T> Function() function,
   required BuildContext context,
-  String? errorMessage,
   void Function(BuildContext rootContext, T value)? onSuccess,
+  String Function(Object error) getErrorMessage = getErrorMessage,
   void Function(bool loading)? setLoading,
 }) async {
   final rootContext = Navigator.of(context, rootNavigator: true).context;
@@ -39,10 +39,7 @@ Future<T?> tryAndNotify<T>({
     return value;
   } catch (error) {
     if (rootContext.mounted) {
-      showSnackBar(
-        context: rootContext,
-        text: getErrorMessage(error, defaultMessage: errorMessage),
-      );
+      showSnackBar(context: rootContext, text: getErrorMessage(error));
     }
   } finally {
     setLoading != null ? setLoading(false) : hideLoadingOverlay();
