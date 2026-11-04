@@ -3601,9 +3601,8 @@ paths:
   /v1/guest-invitations/accept:
     post:
       description: >-
-        Public: the invited person has no account yet. A `400` from Sherpa
-        leaves the invitation open so the form can be fixed. On success,
-        Keycloak emails a link to set a password.
+        Public: the invited person has no account yet. On success, they can log
+        in with the email of the invitation and the password.
       operationId: acceptGuestInvitation
       parameters: []
       requestBody:
@@ -3613,18 +3612,22 @@ paths:
             schema:
               $ref: '#/components/schemas/AcceptGuestInvitation'
       responses:
-        '200':
+        '204':
           description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AcceptGuestInvitationResponse'
+        '400':
+          description: >-
+            The input is invalid, or with `code: invalidPassword` Keycloak
+            rejected the password. The invitation stays open.
         '404':
           description: No open invitation matches the token
         '409':
           description: The person already has access to the Grünes Netz
         '422':
           description: Several records match the person; they should contact their office
+        '503':
+          description: >-
+            A step failed. The invitation stays open, and a retry continues
+            where it failed.
       summary: Accept an invitation and create the guest account
       tags:
         - guests
@@ -8096,24 +8099,18 @@ components:
         birthDate:
           type: string
           example: '1990-04-17'
+        password:
+          type: string
+          description: >-
+            Passed on to Keycloak, which checks it against the realm's password
+            policy.
+          maxLength: 256
       required:
         - token
         - firstName
         - lastName
         - birthDate
-    GuestAcceptanceStatus:
-      type: string
-      enum:
-        - accepted
-        - processing
-    AcceptGuestInvitationResponse:
-      type: object
-      properties:
-        status:
-          allOf:
-            - $ref: '#/components/schemas/GuestAcceptanceStatus'
-      required:
-        - status
+        - password
     GuestStatus:
       type: string
       enum:
