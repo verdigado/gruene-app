@@ -34,7 +34,7 @@ class AuthRepository {
     return null;
   }
 
-  Future<bool> login() async {
+  Future<bool> login({String? loginHint}) async {
     final authenticator = await _authenticatorService.getFirst();
     final loginId = Uuid().v4();
     final pollingTimer = authenticator != null ? _pollForChallenge(authenticator, loginId) : null;
@@ -47,6 +47,7 @@ class AuthRepository {
           issuer: Config.oidcIssuer,
           scopes: ['openid', 'profile', 'email', 'offline_access'],
           additionalParameters: {'login_id': loginId},
+          loginHint: loginHint,
         ),
       );
 

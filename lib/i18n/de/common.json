@@ -1,8 +1,6 @@
 {
   "appName": "B90/DIE GRÜNEN",
   "party": "BÜNDNIS 90/DIE GRÜNEN",
-  "dateFrom": "von",
-  "dateUntil": "bis",
   "search": "Suche",
   "multiSelect": "Mehrfachauswahl (${count})",
   "optional": "optional",
@@ -14,9 +12,8 @@
   "notAvailable": "N/A",
   "unknown": "Unbekannt",
   "noResults": "Keine Ergebnisse",
-  "legalNotice": "Impressum",
-  "termsOfUse": "Nutzungsbedingungen",
   "email": "E-Mail Adresse",
+  "step": "Schritt ${current} von ${total}",
   "actions": {
     "save": "Speichern",
     "cancel": "Abbrechen",
@@ -36,7 +33,8 @@
     "remove": "Entfernen",
     "select": "Auswählen",
     "done": "Fertig",
-    "next": "Weiter"
+    "next": "Weiter",
+    "login": "Jetzt anmelden"
   },
   "map": {
     "mapData": "Kartendaten",
@@ -45,8 +43,14 @@
   },
   "dateTime": {
     "dateFormat": "dd.MM.yyyy",
+    "dateFormatHint": "TT.MM.JJJJ",
     "timeFormat": "HH:mm",
     "displayTemplate": "${date} um ${time}",
+    "error": {
+      "invalidFormat": "Bitte gib ein gültiges Datum im Format @:common.dateTime.dateFormatHint ein."
+    },
+    "from": "von",
+    "until": "bis",
     "timeRemaining": {
       "minutes(param=minutes)": {
         "one": "1 Minute",

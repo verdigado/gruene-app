@@ -7,6 +7,7 @@ import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/features/guests/utils/actions.dart';
 import 'package:gruene_app/features/guests/utils/guests.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -38,7 +39,7 @@ Future<void> _blockGuest({
   required void Function(Guest guest) onSuccess,
 }) async {
   final blockConfirmed = await showConfirmationDialog(
-    context: context,
+    context,
     title: t.guests.actions.block.title,
     content: t.guests.actions.block.description(name: guest.fullName),
   );
@@ -65,7 +66,7 @@ Future<void> _unblockGuest({
   required void Function(Guest guest) onSuccess,
 }) async {
   final unblockConfirmed = await showConfirmationDialog(
-    context: context,
+    context,
     title: t.guests.actions.unblock.title,
     content: t.guests.actions.unblock.description(name: guest.fullName),
   );

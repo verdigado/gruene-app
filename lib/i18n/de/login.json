@@ -1,7 +1,5 @@
 {
   "support": "Unterstützen",
   "welcome": "Willkommen!",
-  "loginMembers": "Jetzt anmelden",
-  "mfa": "Zur 2-Faktor-Authentifizierung",
-  "dataProtection": "Datenschutz"
+  "mfa": "Zur @:mfa.title"
 }

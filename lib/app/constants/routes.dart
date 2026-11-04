@@ -15,6 +15,7 @@ import 'package:gruene_app/features/events/screens/events_screen.dart';
 import 'package:gruene_app/features/guests/screens/guest_detail_screen.dart';
 import 'package:gruene_app/features/guests/screens/guest_invitation_detail_screen.dart';
 import 'package:gruene_app/features/guests/screens/guest_invite_screen.dart';
+import 'package:gruene_app/features/guests/screens/guest_onboarding_screen.dart';
 import 'package:gruene_app/features/guests/screens/guests_screen.dart';
 import 'package:gruene_app/features/login/screens/login_screen.dart';
 import 'package:gruene_app/features/mfa/screens/mfa_screen.dart';
@@ -38,6 +39,15 @@ GoRoute buildRoute(String path, Widget child, {List<RouteBase>? routes, GoRouter
   redirect: redirect,
 );
 
+/// A route whose screen needs an extra that only navigation inside the app passes.
+/// Links to it (e.g. https://app.gruene.de/events/123) open the start screen instead.
+GoRoute buildExtraRoute<T>(String path, Widget Function(GoRouterState state, T extra) builder) => GoRoute(
+  path: path,
+  redirect: (_, state) => state.extra is T ? null : Routes.news.path,
+  pageBuilder: (context, state) =>
+      buildPageWithoutAnimation(context: context, state: state, child: builder(state, state.extra as T)),
+);
+
 class Routes {
   static GoRoute newsDetail = GoRoute(
     path: ':newsId',
@@ -52,20 +62,13 @@ class Routes {
     NewsScreenContainer(),
     routes: [newsDetail],
   );
-  static GoRoute eventDetail = GoRoute(
-    path: ':eventId',
-    pageBuilder: (context, state) {
-      final extra = state.extra as ({DateTime recurrence, Calendar calendar});
-      return buildPageWithoutAnimation(
-        context: context,
-        state: state,
-        child: EventDetailScreenContainer(
-          eventId: state.pathParameters['eventId']!,
-          calendar: extra.calendar,
-          recurrence: extra.recurrence,
-        ),
-      );
-    },
+  static GoRoute eventDetail = buildExtraRoute<({DateTime recurrence, Calendar calendar})>(
+    ':eventId',
+    (state, extra) => EventDetailScreenContainer(
+      eventId: state.pathParameters['eventId']!,
+      calendar: extra.calendar,
+      recurrence: extra.recurrence,
+    ),
   );
   static GoRoute events = buildRoute(
     RouteLocations.getRoute([RouteLocations.events]),
@@ -131,29 +134,17 @@ class Routes {
     ),
     routes: [profileDetail],
   );
-  static GoRoute guestInvite = GoRoute(
-    path: RouteLocations.guestInvite,
-    pageBuilder: (context, state) => buildPageWithoutAnimation(
-      context: context,
-      state: state,
-      child: GuestInviteScreen(divisions: state.extra as List<Division>),
-    ),
+  static GoRoute guestInvite = buildExtraRoute<List<Division>>(
+    RouteLocations.guestInvite,
+    (_, divisions) => GuestInviteScreen(divisions: divisions),
   );
-  static GoRoute guestInvitationDetail = GoRoute(
-    path: '${RouteLocations.guestInvitations}/:invitationId',
-    pageBuilder: (context, state) => buildPageWithoutAnimation(
-      context: context,
-      state: state,
-      child: GuestInvitationDetailScreen(extra: state.extra as GuestInvitationDetailExtra),
-    ),
+  static GoRoute guestInvitationDetail = buildExtraRoute<GuestInvitationDetailExtra>(
+    '${RouteLocations.guestInvitations}/:invitationId',
+    (_, extra) => GuestInvitationDetailScreen(extra: extra),
   );
-  static GoRoute guestDetail = GoRoute(
-    path: ':guestId',
-    pageBuilder: (context, state) => buildPageWithoutAnimation(
-      context: context,
-      state: state,
-      child: GuestDetailScreen(guestId: state.pathParameters['guestId']!, extra: state.extra as GuestDetailExtra),
-    ),
+  static GoRoute guestDetail = buildExtraRoute<GuestDetailExtra>(
+    ':guestId',
+    (state, extra) => GuestDetailScreen(guestId: state.pathParameters['guestId']!, extra: extra),
   );
   static GoRoute guests = buildRoute(
     RouteLocations.guests,
@@ -174,6 +165,10 @@ class Routes {
     MfaScreen(),
     routes: [mfaTokenScan, mfaTokenInput],
   );
+  static GoRoute guestOnboarding = buildExtraRoute<GuestOnboardingExtra>(
+    RouteLocations.getRoute([RouteLocations.guestOnboarding]),
+    (_, extra) => GuestOnboardingScreen(extra: extra),
+  );
   static GoRoute login = buildRoute(RouteLocations.getRoute([RouteLocations.login]), LoginScreen());
   static GoRoute pushNotifications = buildRoute(RouteLocations.pushNotifications, PushNotificationsScreen());
   static GoRoute settings = buildRoute(
@@ -181,4 +176,5 @@ class Routes {
     SettingsScreen(),
     routes: [pushNotifications],
   );
+  static final List<GoRoute> public = [login, mfa, mfaLogin, guestOnboarding];
 }

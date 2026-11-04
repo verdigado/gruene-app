@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GuestApiService extends BaseApiService {
@@ -19,6 +22,35 @@ class GuestApiService extends BaseApiService {
 
   Future<void> revokeInvitation(String invitationId) async =>
       send(request: (api) => api.v1GuestInvitationsInvitationIdDelete(invitationId: invitationId));
+
+  Future<GuestInvitationLookup?> lookupInvitation(String token) async {
+    try {
+      return await send(
+        request: (api) => api.v1GuestInvitationsLookupPost(body: GuestInvitationToken(token: token)),
+      );
+    } on ApiException catch (error) {
+      if (error.statusCode == HttpStatus.notFound) return null;
+      rethrow;
+    }
+  }
+
+  Future<void> acceptInvitation({
+    required String token,
+    required String firstName,
+    required String lastName,
+    required DateTime birthDate,
+    required String password,
+  }) async => send(
+    request: (api) => api.v1GuestInvitationsAcceptPost(
+      body: AcceptGuestInvitation(
+        token: token,
+        firstName: firstName,
+        lastName: lastName,
+        birthDate: birthDate.toIso8601DateString(),
+        password: password,
+      ),
+    ),
+  );
 
   Future<List<Guest>> getGuests() async => send(request: (api) => api.v1GuestsGet(), map: (result) => result.data);
 

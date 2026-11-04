@@ -6,6 +6,7 @@ import 'package:gruene_app/app/services/api/guest_api_service.dart';
 import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/features/guests/utils/actions.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -16,7 +17,7 @@ Future<void> _revokeInvitation({
   required void Function(GuestInvitation invitation) onSuccess,
 }) async {
   final revokeConfirmed = await showConfirmationDialog(
-    context: context,
+    context,
     title: t.guests.invitation.actions.revoke.title,
     content: t.guests.invitation.actions.revoke.description,
   );

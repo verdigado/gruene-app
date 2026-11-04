@@ -31,7 +31,7 @@ class WelcomeView extends StatelessWidget {
           child: FilledButton(
             onPressed: () => context.read<AuthBloc>().add(LoginRequested()),
             child: Text(
-              t.login.loginMembers,
+              t.common.actions.login,
               style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
             ),
           ),
@@ -48,16 +48,16 @@ class WelcomeView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () => openUrl(dataProtectionStatementUrl, context),
-              child: Text(t.login.dataProtection, style: theme.textTheme.labelSmall),
+              onPressed: () => openUrl(privacyPolicyUrl, context),
+              child: Text(t.legal.privacyPolicy.title, style: theme.textTheme.labelSmall),
             ),
             TextButton(
-              onPressed: () => openUrl(legalNoticeUrl, context),
-              child: Text(t.common.legalNotice, style: theme.textTheme.labelSmall),
+              onPressed: () => openUrl(imprintUrl, context),
+              child: Text(t.legal.imprint, style: theme.textTheme.labelSmall),
             ),
             TextButton(
               onPressed: () => openUrl(termsOfUseUrl, context),
-              child: Text(t.common.termsOfUse, style: theme.textTheme.labelSmall),
+              child: Text(t.legal.termsOfUse, style: theme.textTheme.labelSmall),
             ),
           ].withDividers(HorizontalDivider(color: theme.primaryColor)),
         ),

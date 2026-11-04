@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gruene_app/i18n/translations.g.dart';
 
 class ItemAction<T> {
   final IconData icon;
@@ -40,19 +39,3 @@ Future<void> showActions<T>({
     action.run(onSuccess);
   }
 }
-
-Future<bool?> showConfirmationDialog({required BuildContext context, required String title, required String content}) =>
-    showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(t.common.actions.cancel)),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(t.common.actions.confirm, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-          ),
-        ],
-      ),
-    );
