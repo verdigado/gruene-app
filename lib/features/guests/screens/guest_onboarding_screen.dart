@@ -73,7 +73,9 @@ class GuestOnboardingScreen extends StatelessWidget {
   }
 }
 
-enum _OnboardingStep { welcome, details, password, done }
+enum _OnboardingStep { welcome, details, password, done, refused }
+
+enum _AcceptResult { accepted, passwordRejected, refused }
 
 class _OnboardingSteps extends StatefulWidget {
   final String token;
@@ -128,6 +130,13 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
     },
   );
 
+  /// Both refusals look the same to the guest, because the reason could reveal a party membership. Only a `409` ends
+  /// the invitation. After a `422` the link has to keep working for when the records are clarified.
+  _AcceptResult _handleRefusal(ApiException error) {
+    if (error.statusCode == HttpStatus.conflict) markInvitationHandled(widget.token);
+    return _AcceptResult.refused;
+  }
+
   Future<void> _accept() async {
     final password = _password.text;
 
@@ -141,19 +150,24 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
             birthDate: parseBirthDate(_birthDate.text)!,
             password: password,
           );
-          return true;
+          return _AcceptResult.accepted;
         } on ApiException catch (error) {
-          if (!error.isInvalidPassword) rethrow;
-          return false;
+          if (error.isInvalidPassword) return _AcceptResult.passwordRejected;
+          if (error.statusCode == HttpStatus.conflict || error.statusCode == HttpStatus.unprocessableEntity) {
+            return _handleRefusal(error);
+          }
+          rethrow;
         }
       },
-      onSuccess: (_, accepted) {
-        if (accepted) markInvitationHandled(widget.token);
+      onSuccess: (_, result) {
+        if (result == _AcceptResult.accepted) markInvitationHandled(widget.token);
         if (!mounted) return;
-        if (!accepted) return setState(() => _rejectedPassword = password);
+        if (result == _AcceptResult.passwordRejected) return setState(() => _rejectedPassword = password);
         _password.clear();
         _passwordRepeat.clear();
-        setState(() => _step = _OnboardingStep.done);
+        setState(() {
+          _step = result == _AcceptResult.accepted ? _OnboardingStep.done : _OnboardingStep.refused;
+        });
       },
       getErrorMessage: _getAcceptErrorMessage,
       context: context,
@@ -176,6 +190,15 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
         hint: t.guests.onboarding.done.hint,
         action: t.login.loginMembers,
         onAction: () => context.read<AuthBloc>().add(LoginRequested(loginHint: widget.invitation.email)),
+      );
+    }
+
+    if (_step == _OnboardingStep.refused) {
+      return OnboardingMessage(
+        title: t.guests.onboarding.refused.title,
+        hint: t.guests.onboarding.refused.hint,
+        action: t.guests.onboarding.invalid.action,
+        onAction: () => context.go(Routes.login.path),
       );
     }
 
