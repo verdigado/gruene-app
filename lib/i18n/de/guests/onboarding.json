@@ -46,6 +46,10 @@
     "title": "Dein Zugang ist eingerichtet",
     "hint": "Melde dich jetzt mit deiner E-Mail-Adresse und deinem Passwort an. Danach richtest du die Zwei-Faktor-Authentifizierung ein."
   },
+  "refused": {
+    "title": "Kein Gastzugang möglich",
+    "hint": "Mit dieser E-Mail-Adresse ist kein Gastzugang möglich. Bitte wende dich an die Person, die dich eingeladen hat."
+  },
   "invalid": {
     "title": "Diese Einladung ist nicht mehr gültig",
     "hint": "Sie ist abgelaufen, wurde zurückgezogen oder bereits verwendet. Wende dich an die Person, die dich eingeladen hat.",
