@@ -21,7 +21,6 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final texts = t.guests.onboarding.password;
     final rules = PasswordRules(
       password: widget.password.text,
       repeat: widget.passwordRepeat.text,
@@ -33,10 +32,10 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 16,
         children: [
-          Text(texts.title, style: theme.textTheme.titleLarge),
-          Text(texts.hint(email: widget.email), style: theme.textTheme.bodyMedium),
+          Text(t.guests.onboarding.password.title, style: theme.textTheme.titleLarge),
+          Text(t.guests.onboarding.password.hint(email: widget.email), style: theme.textTheme.bodyMedium),
           FormSection(
-            title: texts.label,
+            title: t.guests.onboarding.password.label,
             spacing: 8,
             children: [
               TextFormField(
@@ -49,7 +48,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     icon: Icon(_showPassword ? Icons.visibility_off : Icons.visibility),
-                    tooltip: _showPassword ? texts.hide : texts.show,
+                    tooltip: _showPassword ? t.guests.onboarding.password.hide : t.guests.onboarding.password.show,
                     onPressed: () => setState(() => _showPassword = !_showPassword),
                   ),
                 ),
@@ -57,7 +56,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
             ],
           ),
           FormSection(
-            title: texts.repeatLabel,
+            title: t.guests.onboarding.password.repeatLabel,
             spacing: 8,
             children: [
               TextFormField(
@@ -72,11 +71,11 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
           ),
           Column(
             children: [
-              _Rule(text: texts.rules.length, fulfilled: rules.longEnough),
-              _Rule(text: texts.rules.letters, fulfilled: rules.hasLetters),
-              _Rule(text: texts.rules.digit, fulfilled: rules.hasDigit),
-              _Rule(text: texts.rules.notEmail, fulfilled: rules.differsFromEmail),
-              _Rule(text: texts.rules.match, fulfilled: rules.match),
+              _Rule(text: t.guests.onboarding.password.rules.length, fulfilled: rules.longEnough),
+              _Rule(text: t.guests.onboarding.password.rules.letters, fulfilled: rules.hasLetters),
+              _Rule(text: t.guests.onboarding.password.rules.digit, fulfilled: rules.hasDigit),
+              _Rule(text: t.guests.onboarding.password.rules.notEmail, fulfilled: rules.differsFromEmail),
+              _Rule(text: t.guests.onboarding.password.rules.match, fulfilled: rules.match),
             ],
           ),
         ],
