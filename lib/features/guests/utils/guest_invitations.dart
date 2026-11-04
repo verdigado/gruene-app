@@ -31,6 +31,9 @@ extension InvitationExtension on GuestInvitation {
   }
 }
 
+/// The token is in the fragment, which browsers don't send to the server.
+String? invitationToken(Uri uri) => Uri.splitQueryString(uri.fragment)['token'];
+
 final _handledInvitationTokens = <String?>{};
 
 /// The router is created anew on every auth change, and each new one starts at the link the app was opened with.
