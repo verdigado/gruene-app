@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:intl/intl.dart';
 
 extension GuestInvitationStatusExtension on GuestInvitationStatus {
   String get label => switch (this) {
@@ -27,4 +29,44 @@ extension InvitationExtension on GuestInvitation {
     final invitorName = invitedBy.name ?? invitedBy.userId;
     return t.guests.invitation.invitedAtFrom(date: invitationDate, name: invitorName);
   }
+}
+
+final _handledInvitationTokens = <String?>{};
+
+/// The router is created anew on every auth change, and each new one starts at the link the app was opened with.
+/// Marking an invitation as handled keeps the router from returning to it.
+void markInvitationHandled(String? token) => _handledInvitationTokens.add(token);
+
+bool isInvitationHandled(String? token) => _handledInvitationTokens.contains(token);
+
+extension InvalidPasswordExtension on ApiException {
+  bool get isInvalidPassword => message?.contains('invalidPassword') ?? false;
+}
+
+/// Returns the date as `yyyy-MM-dd`, or null if it isn't a plausible birth date.
+String? parseBirthDate(String? value) {
+  try {
+    final date = DateFormat(dateFormat).parseStrict(value?.trim() ?? '');
+    if (date.year < 1900 || date.isAfter(DateTime.now())) return null;
+    return DateFormat('yyyy-MM-dd').format(date);
+  } on FormatException {
+    return null;
+  }
+}
+
+/// The realm's password policy, which Keycloak has the final say on.
+class PasswordRules {
+  final String password;
+  final String repeat;
+  final String email;
+
+  const PasswordRules({required this.password, required this.repeat, required this.email});
+
+  bool get longEnough => password.length >= 12;
+  bool get hasLetters =>
+      password.contains(RegExp(r'\p{Ll}', unicode: true)) && password.contains(RegExp(r'\p{Lu}', unicode: true));
+  bool get hasDigit => password.contains(RegExp(r'\p{Nd}', unicode: true));
+  bool get differsFromEmail => password.isNotEmpty && password.toLowerCase() != email.toLowerCase();
+  bool get match => password.isNotEmpty && password == repeat;
+  bool get fulfilled => longEnough && hasLetters && hasDigit && differsFromEmail && match;
 }

@@ -9,6 +9,7 @@ import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/bottom_navigation.dart';
+import 'package:gruene_app/features/guests/utils/guest_invitations.dart';
 
 GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigatorKey) {
   return GoRouter(
@@ -17,6 +18,7 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
     routes: [
       Routes.login,
       Routes.mfaLogin,
+      Routes.guestInvitation,
       Routes.settings,
       Routes.challengeDetail,
       StatefulShellRoute.indexedStack(
@@ -50,6 +52,11 @@ GoRouter createAppRouter(BuildContext context, GlobalKey<NavigatorState> navigat
       final authBloc = context.read<AuthBloc>();
       final isLoggedIn = authBloc.state is Authenticated;
       final isLoggedOut = authBloc.state is Unauthenticated;
+
+      if (state.uri.path == Routes.guestInvitation.path) {
+        if (!isInvitationHandled(state.uri.queryParameters['token'])) return null;
+        return isLoggedIn ? Routes.news.path : Routes.login.path;
+      }
 
       if (isLoggedOut && !isMfaOpen) {
         return Routes.login.path;
