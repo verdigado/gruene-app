@@ -20,6 +20,28 @@ class GuestApiService extends BaseApiService {
   Future<void> revokeInvitation(String invitationId) async =>
       send(request: (api) => api.v1GuestInvitationsInvitationIdDelete(invitationId: invitationId));
 
+  Future<GuestInvitationLookup> lookupInvitation(String token) async => send(
+    request: (api) => api.v1GuestInvitationsLookupPost(body: GuestInvitationToken(token: token)),
+  );
+
+  Future<void> acceptInvitation({
+    required String token,
+    required String firstName,
+    required String lastName,
+    required String birthDate,
+    required String password,
+  }) async => send(
+    request: (api) => api.v1GuestInvitationsAcceptPost(
+      body: AcceptGuestInvitation(
+        token: token,
+        firstName: firstName,
+        lastName: lastName,
+        birthDate: birthDate,
+        password: password,
+      ),
+    ),
+  );
+
   Future<List<Guest>> getGuests() async => send(request: (api) => api.v1GuestsGet(), map: (result) => result.data);
 
   Future<GuestDetail> getGuest(String userId) async => send(request: (api) => api.v1GuestsUserIdGet(userId: userId));

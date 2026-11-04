@@ -15,6 +15,7 @@ import 'package:gruene_app/features/events/screens/events_screen.dart';
 import 'package:gruene_app/features/guests/screens/guest_detail_screen.dart';
 import 'package:gruene_app/features/guests/screens/guest_invitation_detail_screen.dart';
 import 'package:gruene_app/features/guests/screens/guest_invite_screen.dart';
+import 'package:gruene_app/features/guests/screens/guest_onboarding_screen.dart';
 import 'package:gruene_app/features/guests/screens/guests_screen.dart';
 import 'package:gruene_app/features/login/screens/login_screen.dart';
 import 'package:gruene_app/features/mfa/screens/mfa_screen.dart';
@@ -173,6 +174,14 @@ class Routes {
     RouteLocations.getRoute([RouteLocations.mfaLogin]),
     MfaScreen(),
     routes: [mfaTokenScan, mfaTokenInput],
+  );
+  static GoRoute guestInvitation = GoRoute(
+    path: RouteLocations.getRoute([RouteLocations.guestInvitation]),
+    pageBuilder: (context, state) => buildPageWithoutAnimation(
+      context: context,
+      state: state,
+      child: GuestOnboardingScreen(token: state.uri.queryParameters['token']),
+    ),
   );
   static GoRoute login = buildRoute(RouteLocations.getRoute([RouteLocations.login]), LoginScreen());
   static GoRoute pushNotifications = buildRoute(RouteLocations.pushNotifications, PushNotificationsScreen());
