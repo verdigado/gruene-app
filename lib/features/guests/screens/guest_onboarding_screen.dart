@@ -42,21 +42,19 @@ class GuestOnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texts = t.guests.onboarding;
-
     if (context.read<AuthBloc>().state is Authenticated) {
       return OnboardingMessage(
-        title: texts.loggedIn.title,
-        hint: texts.loggedIn.hint,
-        action: texts.loggedIn.action,
+        title: t.guests.onboarding.loggedIn.title,
+        hint: t.guests.onboarding.loggedIn.hint,
+        action: t.guests.onboarding.loggedIn.action,
         onAction: () => context.go(Routes.news.path),
       );
     }
 
     final invalidInvitation = OnboardingMessage(
-      title: texts.invalid.title,
-      hint: texts.invalid.hint,
-      action: texts.invalid.action,
+      title: t.guests.onboarding.invalid.title,
+      hint: t.guests.onboarding.invalid.hint,
+      action: t.guests.onboarding.invalid.action,
       onAction: () => _goToLogin(context),
     );
 
@@ -158,12 +156,10 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
 
   @override
   Widget build(BuildContext context) {
-    final texts = t.guests.onboarding;
-
     if (_step == _OnboardingStep.done) {
       return OnboardingMessage(
-        title: texts.done.title,
-        hint: texts.done.hint,
+        title: t.guests.onboarding.done.title,
+        hint: t.guests.onboarding.done.hint,
         action: t.login.loginMembers,
         onAction: () => context.read<AuthBloc>().add(LoginRequested(loginHint: widget.invitation.email)),
       );
@@ -202,11 +198,11 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
                 _OnboardingStep.details => FilledButton(onPressed: _submitDetails, child: Text(t.common.actions.next)),
                 _OnboardingStep.password => FilledButton(
                   onPressed: _rulesFulfilled ? _accept : null,
-                  child: Text(texts.password.action),
+                  child: Text(t.guests.onboarding.password.action),
                 ),
                 _ => FilledButton(
                   onPressed: () => setState(() => _step = _OnboardingStep.details),
-                  child: Text(texts.welcome.action),
+                  child: Text(t.guests.onboarding.welcome.action),
                 ),
               },
             ],
@@ -225,7 +221,6 @@ class _WelcomeStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final texts = t.guests.onboarding.welcome;
     final inviter = invitation.inviterName;
     final division = invitation.divisionName;
 
@@ -235,12 +230,14 @@ class _WelcomeStep extends StatelessWidget {
       children: [
         const SizedBox(height: 32),
         Icon(Icons.waving_hand_outlined, size: 56, color: theme.primaryColor),
-        Text(texts.title, style: theme.textTheme.titleLarge),
+        Text(t.guests.onboarding.welcome.title, style: theme.textTheme.titleLarge),
         Text(
-          inviter != null && division != null ? texts.invitedBy(inviter: inviter, division: division) : texts.invited,
+          inviter != null && division != null
+              ? t.guests.onboarding.welcome.invitedBy(inviter: inviter, division: division)
+              : t.guests.onboarding.welcome.invited,
           style: theme.textTheme.bodyMedium,
         ),
-        Text(texts.hint, style: theme.textTheme.bodyMedium),
+        Text(t.guests.onboarding.welcome.hint, style: theme.textTheme.bodyMedium),
       ],
     );
   }

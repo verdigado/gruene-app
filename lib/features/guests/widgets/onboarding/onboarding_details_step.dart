@@ -13,17 +13,16 @@ class OnboardingDetailsStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final texts = t.guests.onboarding.details;
 
     return AutofillGroup(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 16,
         children: [
-          Text(texts.title, style: theme.textTheme.titleLarge),
-          Text(texts.hint, style: theme.textTheme.bodyMedium),
+          Text(t.guests.onboarding.details.title, style: theme.textTheme.titleLarge),
+          Text(t.guests.onboarding.details.hint, style: theme.textTheme.bodyMedium),
           FormSection(
-            title: texts.firstName.label,
+            title: t.guests.onboarding.details.firstName.label,
             spacing: 8,
             children: [
               TextFormField(
@@ -32,12 +31,13 @@ class OnboardingDetailsStep extends StatelessWidget {
                 textCapitalization: TextCapitalization.words,
                 textInputAction: TextInputAction.next,
                 autofillHints: const [AutofillHints.givenName],
-                validator: (value) => (value?.trim().isEmpty ?? true) ? texts.firstName.required : null,
+                validator: (value) =>
+                    (value?.trim().isEmpty ?? true) ? t.guests.onboarding.details.firstName.required : null,
               ),
             ],
           ),
           FormSection(
-            title: texts.lastName.label,
+            title: t.guests.onboarding.details.lastName.label,
             spacing: 8,
             children: [
               TextFormField(
@@ -46,12 +46,13 @@ class OnboardingDetailsStep extends StatelessWidget {
                 textCapitalization: TextCapitalization.words,
                 textInputAction: TextInputAction.next,
                 autofillHints: const [AutofillHints.familyName],
-                validator: (value) => (value?.trim().isEmpty ?? true) ? texts.lastName.required : null,
+                validator: (value) =>
+                    (value?.trim().isEmpty ?? true) ? t.guests.onboarding.details.lastName.required : null,
               ),
             ],
           ),
           FormSection(
-            title: texts.birthDate.label,
+            title: t.guests.onboarding.details.birthDate.label,
             spacing: 8,
             children: [
               TextFormField(
@@ -59,8 +60,9 @@ class OnboardingDetailsStep extends StatelessWidget {
                 keyboardType: TextInputType.datetime,
                 textInputAction: TextInputAction.done,
                 autofillHints: const [AutofillHints.birthday],
-                decoration: InputDecoration(hintText: texts.birthDate.hint),
-                validator: (value) => parseBirthDate(value) == null ? texts.birthDate.invalid : null,
+                decoration: InputDecoration(hintText: t.guests.onboarding.details.birthDate.hint),
+                validator: (value) =>
+                    parseBirthDate(value) == null ? t.guests.onboarding.details.birthDate.invalid : null,
               ),
             ],
           ),
