@@ -8,8 +8,15 @@ class OnboardingPasswordStep extends StatefulWidget {
   final String email;
   final TextEditingController password;
   final TextEditingController passwordRepeat;
+  final bool rejected;
 
-  const OnboardingPasswordStep({super.key, required this.email, required this.password, required this.passwordRepeat});
+  const OnboardingPasswordStep({
+    super.key,
+    required this.email,
+    required this.password,
+    required this.passwordRepeat,
+    required this.rejected,
+  });
 
   @override
   State<OnboardingPasswordStep> createState() => _OnboardingPasswordStepState();
@@ -46,6 +53,8 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
                 textInputAction: TextInputAction.next,
                 autofillHints: const [AutofillHints.newPassword],
                 decoration: InputDecoration(
+                  errorText: widget.rejected ? t.guests.onboarding.password.rejected : null,
+                  errorMaxLines: 3,
                   suffixIcon: IconButton(
                     icon: Icon(_showPassword ? Icons.visibility_off : Icons.visibility),
                     tooltip: _showPassword ? t.guests.onboarding.password.hide : t.guests.onboarding.password.show,

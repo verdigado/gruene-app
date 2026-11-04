@@ -39,7 +39,7 @@
       "notEmail": "Nicht deine E-Mail-Adresse",
       "match": "Beide Eingaben stimmen überein"
     },
-    "rejected": "Dieses Passwort ist nicht erlaubt. Bitte wähle ein anderes.",
+    "rejected": "Dieses Passwort ist zu einfach oder nicht erlaubt. Bitte wähle ein anderes.",
     "action": "Zugang einrichten"
   },
   "done": {

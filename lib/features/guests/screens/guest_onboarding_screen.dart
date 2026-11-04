@@ -93,6 +93,7 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
   final _password = TextEditingController();
   final _passwordRepeat = TextEditingController();
   _OnboardingStep _step = _OnboardingStep.welcome;
+  String? _rejectedPassword;
 
   @override
   void initState() {
@@ -119,25 +120,37 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
     }
   }
 
-  String _getAcceptErrorMessage(Object error) {
-    if (error is ApiException && error.statusCode == HttpStatus.badRequest) {
-      return error.isInvalidPassword ? t.guests.onboarding.password.rejected : t.guests.onboarding.details.invalid;
-    }
-    return getErrorMessage(error, byStatusCode: {HttpStatus.notFound: t.guests.onboarding.invalid.title});
-  }
+  String _getAcceptErrorMessage(Object error) => getErrorMessage(
+    error,
+    byStatusCode: {
+      HttpStatus.badRequest: t.guests.onboarding.details.invalid,
+      HttpStatus.notFound: t.guests.onboarding.invalid.title,
+    },
+  );
 
   Future<void> _accept() async {
+    final password = _password.text;
+
     await tryAndNotify(
-      function: () => GetIt.I<GuestApiService>().acceptInvitation(
-        token: widget.token,
-        firstName: _firstName.text.trim(),
-        lastName: _lastName.text.trim(),
-        birthDate: parseBirthDate(_birthDate.text)!,
-        password: _password.text,
-      ),
-      onSuccess: (_, _) {
-        markInvitationHandled(widget.token);
+      function: () async {
+        try {
+          await GetIt.I<GuestApiService>().acceptInvitation(
+            token: widget.token,
+            firstName: _firstName.text.trim(),
+            lastName: _lastName.text.trim(),
+            birthDate: parseBirthDate(_birthDate.text)!,
+            password: password,
+          );
+          return true;
+        } on ApiException catch (error) {
+          if (!error.isInvalidPassword) rethrow;
+          return false;
+        }
+      },
+      onSuccess: (_, accepted) {
+        if (accepted) markInvitationHandled(widget.token);
         if (!mounted) return;
+        if (!accepted) return setState(() => _rejectedPassword = password);
         _password.clear();
         _passwordRepeat.clear();
         setState(() => _step = _OnboardingStep.done);
@@ -191,6 +204,7 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
                   email: widget.invitation.email,
                   password: _password,
                   passwordRepeat: _passwordRepeat,
+                  rejected: _password.text == _rejectedPassword,
                 ),
                 _ => _WelcomeStep(invitation: widget.invitation),
               },
