@@ -54,7 +54,7 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
       final isLoggedOut = authBloc.state is Unauthenticated;
 
       if (state.uri.path == Routes.guestInvitation.path) {
-        if (!isInvitationHandled(state.uri.queryParameters['token'])) return null;
+        if (!isInvitationHandled(invitationToken(state.uri))) return null;
         return isLoggedIn ? Routes.news.path : Routes.login.path;
       }
 
