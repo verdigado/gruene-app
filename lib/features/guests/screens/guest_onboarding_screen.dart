@@ -62,6 +62,7 @@ class GuestOnboardingScreen extends StatelessWidget {
     if (token == null) return invalidInvitation;
 
     return FutureLoadingScreen(
+      key: ValueKey(token),
       load: () => _lookUp(token),
       loadingLayoutBuilder: (child) => CleanLayout(showAppBar: false, child: child),
       buildChild: (result, _) {
