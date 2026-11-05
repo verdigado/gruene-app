@@ -24,7 +24,14 @@ class OnboardingPasswordStep extends StatefulWidget {
 }
 
 class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
+  final _repeatFocusNode = FocusNode();
   bool _showPassword = false;
+
+  @override
+  void dispose() {
+    _repeatFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +58,8 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
                 autocorrect: false,
                 enableSuggestions: false,
                 textInputAction: TextInputAction.next,
+                // By default the keyboard's next key would stop at the visibility button, which Tab should still reach.
+                onEditingComplete: _repeatFocusNode.requestFocus,
                 autofillHints: const [AutofillHints.newPassword],
                 decoration: InputDecoration(
                   errorText: widget.rejected ? t.guests.onboarding.password.rejected : null,
@@ -70,6 +79,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
             children: [
               TextFormField(
                 controller: widget.passwordRepeat,
+                focusNode: _repeatFocusNode,
                 obscureText: !_showPassword,
                 autocorrect: false,
                 enableSuggestions: false,
