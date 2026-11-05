@@ -3616,7 +3616,7 @@ paths:
           description: ''
         '400':
           description: >-
-            The input is invalid, or with `code: invalidPassword` Keycloak
+            The input is invalid, or with `errorCode: invalidPassword` Keycloak
             rejected the password. The invitation stays open.
         '404':
           description: No open invitation matches the token
