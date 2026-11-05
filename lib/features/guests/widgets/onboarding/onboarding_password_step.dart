@@ -6,14 +6,14 @@ import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class OnboardingPasswordStep extends StatefulWidget {
-  final String email;
+  final PasswordRules rules;
   final TextEditingController password;
   final TextEditingController passwordRepeat;
   final bool rejected;
 
   const OnboardingPasswordStep({
     super.key,
-    required this.email,
+    required this.rules,
     required this.password,
     required this.passwordRepeat,
     required this.rejected,
@@ -29,11 +29,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final rules = PasswordRules(
-      password: widget.password.text,
-      repeat: widget.passwordRepeat.text,
-      email: widget.email,
-    );
+    final rules = widget.rules;
 
     return AutofillGroup(
       child: Column(
@@ -41,7 +37,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
         spacing: 16,
         children: [
           Text(t.guests.onboarding.password.title, style: theme.textTheme.titleLarge),
-          Text(t.guests.onboarding.password.hint(email: widget.email), style: theme.textTheme.bodyMedium),
+          Text(t.guests.onboarding.password.hint(email: rules.email), style: theme.textTheme.bodyMedium),
           FormSection(
             title: t.guests.onboarding.password.label,
             spacing: 8,
