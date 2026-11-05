@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/date.dart';
@@ -34,10 +40,25 @@ extension InvitationExtension on GuestInvitation {
 /// The token is in the fragment, which browsers don't send to the server.
 String? invitationToken(Uri uri) => Uri.splitQueryString(uri.fragment)['token'];
 
-final _handledInvitationTokens = <String?>{};
+final _handledInvitationTokens = <String>{};
 
-/// Marking an invitation as handled keeps the router from opening it again.
-void markInvitationHandled(String? token) => _handledInvitationTokens.add(token);
+/// Has to run before the first router is created.
+Future<void> loadHandledInvitations() async {
+  final stored = await GetIt.I<FlutterSecureStorage>().read(key: SecureStorageKeys.guestsHandledInvitations);
+  if (stored != null) _handledInvitationTokens.addAll(List<String>.from(jsonDecode(stored) as List));
+}
+
+/// Keeps the router from opening the invitation again. This is stored, because Android restarts a killed app with the
+/// link it was opened with, also when reopening it from the launcher, until its task is removed from the recent apps.
+void markInvitationHandled(String? token) {
+  if (token == null || !_handledInvitationTokens.add(token)) return;
+  unawaited(
+    GetIt.I<FlutterSecureStorage>().write(
+      key: SecureStorageKeys.guestsHandledInvitations,
+      value: jsonEncode(_handledInvitationTokens.toList()),
+    ),
+  );
+}
 
 bool isInvitationHandled(String? token) => _handledInvitationTokens.contains(token);
 
