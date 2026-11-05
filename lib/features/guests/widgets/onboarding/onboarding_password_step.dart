@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/features/guests/utils/guest_invitations.dart';
@@ -47,6 +48,9 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
             children: [
               TextFormField(
                 controller: widget.password,
+                // Cutting off a pasted password would silently set a different one than the guest thinks.
+                maxLength: PasswordRules.maxLength,
+                maxLengthEnforcement: MaxLengthEnforcement.none,
                 obscureText: !_showPassword,
                 autocorrect: false,
                 enableSuggestions: false,
