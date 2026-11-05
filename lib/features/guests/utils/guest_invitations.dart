@@ -86,13 +86,16 @@ class PasswordRules {
   final String repeat;
   final String email;
 
+  static const maxLength = 256;
+
   const PasswordRules({required this.password, required this.repeat, required this.email});
 
   bool get longEnough => password.length >= 12;
+  bool get notTooLong => password.length <= maxLength;
   bool get hasLetters =>
       password.contains(RegExp(r'\p{Ll}', unicode: true)) && password.contains(RegExp(r'\p{Lu}', unicode: true));
   bool get hasDigit => password.contains(RegExp(r'\p{Nd}', unicode: true));
   bool get differsFromEmail => password.isNotEmpty && password.toLowerCase() != email.toLowerCase();
   bool get match => password.isNotEmpty && password == repeat;
-  bool get fulfilled => longEnough && hasLetters && hasDigit && differsFromEmail && match;
+  bool get fulfilled => longEnough && notTooLong && hasLetters && hasDigit && differsFromEmail && match;
 }
