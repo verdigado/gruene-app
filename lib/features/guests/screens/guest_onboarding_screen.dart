@@ -200,7 +200,7 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
       return OnboardingMessage(
         title: t.guests.onboarding.done.title,
         hint: t.guests.onboarding.done.hint,
-        action: t.login.loginMembers,
+        action: t.guests.onboarding.done.action,
         onAction: () => context.read<AuthBloc>().add(LoginRequested(loginHint: widget.invitation.email)),
       );
     }
@@ -209,7 +209,7 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
       return OnboardingMessage(
         title: t.guests.onboarding.refused.title,
         hint: t.guests.onboarding.refused.hint,
-        action: t.guests.onboarding.invalid.action,
+        action: t.guests.onboarding.refused.action,
         onAction: () => context.go(Routes.login.path),
       );
     }
