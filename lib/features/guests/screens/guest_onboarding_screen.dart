@@ -35,11 +35,6 @@ class GuestOnboardingScreen extends StatelessWidget {
     }
   }
 
-  void _goToLogin(BuildContext context) {
-    markInvitationHandled(token);
-    context.go(Routes.login.path);
-  }
-
   @override
   Widget build(BuildContext context) {
     if (context.read<AuthBloc>().state is Authenticated) {
@@ -51,15 +46,8 @@ class GuestOnboardingScreen extends StatelessWidget {
       );
     }
 
-    final invalidInvitation = OnboardingMessage(
-      title: t.guests.onboarding.invalid.title,
-      hint: t.guests.onboarding.invalid.hint,
-      action: t.guests.onboarding.invalid.action,
-      onAction: () => _goToLogin(context),
-    );
-
     final token = this.token;
-    if (token == null) return invalidInvitation;
+    if (token == null) return const _InvalidInvitationMessage();
 
     return FutureLoadingScreen(
       key: ValueKey(token),
@@ -67,15 +55,36 @@ class GuestOnboardingScreen extends StatelessWidget {
       loadingLayoutBuilder: (child) => CleanLayout(showAppBar: false, child: child),
       buildChild: (result, _) {
         final invitation = result.invitation;
-        return invitation == null ? invalidInvitation : _OnboardingSteps(token: token, invitation: invitation);
+        return invitation == null
+            ? _InvalidInvitationMessage(token: token)
+            : _OnboardingSteps(token: token, invitation: invitation);
       },
     );
   }
 }
 
-enum _OnboardingStep { welcome, details, password, done, refused }
+class _InvalidInvitationMessage extends StatelessWidget {
+  final String? token;
 
-enum _AcceptResult { accepted, passwordRejected, refused }
+  const _InvalidInvitationMessage({this.token});
+
+  @override
+  Widget build(BuildContext context) {
+    return OnboardingMessage(
+      title: t.guests.onboarding.invalid.title,
+      hint: t.guests.onboarding.invalid.hint,
+      action: t.guests.onboarding.invalid.action,
+      onAction: () {
+        markInvitationHandled(token);
+        context.go(Routes.login.path);
+      },
+    );
+  }
+}
+
+enum _OnboardingStep { welcome, details, password, done, refused, invalid }
+
+enum _AcceptResult { accepted, passwordRejected, refused, invalid }
 
 class _OnboardingSteps extends StatefulWidget {
   final String token;
@@ -122,13 +131,8 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
     }
   }
 
-  String _getAcceptErrorMessage(Object error) => getErrorMessage(
-    error,
-    byStatusCode: {
-      HttpStatus.badRequest: t.guests.onboarding.details.invalid,
-      HttpStatus.notFound: t.guests.onboarding.invalid.title,
-    },
-  );
+  String _getAcceptErrorMessage(Object error) =>
+      getErrorMessage(error, byStatusCode: {HttpStatus.badRequest: t.guests.onboarding.details.invalid});
 
   /// Both refusals look the same to the guest, because the reason could reveal a party membership. Only a `409` ends
   /// the invitation. After a `422` the link has to keep working for when the records are clarified.
@@ -153,6 +157,8 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
           return _AcceptResult.accepted;
         } on ApiException catch (error) {
           if (error.isInvalidPassword) return _AcceptResult.passwordRejected;
+          // The invitation ended while the form was open, or an earlier try succeeded but its response got lost.
+          if (error.statusCode == HttpStatus.notFound) return _AcceptResult.invalid;
           if (error.statusCode == HttpStatus.conflict || error.statusCode == HttpStatus.unprocessableEntity) {
             return _handleRefusal(error);
           }
@@ -166,7 +172,11 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
         _password.clear();
         _passwordRepeat.clear();
         setState(() {
-          _step = result == _AcceptResult.accepted ? _OnboardingStep.done : _OnboardingStep.refused;
+          _step = switch (result) {
+            _AcceptResult.accepted => _OnboardingStep.done,
+            _AcceptResult.invalid => _OnboardingStep.invalid,
+            _ => _OnboardingStep.refused,
+          };
         });
       },
       getErrorMessage: _getAcceptErrorMessage,
@@ -201,6 +211,8 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
         onAction: () => context.go(Routes.login.path),
       );
     }
+
+    if (_step == _OnboardingStep.invalid) return _InvalidInvitationMessage(token: widget.token);
 
     final canGoBack = _step != _OnboardingStep.welcome;
 
