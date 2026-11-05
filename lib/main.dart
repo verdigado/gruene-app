@@ -35,7 +35,7 @@ import 'package:gruene_app/features/campaigns/core/notifications/campaign_notifi
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
-import 'package:gruene_app/features/guests/utils/guest_invitations.dart';
+import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/news/bloc/bookmark_cubit.dart';
