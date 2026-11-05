@@ -156,7 +156,6 @@ class MyApp extends StatelessWidget {
         builder: (context) {
           return BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
-              final router = createAppRouter(context, navigatorKey);
               final isLoginLoading = authState is AuthLoading;
 
               // Prevent flickering if current login state is not yet known
@@ -167,6 +166,8 @@ class MyApp extends StatelessWidget {
                   home: CleanLayout(showAppBar: false),
                 );
               }
+
+              final router = createAppRouter(context, navigatorKey);
 
               SchedulerBinding.instance.addPostFrameCallback((_) {
                 final initialMessage = GetIt.I<PushNotificationListener>().initialMessage;
