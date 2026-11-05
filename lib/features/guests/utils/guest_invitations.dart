@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -66,7 +67,7 @@ void markInvitationHandled(String? token) {
 bool isInvitationHandled(String? token) => _handledInvitationTokens.contains(token);
 
 extension InvalidPasswordExtension on ApiException {
-  bool get isInvalidPassword => message?.contains('invalidPassword') ?? false;
+  bool get isInvalidPassword => statusCode == HttpStatus.badRequest && body?['errorCode'] == 'invalidPassword';
 }
 
 /// Returns the date as `yyyy-MM-dd`, or null if it isn't a plausible birth date.
