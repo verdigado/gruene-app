@@ -44,11 +44,13 @@
   },
   "done": {
     "title": "Dein Zugang ist eingerichtet",
-    "hint": "Melde dich jetzt mit deiner E-Mail-Adresse und deinem Passwort an. Danach richtest du die Zwei-Faktor-Authentifizierung ein."
+    "hint": "Melde dich jetzt mit deiner E-Mail-Adresse und deinem Passwort an. Danach richtest du die Zwei-Faktor-Authentifizierung ein.",
+    "action": "Jetzt anmelden"
   },
   "refused": {
     "title": "Kein Gastzugang möglich",
-    "hint": "Mit dieser E-Mail-Adresse ist kein Gastzugang möglich. Bitte wende dich an die Person, die dich eingeladen hat."
+    "hint": "Mit dieser E-Mail-Adresse ist kein Gastzugang möglich. Bitte wende dich an die Person, die dich eingeladen hat.",
+    "action": "Zur Anmeldung"
   },
   "invalid": {
     "title": "Diese Einladung ist nicht mehr gültig",
