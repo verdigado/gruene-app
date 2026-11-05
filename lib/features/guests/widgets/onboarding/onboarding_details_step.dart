@@ -21,35 +21,17 @@ class OnboardingDetailsStep extends StatelessWidget {
         children: [
           Text(t.guests.onboarding.details.title, style: theme.textTheme.titleLarge),
           Text(t.guests.onboarding.details.hint, style: theme.textTheme.bodyMedium),
-          FormSection(
-            title: t.guests.onboarding.details.firstName.label,
-            spacing: 8,
-            children: [
-              TextFormField(
-                controller: firstName,
-                maxLength: 100,
-                textCapitalization: TextCapitalization.words,
-                textInputAction: TextInputAction.next,
-                autofillHints: const [AutofillHints.givenName],
-                validator: (value) =>
-                    (value?.trim().isEmpty ?? true) ? t.guests.onboarding.details.firstName.required : null,
-              ),
-            ],
+          _NameField(
+            controller: firstName,
+            label: t.guests.onboarding.details.firstName.label,
+            requiredMessage: t.guests.onboarding.details.firstName.required,
+            autofillHint: AutofillHints.givenName,
           ),
-          FormSection(
-            title: t.guests.onboarding.details.lastName.label,
-            spacing: 8,
-            children: [
-              TextFormField(
-                controller: lastName,
-                maxLength: 100,
-                textCapitalization: TextCapitalization.words,
-                textInputAction: TextInputAction.next,
-                autofillHints: const [AutofillHints.familyName],
-                validator: (value) =>
-                    (value?.trim().isEmpty ?? true) ? t.guests.onboarding.details.lastName.required : null,
-              ),
-            ],
+          _NameField(
+            controller: lastName,
+            label: t.guests.onboarding.details.lastName.label,
+            requiredMessage: t.guests.onboarding.details.lastName.required,
+            autofillHint: AutofillHints.familyName,
           ),
           FormSection(
             title: t.guests.onboarding.details.birthDate.label,
@@ -68,6 +50,38 @@ class OnboardingDetailsStep extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _NameField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String requiredMessage;
+  final String autofillHint;
+
+  const _NameField({
+    required this.controller,
+    required this.label,
+    required this.requiredMessage,
+    required this.autofillHint,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FormSection(
+      title: label,
+      spacing: 8,
+      children: [
+        TextFormField(
+          controller: controller,
+          maxLength: 100,
+          textCapitalization: TextCapitalization.words,
+          textInputAction: TextInputAction.next,
+          autofillHints: [autofillHint],
+          validator: (value) => (value?.trim().isEmpty ?? true) ? requiredMessage : null,
+        ),
+      ],
     );
   }
 }
