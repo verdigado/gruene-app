@@ -17,7 +17,7 @@ import 'package:gruene_app/features/guests/screens/guest_invitation_detail_scree
 import 'package:gruene_app/features/guests/screens/guest_invite_screen.dart';
 import 'package:gruene_app/features/guests/screens/guest_onboarding_screen.dart';
 import 'package:gruene_app/features/guests/screens/guests_screen.dart';
-import 'package:gruene_app/features/guests/utils/guest_invitations.dart';
+import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/features/login/screens/login_screen.dart';
 import 'package:gruene_app/features/mfa/screens/mfa_screen.dart';
 import 'package:gruene_app/features/mfa/screens/token_input_screen.dart';

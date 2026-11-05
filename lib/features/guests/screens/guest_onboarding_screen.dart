@@ -14,7 +14,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/widgets/clean_layout.dart';
-import 'package:gruene_app/features/guests/utils/guest_invitations.dart';
+import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_details_step.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_message.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_password_step.dart';
@@ -156,7 +156,9 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
           );
           return _AcceptResult.accepted;
         } on ApiException catch (error) {
-          if (error.isInvalidPassword) return _AcceptResult.passwordRejected;
+          if (error.statusCode == HttpStatus.badRequest && error.body?['errorCode'] == 'invalidPassword') {
+            return _AcceptResult.passwordRejected;
+          }
           // The invitation ended while the form was open, or an earlier try succeeded but its response got lost.
           if (error.statusCode == HttpStatus.notFound) return _AcceptResult.invalid;
           if (error.statusCode == HttpStatus.conflict || error.statusCode == HttpStatus.unprocessableEntity) {

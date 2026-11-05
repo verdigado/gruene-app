@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
-import 'package:gruene_app/features/guests/utils/guest_invitations.dart';
+import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class OnboardingPasswordStep extends StatefulWidget {
