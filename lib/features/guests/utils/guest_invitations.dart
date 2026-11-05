@@ -36,8 +36,7 @@ String? invitationToken(Uri uri) => Uri.splitQueryString(uri.fragment)['token'];
 
 final _handledInvitationTokens = <String?>{};
 
-/// The router is created anew on every auth change, and each new one starts at the link the app was opened with.
-/// Marking an invitation as handled keeps the router from returning to it.
+/// Marking an invitation as handled keeps the router from opening it again.
 void markInvitationHandled(String? token) => _handledInvitationTokens.add(token);
 
 bool isInvitationHandled(String? token) => _handledInvitationTokens.contains(token);
