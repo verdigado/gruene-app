@@ -38,7 +38,10 @@ extension InvitationExtension on GuestInvitation {
 }
 
 /// The token is in the fragment, which browsers don't send to the server.
-String? invitationToken(Uri uri) => Uri.splitQueryString(uri.fragment)['token'];
+String? invitationToken(Uri uri) {
+  final token = Uri.splitQueryString(uri.fragment)['token'];
+  return token == null || token.isEmpty ? null : token;
+}
 
 final _handledInvitationTokens = <String>{};
 
