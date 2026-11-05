@@ -35,6 +35,7 @@ import 'package:gruene_app/features/campaigns/core/notifications/campaign_notifi
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
+import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 import 'package:gruene_app/features/news/bloc/bookmark_cubit.dart';
@@ -61,6 +62,7 @@ Future<void> main() async {
 
   final secureStorage = const FlutterSecureStorage();
   GetIt.I.registerSingleton<FlutterSecureStorage>(secureStorage);
+  await loadHandledInvitations();
 
   final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -156,7 +158,6 @@ class MyApp extends StatelessWidget {
         builder: (context) {
           return BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
-              final router = createAppRouter(context, navigatorKey);
               final isLoginLoading = authState is AuthLoading;
 
               // Prevent flickering if current login state is not yet known
@@ -167,6 +168,8 @@ class MyApp extends StatelessWidget {
                   home: CleanLayout(showAppBar: false),
                 );
               }
+
+              final router = createAppRouter(context, navigatorKey);
 
               SchedulerBinding.instance.addPostFrameCallback((_) {
                 final initialMessage = GetIt.I<PushNotificationListener>().initialMessage;
