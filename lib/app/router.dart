@@ -9,7 +9,7 @@ import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/bottom_navigation.dart';
-import 'package:gruene_app/features/guests/utils/guest_invitations.dart';
+import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 
 bool _startLinkUsed = false;
 
