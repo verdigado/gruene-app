@@ -95,7 +95,8 @@ extension CalendarEventListExtension on List<CalendarEvent> {
   }
 
   List<MonthGroup> groupEventsByMonth(DateTimeRange? dateRange) {
-    final now = DateTime.now();
+    final today = DateTime.now().startOfDay;
+    final currentMonth = DateTime(today.year, today.month);
     final eventsWithRecurrences = map(
       (event) =>
           event.recurrences(dateRange)?.map((recurrence) => (event: event, recurrence: recurrence)).toList() ??
@@ -103,9 +104,11 @@ extension CalendarEventListExtension on List<CalendarEvent> {
     ).expand((it) => it).toList();
 
     final groupedMap = eventsWithRecurrences.groupBy((event) {
-      final startMonth = DateTime(event.recurrence.year, event.recurrence.month);
-      final currentMonth = DateTime(now.year, now.month);
-      return startMonth.isBefore(currentMonth) ? currentMonth : startMonth;
+      final start = event.recurrence.toLocal();
+      final startMonth = DateTime(start.year, start.month);
+      final end = start.add(event.event.end?.difference(event.event.start) ?? Duration.zero);
+      final ongoing = startMonth.isBefore(currentMonth) && end.isAfter(today);
+      return ongoing ? currentMonth : startMonth;
     });
 
     final groupedList = groupedMap.entries.map((entry) {
