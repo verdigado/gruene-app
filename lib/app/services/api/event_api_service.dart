@@ -9,7 +9,7 @@ class EventApiService extends BaseApiService {
     request: (api) => api.v1CalendarsEventsGet(
       selection: CalendarSelection.central,
       start: (dateRange ?? todayOrFuture()).start.toIso8601String(),
-      end: (dateRange ?? todayOrFuture()).end.toIso8601String(),
+      end: (dateRange ?? todayOrFuture()).end.endOfDay.toIso8601String(),
     ),
     map: (result) => result.data.events,
   );
