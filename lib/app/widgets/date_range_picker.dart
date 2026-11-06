@@ -10,13 +10,11 @@ class DateRangePicker extends StatelessWidget {
   const DateRangePicker({super.key, required this.setDateRange, required this.dateRange, this.lastDate});
 
   Future<void> openDateRangePicker(BuildContext context) async {
-    final theme = Theme.of(context);
     final newDateRange = await showDateRangePicker(
       context: context,
       firstDate: DateTime(1980),
       lastDate: lastDate ?? dateInfinity(),
       initialDateRange: dateRange,
-      barrierColor: theme.colorScheme.secondary,
     );
     setDateRange(newDateRange);
   }
