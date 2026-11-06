@@ -382,7 +382,8 @@ Future<CalendarEvent> _saveEvent(GlobalKey<FormBuilderState> formKey, Calendar c
             locationAddress: locationAddress,
             locationUrl: locationUrl,
             categories: categories,
-            recurring: rrule?.toString(),
+            // The recurrence form is disabled, and null would remove the event's recurrence.
+            recurring: previousEvent.recurring,
           ),
         );
 }
