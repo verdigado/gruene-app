@@ -62,9 +62,9 @@ class _ProfilesFilterDialogState extends State<ProfilesFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final filtersModified =
-        widget.divisionFilter.modified(_localSelectedDivision) ||
-        widget.skillsFilter.modified(_localSelectedSkills) ||
-        widget.interestsFilter.modified(_localSelectedInterests);
+        widget.divisionFilter.differsFromInitial(_localSelectedDivision) ||
+        widget.skillsFilter.differsFromInitial(_localSelectedSkills) ||
+        widget.interestsFilter.differsFromInitial(_localSelectedInterests);
 
     return FilterDialog(
       resetFilters: resetFilters,

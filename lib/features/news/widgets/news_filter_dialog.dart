@@ -63,9 +63,9 @@ class _NewsFilterDialogState extends State<NewsFilterDialog> {
     final categories = widget.categoryFilter.values;
 
     final filtersModified =
-        widget.divisionFilter.modified(_localSelectedDivisions) ||
-        widget.categoryFilter.modified(_localSelectedCategories) ||
-        widget.dateRangeFilter.modified(_localDateRange);
+        widget.divisionFilter.differsFromInitial(_localSelectedDivisions) ||
+        widget.categoryFilter.differsFromInitial(_localSelectedCategories) ||
+        widget.dateRangeFilter.differsFromInitial(_localDateRange);
 
     return FilterDialog(
       resetFilters: resetFilters,

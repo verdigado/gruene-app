@@ -11,16 +11,17 @@ class FilterModel<T> {
     update(initial);
   }
 
-  bool modified([T? other]) {
+  bool modified() => differsFromInitial(current);
+
+  bool differsFromInitial(T value) {
     final localInitial = initial;
-    final localSelected = other ?? current;
-    if (localInitial is List && localSelected is List) {
-      return !setEquals(localInitial.toSet(), localSelected.toSet());
+    if (localInitial is List && value is List) {
+      return !setEquals(localInitial.toSet(), value.toSet());
     }
-    if (localInitial is Set && localSelected is Set) {
-      return !setEquals(localInitial, localSelected);
+    if (localInitial is Set && value is Set) {
+      return !setEquals(localInitial, value);
     }
-    return localInitial != localSelected;
+    return localInitial != value;
   }
 }
 

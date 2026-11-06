@@ -68,10 +68,10 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final filtersModified =
-        widget.attendanceStatusFilter.modified(_localSelectedAttendanceStatuses) ||
-        widget.calendarFilter.modified(_localSelectedCalendars) ||
-        widget.categoryFilter.modified(_localSelectedCategories) ||
-        widget.dateRangeFilter.modified(_localDateRange);
+        widget.attendanceStatusFilter.differsFromInitial(_localSelectedAttendanceStatuses) ||
+        widget.calendarFilter.differsFromInitial(_localSelectedCalendars) ||
+        widget.categoryFilter.differsFromInitial(_localSelectedCategories) ||
+        widget.dateRangeFilter.differsFromInitial(_localDateRange);
 
     return FilterDialog(
       resetFilters: () => resetFilters(context),
