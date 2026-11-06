@@ -18,7 +18,7 @@ class EventsFilterDialog extends StatefulWidget {
   final FilterModel<Set<CalendarEventAttendanceStatus>> attendanceStatusFilter;
   final SelectionFilterModel<List<Calendar>, List<Calendar>> calendarFilter;
   final SelectionFilterModel<List<String>, List<String>> categoryFilter;
-  final FilterModel<DateTimeRange> dateRangeFilter;
+  final FilterModel<DateTimeRange?> dateRangeFilter;
 
   const EventsFilterDialog({
     super.key,
@@ -51,14 +51,16 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
 
   void resetFilters(BuildContext context) {
     setState(() => _localSelectedAttendanceStatuses = widget.attendanceStatusFilter.initial);
+    setState(() => _localSelectedCalendars = widget.calendarFilter.initial);
     setState(() => _localSelectedCategories = widget.categoryFilter.initial);
     setState(() => _localDateRange = widget.dateRangeFilter.initial);
     context.read<EventsBloc>().add(
       LoadEvents(
         query: defaultQuery,
+        calendars: defaultCalendars,
         attendanceStatuses: defaultAttendanceStatuses,
         categories: defaultCategories,
-        dateRange: defaultDateRange,
+        dateRange: Wrapped.value(defaultDateRange),
       ),
     );
   }
@@ -66,9 +68,10 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final filtersModified =
-        widget.attendanceStatusFilter.modified(_localSelectedAttendanceStatuses) ||
-        widget.categoryFilter.modified(_localSelectedCategories) ||
-        widget.dateRangeFilter.modified(_localDateRange);
+        widget.attendanceStatusFilter.differsFromInitial(_localSelectedAttendanceStatuses) ||
+        widget.calendarFilter.differsFromInitial(_localSelectedCalendars) ||
+        widget.categoryFilter.differsFromInitial(_localSelectedCategories) ||
+        widget.dateRangeFilter.differsFromInitial(_localDateRange);
 
     return FilterDialog(
       resetFilters: () => resetFilters(context),
@@ -78,8 +81,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
           title: t.events.dateRange,
           dateRange: _localDateRange,
           setDateRange: (dateRange) {
-            setState(() => _localDateRange = dateRange ?? defaultDateRange);
-            widget.dateRangeFilter.update(dateRange ?? defaultDateRange);
+            setState(() => _localDateRange = dateRange);
+            widget.dateRangeFilter.update(dateRange);
           },
         ),
         if (widget.calendarFilter.values.length > 1)
@@ -148,11 +151,11 @@ class EventsFilterBar extends StatelessWidget {
         final calendarFilter = SelectionFilterModel(
           update: (calendars) => context.read<EventsBloc>().add(LoadEvents(calendars: calendars)),
           initial: calendars,
-          current: state.calendars,
+          current: state.calendars.isEmpty ? calendars : state.calendars,
           values: calendars,
         );
         final dateRangeFilter = FilterModel(
-          update: (dateRange) => context.read<EventsBloc>().add(LoadEvents(dateRange: dateRange)),
+          update: (dateRange) => context.read<EventsBloc>().add(LoadEvents(dateRange: Wrapped.value(dateRange))),
           initial: defaultDateRange,
           current: state.dateRange,
         );
@@ -170,7 +173,12 @@ class EventsFilterBar extends StatelessWidget {
         );
         return FilterBar(
           searchFilter: searchFilter,
-          modified: <FilterModel<dynamic>>[attendanceStatusFilter, categoryFilter, calendarFilter].modified(),
+          modified: <FilterModel<dynamic>>[
+            attendanceStatusFilter,
+            categoryFilter,
+            calendarFilter,
+            dateRangeFilter,
+          ].modified(),
           loading: state.loading && state.events.isNotEmpty,
           filterDialog: EventsFilterDialog(
             attendanceStatusFilter: attendanceStatusFilter,

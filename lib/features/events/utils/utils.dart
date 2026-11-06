@@ -32,9 +32,26 @@ extension CalendarEventExtension on CalendarEvent {
 
     if (rrule == null) return null;
 
+    final eventStart = start.toLocal().copyWith(isUtc: true);
+    final until = rrule.until;
+    // UNTIL is in UTC, but the recurrences are calculated in local time tagged as UTC
+    final localRrule = until == null ? rrule : rrule.copyWith(until: until.toLocal().copyWith(isUtc: true));
+
     final between = dateRange ?? todayOrFuture();
-    return rrule
-        .getInstances(start: between.start.copyWith(isUtc: true), before: between.end.copyWith(isUtc: true))
+    final duration = end?.difference(start) ?? Duration.zero;
+    // Recurrences which started before the date range but are still ongoing are included as well
+    final rangeStart = between.start.copyWith(isUtc: true).subtract(duration);
+    final rangeEnd = between.end.copyWith(isUtc: true);
+
+    if (rangeEnd.isBefore(eventStart)) return [];
+
+    return localRrule
+        .getInstances(
+          start: eventStart,
+          after: rangeStart.isAfter(eventStart) ? rangeStart : eventStart,
+          includeAfter: true,
+          before: rangeEnd,
+        )
         .take(maxRecurrences)
         .map(
           (recurrence) => recurrence.copyWith(isUtc: false, hour: start.toLocal().hour, minute: start.toLocal().minute),
@@ -95,7 +112,8 @@ extension CalendarEventListExtension on List<CalendarEvent> {
   }
 
   List<MonthGroup> groupEventsByMonth(DateTimeRange? dateRange) {
-    final now = DateTime.now();
+    final today = DateTime.now().startOfDay;
+    final currentMonth = DateTime(today.year, today.month);
     final eventsWithRecurrences = map(
       (event) =>
           event.recurrences(dateRange)?.map((recurrence) => (event: event, recurrence: recurrence)).toList() ??
@@ -103,9 +121,11 @@ extension CalendarEventListExtension on List<CalendarEvent> {
     ).expand((it) => it).toList();
 
     final groupedMap = eventsWithRecurrences.groupBy((event) {
-      final startMonth = DateTime(event.recurrence.year, event.recurrence.month);
-      final currentMonth = DateTime(now.year, now.month);
-      return startMonth.isBefore(currentMonth) ? currentMonth : startMonth;
+      final start = event.recurrence.toLocal();
+      final startMonth = DateTime(start.year, start.month);
+      final end = start.add(event.event.end?.difference(event.event.start) ?? Duration.zero);
+      final ongoing = startMonth.isBefore(currentMonth) && end.isAfter(today);
+      return ongoing ? currentMonth : startMonth;
     });
 
     final groupedList = groupedMap.entries.map((entry) {

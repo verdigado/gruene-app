@@ -353,6 +353,7 @@ Future<CalendarEvent> _saveEvent(GlobalKey<FormBuilderState> formKey, Calendar c
           count: endType == RecurrenceEndType.count ? int.tryParse(count ?? '') : null,
         )
       : null;
+  final recurrenceFormShown = state.value.containsKey(recurrenceFrequencyField);
 
   return previousEvent == null
       ? eventService.createEvent(
@@ -382,8 +383,7 @@ Future<CalendarEvent> _saveEvent(GlobalKey<FormBuilderState> formKey, Calendar c
             locationAddress: locationAddress,
             locationUrl: locationUrl,
             categories: categories,
-            // The recurrence form is disabled, and null would remove the event's recurrence.
-            recurring: previousEvent.recurring,
+            recurring: recurrenceFormShown ? rrule?.toString() : previousEvent.recurring,
           ),
         );
 }

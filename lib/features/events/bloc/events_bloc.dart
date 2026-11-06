@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/api/event_api_service.dart';
-import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 final String defaultQuery = '';
+final DateTimeRange? defaultDateRange = null;
+final List<Calendar> defaultCalendars = [];
 final Set<CalendarEventAttendanceStatus> defaultAttendanceStatuses = {};
 final List<String> defaultCategories = [];
-final DateTimeRange defaultDateRange = todayOrFuture();
 
 sealed class EventsEvent extends Equatable {
   @override
@@ -22,7 +22,7 @@ final class LoadEvents extends EventsEvent {
   final List<Calendar>? calendars;
   final Set<CalendarEventAttendanceStatus>? attendanceStatuses;
   final List<String>? categories;
-  final DateTimeRange? dateRange;
+  final Wrapped<DateTimeRange?>? dateRange;
 
   final bool force;
 
@@ -57,7 +57,7 @@ class EventsState extends Equatable {
   final List<Calendar> calendars;
   final Set<CalendarEventAttendanceStatus> attendanceStatuses;
   final List<String> categories;
-  final DateTimeRange dateRange;
+  final DateTimeRange? dateRange;
 
   List<CalendarEvent> get events => allEventsInDateRange.filter(
     query: query,
@@ -74,12 +74,11 @@ class EventsState extends Equatable {
     List<Calendar>? calendars,
     Set<CalendarEventAttendanceStatus>? attendanceStatuses,
     List<String>? categories,
-    DateTimeRange? dateRange,
+    this.dateRange,
   }) : allEventsInDateRange = allEventsInDateRange ?? [],
-       calendars = calendars ?? [],
+       calendars = calendars ?? defaultCalendars,
        attendanceStatuses = attendanceStatuses ?? defaultAttendanceStatuses,
-       categories = categories ?? defaultCategories,
-       dateRange = dateRange ?? defaultDateRange;
+       categories = categories ?? defaultCategories;
 
   EventsState copyWith({
     List<CalendarEvent>? allEventsInDateRange,
@@ -89,7 +88,7 @@ class EventsState extends Equatable {
     List<Calendar>? calendars,
     Set<CalendarEventAttendanceStatus>? attendanceStatuses,
     List<String>? categories,
-    DateTimeRange? dateRange,
+    Wrapped<DateTimeRange?>? dateRange,
   }) {
     return EventsState(
       allEventsInDateRange: allEventsInDateRange ?? this.allEventsInDateRange,
@@ -99,7 +98,7 @@ class EventsState extends Equatable {
       calendars: calendars ?? this.calendars,
       attendanceStatuses: attendanceStatuses ?? this.attendanceStatuses,
       categories: categories ?? this.categories,
-      dateRange: dateRange ?? this.dateRange,
+      dateRange: dateRange == null ? this.dateRange : dateRange.value,
     );
   }
 
@@ -110,7 +109,8 @@ class EventsState extends Equatable {
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
   EventsBloc() : super(EventsState()) {
     on<LoadEvents>((event, emit) async {
-      final reload = event.force || (event.dateRange != null && event.dateRange != state.dateRange);
+      final dateRange = event.dateRange;
+      final reload = event.force || (dateRange != null && dateRange.value != state.dateRange);
 
       emit(
         state.copyWith(
@@ -119,7 +119,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
           calendars: event.calendars,
           attendanceStatuses: event.attendanceStatuses,
           categories: event.categories,
-          dateRange: event.dateRange,
+          dateRange: dateRange,
         ),
       );
 

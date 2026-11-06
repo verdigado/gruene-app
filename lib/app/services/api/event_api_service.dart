@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
 
 class EventApiService extends BaseApiService {
-  Future<List<CalendarEvent>> getEvents(DateTimeRange dateRange) async => send(
+  Future<List<CalendarEvent>> getEvents(DateTimeRange? dateRange) async => send(
     request: (api) => api.v1CalendarsEventsGet(
       selection: CalendarSelection.central,
-      start: dateRange.start.toIso8601String(),
-      end: dateRange.end.toIso8601String(),
+      start: (dateRange ?? todayOrFuture()).start.toIso8601String(),
+      end: (dateRange ?? todayOrFuture()).end.endOfDay.toIso8601String(),
     ),
     map: (result) => result.data.events,
   );
