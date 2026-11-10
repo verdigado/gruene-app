@@ -35,6 +35,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>de.gruene.wkapp</string>
+				<string>de.gruene.wkapp.mfa</string>
 			</array>
 		</dict>
 	</array>

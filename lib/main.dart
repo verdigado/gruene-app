@@ -38,6 +38,7 @@ import 'package:gruene_app/features/campaigns/helper/background_timer.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
+import 'package:gruene_app/features/mfa/widgets/mfa_setup_link_listener.dart';
 import 'package:gruene_app/features/news/bloc/bookmark_cubit.dart';
 import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_bloc.dart';
 import 'package:gruene_app/features/settings/bloc/push_notification/push_notification_settings_event.dart';
@@ -153,7 +154,9 @@ class App extends StatelessWidget {
         BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadSettings())),
         BlocProvider(create: (context) => BookmarkCubit()),
       ],
-      child: _AppRouter(navigatorKey: navigatorKey),
+      child: MfaSetupLinkListener(
+        child: _AppRouter(navigatorKey: navigatorKey),
+      ),
     );
   }
 }
