@@ -14,12 +14,20 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:uuid/uuid.dart';
 
 class AuthRepository {
+  /// iOS only: The default ASWebAuthenticationSession closes when a page opens another URL scheme, which breaks the MFA
+  /// setup link, see `MfaSetupLinkListener`. SFSafariViewController hands such links to the app and stays open.
+  static const _externalUserAgent = ExternalUserAgent.sfSafariViewController;
+
   static Completer<String?>? _refreshCompleter;
+  static Completer<void>? _authorizationCompleter;
 
   final FlutterAppAuth _appAuth = FlutterAppAuth();
   final _secureStorage = GetIt.instance<FlutterSecureStorage>();
   final AuthenticatorService _authenticatorService = GetIt.I<AuthenticatorService>();
   final IpService _ipService = GetIt.I<IpService>();
+
+  /// Whether the browser of [login] or [openMfaSetup] is open, see `MfaSetupLinkListener`
+  static bool get isAuthorizationInProgress => _authorizationCompleter != null;
 
   Future<String?> getAccessToken() async => await _secureStorage.read(key: SecureStorageKeys.accessToken);
 
@@ -39,15 +47,18 @@ class AuthRepository {
     final loginId = Uuid().v4();
     final pollingTimer = authenticator != null ? _pollForChallenge(authenticator, loginId) : null;
     try {
-      final AuthorizationTokenResponse result = await _appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          Config.oidcClientId,
-          Config.oidcCallbackPath,
-          allowInsecureConnections: Config.isDevelopment,
-          issuer: Config.oidcIssuer,
-          scopes: ['openid', 'profile', 'email', 'offline_access'],
-          additionalParameters: {'login_id': loginId},
-          loginHint: loginHint,
+      final AuthorizationTokenResponse result = await _authorize(
+        () => _appAuth.authorizeAndExchangeCode(
+          AuthorizationTokenRequest(
+            Config.oidcClientId,
+            Config.oidcCallbackPath,
+            allowInsecureConnections: Config.isDevelopment,
+            issuer: Config.oidcIssuer,
+            scopes: ['openid', 'profile', 'email', 'offline_access'],
+            additionalParameters: {'login_id': loginId},
+            externalUserAgent: _externalUserAgent,
+            loginHint: loginHint,
+          ),
         ),
       );
 
@@ -66,6 +77,39 @@ class AuthRepository {
       stopPolling(pollingTimer);
     }
     return false;
+  }
+
+  Future<void> openMfaSetup() async {
+    try {
+      await _authorize(
+        () => _appAuth.authorize(
+          AuthorizationRequest(
+            Config.oidcClientId,
+            Config.oidcCallbackPath,
+            allowInsecureConnections: Config.isDevelopment,
+            issuer: Config.oidcIssuer,
+            scopes: ['openid'],
+            additionalParameters: {'kc_action': 'app-register'},
+            externalUserAgent: _externalUserAgent,
+          ),
+        ),
+      );
+    } on FlutterAppAuthUserCancelledException catch (e) {
+      logger.d('MFA setup cancelled: $e');
+    }
+  }
+
+  /// flutter_appauth cannot refresh tokens while the browser is open (Android fails the open authorization instead),
+  /// so [_refreshAccessToken] waits for [authorize] to finish.
+  Future<T> _authorize<T>(Future<T> Function() authorize) async {
+    final completer = Completer<void>();
+    _authorizationCompleter = completer;
+    try {
+      return await authorize();
+    } finally {
+      _authorizationCompleter = null;
+      completer.complete();
+    }
   }
 
   /// Performs a back-channel logout to revoke the offline session.
@@ -137,6 +181,8 @@ class AuthRepository {
   }
 
   Future<String?> _refreshAccessToken() async {
+    await _authorizationCompleter?.future;
+
     final refreshToken = await getRefreshToken();
     if (refreshToken == null) {
       logger.d('No refresh token found');

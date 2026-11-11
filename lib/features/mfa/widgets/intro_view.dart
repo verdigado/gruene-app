@@ -6,6 +6,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
+import 'package:gruene_app/features/mfa/util/setup_mfa.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class IntroView extends StatelessWidget {
@@ -45,6 +46,14 @@ class IntroView extends StatelessWidget {
           child: Text(
             t.mfa.intro.startSetup,
             style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+          ),
+        ),
+        OutlinedButton(
+          onPressed: () => openMfaSetup(context),
+          style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
+          child: Text(
+            t.mfa.intro.setupOnThisDevice,
+            style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
           ),
         ),
       ],

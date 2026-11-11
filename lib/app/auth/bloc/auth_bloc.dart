@@ -28,8 +28,6 @@ class AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class LoginInProgress extends AuthLoading {}
-
 class Authenticated extends AuthState {}
 
 class Unauthenticated extends AuthState {}
@@ -42,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc(this.authRepository) : super(AuthLoading()) {
     on<LoginRequested>((event, emit) async {
-      emit(LoginInProgress());
+      emit(AuthLoading());
       final success = await authRepository.login(loginHint: event.loginHint);
       if (success) {
         AppSettings.register();

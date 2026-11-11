@@ -4,7 +4,8 @@
   "intro": {
     "title": "Nutze die App als 2-Faktor-Authentifizierung!",
     "description(rich)": "Mit der App ${appName} als zweiten Faktor kannst Du Dich ganz einfach im Grünen Netz anmelden.\n\nFür die Einrichtung musst Du nur mit Deiner Kamera den QR-Code in ${openAccountSettings(Deiner Account-Verwaltung)} einscannen.\n\nIm Anschluss öffne die App jedes Mal, wenn Du eine Anmeldung im Grünen Netz freigeben willst.\n\nMehr Informationen zur Einrichtung findest Du ${openMfaInformation(hier)}.",
-    "startSetup": "Jetzt einrichten"
+    "startSetup": "Jetzt einrichten",
+    "setupOnThisDevice": "Auf diesem Gerät einrichten"
   },
   "tokenScan": {
     "title": "2FA - QR-Code scannen",

@@ -5,6 +5,7 @@ import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/utils/error.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
@@ -49,4 +50,14 @@ void setupMfa(BuildContext context, String actionTokenUrl) {
   }
 
   waitForReadyStatus(context, bloc);
+}
+
+Future<void> openMfaSetup(BuildContext context) async {
+  final authRepository = context.read<AuthBloc>().authRepository;
+  try {
+    await authRepository.openMfaSetup();
+  } catch (error) {
+    logger.w('Opening MFA setup failed: $error');
+    if (context.mounted) showSnackBar(context: context, text: getErrorMessage(error));
+  }
 }

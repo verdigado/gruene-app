@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
+import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
 
 /// Sets up the app as authenticator when the MFA setup link (`de.gruene.wkapp.mfa://setup?url=<activation token url>`)
-/// is tapped on the Keycloak setup page during an app login, as the QR code cannot be scanned on the same device.
+/// is tapped on the Keycloak setup page in the login browser of the app, as the QR code cannot be scanned on the same
+/// device. The setup page is shown there during the first login or after [AuthRepository.openMfaSetup].
 ///
 /// The link is intercepted natively without changing the app UI, see `MfaSetupLink.kt` and `AppDelegate.swift`.
 /// The login browser stays open and continues the login on its own once the registration succeeded.
@@ -44,7 +45,7 @@ class _MfaSetupLinkListenerState extends State<MfaSetupLinkListener> {
     final isValid =
         activationTokenUrl != null &&
         activationTokenUrl.startsWith(Config.oidcIssuer) &&
-        context.read<AuthBloc>().state is LoginInProgress;
+        AuthRepository.isAuthorizationInProgress;
     if (!isValid) {
       logger.w('Ignoring MFA setup link');
       return;
