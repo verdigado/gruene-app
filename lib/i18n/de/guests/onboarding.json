@@ -1,0 +1,65 @@
+{
+  "step": "Schritt ${current} von ${total}",
+  "welcome": {
+    "title": "Du wurdest eingeladen",
+    "invitedBy": "${inviter} hat dich eingeladen, im ${division} beim Wahlkampf mitzuhelfen.",
+    "invited": "Du wurdest eingeladen, beim Wahlkampf mitzuhelfen.",
+    "hint": "Dafür richten wir dir einen Zugang ein. Du ergänzt deine Angaben und vergibst ein Passwort. Danach meldest du dich an und richtest die Zwei-Faktor-Authentifizierung ein.",
+    "action": "Los geht's"
+  },
+  "details": {
+    "title": "Deine Angaben",
+    "hint": "Name und Geburtsdatum brauchen wir, damit dein Zugang eindeutig ist.",
+    "firstName": {
+      "label": "Vorname",
+      "required": "Bitte gib deinen Vornamen ein."
+    },
+    "lastName": {
+      "label": "Nachname",
+      "required": "Bitte gib deinen Nachnamen ein."
+    },
+    "birthDate": {
+      "label": "Geburtsdatum",
+      "hint": "TT.MM.JJJJ",
+      "invalid": "Bitte gib dein Geburtsdatum im Format TT.MM.JJJJ ein."
+    },
+    "invalid": "Bitte prüfe deine Angaben."
+  },
+  "password": {
+    "title": "Passwort vergeben",
+    "hint": "Mit deiner E-Mail-Adresse ${email} und diesem Passwort meldest du dich künftig an.",
+    "label": "Passwort",
+    "repeatLabel": "Passwort wiederholen",
+    "show": "Passwort anzeigen",
+    "hide": "Passwort verbergen",
+    "rules": {
+      "length": "Mindestens 12 Zeichen",
+      "letters": "Groß- und Kleinbuchstaben",
+      "digit": "Mindestens eine Ziffer",
+      "notEmail": "Nicht deine E-Mail-Adresse",
+      "match": "Beide Eingaben stimmen überein"
+    },
+    "rejected": "Dieses Passwort ist zu einfach oder nicht erlaubt. Bitte wähle ein anderes.",
+    "action": "Zugang einrichten"
+  },
+  "done": {
+    "title": "Dein Zugang ist eingerichtet",
+    "hint": "Melde dich jetzt mit deiner E-Mail-Adresse und deinem Passwort an. Danach richtest du die Zwei-Faktor-Authentifizierung ein.",
+    "action": "Jetzt anmelden"
+  },
+  "refused": {
+    "title": "Kein Gastzugang möglich",
+    "hint": "Mit dieser E-Mail-Adresse ist kein Gastzugang möglich. Bitte wende dich an die Person, die dich eingeladen hat.",
+    "action": "Zur Anmeldung"
+  },
+  "invalid": {
+    "title": "Diese Einladung ist nicht mehr gültig",
+    "hint": "Sie ist abgelaufen, wurde zurückgezogen oder bereits verwendet. Wende dich an die Person, die dich eingeladen hat.",
+    "action": "Zur Anmeldung"
+  },
+  "loggedIn": {
+    "title": "Du bist bereits angemeldet",
+    "hint": "Um die Einladung anzunehmen, melde dich zuerst ab und öffne danach den Link aus der E-Mail erneut.",
+    "action": "Zur App"
+  }
+}

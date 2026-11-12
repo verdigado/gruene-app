@@ -10,7 +10,11 @@ import 'package:gruene_app/app/utils/visual_identifier_helper.dart';
 
 class AuthEvent {}
 
-class LoginRequested extends AuthEvent {}
+class LoginRequested extends AuthEvent {
+  final String? loginHint;
+
+  LoginRequested({this.loginHint});
+}
 
 class LogoutRequested extends AuthEvent {
   final BuildContext context;
@@ -37,7 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this.authRepository) : super(AuthLoading()) {
     on<LoginRequested>((event, emit) async {
       emit(AuthLoading());
-      final success = await authRepository.login();
+      final success = await authRepository.login(loginHint: event.loginHint);
       if (success) {
         AppSettings.register();
         await _initializeVisualIdentifiers();

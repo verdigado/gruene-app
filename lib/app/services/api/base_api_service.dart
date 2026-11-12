@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chopper/chopper.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -34,6 +36,16 @@ class ApiException implements Exception {
   final Uri? url;
 
   ApiException({required this.statusCode, this.message, this.url});
+
+  /// The response's error body, or null if it isn't a JSON object, like a proxy's HTML error page.
+  Map<String, dynamic>? get body {
+    try {
+      final decoded = jsonDecode(message ?? '');
+      return decoded is Map<String, dynamic> ? decoded : null;
+    } on FormatException {
+      return null;
+    }
+  }
 
   @override
   String toString() => 'ApiException($statusCode) on $url: $message';
