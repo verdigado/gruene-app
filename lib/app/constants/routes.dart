@@ -176,8 +176,8 @@ class Routes {
     MfaScreen(),
     routes: [mfaTokenScan, mfaTokenInput],
   );
-  static GoRoute guestInvitation = GoRoute(
-    path: RouteLocations.getRoute([RouteLocations.guestInvitation]),
+  static GoRoute guestOnboarding = GoRoute(
+    path: RouteLocations.getRoute([RouteLocations.guestOnboarding]),
     pageBuilder: (context, state) => buildPageWithoutAnimation(
       context: context,
       state: state,

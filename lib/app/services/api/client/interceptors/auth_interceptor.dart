@@ -15,7 +15,6 @@ class AuthInterceptor implements Interceptor {
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
     final accessToken = _accessToken ?? await _authRepository.getAccessToken();
-    // Public endpoints are also called by people without an account.
     if (accessToken == null) return chain.proceed(chain.request);
 
     final updatedRequest = applyHeader(

@@ -7,8 +7,7 @@ import 'package:gruene_app/app/services/api/client/interceptors/auth_interceptor
 import 'package:gruene_app/app/utils/logger.dart';
 
 const retryCountHeader = 'Retry-Count';
-// These bodies hold an invitation token or a password.
-const _pathsWithSecretBody = {'/v1/guest-invitations/lookup', '/v1/guest-invitations/accept'};
+const _endpointsWithSensitiveBody = {'/v1/guest-invitations/lookup', '/v1/guest-invitations/accept'};
 
 class AccessTokenAuthenticator implements Authenticator {
   final AuthRepository _authRepository = AuthRepository();
@@ -18,7 +17,7 @@ class AccessTokenAuthenticator implements Authenticator {
   @override
   FutureOr<Request?> authenticate(Request request, Response<dynamic> response, [Request? originalRequest]) async {
     logger.d('${request.method} ${request.url}');
-    if (request.body != null && !_pathsWithSecretBody.contains(request.url.path)) {
+    if (request.body != null && !_endpointsWithSensitiveBody.contains(request.url.path)) {
       logger.d('Body: ${request.body}');
     }
     logger.d('Response: ${response.statusCode}');

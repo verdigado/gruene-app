@@ -25,7 +25,7 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
     routes: [
       Routes.login,
       Routes.mfaLogin,
-      Routes.guestInvitation,
+      Routes.guestOnboarding,
       Routes.settings,
       Routes.challengeDetail,
       StatefulShellRoute.indexedStack(
@@ -60,7 +60,7 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
       final isLoggedIn = authBloc.state is Authenticated;
       final isLoggedOut = authBloc.state is Unauthenticated;
 
-      if (state.uri.path == Routes.guestInvitation.path) {
+      if (state.uri.path == Routes.guestOnboarding.path) {
         if (!isInvitationHandled(invitationToken(state.uri))) return null;
         return isLoggedIn ? Routes.news.path : Routes.login.path;
       }
