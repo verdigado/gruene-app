@@ -191,7 +191,7 @@ class _AppRouterState extends State<_AppRouter> {
           return MaterialApp(debugShowCheckedModeBanner: false, theme: appTheme, home: CleanLayout(showAppBar: false));
         }
 
-        final router = createAppRouter(context, navigatorKey);SchedulerBinding.instance.addPostFrameCallback((_) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
           final initialMessage = GetIt.I<PushNotificationListener>().initialMessage;
           if (initialMessage != null) {
             initialMessage.processMessage(widget.navigatorKey.currentContext);

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -11,17 +10,10 @@ import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/bottom_navigation.dart';
 import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 
-bool _startLinkUsed = false;
-
-/// A new router is created on every auth change. Only the first one starts at the link the app was opened with,
-/// otherwise every login or logout would return to that link.
 GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
-  final ignoreStartLink = _startLinkUsed;
-  _startLinkUsed = true;
   return GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: Routes.news.path,
-    overridePlatformDefaultLocation: ignoreStartLink,
     routes: [
       Routes.login,
       Routes.mfaLogin,
@@ -52,7 +44,7 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
       ),
     ],
     redirect: (context, state) {
-      final currentPath = state.uri.toString();
+      final currentPath = state.uri.path;
       final isLoginOpen = currentPath.startsWith(Routes.login.path);
       final isMfaOpen = currentPath.startsWith(Routes.mfa.path);
 
@@ -60,7 +52,7 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
       final isLoggedIn = authBloc.state is Authenticated;
       final isLoggedOut = authBloc.state is Unauthenticated;
 
-      if (state.uri.path == Routes.guestOnboarding.path) {
+      if (currentPath == Routes.guestOnboarding.path) {
         if (!isInvitationHandled(invitationToken(state.uri))) return null;
         return isLoggedIn ? Routes.news.path : Routes.login.path;
       }
