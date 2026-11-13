@@ -18,7 +18,7 @@ class OnboardingWelcomeStep extends StatelessWidget {
       spacing: 16,
       children: [
         const SizedBox(height: 32),
-        Icon(Icons.waving_hand_outlined, size: 56, color: theme.primaryColor),
+        Icon(Icons.waving_hand_outlined, size: 64, color: theme.primaryColor),
         Text(t.guests.onboarding.welcome.title, style: theme.textTheme.titleLarge),
         Text(
           inviter != null && division != null

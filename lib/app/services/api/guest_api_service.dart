@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class GuestApiService extends BaseApiService {
@@ -37,7 +38,7 @@ class GuestApiService extends BaseApiService {
     required String token,
     required String firstName,
     required String lastName,
-    required String birthDate,
+    required DateTime birthDate,
     required String password,
   }) async => send(
     request: (api) => api.v1GuestInvitationsAcceptPost(
@@ -45,7 +46,7 @@ class GuestApiService extends BaseApiService {
         token: token,
         firstName: firstName,
         lastName: lastName,
-        birthDate: birthDate,
+        birthDate: birthDate.toIso8601DateString(),
         password: password,
       ),
     ),

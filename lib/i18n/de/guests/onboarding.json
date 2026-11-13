@@ -1,4 +1,5 @@
 {
+  "title": "Gastzugang einrichten",
   "welcome": {
     "title": "Du wurdest eingeladen",
     "invitedBy": "${inviter} hat dich eingeladen, im ${division} beim Wahlkampf mitzuhelfen.",
@@ -8,6 +9,7 @@
   },
   "details": {
     "title": "Deine Angaben",
+    "description": "Dein Name und Geburtsdatum",
     "hint": "Name und Geburtsdatum brauchen wir, damit dein Zugang eindeutig ist.",
     "firstName": {
       "label": "Vorname",
@@ -24,7 +26,8 @@
   },
   "password": {
     "title": "Passwort vergeben",
-    "hint": "Mit deiner E-Mail-Adresse ${email} und diesem Passwort meldest du dich künftig an.",
+    "description": "Wähle ein Passwort für deinen Gastzugang",
+    "hint": "Melde dich künftig mit deiner E-Mail-Adresse ${email} und diesem Passwort an.",
     "label": "Passwort",
     "repeatLabel": "Passwort wiederholen",
     "show": "Passwort anzeigen",
@@ -38,6 +41,14 @@
     },
     "rejected": "Dieses Passwort ist zu einfach oder nicht erlaubt. Bitte wähle ein anderes.",
     "action": "Zugang einrichten"
+  },
+  "login": {
+    "title": "Anmelden",
+    "description": "Melde dich mit deinem neuen Passwort an"
+  },
+  "mfa": {
+    "title": "Zweiten Faktor einrichten",
+    "description": "Wähle und konfiguriere einen zweiten Faktor"
   },
   "done": {
     "title": "Dein Zugang ist eingerichtet",

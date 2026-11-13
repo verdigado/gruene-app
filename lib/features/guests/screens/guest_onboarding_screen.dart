@@ -12,7 +12,7 @@ import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/api/guest_api_service.dart';
 import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
-import 'package:gruene_app/app/widgets/clean_layout.dart';
+import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/app/widgets/step_progress.dart';
 import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
@@ -23,10 +23,19 @@ import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_welcome
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GuestOnboardingScreen extends StatelessWidget {
+enum _OnboardingStep { welcome, details, password, done }
+
+class GuestOnboardingScreen extends StatefulWidget {
   final String? token;
 
   const GuestOnboardingScreen({super.key, required this.token});
+
+  @override
+  State<GuestOnboardingScreen> createState() => _GuestOnboardingScreenState();
+}
+
+class _GuestOnboardingScreenState extends State<GuestOnboardingScreen> {
+  _OnboardingStep _step = _OnboardingStep.welcome;
 
   @override
   Widget build(BuildContext context) {
@@ -39,47 +48,50 @@ class GuestOnboardingScreen extends StatelessWidget {
       );
     }
 
-    final token = this.token;
+    final token = widget.token;
     if (token == null) return const _InvalidInvitationMessage();
 
-    return FutureLoadingScreen(
-      key: ValueKey(token),
-      load: () => GetIt.I<GuestApiService>().lookupInvitation(token),
-      loadingLayoutBuilder: (child) => CleanLayout(showAppBar: false, child: child),
-      buildChild: (invitation, _) => invitation == null
-          ? _InvalidInvitationMessage(token: token)
-          : _OnboardingSteps(token: token, invitation: invitation),
-    );
-  }
-}
+    final previousStep = _step.index > 0 ? _OnboardingStep.values[_step.index - 1] : null;
+    final hasPreviousStep = previousStep != null;
 
-class _InvalidInvitationMessage extends StatelessWidget {
-  final String? token;
-
-  const _InvalidInvitationMessage({this.token});
-
-  @override
-  Widget build(BuildContext context) {
-    return OnboardingMessage(
-      title: t.guests.onboarding.invalid.title,
-      hint: t.guests.onboarding.invalid.hint,
-      action: t.guests.onboarding.invalid.action,
-      onAction: () {
-        markInvitationHandled(token);
-        context.go(Routes.login.path);
+    return PopScope(
+      canPop: !hasPreviousStep,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && hasPreviousStep) {
+          setState(() => _step = previousStep);
+        }
       },
+      child: Scaffold(
+        appBar: MainAppBar(
+          title: t.guests.onboarding.title,
+          leadingAction: hasPreviousStep ? const BackButton() : null,
+        ),
+        body: SafeArea(
+          child: FutureLoadingScreen(
+            key: ValueKey(token),
+            load: () => GetIt.I<GuestApiService>().lookupInvitation(token),
+            buildChild: (invitation, _) => invitation == null
+                ? _InvalidInvitationMessage(token: token)
+                : _OnboardingSteps(
+                    token: token,
+                    invitation: invitation,
+                    step: _step,
+                    setStep: (step) => setState(() => _step = step),
+                  ),
+          ),
+        ),
+      ),
     );
   }
 }
-
-/// The progress display numbers the form steps by their index.
-enum _OnboardingStep { welcome, details, password, done, refused, invalid }
 
 class _OnboardingSteps extends StatefulWidget {
   final String token;
   final GuestInvitationLookup invitation;
+  final _OnboardingStep step;
+  final void Function(_OnboardingStep step) setStep;
 
-  const _OnboardingSteps({required this.token, required this.invitation});
+  const _OnboardingSteps({required this.token, required this.invitation, required this.step, required this.setStep});
 
   @override
   State<_OnboardingSteps> createState() => _OnboardingStepsState();
@@ -93,7 +105,6 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
   final _privacyConsent = ValueNotifier(false);
   final _password = TextEditingController();
   final _passwordRepeat = TextEditingController();
-  _OnboardingStep _step = _OnboardingStep.welcome;
   String? _rejectedPassword;
 
   @override
@@ -116,12 +127,6 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
 
   void _rebuild() => setState(() {});
 
-  void _submitDetails() {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _step = _OnboardingStep.password);
-    }
-  }
-
   /// Returns the step to continue with, which stays the password step if the password got rejected.
   Future<_OnboardingStep> _submitAcceptance() async {
     try {
@@ -138,13 +143,13 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
       switch (error.statusCode) {
         case HttpStatus.badRequest when error.body?['errorCode'] == 'invalidPassword':
           return _OnboardingStep.password;
-        case HttpStatus.notFound:
-          return _OnboardingStep.invalid;
-        case HttpStatus.conflict:
-          markInvitationHandled(widget.token);
-          return _OnboardingStep.refused;
-        case HttpStatus.unprocessableEntity:
-          return _OnboardingStep.refused;
+        // case HttpStatus.notFound:
+        //   return _OnboardingStep.invalid;
+        // case HttpStatus.conflict:
+        //   markInvitationHandled(widget.token);
+        //   return _OnboardingStep.refused;
+        // case HttpStatus.unprocessableEntity:
+        //   return _OnboardingStep.refused;
         default:
           rethrow;
       }
@@ -158,7 +163,7 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
       if (step == _OnboardingStep.password) return setState(() => _rejectedPassword = _password.text);
       _password.clear();
       _passwordRepeat.clear();
-      setState(() => _step = step);
+      widget.setStep(step);
     },
     getErrorMessage: (error) =>
         getErrorMessage(error, byStatusCode: {HttpStatus.badRequest: t.guests.onboarding.details.invalid}),
@@ -170,44 +175,32 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
     required Widget content,
     required String action,
     required void Function()? onAction,
-  }) {
-    return PopScope(
-      canPop: previous == null,
-      onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && previous != null) setState(() => _step = previous);
-      },
-      child: CleanLayout(
-        showAppBar: false,
-        child: Form(
-          key: _formKey,
-          child: ExpandingScrollView(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            padding: screenPadding,
-            spacing: 24,
-            children: [
-              if (previous != null) StepProgress(current: _step.index, total: _OnboardingStep.done.index + 1),
-              content,
-              FilledButton(onPressed: onAction, child: Text(action)),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  }) => Form(
+    key: _formKey,
+    child: ExpandingScrollView(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      padding: screenPadding,
+      spacing: 24,
+      children: [
+        if (previous != null) StepProgress(current: widget.step.index, total: _OnboardingStep.done.index + 1),
+        content,
+        FilledButton(onPressed: onAction, child: Text(action)),
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     final email = widget.invitation.email;
     final passwordPolicy = KeycloakPasswordPolicy(password: _password.text, repeat: _passwordRepeat.text, email: email);
 
-    return switch (_step) {
+    return switch (widget.step) {
       _OnboardingStep.welcome => _buildFormStep(
         content: OnboardingWelcomeStep(invitation: widget.invitation),
         action: t.guests.onboarding.welcome.action,
-        onAction: () => setState(() => _step = _OnboardingStep.details),
+        onAction: () => widget.setStep(_OnboardingStep.details),
       ),
       _OnboardingStep.details => _buildFormStep(
-        previous: _OnboardingStep.welcome,
         content: OnboardingDetailsStep(
           firstName: _firstName,
           lastName: _lastName,
@@ -215,10 +208,9 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
           privacyConsent: _privacyConsent,
         ),
         action: t.common.actions.next,
-        onAction: _submitDetails,
+        onAction: () => _formKey.currentState!.validate() ? widget.setStep(_OnboardingStep.password) : null,
       ),
       _OnboardingStep.password => _buildFormStep(
-        previous: _OnboardingStep.details,
         content: OnboardingPasswordStep(
           policy: passwordPolicy,
           password: _password,
@@ -234,13 +226,33 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
         action: t.guests.onboarding.done.action,
         onAction: () => context.read<AuthBloc>().add(LoginRequested(loginHint: email)),
       ),
-      _OnboardingStep.refused => OnboardingMessage(
-        title: t.guests.onboarding.refused.title,
-        hint: t.guests.onboarding.refused.hint,
-        action: t.guests.onboarding.refused.action,
-        onAction: () => context.go(Routes.login.path),
-      ),
-      _OnboardingStep.invalid => _InvalidInvitationMessage(token: widget.token),
+      // _OnboardingStep.refused =>
+      //     OnboardingMessage(
+      //       title: t.guests.onboarding.refused.title,
+      //       hint: t.guests.onboarding.refused.hint,
+      //       action: t.guests.onboarding.refused.action,
+      //       onAction: () => context.go(Routes.login.path),
+      //     ),
+      // _OnboardingStep.invalid => _InvalidInvitationMessage(token: widget.token),
     };
+  }
+}
+
+class _InvalidInvitationMessage extends StatelessWidget {
+  final String? token;
+
+  const _InvalidInvitationMessage({this.token});
+
+  @override
+  Widget build(BuildContext context) {
+    return OnboardingMessage(
+      title: t.guests.onboarding.invalid.title,
+      hint: t.guests.onboarding.invalid.hint,
+      action: t.guests.onboarding.invalid.action,
+      onAction: () {
+        markInvitationHandled(token);
+        context.go(Routes.login.path);
+      },
+    );
   }
 }
