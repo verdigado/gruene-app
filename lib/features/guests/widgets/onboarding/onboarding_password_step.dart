@@ -6,7 +6,7 @@ import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class OnboardingPasswordStep extends StatefulWidget {
-  final PasswordRules rules;
+  final KeycloakPasswordPolicy rules;
   final TextEditingController password;
   final TextEditingController passwordRepeat;
   final bool rejected;
@@ -52,7 +52,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
               TextFormField(
                 controller: widget.password,
                 // Cutting off a pasted password would silently set a different one than the guest thinks.
-                maxLength: PasswordRules.maxLength,
+                maxLength: KeycloakPasswordPolicy.maxLength,
                 maxLengthEnforcement: MaxLengthEnforcement.none,
                 obscureText: !_showPassword,
                 autocorrect: false,
@@ -94,7 +94,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
               _Rule(text: t.guests.onboarding.password.rules.letters, fulfilled: rules.hasLetters),
               _Rule(text: t.guests.onboarding.password.rules.digit, fulfilled: rules.hasDigit),
               _Rule(text: t.guests.onboarding.password.rules.notEmail, fulfilled: rules.differsFromEmail),
-              _Rule(text: t.guests.onboarding.password.rules.match, fulfilled: rules.match),
+              _Rule(text: t.guests.onboarding.password.rules.match, fulfilled: rules.matches),
             ],
           ),
         ],

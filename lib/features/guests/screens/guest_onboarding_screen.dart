@@ -27,16 +27,6 @@ class GuestOnboardingScreen extends StatelessWidget {
 
   const GuestOnboardingScreen({super.key, required this.token});
 
-  /// A record, because `FutureLoadingScreen` treats null data as an error.
-  Future<({GuestInvitationLookup? invitation})> _lookUp(String token) async {
-    try {
-      return (invitation: await GetIt.I<GuestApiService>().lookupInvitation(token));
-    } on ApiException catch (error) {
-      if (error.statusCode == HttpStatus.notFound) return (invitation: null);
-      rethrow;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     if (context.read<AuthBloc>().state is Authenticated) {
@@ -53,14 +43,11 @@ class GuestOnboardingScreen extends StatelessWidget {
 
     return FutureLoadingScreen(
       key: ValueKey(token),
-      load: () => _lookUp(token),
+      load: () => GetIt.I<GuestApiService>().lookupInvitation(token),
       loadingLayoutBuilder: (child) => CleanLayout(showAppBar: false, child: child),
-      buildChild: (result, _) {
-        final invitation = result.invitation;
-        return invitation == null
-            ? _InvalidInvitationMessage(token: token)
-            : _OnboardingSteps(token: token, invitation: invitation);
-      },
+      buildChild: (invitation, _) => invitation == null
+          ? _InvalidInvitationMessage(token: token)
+          : _OnboardingSteps(token: token, invitation: invitation),
     );
   }
 }
@@ -148,11 +135,8 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
       switch (error.statusCode) {
         case HttpStatus.badRequest when error.body?['errorCode'] == 'invalidPassword':
           return _OnboardingStep.password;
-        // The invitation ended while the form was open, or an earlier try succeeded but its response got lost.
         case HttpStatus.notFound:
           return _OnboardingStep.invalid;
-        // Both refusals look the same to the guest, because the reason could reveal a party membership. Only a `409`
-        // ends the invitation. After a `422` the link has to keep working for when the records are clarified.
         case HttpStatus.conflict:
           markInvitationHandled(widget.token);
           return _OnboardingStep.refused;
@@ -217,7 +201,7 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
   @override
   Widget build(BuildContext context) {
     final email = widget.invitation.email;
-    final rules = PasswordRules(password: _password.text, repeat: _passwordRepeat.text, email: email);
+    final rules = KeycloakPasswordPolicy(password: _password.text, repeat: _passwordRepeat.text, email: email);
 
     return switch (_step) {
       _OnboardingStep.welcome => _buildFormStep(
