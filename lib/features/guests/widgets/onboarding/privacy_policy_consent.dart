@@ -33,7 +33,6 @@ class PrivacyConsentField extends StatelessWidget {
               recognizer: TapGestureRecognizer()..onTap = () => openUrl(privacyPolicyUrl, context),
             ),
           ),
-          style: theme.textTheme.bodyMedium,
         ),
         subtitle: field.hasError
             ? Text(field.errorText!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error))

@@ -44,7 +44,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
         spacing: 16,
         children: [
           Text(t.guests.onboarding.password.title, style: theme.textTheme.titleLarge),
-          Text(t.guests.onboarding.password.hint(email: policy.email), style: theme.textTheme.bodyMedium),
+          Text(t.guests.onboarding.password.hint(email: policy.email)),
           FormSection(
             title: t.guests.onboarding.password.label,
             spacing: 8,

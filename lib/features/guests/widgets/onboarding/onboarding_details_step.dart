@@ -44,7 +44,7 @@ class OnboardingDetailsStep extends StatelessWidget {
         spacing: 16,
         children: [
           Text(t.guests.onboarding.details.title, style: theme.textTheme.titleLarge),
-          Text(t.guests.onboarding.details.hint, style: theme.textTheme.bodyMedium),
+          Text(t.guests.onboarding.details.hint),
           _NameField(
             controller: firstName,
             label: t.guests.onboarding.details.firstName.label,

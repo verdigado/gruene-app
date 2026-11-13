@@ -2,32 +2,48 @@
   "title": "Gastzugang einrichten",
   "welcome": {
     "title": "Du wurdest eingeladen",
-    "invitedBy": "${inviter} hat dich eingeladen, im ${division} beim Wahlkampf mitzuhelfen.",
+    "invitedBy": "${inviter} hat Dich eingeladen, im ${division} beim Wahlkampf mitzuhelfen.",
     "invited": "Du wurdest eingeladen, beim Wahlkampf mitzuhelfen.",
-    "hint": "Dafür richten wir dir einen Zugang ein. Du ergänzt deine Angaben und vergibst ein Passwort. Danach meldest du dich an und richtest die Zwei-Faktor-Authentifizierung ein.",
+    "hint": "Dafür richten wir Dir einen Zugang ein. So geht es weiter:",
+    "steps(interface=Steps)": {
+      "details": {
+        "title": "@:guests.onboarding.details.title",
+        "hint": "Dein Name und Geburtsdatum"
+      },
+      "password": {
+        "title": "@:guests.onboarding.password.title",
+        "hint": "Wähle ein sicheres Passwort"
+      },
+      "login": {
+        "title": "Anmelden",
+        "hint": "Melde Dich mit Deinem neuen Passwort an"
+      },
+      "mfa": {
+        "title": "Zweiten Faktor einrichten",
+        "hint": "Wähle und konfiguriere einen zweiten Faktor"
+      }
+    },
     "action": "Los geht's"
   },
   "details": {
     "title": "Deine Angaben",
-    "description": "Dein Name und Geburtsdatum",
-    "hint": "Name und Geburtsdatum brauchen wir, damit dein Zugang eindeutig ist.",
+    "hint": "Name und Geburtsdatum brauchen wir, damit Dein Zugang eindeutig ist.",
     "firstName": {
       "label": "Vorname",
-      "required": "Bitte gib deinen Vornamen ein."
+      "required": "Bitte gib Deinen Vornamen ein."
     },
     "lastName": {
       "label": "Nachname",
-      "required": "Bitte gib deinen Nachnamen ein."
+      "required": "Bitte gib Deinen Nachnamen ein."
     },
     "birthDate": {
       "label": "Geburtsdatum"
     },
-    "invalid": "Bitte prüfe deine Angaben."
+    "invalid": "Bitte prüfe Deine Angaben."
   },
   "password": {
     "title": "Passwort vergeben",
-    "description": "Wähle ein Passwort für deinen Gastzugang",
-    "hint": "Melde dich künftig mit deiner E-Mail-Adresse ${email} und diesem Passwort an.",
+    "hint": "Melde Dich künftig mit Deiner E-Mail-Adresse ${email} und diesem Passwort an.",
     "label": "Passwort",
     "repeatLabel": "Passwort wiederholen",
     "show": "Passwort anzeigen",
@@ -36,38 +52,30 @@
       "length": "Mindestens 12 Zeichen",
       "letters": "Groß- und Kleinbuchstaben",
       "digit": "Mindestens eine Ziffer",
-      "notEmail": "Nicht deine E-Mail-Adresse",
+      "notEmail": "Nicht Deine E-Mail-Adresse",
       "match": "Beide Eingaben stimmen überein"
     },
     "rejected": "Dieses Passwort ist zu einfach oder nicht erlaubt. Bitte wähle ein anderes.",
     "action": "Zugang einrichten"
   },
-  "login": {
-    "title": "Anmelden",
-    "description": "Melde dich mit deinem neuen Passwort an"
-  },
-  "mfa": {
-    "title": "Zweiten Faktor einrichten",
-    "description": "Wähle und konfiguriere einen zweiten Faktor"
-  },
   "done": {
     "title": "Dein Zugang ist eingerichtet",
-    "hint": "Melde dich jetzt mit deiner E-Mail-Adresse und deinem Passwort an. Danach richtest du die Zwei-Faktor-Authentifizierung ein.",
+    "hint": "Melde Dich jetzt mit Deiner E-Mail-Adresse und Deinem Passwort an. Danach richtest Du die Zwei-Faktor-Authentifizierung ein.",
     "action": "Jetzt anmelden"
   },
   "refused": {
     "title": "Kein Gastzugang möglich",
-    "hint": "Mit dieser E-Mail-Adresse ist kein Gastzugang möglich. Bitte wende dich an die Person, die dich eingeladen hat.",
+    "hint": "Mit dieser E-Mail-Adresse ist kein Gastzugang möglich. Bitte wende Dich an die Person, die Dich eingeladen hat.",
     "action": "Zur Anmeldung"
   },
   "invalid": {
     "title": "Diese Einladung ist nicht mehr gültig",
-    "hint": "Sie ist abgelaufen, wurde zurückgezogen oder bereits verwendet. Wende dich an die Person, die dich eingeladen hat.",
+    "hint": "Sie ist abgelaufen, wurde zurückgezogen oder bereits verwendet. Wende Dich an die Person, die Dich eingeladen hat.",
     "action": "Zur Anmeldung"
   },
   "loggedIn": {
     "title": "Du bist bereits angemeldet",
-    "hint": "Um die Einladung anzunehmen, melde dich zuerst ab und öffne danach den Link aus der E-Mail erneut.",
+    "hint": "Um die Einladung anzunehmen, melde Dich zuerst ab und öffne danach den Link aus der E-Mail erneut.",
     "action": "Zur App"
   }
 }

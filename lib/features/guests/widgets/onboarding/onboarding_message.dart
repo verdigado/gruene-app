@@ -30,7 +30,7 @@ class OnboardingMessage extends StatelessWidget {
           spacing: 16,
           children: [
             Text(title, style: theme.textTheme.titleLarge),
-            Text(hint, style: theme.textTheme.bodyMedium),
+            Text(hint),
             const SizedBox(height: 8),
             FilledButton(onPressed: onAction, child: Text(action)),
           ],

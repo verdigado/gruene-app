@@ -14,12 +14,12 @@ import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
-import 'package:gruene_app/app/widgets/step_progress.dart';
 import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_details_step.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_message.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_password_step.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_welcome_step.dart';
+import 'package:gruene_app/features/guests/widgets/onboarding/step_progress.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
