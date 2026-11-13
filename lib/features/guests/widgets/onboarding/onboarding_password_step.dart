@@ -6,14 +6,14 @@ import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class OnboardingPasswordStep extends StatefulWidget {
-  final KeycloakPasswordPolicy rules;
+  final KeycloakPasswordPolicy policy;
   final TextEditingController password;
   final TextEditingController passwordRepeat;
   final bool rejected;
 
   const OnboardingPasswordStep({
     super.key,
-    required this.rules,
+    required this.policy,
     required this.password,
     required this.passwordRepeat,
     required this.rejected,
@@ -36,7 +36,7 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final rules = widget.rules;
+    final policy = widget.policy;
 
     return AutofillGroup(
       child: Column(
@@ -44,15 +44,15 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
         spacing: 16,
         children: [
           Text(t.guests.onboarding.password.title, style: theme.textTheme.titleLarge),
-          Text(t.guests.onboarding.password.hint(email: rules.email), style: theme.textTheme.bodyMedium),
+          Text(t.guests.onboarding.password.hint(email: policy.email), style: theme.textTheme.bodyMedium),
           FormSection(
             title: t.guests.onboarding.password.label,
             spacing: 8,
             children: [
               TextFormField(
                 controller: widget.password,
-                // Cutting off a pasted password would silently set a different one than the guest thinks.
                 maxLength: KeycloakPasswordPolicy.maxLength,
+                // Cutting off a pasted password would silently set a different one than the guest thinks.
                 maxLengthEnforcement: MaxLengthEnforcement.none,
                 obscureText: !_showPassword,
                 autocorrect: false,
@@ -90,11 +90,11 @@ class _OnboardingPasswordStepState extends State<OnboardingPasswordStep> {
           ),
           Column(
             children: [
-              _Rule(text: t.guests.onboarding.password.rules.length, fulfilled: rules.longEnough),
-              _Rule(text: t.guests.onboarding.password.rules.letters, fulfilled: rules.hasLetters),
-              _Rule(text: t.guests.onboarding.password.rules.digit, fulfilled: rules.hasDigit),
-              _Rule(text: t.guests.onboarding.password.rules.notEmail, fulfilled: rules.differsFromEmail),
-              _Rule(text: t.guests.onboarding.password.rules.match, fulfilled: rules.matches),
+              _Rule(text: t.guests.onboarding.password.rules.length, fulfilled: policy.longEnough),
+              _Rule(text: t.guests.onboarding.password.rules.letters, fulfilled: policy.hasLetters),
+              _Rule(text: t.guests.onboarding.password.rules.digit, fulfilled: policy.hasDigit),
+              _Rule(text: t.guests.onboarding.password.rules.notEmail, fulfilled: policy.differsFromEmail),
+              _Rule(text: t.guests.onboarding.password.rules.match, fulfilled: policy.matches),
             ],
           ),
         ],

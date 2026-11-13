@@ -27,7 +27,7 @@ class DateRangePicker extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 24),
-        Text(t.common.dateFrom),
+        Text(t.common.dateTime.from),
         SizedBox(width: 16),
         TextButton(
           onPressed: () => openDateRangePicker(context),
@@ -39,7 +39,7 @@ class DateRangePicker extends StatelessWidget {
           child: SizedBox(width: 84, child: Center(child: Text(format(dateRange?.start)))),
         ),
         SizedBox(width: 16),
-        Text(t.common.dateUntil),
+        Text(t.common.dateTime.until),
         SizedBox(width: 16),
         TextButton(
           onPressed: () => openDateRangePicker(context),

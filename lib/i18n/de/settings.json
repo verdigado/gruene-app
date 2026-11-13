@@ -1,6 +1,7 @@
 {
   "title": "App-Einstellungen",
   "generalSettings": "App",
+  "legalSettings": "Rechtliches",
   "pushNotifications": {
     "title": "Push Nachrichten",
     "disableAll": "Vollständig deaktivieren",
@@ -11,8 +12,6 @@
   "support": {
     "title": "Support & Feedback"
   },
-  "legalSettings": "Rechtliches",
-  "dataProtectionStatement": "Datenschutzerklärung",
   "logout": "Abmelden",
   "version": "Version ${version}"
 }

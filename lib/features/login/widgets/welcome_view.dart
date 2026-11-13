@@ -48,16 +48,16 @@ class WelcomeView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () => openUrl(dataProtectionStatementUrl, context),
-              child: Text(t.login.dataProtection, style: theme.textTheme.labelSmall),
+              onPressed: () => openUrl(privacyPolicyUrl, context),
+              child: Text(t.common.legal.privacyPolicy.title, style: theme.textTheme.labelSmall),
             ),
             TextButton(
-              onPressed: () => openUrl(legalNoticeUrl, context),
-              child: Text(t.common.legalNotice, style: theme.textTheme.labelSmall),
+              onPressed: () => openUrl(imprintUrl, context),
+              child: Text(t.common.legal.imprint, style: theme.textTheme.labelSmall),
             ),
             TextButton(
               onPressed: () => openUrl(termsOfUseUrl, context),
-              child: Text(t.common.termsOfUse, style: theme.textTheme.labelSmall),
+              child: Text(t.common.legal.termsOfUse, style: theme.textTheme.labelSmall),
             ),
           ].withDividers(HorizontalDivider(color: theme.primaryColor)),
         ),

@@ -10,12 +10,10 @@ import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/bottom_navigation.dart';
 import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
 
-final _initialLocation = Routes.news.path;
-
 GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
   return GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: _initialLocation,
+    initialLocation: Routes.news.path,
     routes: [
       Routes.login,
       Routes.mfaLogin,
@@ -56,7 +54,7 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
 
       if (currentPath == Routes.guestOnboarding.path) {
         if (!isInvitationHandled(invitationToken(state.uri))) return null;
-        return isLoggedIn ? _initialLocation : Routes.login.path;
+        return isLoggedIn ? Routes.news.path : Routes.login.path;
       }
 
       if (isLoggedOut && !isMfaOpen) {
@@ -64,7 +62,7 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
       }
 
       if (isLoggedIn && isLoginOpen) {
-        return _initialLocation;
+        return Routes.news.path;
       }
       return null;
     },

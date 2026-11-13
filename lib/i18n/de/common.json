@@ -1,8 +1,6 @@
 {
   "appName": "B90/DIE GRÜNEN",
   "party": "BÜNDNIS 90/DIE GRÜNEN",
-  "dateFrom": "von",
-  "dateUntil": "bis",
   "search": "Suche",
   "multiSelect": "Mehrfachauswahl (${count})",
   "optional": "optional",
@@ -14,9 +12,8 @@
   "notAvailable": "N/A",
   "unknown": "Unbekannt",
   "noResults": "Keine Ergebnisse",
-  "legalNotice": "Impressum",
-  "termsOfUse": "Nutzungsbedingungen",
   "email": "E-Mail Adresse",
+  "step": "Schritt ${current} von ${total}",
   "actions": {
     "save": "Speichern",
     "cancel": "Abbrechen",
@@ -45,8 +42,14 @@
   },
   "dateTime": {
     "dateFormat": "dd.MM.yyyy",
+    "dateFormatHint": "TT.MM.JJJJ",
     "timeFormat": "HH:mm",
     "displayTemplate": "${date} um ${time}",
+    "error": {
+      "invalidFormat": "Bitte gib ein gültiges Datum im Format @:common.dateTime.dateFormatHint ein."
+    },
+    "from": "von",
+    "until": "bis",
     "timeRemaining": {
       "minutes(param=minutes)": {
         "one": "1 Minute",
@@ -83,5 +86,14 @@
     "emailRequired": "Bitte gib eine E-Mail-Adresse ein.",
     "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "divisionRequired": "Bitte wähle eine Gliederung aus."
+  },
+  "legal": {
+    "imprint": "Impressum",
+    "termsOfUse": "Nutzungsbedingungen",
+    "privacyPolicy": {
+      "title": "Datenschutzerklärung",
+      "label(rich)": "Ich habe die ${openPrivacyPolicy(Datenschutzerklärung)} gelesen und bin einverstanden.",
+      "required": "Bitte stimme der Datenschutzerklärung zu."
+    }
   }
 }

@@ -33,11 +33,14 @@ String? invitationToken(Uri uri) {
   return token.isNullOrEmpty() ? null : token;
 }
 
-String? parseBirthDate(String? value) {
+final firstBirthDate = DateTime(1900);
+final lastBirthDate = DateTime.now();
+
+DateTime? parseBirthDate(String? value) {
   try {
     final date = DateFormat(dateFormat).parseStrict(value?.trim() ?? '');
-    if (date.year < 1900 || date.isAfter(DateTime.now())) return null;
-    return DateFormat('yyyy-MM-dd').format(date);
+    if (date.isBefore(firstBirthDate) || date.isAfter(lastBirthDate)) return null;
+    return date;
   } on FormatException {
     return null;
   }

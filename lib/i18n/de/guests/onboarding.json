@@ -1,5 +1,4 @@
 {
-  "step": "Schritt ${current} von ${total}",
   "welcome": {
     "title": "Du wurdest eingeladen",
     "invitedBy": "${inviter} hat dich eingeladen, im ${division} beim Wahlkampf mitzuhelfen.",
@@ -19,9 +18,7 @@
       "required": "Bitte gib deinen Nachnamen ein."
     },
     "birthDate": {
-      "label": "Geburtsdatum",
-      "hint": "TT.MM.JJJJ",
-      "invalid": "Bitte gib dein Geburtsdatum im Format TT.MM.JJJJ ein."
+      "label": "Geburtsdatum"
     },
     "invalid": "Bitte prüfe deine Angaben."
   },

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
 
-const dateFormat = 'dd.MM.yyyy';
-const timeFormat = 'HH:mm';
-const dateTimeFormat = '$dateFormat, $timeFormat';
+final dateFormat = t.common.dateTime.dateFormat;
+final timeFormat = t.common.dateTime.timeFormat;
+final dateTimeFormat = '$dateFormat, $timeFormat';
+const isoDateFormat = 'yyyy-MM-dd';
 
 extension DateTimeExtension on DateTime {
   String get formattedDate => DateFormat(dateFormat).format(toLocal());
@@ -13,6 +15,8 @@ extension DateTimeExtension on DateTime {
   String get formattedDateTime => DateFormat(dateTimeFormat).format(toLocal());
 
   String get formattedMonth => DateFormat.yMMMM().format(toLocal());
+
+  String toIso8601DateString() => DateFormat(isoDateFormat).format(toLocal());
 
   DateTime get startOfDay => DateTime(year, month, day);
 

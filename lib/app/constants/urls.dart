@@ -1,6 +1,6 @@
 const grueneHomeUrl = 'https://www.gruene.de';
-const legalNoticeUrl = '$grueneHomeUrl/service/impressum';
-const dataProtectionStatementUrl = '$grueneHomeUrl/service/datenschutz';
+const imprintUrl = '$grueneHomeUrl/service/impressum';
+const privacyPolicyUrl = '$grueneHomeUrl/service/datenschutz';
 const termsOfUseUrl = '$grueneHomeUrl/service/nutzungsbedingungen';
 const supportUrl = '$grueneHomeUrl/unterstuetzen';
 

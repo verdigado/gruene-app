@@ -1,14 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
 import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
+import 'package:gruene_app/features/guests/widgets/onboarding/privacy_policy_consent.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 class OnboardingDetailsStep extends StatelessWidget {
   final TextEditingController firstName;
   final TextEditingController lastName;
   final TextEditingController birthDate;
+  final ValueNotifier<bool> privacyConsent;
 
-  const OnboardingDetailsStep({super.key, required this.firstName, required this.lastName, required this.birthDate});
+  const OnboardingDetailsStep({
+    super.key,
+    required this.firstName,
+    required this.lastName,
+    required this.birthDate,
+    required this.privacyConsent,
+  });
+
+  Future<void> _pickBirthDate(BuildContext context) async {
+    final initialDate = parseBirthDate(birthDate.text);
+    final date = await showDatePicker(
+      context: context,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      initialDate: initialDate,
+      initialDatePickerMode: initialDate == null ? DatePickerMode.year : DatePickerMode.day,
+      firstDate: firstBirthDate,
+      lastDate: lastBirthDate,
+      helpText: t.guests.onboarding.details.birthDate.label,
+      calendarDelegate: const _BirthDateCalendarDelegate(),
+    );
+    if (date != null) birthDate.text = date.formattedDate;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +66,19 @@ class OnboardingDetailsStep extends StatelessWidget {
                 keyboardType: TextInputType.datetime,
                 textInputAction: TextInputAction.done,
                 autofillHints: const [AutofillHints.birthday],
-                decoration: InputDecoration(hintText: t.guests.onboarding.details.birthDate.hint),
-                validator: (value) =>
-                    parseBirthDate(value) == null ? t.guests.onboarding.details.birthDate.invalid : null,
+                decoration: InputDecoration(
+                  hintText: t.common.dateTime.dateFormatHint,
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.calendar_today_outlined),
+                    tooltip: MaterialLocalizations.of(context).datePickerHelpText,
+                    onPressed: () => _pickBirthDate(context),
+                  ),
+                ),
+                validator: (value) => parseBirthDate(value) == null ? t.common.dateTime.error.invalidFormat : null,
               ),
             ],
           ),
+          PrivacyConsentField(consent: privacyConsent),
         ],
       ),
     );
@@ -84,4 +115,14 @@ class _NameField extends StatelessWidget {
       ],
     );
   }
+}
+
+class _BirthDateCalendarDelegate extends GregorianCalendarDelegate {
+  const _BirthDateCalendarDelegate();
+
+  @override
+  String formatMediumDate(DateTime date, MaterialLocalizations localizations) => date.formattedDate;
+
+  @override
+  String formatCompactDate(DateTime date, MaterialLocalizations localizations) => date.formattedDate;
 }
