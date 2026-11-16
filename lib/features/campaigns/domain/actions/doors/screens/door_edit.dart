@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/widgets/enhanced_wheel_slider.dart';
+import 'package:gruene_app/app/widgets/counter_input.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
@@ -34,17 +34,21 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
   @override
   TextEditingController cityTextController = TextEditingController();
 
-  TextEditingController materialOnlyTextController = TextEditingController();
   TextEditingController conversationsTextController = TextEditingController();
+  TextEditingController materialOnlyTextController = TextEditingController();
 
   @override
   void dispose() {
     disposeAddressTextControllers();
+    conversationsTextController.dispose();
+    materialOnlyTextController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
+    conversationsTextController.text = widget.door.conversations.toString();
+    materialOnlyTextController.text = widget.door.materialOnly.toString();
     streetTextController.text = widget.door.address.street;
     houseNumberTextController.text = widget.door.address.houseNumber;
     zipCodeTextController.text = widget.door.address.zipCode;
@@ -66,7 +70,10 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(children: [Text(t.campaigns.door.edit.title, style: theme.textTheme.titleLarge)]),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(t.campaigns.door.edit.title, style: theme.textTheme.titleLarge),
+            ),
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -82,37 +89,13 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
             cityTextController: cityTextController,
             inputBorderColor: lightBorderColor,
           ),
-          Container(
+          Padding(
+            padding: EdgeInsets.only(top: 12, bottom: 6),
+            child: CounterInput(label: t.campaigns.door.conversations, controller: conversationsTextController),
+          ),
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              children: [
-                Flexible(
-                  child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.materialOnly,
-                    textController: materialOnlyTextController,
-                    initialValue: widget.door.materialOnly,
-                    labelColor: ThemeColors.textDisabled,
-                    sliderColor: ThemeColors.text,
-                    borderColor: lightBorderColor,
-                    actionColor: theme.colorScheme.secondary,
-                    sliderInputRange: SliderInputRange.numbers0To999,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Flexible(
-                  child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.conversations,
-                    initialValue: widget.door.conversations,
-                    textController: conversationsTextController,
-                    labelColor: ThemeColors.textDisabled,
-                    sliderColor: ThemeColors.text,
-                    borderColor: lightBorderColor,
-                    actionColor: theme.colorScheme.secondary,
-                    sliderInputRange: SliderInputRange.numbers0To999,
-                  ),
-                ),
-              ],
-            ),
+            child: CounterInput(label: t.campaigns.door.materialOnly, controller: materialOnlyTextController),
           ),
           Container(
             padding: EdgeInsets.only(top: 6, bottom: 24),
