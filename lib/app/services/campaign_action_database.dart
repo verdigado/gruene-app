@@ -17,16 +17,18 @@ class CampaignActionDatabase {
   Future<Database> _initDatabase() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'campaign_action_db.db');
-    return await openDatabase(
-      path,
-      version: CampaignActionDatabaseMigrations.currentVersion,
-      onCreate: _createDatabase,
-      // sqflite runs onUpgrade inside a transaction, so a failed step leaves the database on its old version
-      onUpgrade: CampaignActionDatabaseMigrations.upgrade,
-    );
+    return await databaseFactory.openDatabase(path, options: openOptions);
   }
 
-  Future<void> _createDatabase(Database db, _) async {
+  /// Options used to open the database, shared with tests so they exercise the same create and upgrade path.
+  static OpenDatabaseOptions get openOptions => OpenDatabaseOptions(
+    version: CampaignActionDatabaseMigrations.currentVersion,
+    onCreate: _createDatabase,
+    // sqflite runs onUpgrade inside a transaction, so a failed step leaves the database on its old version
+    onUpgrade: CampaignActionDatabaseMigrations.upgrade,
+  );
+
+  static Future<void> _createDatabase(Database db, _) async {
     return await db.execute('''
         CREATE TABLE ${CampaignActionFields.tableName} (
           ${CampaignActionFields.id} ${CampaignActionFields.idType},
