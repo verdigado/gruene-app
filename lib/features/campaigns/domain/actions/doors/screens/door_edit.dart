@@ -34,8 +34,8 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
   @override
   TextEditingController cityTextController = TextEditingController();
 
-  TextEditingController closedDoorTextController = TextEditingController();
-  TextEditingController openedDoorTextController = TextEditingController();
+  TextEditingController materialOnlyTextController = TextEditingController();
+  TextEditingController conversationsTextController = TextEditingController();
 
   @override
   void dispose() {
@@ -88,9 +88,9 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
               children: [
                 Flexible(
                   child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.closedDoors,
-                    textController: closedDoorTextController,
-                    initialValue: widget.door.closedDoors,
+                    labelText: t.campaigns.door.materialOnly,
+                    textController: materialOnlyTextController,
+                    initialValue: widget.door.materialOnly,
                     labelColor: ThemeColors.textDisabled,
                     sliderColor: ThemeColors.text,
                     borderColor: lightBorderColor,
@@ -101,9 +101,9 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
                 SizedBox(width: 10),
                 Flexible(
                   child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.openedDoors,
-                    initialValue: widget.door.openedDoors,
-                    textController: openedDoorTextController,
+                    labelText: t.campaigns.door.conversations,
+                    initialValue: widget.door.conversations,
+                    textController: conversationsTextController,
                     labelColor: ThemeColors.textDisabled,
                     sliderColor: ThemeColors.text,
                     borderColor: lightBorderColor,
@@ -137,14 +137,14 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
 
   void _saveDoor() async {
     if (!context.mounted) return;
-    final validationResult = validateDoors(openedDoorTextController.text, closedDoorTextController.text, context);
+    final validationResult = validateDoors(conversationsTextController.text, materialOnlyTextController.text, context);
     if (validationResult == null) return;
 
     final updateModel = DoorUpdateModel(
       id: widget.door.id,
       address: getAddress(),
-      openedDoors: validationResult.openedDoors,
-      closedDoors: validationResult.closedDoors,
+      conversations: validationResult.conversations,
+      materialOnly: validationResult.materialOnly,
       location: widget.door.location,
       oldDoorDetail: widget.door,
     );

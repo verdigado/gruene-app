@@ -1,4 +1,5 @@
 import 'package:gruene_app/app/models/campaigns/campaign_action.dart';
+import 'package:gruene_app/app/services/campaign_action_database_migrations.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,7 +17,13 @@ class CampaignActionDatabase {
   Future<Database> _initDatabase() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'campaign_action_db.db');
-    return await openDatabase(path, version: 1, onCreate: _createDatabase);
+    return await openDatabase(
+      path,
+      version: CampaignActionDatabaseMigrations.currentVersion,
+      onCreate: _createDatabase,
+      // sqflite runs onUpgrade inside a transaction, so a failed step leaves the database on its old version
+      onUpgrade: CampaignActionDatabaseMigrations.upgrade,
+    );
   }
 
   Future<void> _createDatabase(Database db, _) async {
