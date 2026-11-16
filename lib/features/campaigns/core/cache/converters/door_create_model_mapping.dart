@@ -5,8 +5,8 @@ extension DoorCreateModelMapping on DoorCreateModel {
     return DoorDetailModel(
       id: temporaryId,
       address: address,
-      closedDoors: closedDoors,
-      openedDoors: openedDoors,
+      materialOnly: materialOnly,
+      conversations: conversations,
       location: location,
       createdAt: '${DateTime.now().toLocalDateTimeString()}*', // should mark this as preliminary
       isCached: true,

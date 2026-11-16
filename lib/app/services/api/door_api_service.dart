@@ -19,8 +19,8 @@ class DoorApiService extends BasePoiApiService {
         type: poiType.toApiPoisType(),
         address: newDoor.address.toPoiAddress(),
         house: PoiHouse(
-          countConversations: newDoor.openedDoors.toDouble(),
-          countMaterialOnly: newDoor.closedDoors.toDouble(),
+          countConversations: newDoor.conversations.toDouble(),
+          countMaterialOnly: newDoor.materialOnly.toDouble(),
         ),
       ),
     ),
@@ -33,8 +33,8 @@ class DoorApiService extends BasePoiApiService {
       body: UpdatePoi(
         address: doorUpdate.address.toPoiAddress(),
         house: PoiHouse(
-          countConversations: doorUpdate.openedDoors.toDouble(),
-          countMaterialOnly: doorUpdate.closedDoors.toDouble(),
+          countConversations: doorUpdate.conversations.toDouble(),
+          countMaterialOnly: doorUpdate.materialOnly.toDouble(),
         ),
       ),
     ),
