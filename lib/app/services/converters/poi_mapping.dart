@@ -20,8 +20,8 @@ extension PoiMapping on Poi {
     return DoorDetailModel(
       id: poi.id,
       address: poi.address.toAddressModel(),
-      openedDoors: poi.house!.countOpenedDoors.toInt(),
-      closedDoors: poi.house!.countClosedDoors.toInt(),
+      conversations: poi.house!.countConversations.toInt(),
+      materialOnly: poi.house!.countMaterialOnly.toInt(),
       location: poi.coords.toLatLng(),
       createdAt: poi.createdAt.toLocalDateTimeString(),
     );

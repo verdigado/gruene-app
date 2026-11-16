@@ -34,24 +34,24 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
   @override
   TextEditingController cityTextController = TextEditingController();
 
-  TextEditingController openedDoorTextController = TextEditingController();
-  TextEditingController closedDoorTextController = TextEditingController();
+  TextEditingController conversationsTextController = TextEditingController();
+  TextEditingController materialOnlyTextController = TextEditingController();
   var appSettings = GetIt.I<AppSettings>();
   String _campaignName = '';
 
   @override
   void dispose() {
     disposeAddressTextControllers();
-    openedDoorTextController.dispose();
-    closedDoorTextController.dispose();
+    conversationsTextController.dispose();
+    materialOnlyTextController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     setAddress(widget.address);
-    openedDoorTextController.text = '1';
-    closedDoorTextController.text = '0';
+    conversationsTextController.text = '1';
+    materialOnlyTextController.text = '0';
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
@@ -124,9 +124,9 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
               children: [
                 Flexible(
                   child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.closedDoors,
+                    labelText: t.campaigns.door.materialOnly,
                     initialValue: 0,
-                    textController: closedDoorTextController,
+                    textController: materialOnlyTextController,
                     labelColor: theme.colorScheme.surface,
                     sliderColor: theme.colorScheme.surface,
                     borderColor: theme.colorScheme.surface,
@@ -137,9 +137,9 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
                 SizedBox(width: 10),
                 Flexible(
                   child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.openedDoors,
+                    labelText: t.campaigns.door.conversations,
                     initialValue: 1,
-                    textController: openedDoorTextController,
+                    textController: conversationsTextController,
                     labelColor: theme.colorScheme.surface,
                     sliderColor: theme.colorScheme.surface,
                     borderColor: theme.colorScheme.surface,
@@ -158,15 +158,15 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
 
   void _onSavePressed(BuildContext localContext) {
     if (!localContext.mounted) return;
-    final validationResult = validateDoors(openedDoorTextController.text, closedDoorTextController.text, context);
+    final validationResult = validateDoors(conversationsTextController.text, materialOnlyTextController.text, context);
     if (validationResult == null) return;
     Navigator.maybePop(
       context,
       DoorCreateModel(
         location: widget.location,
         address: getAddress(),
-        openedDoors: validationResult.openedDoors,
-        closedDoors: validationResult.closedDoors,
+        conversations: validationResult.conversations,
+        materialOnly: validationResult.materialOnly,
         campaignId: getCurrentCampaignId()!,
       ),
     );
