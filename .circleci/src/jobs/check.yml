@@ -27,6 +27,6 @@ steps:
             process.exit(1)
           }
         '
-#  - run:
-#      name: Tests
-#      command: fvm flutter test
+  - run:
+      name: Tests
+      command: fvm flutter test
