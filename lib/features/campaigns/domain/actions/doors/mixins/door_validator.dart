@@ -9,7 +9,8 @@ mixin DoorValidator {
   ) {
     final conversations = int.tryParse(conversationsRawValue) ?? 0;
     final materialOnly = int.tryParse(materialOnlyRawValue) ?? 0;
-    if (conversations + materialOnly == 0) {
+    // Negative counts can only come from typed input; the API requires counts >= 0
+    if (conversations < 0 || materialOnly < 0 || conversations + materialOnly == 0) {
       showToastError(context, t.campaigns.door.noDoorsWarning);
       return null;
     }

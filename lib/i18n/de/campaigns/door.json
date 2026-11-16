@@ -13,5 +13,5 @@
   },
   "materialOnly": "Ungeöffnete Türen",
   "conversations": "Geöffnete Türen",
-  "noDoorsWarning": "Bitte gib mindestens eine Tür ein!"
+  "noDoorsWarning": "Bitte gib mindestens ein Gespräch oder Material ein."
 }
