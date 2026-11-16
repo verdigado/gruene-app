@@ -2,17 +2,17 @@ part of '../mixins.dart';
 
 /// Mixin for validating door-related input
 mixin DoorValidator {
-  ({int closedDoors, int openedDoors})? validateDoors(
-    String openedDoorsRawValue,
-    String closedDoorsRawValue,
+  ({int materialOnly, int conversations})? validateDoors(
+    String conversationsRawValue,
+    String materialOnlyRawValue,
     BuildContext context,
   ) {
-    final openedDoors = int.tryParse(openedDoorsRawValue) ?? 0;
-    final closedDoors = int.tryParse(closedDoorsRawValue) ?? 0;
-    if (openedDoors + closedDoors == 0) {
+    final conversations = int.tryParse(conversationsRawValue) ?? 0;
+    final materialOnly = int.tryParse(materialOnlyRawValue) ?? 0;
+    if (conversations + materialOnly == 0) {
       showToastError(context, t.campaigns.door.noDoorsWarning);
       return null;
     }
-    return (closedDoors: closedDoors, openedDoors: openedDoors);
+    return (materialOnly: materialOnly, conversations: conversations);
   }
 }

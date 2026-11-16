@@ -8,8 +8,8 @@ part 'door_update_model.g.dart';
 
 @JsonSerializable()
 class DoorUpdateModel {
-  final int openedDoors;
-  final int closedDoors;
+  final int conversations;
+  final int materialOnly;
   final String id;
   final AddressModel address;
   @LatLongConverter()
@@ -19,8 +19,8 @@ class DoorUpdateModel {
   DoorUpdateModel({
     required this.id,
     required this.address,
-    required this.openedDoors,
-    required this.closedDoors,
+    required this.conversations,
+    required this.materialOnly,
     required this.oldDoorDetail,
     required this.location,
   });
