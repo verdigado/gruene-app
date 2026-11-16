@@ -174,7 +174,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
       case PoiType.poster:
         return item.posterCount;
       case PoiType.house:
-        return item.openedDoorCount + item.closedDoorCount;
+        return item.conversationCount + item.materialOnlyCount;
       case PoiType.swaggerGeneratedUnknown:
         return 0;
     }
