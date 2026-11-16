@@ -142,7 +142,7 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
         case TeamAssignmentType.door:
           return widget.teamMembershipStatistics.teamStatistics.fold(
             0,
-            (sum, s) => sum + s.closedDoorCount + s.openedDoorCount,
+            (sum, s) => sum + s.conversationCount + s.materialOnlyCount,
           );
         case TeamAssignmentType.flyer:
           return widget.teamMembershipStatistics.teamStatistics.fold(0, (sum, s) => sum + s.flyerCount);
