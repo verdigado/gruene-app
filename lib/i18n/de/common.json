@@ -37,6 +37,10 @@
     "done": "Fertig",
     "next": "Weiter"
   },
+  "counter": {
+    "decrease": "${label} verringern",
+    "increase": "${label} erhöhen"
+  },
   "map": {
     "mapData": "Kartendaten",
     "osmContributors": "OpenStreetMap Mitwirkende",

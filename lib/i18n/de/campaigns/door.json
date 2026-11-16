@@ -5,13 +5,12 @@
     "other": "${n} Haustüren"
   },
   "add": {
-    "title": "Haustüren eintragen",
-    "hint": "Bitte trage sowohl geöffnete als auch verschlossen gebliebene Türen ein, damit wir eine genauere Statistik erhalten."
+    "title": "Haustürgespräche eintragen"
   },
   "edit": {
     "title": "Haustüren bearbeiten"
   },
-  "materialOnly": "Ungeöffnete Türen",
-  "conversations": "Geöffnete Türen",
+  "materialOnly": "Material ohne Gespräch",
+  "conversations": "Gespräche (inkl. Material)",
   "noDoorsWarning": "Bitte gib mindestens ein Gespräch oder Material ein."
 }
