@@ -30,8 +30,24 @@ class PushNotificationService {
       await Firebase.initializeApp();
       await FirebaseMessaging.instance.requestPermission();
       _firebaseInitialized = true;
+      // The initial getToken() call may fail (e.g. Play services not ready after device wake-up).
+      // Register the token on the API as soon as FCM provides a new one.
+      FirebaseMessaging.instance.onTokenRefresh.listen(_registerDeviceToken);
     } catch (e) {
       logger.e('Failed to initialize Firebase Messaging: $e');
+    }
+  }
+
+  /// Register the device token on the API for API controlled events.
+  /// Only done for authenticated users; failures are logged and must not break the caller.
+  Future<void> _registerDeviceToken(String token) async {
+    try {
+      if (!(await _authRepo.isTokenValid())) {
+        return;
+      }
+      await GetIt.I<UserApiService>().addDeviceToken(token);
+    } catch (e) {
+      logger.w('Failed to register device token for push notifications: $e');
     }
   }
 
@@ -101,12 +117,17 @@ class PushNotificationService {
     }
 
     final firebase = FirebaseMessaging.instance;
-    var fbToken = await firebase.getToken();
 
-    if (fbToken != null) {
-      // register device on api for api controlled events
-      var userService = GetIt.I<UserApiService>();
-      await userService.addDeviceToken(fbToken);
+    try {
+      final fbToken = await firebase.getToken();
+      if (fbToken != null) {
+        await _registerDeviceToken(fbToken);
+      }
+    } catch (e) {
+      // e.g. "FCM Registration failed" / SERVICE_NOT_AVAILABLE when Google Play services
+      // are not ready or the network is unavailable. Must not break the auth flow.
+      // A token obtained later is registered via onTokenRefresh.
+      logger.w('Failed to get FCM token: $e');
     }
 
     final newTopics = await _getFcmTopics();
