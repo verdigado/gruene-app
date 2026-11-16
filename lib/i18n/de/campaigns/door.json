@@ -11,7 +11,7 @@
   "edit": {
     "title": "Haustüren bearbeiten"
   },
-  "closedDoors": "Ungeöffnete Türen",
-  "openedDoors": "Geöffnete Türen",
+  "materialOnly": "Ungeöffnete Türen",
+  "conversations": "Geöffnete Türen",
   "noDoorsWarning": "Bitte gib mindestens eine Tür ein!"
 }

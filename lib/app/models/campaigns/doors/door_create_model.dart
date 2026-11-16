@@ -10,16 +10,16 @@ class DoorCreateModel {
   @LatLongConverter()
   final LatLng location;
   final AddressModel address;
-  final int openedDoors;
-  final int closedDoors;
+  final int conversations;
+  final int materialOnly;
 
   final String campaignId;
 
   DoorCreateModel({
     required this.location,
     required this.address,
-    required this.openedDoors,
-    required this.closedDoors,
+    required this.conversations,
+    required this.materialOnly,
     required this.campaignId,
   });
 
