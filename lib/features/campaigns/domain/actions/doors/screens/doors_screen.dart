@@ -119,7 +119,6 @@ class _DoorsScreenState extends MapConsumer<DoorsScreen, DoorCreateModel, DoorDe
       () => getPoiFromFeature<DoorDetailModel>(feature),
       getPoiDetail,
       getEditPoiWidget,
-      desiredSize: Size(145, 110),
     );
   }
 

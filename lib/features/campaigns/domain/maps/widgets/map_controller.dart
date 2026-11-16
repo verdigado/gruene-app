@@ -16,7 +16,8 @@ abstract class MapController {
 
   Future<dynamic> getClosestFeaturesInScreen(m.Point<double> point, String displayLayer, String sourceLayer);
 
-  void showMapPopover(LatLng coord, Widget widget, OnEditItemClickedCallback? onEditItemClicked, Size desiredSize);
+  /// Shows [widget] in a popover above [coord]: with a fixed [desiredSize], or sized to its content if it is null.
+  void showMapPopover(LatLng coord, Widget widget, OnEditItemClickedCallback? onEditItemClicked, Size? desiredSize);
 
   Future<void> setLayerSourceWithFeatureList(String sourceId, List<turf.Feature> layerData);
 

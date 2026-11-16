@@ -24,6 +24,7 @@ import 'package:gruene_app/features/campaigns/domain/maps/widgets/campaign_locat
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_compass.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller_simplified.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_popover.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/campaign_select_dialog.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
@@ -574,11 +575,12 @@ class _MapContainerState extends State<MapContainer>
     LatLng coord,
     Widget widget,
     OnEditItemClickedCallback? onEditItemClicked,
-    Size desiredSize,
+    Size? desiredSize,
   ) async {
     if (!mounted) return;
 
-    await moveMapIfItemIsOnBorder(coord, desiredSize);
+    // a popover sized to its content is not measured before it is shown, so an estimate is used here
+    await moveMapIfItemIsOnBorder(coord, desiredSize ?? const Size(200, 120));
     final point = await getScreenPointFromLatLng(coord);
 
     _showPopOver(point, widget, onEditItemClicked, desiredSize: desiredSize);
@@ -661,16 +663,13 @@ class _MapContainerState extends State<MapContainer>
     Point<num> pointOnScreen,
     Widget widget,
     OnEditItemClickedCallback? onEditItemClicked, {
-    Size desiredSize = const Size(100, 100),
+    Size? desiredSize,
   }) {
     final mediaQuery = MediaQuery.of(context);
-    final theme = Theme.of(context);
     var pixelRatio = Platform.isAndroid ? mediaQuery.devicePixelRatio : 1.0;
 
     setState(() {
       popups.clear();
-      num popupHeight = desiredSize.height - 15;
-      num popupWidth = desiredSize.width;
       popups.add(
         GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -682,72 +681,13 @@ class _MapContainerState extends State<MapContainer>
           },
         ),
       );
-      final heightArrowTriangle = 10.0;
       popups.add(
-        Positioned(
-          top: ((pointOnScreen.y / pixelRatio) - popupHeight).toDouble() - (5 + heightArrowTriangle) - 5,
-          left: (pointOnScreen.x / pixelRatio) - (popupWidth / 2),
-          child: Column(
-            children: [
-              Container(
-                width: popupWidth.toDouble(),
-                height: popupHeight.toDouble() + 5,
-                decoration: BoxDecoration(color: ThemeColors.background, borderRadius: BorderRadius.circular(5)),
-                padding: EdgeInsets.only(top: 3, left: 5, right: 5),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                popups.clear();
-                              });
-                            },
-                            child: Icon(Icons.close_outlined, size: 14),
-                          ),
-                          GestureDetector(
-                            onTap: () => onTapPopup(onEditItemClicked),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border(bottom: BorderSide(width: 1.5, color: ThemeColors.textDark)),
-                              ),
-                              child: Text(
-                                t.common.actions.edit,
-                                style: theme.textTheme.labelSmall?.apply(
-                                  color: ThemeColors.textDark,
-                                  fontWeightDelta: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => onTapPopup(onEditItemClicked),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        width: popupWidth.toDouble(),
-                        height: popupHeight.toDouble() - 25,
-                        child: widget,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Center(
-                child: ClipPath(
-                  clipper: MyTriangle(),
-                  child: Container(color: ThemeColors.background, width: 15, height: heightArrowTriangle),
-                ),
-              ),
-            ],
-          ),
+        MapPopover(
+          anchor: Offset(pointOnScreen.x / pixelRatio, pointOnScreen.y / pixelRatio),
+          desiredSize: desiredSize,
+          onClose: () => setState(() => popups.clear()),
+          onEdit: () => onTapPopup(onEditItemClicked),
+          child: widget,
         ),
       );
     });
@@ -987,19 +927,5 @@ class _MapContainerState extends State<MapContainer>
   void _changeActiveCampaign() {
     resetMarkerItems();
     campaignActionCache.flushCache();
-  }
-}
-
-class MyTriangle extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.addPolygon([Offset(0, 0), Offset(size.width / 2, size.height), Offset(size.width, 0)], true);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
   }
 }
