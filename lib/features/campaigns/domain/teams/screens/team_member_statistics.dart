@@ -170,7 +170,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
   double _getCurrentStatValue(TeamMembershipStatisticsItem item) {
     switch (_selectedPoiType) {
       case PoiType.flyerSpot:
-        return item.flyerCount;
+        return item.materialCount;
       case PoiType.poster:
         return item.posterCount;
       case PoiType.house:

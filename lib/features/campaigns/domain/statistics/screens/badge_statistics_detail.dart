@@ -46,7 +46,7 @@ class BadgeStatisticsDetail extends StatelessWidget {
     return [
       _getBadgeRow(t.campaigns.statistics.recorded.doors, statistics.houseStats.own.toInt(), theme),
       _getBadgeRow(t.campaigns.statistics.recorded.posters, statistics.posterStats.own.toInt(), theme),
-      _getBadgeRow(t.campaigns.statistics.recorded.flyer, statistics.flyerStats.own.toInt(), theme),
+      _getBadgeRow(t.campaigns.statistics.recorded.flyer, statistics.materialStats.own.toInt(), theme),
     ];
   }
 
