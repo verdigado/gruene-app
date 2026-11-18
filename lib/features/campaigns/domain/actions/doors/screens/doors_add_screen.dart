@@ -6,7 +6,7 @@ import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
-import 'package:gruene_app/app/widgets/enhanced_wheel_slider.dart';
+import 'package:gruene_app/app/widgets/counter_input.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/save_cancel_on_create_widget.dart';
@@ -105,49 +105,20 @@ class DoorsAddScreenState extends State<DoorsAddScreen> with AddressExtension, D
             zipCodeTextController: zipCodeTextController,
             cityTextController: cityTextController,
           ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    t.campaigns.door.add.hint,
-                    style: theme.textTheme.labelMedium?.apply(color: theme.colorScheme.surface),
-                  ),
-                ),
-              ],
+          Padding(
+            padding: EdgeInsets.only(top: 12, bottom: 6),
+            child: CounterInput(
+              label: t.campaigns.door.conversations,
+              controller: conversationsTextController,
+              foregroundColor: theme.colorScheme.surface,
             ),
           ),
-          Container(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              children: [
-                Flexible(
-                  child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.materialOnly,
-                    initialValue: 0,
-                    textController: materialOnlyTextController,
-                    labelColor: theme.colorScheme.surface,
-                    sliderColor: theme.colorScheme.surface,
-                    borderColor: theme.colorScheme.surface,
-                    actionColor: theme.colorScheme.secondary,
-                    sliderInputRange: SliderInputRange.numbers0To999,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Flexible(
-                  child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.conversations,
-                    initialValue: 1,
-                    textController: conversationsTextController,
-                    labelColor: theme.colorScheme.surface,
-                    sliderColor: theme.colorScheme.surface,
-                    borderColor: theme.colorScheme.surface,
-                    actionColor: theme.colorScheme.secondary,
-                    sliderInputRange: SliderInputRange.numbers0To999,
-                  ),
-                ),
-              ],
+            child: CounterInput(
+              label: t.campaigns.door.materialOnly,
+              controller: materialOnlyTextController,
+              foregroundColor: theme.colorScheme.surface,
             ),
           ),
           SaveCancelOnCreateWidget(onSave: _onSavePressed),

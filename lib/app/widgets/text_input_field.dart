@@ -111,11 +111,20 @@ class NumericRangeFormatter extends TextInputFormatter {
     }
 
     if (newValueNumber < min) {
-      return newValue.copyWith(text: min.toString());
+      return _clampedTo(min);
     } else if (newValueNumber > max) {
-      return newValue.copyWith(text: max.toString());
+      return _clampedTo(max);
     } else {
       return newValue;
     }
+  }
+
+  // The cursor has to move as well, it may be beyond the end of the shorter clamped text
+  TextEditingValue _clampedTo(int value) {
+    final text = value.toString();
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
   }
 }
