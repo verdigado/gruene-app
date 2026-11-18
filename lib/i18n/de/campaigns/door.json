@@ -1,8 +1,8 @@
 {
   "label": "Haustür",
   "count": {
-    "one": "${n} Haustür",
-    "other": "${n} Haustüren"
+    "one": "${n} Haustürgespräch",
+    "other": "${n} Haustürgespräche"
   },
   "add": {
     "title": "Haustürgespräche eintragen"
