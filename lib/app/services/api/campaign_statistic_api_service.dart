@@ -13,7 +13,7 @@ class CampaignStatisticApiService extends BaseApiService {
 extension StatisticsParser on CampaignStatistics {
   CampaignStatisticsModel asCampaignStatistics() {
     return CampaignStatisticsModel(
-      flyerStats: flyer.asStatisticsSet(),
+      materialStats: material.asStatisticsSet(),
       houseStats: house.asStatisticsSet(),
       posterStats: poster.asStatisticsSet(),
     );

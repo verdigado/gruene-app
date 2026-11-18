@@ -7124,13 +7124,13 @@ components:
       properties:
         poster:
           $ref: '#/components/schemas/PoiStatistics'
-        flyer:
+        material:
           $ref: '#/components/schemas/PoiStatistics'
         house:
           $ref: '#/components/schemas/PoiStatistics'
       required:
         - poster
-        - flyer
+        - material
         - house
     TeamMembershipType:
       type: string
@@ -7260,7 +7260,7 @@ components:
         posterCount:
           type: number
           minimum: 0
-        flyerCount:
+        materialCount:
           type: number
           minimum: 0
         conversationCount:
@@ -7273,7 +7273,7 @@ components:
         - status
         - type
         - posterCount
-        - flyerCount
+        - materialCount
         - conversationCount
         - materialOnlyCount
     TeamMembershipStatistics:

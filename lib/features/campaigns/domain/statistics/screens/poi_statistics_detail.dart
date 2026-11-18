@@ -83,7 +83,7 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
                   _getCategoryRow(
                     TeamAssignmentType.flyer,
                     t.campaigns.statistics.recorded.flyer,
-                    widget.poiStatistics.flyerStats,
+                    widget.poiStatistics.materialStats,
                   ),
                 ],
               ),
@@ -118,7 +118,7 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
     var hasSubDivisionData = [
       widget.poiStatistics.posterStats.subDivision,
       widget.poiStatistics.houseStats.subDivision,
-      widget.poiStatistics.flyerStats.subDivision,
+      widget.poiStatistics.materialStats.subDivision,
     ].toList().any((v) => v != null);
 
     return [
@@ -145,7 +145,7 @@ class _PoiStatisticsDetailState extends State<PoiStatisticsDetail> {
             (sum, s) => sum + s.conversationCount + s.materialOnlyCount,
           );
         case TeamAssignmentType.flyer:
-          return widget.teamMembershipStatistics.teamStatistics.fold(0, (sum, s) => sum + s.flyerCount);
+          return widget.teamMembershipStatistics.teamStatistics.fold(0, (sum, s) => sum + s.materialCount);
       }
     });
 
