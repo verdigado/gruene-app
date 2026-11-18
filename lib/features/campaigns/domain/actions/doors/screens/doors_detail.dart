@@ -4,6 +4,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/address_field_detail.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
+/// Detail of a door entry, shown in a map popover that takes the size of this content.
 class DoorsDetail extends StatelessWidget {
   final DoorDetailModel poi;
 
@@ -14,41 +15,30 @@ class DoorsDetail extends StatelessWidget {
     final theme = Theme.of(context);
     final labelTextStyle = theme.textTheme.labelSmall?.apply(color: Colors.black);
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         AddressFieldDetail(street: poi.address.street, houseNumber: poi.address.houseNumber),
-        Container(
-          padding: EdgeInsets.only(left: 2, right: 2, top: 6),
-          child: Row(
-            children: [
-              Expanded(child: Text(t.campaigns.door.conversations, style: labelTextStyle)),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  padding: EdgeInsets.only(left: 6),
-                  child: Text(poi.conversations.toString(), style: labelTextStyle),
-                ),
-              ),
-            ],
-          ),
-        ),
+        _countRow(t.campaigns.door.conversations, poi.conversations, labelTextStyle),
         Container(height: 1.5, color: ThemeColors.textLight),
-        Container(
-          padding: EdgeInsets.only(left: 2, right: 2, top: 6),
-          child: Row(
-            children: [
-              Expanded(child: Text(t.campaigns.door.materialOnly, style: labelTextStyle)),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  padding: EdgeInsets.only(left: 6),
-                  child: Text(poi.materialOnly.toString(), style: labelTextStyle),
-                ),
-              ),
-            ],
-          ),
-        ),
+        _countRow(t.campaigns.door.materialOnly, poi.materialOnly, labelTextStyle),
         Container(height: 1.5, color: ThemeColors.textLight),
       ],
+    );
+  }
+
+  Widget _countRow(String label, int count, TextStyle? style) {
+    return Padding(
+      padding: EdgeInsets.only(left: 2, right: 2, top: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: Text(label, style: style)),
+          Padding(
+            padding: EdgeInsets.only(left: 6),
+            child: Text(count.toString(), style: style),
+          ),
+        ],
+      ),
     );
   }
 }

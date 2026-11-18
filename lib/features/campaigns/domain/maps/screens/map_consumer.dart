@@ -177,7 +177,8 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     GetPoiCallback<U> getPoi,
     GetPoiDetailWidgetCallback<U> getPoiDetail,
     GetPoiEditWidgetCallback<U> getPoiEdit, {
-    Size desiredSize = const Size(100, 100),
+    // fixed popover size; without it, the popover takes the size of its content
+    Size? desiredSize,
     bool useBottomSheet = false,
   }) async {
     U poi = await getPoi();
@@ -190,7 +191,9 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       }
       await mapController.unsetFocusToMarkerItem();
     } else {
-      var popupWidget = SizedBox(height: desiredSize.height, width: desiredSize.width, child: poiDetailWidget);
+      var popupWidget = desiredSize == null
+          ? poiDetailWidget
+          : SizedBox(height: desiredSize.height, width: desiredSize.width, child: poiDetailWidget);
       final coord = MapHelper.extractLatLngFromFeature(feature);
       mapController.showMapPopover(coord, popupWidget, () => _editPoi(() => getPoiEdit(poi)), desiredSize);
     }
