@@ -15,8 +15,6 @@ class ChallengeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final badge = switch (activityType) {
       ChallengeActivityType.house => 'door_${variant.name}.svg',
-      // TODO #1264: no flyer challenges any more (api#743)
-      // ChallengeActivityType.flyerSpot => 'flyer_${variant.name}.svg',
       ChallengeActivityType.poster => 'poster_${variant.name}.svg',
       _ => throw UnimplementedError(),
     };
