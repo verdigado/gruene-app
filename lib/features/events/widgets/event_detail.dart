@@ -80,26 +80,27 @@ class EventDetail extends StatelessWidget {
                 )
               : null,
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(t.events.attend),
-            EventAttendanceSelection(
-              attendanceStatus: attendanceStatus != null ? {attendanceStatus} : {},
-              setAttendanceStatus: (attendanceStatus) async => await tryAndNotify(
-                function: () async {
-                  final eventService = GetIt.I<EventApiService>();
-                  final updatedEvent = await eventService.updateEventAttendance(event, attendanceStatus.firstOrNull);
-                  if (context.mounted) {
-                    context.read<EventsBloc>().add(AddOrUpdateEvent(calendarEvent: updatedEvent));
-                  }
-                },
-                context: context,
-                onSuccess: (context, _) => showSnackBar(context: context, text: t.common.saved),
+        if (event.recurring == null)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(t.events.attend),
+              EventAttendanceSelection(
+                attendanceStatus: attendanceStatus != null ? {attendanceStatus} : {},
+                setAttendanceStatus: (attendanceStatus) async => await tryAndNotify(
+                  function: () async {
+                    final eventService = GetIt.I<EventApiService>();
+                    final updatedEvent = await eventService.updateEventAttendance(event, attendanceStatus.firstOrNull);
+                    if (context.mounted) {
+                      context.read<EventsBloc>().add(AddOrUpdateEvent(calendarEvent: updatedEvent));
+                    }
+                  },
+                  context: context,
+                  onSuccess: (context, _) => showSnackBar(context: context, text: t.common.saved),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         if (description != null) Text(description),
         Text(t.common.updatedAt(date: event.updatedAt.formattedDate), style: theme.textTheme.labelSmall),
       ],
