@@ -216,7 +216,7 @@ class _TeamStatisticsCategoryDetailState extends State<TeamStatisticsCategoryDet
       case TeamAssignmentType.door:
         return t.campaigns.statistics.recorded.doors;
       case TeamAssignmentType.flyer:
-        return t.campaigns.statistics.recorded.flyer;
+        return t.campaigns.statistics.recorded.material;
     }
   }
 
