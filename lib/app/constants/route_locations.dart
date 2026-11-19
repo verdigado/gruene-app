@@ -17,7 +17,7 @@ class RouteLocations {
 
   static const String campaignDoorDetail = 'door';
   static const String campaignPosterDetail = 'poster';
-  static const String campaignFlyerDetail = 'flyer';
+  static const String campaignStandDetail = 'stand';
   static const String campaignTeamDetail = 'team';
   static const String campaignChallengesDetail = 'challenges';
   static const String campaignStatisticsDetail = 'statistics';
