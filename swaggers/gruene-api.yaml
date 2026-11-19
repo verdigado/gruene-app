@@ -2077,6 +2077,13 @@ paths:
         - name: sort
           required: false
           in: query
+          description: >-
+            Comma-separated fields, `-` for descending. Fields: createdAt,
+            updatedAt, addressCity, addressZip, addressStreet,
+            addressHouseNumber, countConversations, countMaterialOnly,
+            posterStatus, campaignId, type; for stands also name,
+            flyerCountTotal and lastEntryAt (start of the latest entry). POIs
+            without a value for the field come last in both directions.
           schema:
             example: addressCity,-updatedAt
             type: string
@@ -2101,6 +2108,25 @@ paths:
         - name: updatedBefore
           required: false
           in: query
+          schema:
+            format: date-time
+            type: string
+        - name: entryAfter
+          required: false
+          in: query
+          description: >-
+            Stands only: one of the entries starts at or after this time.
+            Combined with `entryBefore`, one entry has to be in the range. Other
+            POI types are not filtered.
+          schema:
+            format: date-time
+            type: string
+        - name: entryBefore
+          required: false
+          in: query
+          description: >-
+            Stands only: one of the entries starts before this time. Other POI
+            types are not filtered.
           schema:
             format: date-time
             type: string
@@ -2205,6 +2231,13 @@ paths:
         - name: sort
           required: false
           in: query
+          description: >-
+            Comma-separated fields, `-` for descending. Fields: createdAt,
+            updatedAt, addressCity, addressZip, addressStreet,
+            addressHouseNumber, countConversations, countMaterialOnly,
+            posterStatus, campaignId, type; for stands also name,
+            flyerCountTotal and lastEntryAt (start of the latest entry). POIs
+            without a value for the field come last in both directions.
           schema:
             example: addressCity,-updatedAt
             type: string
@@ -2229,6 +2262,25 @@ paths:
         - name: updatedBefore
           required: false
           in: query
+          schema:
+            format: date-time
+            type: string
+        - name: entryAfter
+          required: false
+          in: query
+          description: >-
+            Stands only: one of the entries starts at or after this time.
+            Combined with `entryBefore`, one entry has to be in the range. Other
+            POI types are not filtered.
+          schema:
+            format: date-time
+            type: string
+        - name: entryBefore
+          required: false
+          in: query
+          description: >-
+            Stands only: one of the entries starts before this time. Other POI
+            types are not filtered.
           schema:
             format: date-time
             type: string
@@ -2343,8 +2395,120 @@ paths:
       summary: Delete a POI
       tags:
         - campaigns
+  /v1/campaigns/pois/{poiId}/entries:
+    post:
+      description: >-
+        Only for POIs of type STAND. Returns the stand with all its entries and
+        the new flyer total.
+      operationId: createStandEntry
+      parameters:
+        - name: poiId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStandEntry'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Poi'
+        '401':
+          description: ''
+        '404':
+          description: ''
+        '409':
+          description: The POI is not a stand.
+      security:
+        - bearer: []
+      summary: Add an entry to a stand
+      tags:
+        - campaigns
+  /v1/campaigns/pois/{poiId}/entries/{entryId}:
+    put:
+      description: Returns the stand with all its entries and the new flyer total.
+      operationId: updateStandEntry
+      parameters:
+        - name: poiId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: entryId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStandEntry'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Poi'
+        '401':
+          description: ''
+        '404':
+          description: ''
+        '409':
+          description: The POI is not a stand.
+      security:
+        - bearer: []
+      summary: Update an entry of a stand
+      tags:
+        - campaigns
+    delete:
+      description: >-
+        Soft-deletes the entry. Returns the stand with its remaining entries and
+        the new flyer total.
+      operationId: deleteStandEntry
+      parameters:
+        - name: poiId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: entryId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Poi'
+        '401':
+          description: ''
+        '404':
+          description: ''
+        '409':
+          description: The POI is not a stand.
+      security:
+        - bearer: []
+      summary: Delete an entry of a stand
+      tags:
+        - campaigns
   /v1/campaigns/pois/{poiId}/photos:
     post:
+      description: >-
+        Only pins of type POSTER and STAND can have photos; other types are
+        refused with 409.
       operationId: addPoiPhoto
       parameters:
         - name: poiId
@@ -2374,6 +2538,8 @@ paths:
           description: ''
         '404':
           description: ''
+        '409':
+          description: The POI cannot have photos.
       security:
         - bearer: []
       summary: Add POI photo
@@ -5904,7 +6070,6 @@ components:
       type: string
       enum:
         - POSTER
-        - FLYER_SPOT
         - HOUSE
     CreateChallengeActivityDto:
       type: object
@@ -6425,18 +6590,6 @@ components:
       required:
         - status
         - comment
-    PoiFlyerSpot:
-      type: object
-      properties:
-        flyerCount:
-          type: number
-          description: Number of flyers on this spot.
-          minimum: 0
-        comment:
-          type: string
-          nullable: true
-      required:
-        - flyerCount
     PoiHouse:
       type: object
       properties:
@@ -6460,6 +6613,23 @@ components:
       required:
         - countConversations
         - countMaterialOnly
+    PoiStand:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the stand.
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          maxLength: 500
+        comment:
+          type: string
+          nullable: true
+          maxLength: 200
+      required:
+        - name
     UpdatePoi:
       type: object
       properties:
@@ -6469,22 +6639,71 @@ components:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/PoiPoster'
-        flyerSpot:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/PoiFlyerSpot'
         house:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/PoiHouse'
+        stand:
+          nullable: true
+          description: Stand fields; entries are edited through their own endpoints.
+          allOf:
+            - $ref: '#/components/schemas/PoiStand'
       required:
         - address
     PoiType:
       type: string
       enum:
-        - FLYER_SPOT
         - POSTER
         - HOUSE
+        - STAND
+    CreateStandEntry:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: >-
+            Start of the event (ISO 8601, UTC or with offset). Its date is the
+            entry's date.
+          format: date-time
+        endAt:
+          type: string
+          description: End of the event, after `startAt` and on the same date.
+          format: date-time
+        flyerCount:
+          type: number
+          nullable: true
+          description: >-
+            Flyers handed out, at most 10,000. Empty is stored as `0`. Must be
+            empty
+
+            for an entry after today.
+          minimum: 0
+          maximum: 10000
+      required:
+        - startAt
+        - endAt
+    CreatePoiStand:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the stand.
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          maxLength: 500
+        comment:
+          type: string
+          nullable: true
+          maxLength: 200
+        firstEntry:
+          description: A stand is always created with its first entry.
+          allOf:
+            - $ref: '#/components/schemas/CreateStandEntry'
+      required:
+        - name
+        - firstEntry
     CreatePoi:
       type: object
       properties:
@@ -6510,14 +6729,15 @@ components:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/PoiPoster'
-        flyerSpot:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/PoiFlyerSpot'
         house:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/PoiHouse'
+        stand:
+          nullable: true
+          description: 'Required for `type: STAND`.'
+          allOf:
+            - $ref: '#/components/schemas/CreatePoiStand'
       required:
         - type
         - coords
@@ -6574,6 +6794,79 @@ components:
         - id
         - original
         - srcset
+    StandEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+        startAt:
+          format: date-time
+          type: string
+          description: Start of the event in UTC; its date is the entry's date.
+        endAt:
+          format: date-time
+          type: string
+          description: End of the event in UTC.
+        flyerCount:
+          type: number
+          description: Flyers handed out; `0` if none were entered.
+        userId:
+          type: string
+          description: Creator of the entry.
+        updatedBy:
+          type: string
+          description: Last user who saved the entry.
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - startAt
+        - endAt
+        - flyerCount
+        - userId
+        - updatedBy
+        - createdAt
+        - updatedAt
+    PoiStandDetails:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the stand.
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          maxLength: 500
+        comment:
+          type: string
+          nullable: true
+          maxLength: 200
+        flyerCountTotal:
+          type: number
+          description: >-
+            Sum of the flyer counts of the stand's non-deleted entries.
+            Calculated
+
+            by the API; read-only.
+        entries:
+          description: >-
+            All non-deleted entries, newest first (by `startAt`), so the latest
+            entry
+
+            is the first one. Empty if all entries of the stand were deleted.
+          type: array
+          items:
+            $ref: '#/components/schemas/StandEntry'
+      required:
+        - name
+        - flyerCountTotal
+        - entries
     Poi:
       type: object
       properties:
@@ -6613,10 +6906,10 @@ components:
           $ref: '#/components/schemas/PoiAddress'
         poster:
           $ref: '#/components/schemas/PoiPoster'
-        flyerSpot:
-          $ref: '#/components/schemas/PoiFlyerSpot'
         house:
           $ref: '#/components/schemas/PoiHouse'
+        stand:
+          $ref: '#/components/schemas/PoiStandDetails'
       required:
         - coords
         - type
@@ -6656,6 +6949,32 @@ components:
         - total
         - offset
         - limit
+    UpdateStandEntry:
+      type: object
+      properties:
+        startAt:
+          type: string
+          description: >-
+            Start of the event (ISO 8601, UTC or with offset). Its date is the
+            entry's date.
+          format: date-time
+        endAt:
+          type: string
+          description: End of the event, after `startAt` and on the same date.
+          format: date-time
+        flyerCount:
+          type: number
+          nullable: true
+          description: >-
+            Flyers handed out, at most 10,000. Empty is stored as `0`. Must be
+            empty
+
+            for an entry after today.
+          minimum: 0
+          maximum: 10000
+      required:
+        - startAt
+        - endAt
     RouteType:
       type: string
       enum:
@@ -7126,12 +7445,16 @@ components:
           $ref: '#/components/schemas/PoiStatistics'
         material:
           $ref: '#/components/schemas/PoiStatistics'
-        house:
-          $ref: '#/components/schemas/PoiStatistics'
+        conversations:
+          description: |-
+            Door figure. The totals count conversations only and exclude
+            material-only doors; `byStatus` lists both values separately.
+          allOf:
+            - $ref: '#/components/schemas/PoiStatistics'
       required:
         - poster
         - material
-        - house
+        - conversations
     TeamMembershipType:
       type: string
       enum:
@@ -7342,14 +7665,11 @@ components:
       properties:
         poster:
           $ref: '#/components/schemas/TeamStatisticsCategory'
-        flyer:
-          $ref: '#/components/schemas/TeamStatisticsCategory'
-        house:
+        conversations:
           $ref: '#/components/schemas/TeamStatisticsCategory'
       required:
         - poster
-        - flyer
-        - house
+        - conversations
     TeamInvitation:
       type: object
       properties:

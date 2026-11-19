@@ -14,7 +14,7 @@ extension StatisticsParser on CampaignStatistics {
   CampaignStatisticsModel asCampaignStatistics() {
     return CampaignStatisticsModel(
       materialStats: material.asStatisticsSet(),
-      houseStats: house.asStatisticsSet(),
+      houseStats: conversations.asStatisticsSet(),
       posterStats: poster.asStatisticsSet(),
     );
   }
