@@ -102,6 +102,37 @@ class MapHelper {
     return minimalDistanceFeature?.item1;
   }
 
+  /// Returns [features] sorted by their distance from [target], the closest first.
+  static List<Map<String, dynamic>> sortByDistance(List<Map<String, dynamic>> features, LatLng target) {
+    final targetPoint = target.toPoint();
+    final distances = {
+      for (final feature in features) feature: _calculateDistance(Feature.fromJson(feature), targetPoint),
+    };
+    return [...features]..sort((a, b) => distances[a]!.compareTo(distances[b]!));
+  }
+
+  /// Returns the polygon [features] that contain [target]. If none contains it (e.g. a tap just outside
+  /// an edge), all [features] are returned.
+  static List<Map<String, dynamic>> filterPolygonsContaining(List<Map<String, dynamic>> features, LatLng target) {
+    final position = target.toPoint().coordinates;
+    final containing = features.where((feature) {
+      final geometry = Feature.fromJson(feature).geometry;
+      return geometry is Polygon && booleanPointInPolygon(position, geometry);
+    }).toList();
+    return containing.isEmpty ? features : containing;
+  }
+
+  static String extractNameFromFeature(Map<String, dynamic> feature) =>
+      _extractStringProperty(feature, CampaignConstants.featurePropertyName);
+
+  static String extractTypeLabelFromFeature(Map<String, dynamic> feature) =>
+      _extractStringProperty(feature, CampaignConstants.featurePropertyTypeLabel);
+
+  static String _extractStringProperty(Map<String, dynamic> feature, String property) {
+    final properties = feature['properties'] as Map<String, dynamic>?;
+    return properties?[property]?.toString() ?? '';
+  }
+
   static String extractPoiIdFromFeature(Map<String, dynamic> feature) {
     final id = feature['id'].toString();
     return id;

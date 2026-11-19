@@ -2412,7 +2412,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateStandEntry'
+              $ref: '#/components/schemas/CreatePoiStandEntry'
       responses:
         '201':
           description: ''
@@ -2451,7 +2451,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateStandEntry'
+              $ref: '#/components/schemas/UpdatePoiStandEntry'
       responses:
         '200':
           description: ''
@@ -6656,7 +6656,7 @@ components:
         - POSTER
         - HOUSE
         - STAND
-    CreateStandEntry:
+    CreatePoiStandEntry:
       type: object
       properties:
         startAt:
@@ -6700,7 +6700,7 @@ components:
         firstEntry:
           description: A stand is always created with its first entry.
           allOf:
-            - $ref: '#/components/schemas/CreateStandEntry'
+            - $ref: '#/components/schemas/CreatePoiStandEntry'
       required:
         - name
         - firstEntry
@@ -6794,7 +6794,7 @@ components:
         - id
         - original
         - srcset
-    StandEntry:
+    PoiStandEntry:
       type: object
       properties:
         id:
@@ -6862,7 +6862,7 @@ components:
             is the first one. Empty if all entries of the stand were deleted.
           type: array
           items:
-            $ref: '#/components/schemas/StandEntry'
+            $ref: '#/components/schemas/PoiStandEntry'
       required:
         - name
         - flyerCountTotal
@@ -6949,7 +6949,7 @@ components:
         - total
         - offset
         - limit
-    UpdateStandEntry:
+    UpdatePoiStandEntry:
       type: object
       properties:
         startAt:

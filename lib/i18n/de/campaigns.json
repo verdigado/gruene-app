@@ -69,6 +69,7 @@
   "actionArea": {
     "label": "Einsatzgebiet",
     "areaLabel": "Fläche",
+    "typeLabel": "Typ",
     "quickAction": {
       "status": "Gebiet abgearbeitet"
     }
