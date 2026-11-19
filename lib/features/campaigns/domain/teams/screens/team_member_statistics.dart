@@ -147,16 +147,6 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
           height: 16,
         ),
       ),
-      // TODO #1264: member ranking offers only posters and door conversations
-      // ButtonSegment(
-      //   value: PoiType.flyerSpot,
-      //   icon: CustomIcon(
-      //     path: 'assets/symbols/flyer/flyer.svg',
-      //     color: _selectedPoiType == PoiType.flyerSpot ? ThemeColors.background : ThemeColors.textDark,
-      //     width: 16,
-      //     height: 16,
-      //   ),
-      // ),
     ];
   }
 
@@ -169,9 +159,6 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
 
   double _getCurrentStatValue(TeamMembershipStatisticsItem item) {
     switch (_selectedPoiType) {
-      // TODO #1264: member ranking offers only posters and door conversations
-      // case PoiType.flyerSpot:
-      //   return item.materialCount;
       case PoiType.poster:
         return item.posterCount;
       case PoiType.house:

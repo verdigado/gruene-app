@@ -37,12 +37,6 @@ class _TeamStatisticsDetailState extends State<TeamStatisticsDetail> {
             statisticData: widget.teamStatistics.poster,
             ownTeamId: widget.ownTeamId,
           ),
-          // TODO #1264: no flyer ranking in team leaderboards any more (api#729)
-          // TeamStatisticsCategoryDetail(
-          //   category: TeamAssignmentType.flyer,
-          //   statisticData: widget.teamStatistics.flyer,
-          //   ownTeamId: widget.ownTeamId,
-          // ),
           Row(
             children: [
               Text(
