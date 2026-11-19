@@ -32,7 +32,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   late List<FilterChipModel> _flyerFilter;
   final List<ChallengeActivityType> challengeActivityFilter = [
     ChallengeActivityType.house,
-    ChallengeActivityType.flyerSpot,
+    // TODO #1264: no flyer challenges any more (api#743)
+    // ChallengeActivityType.flyerSpot,
     ChallengeActivityType.poster,
   ];
   final FilterChipController _filterController = FilterChipController();
@@ -61,11 +62,12 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         isActive: challengeActivityFilter.contains(ChallengeActivityType.poster),
         stateChanged: (state) => addRemoveActivityType(state, ChallengeActivityType.poster),
       ),
-      FilterChipModel(
-        text: t.campaigns.flyer.label,
-        isActive: challengeActivityFilter.contains(ChallengeActivityType.flyerSpot),
-        stateChanged: (state) => addRemoveActivityType(state, ChallengeActivityType.flyerSpot),
-      ),
+      // TODO #1264: no flyer challenges any more (api#743)
+      // FilterChipModel(
+      //   text: t.campaigns.flyer.label,
+      //   isActive: challengeActivityFilter.contains(ChallengeActivityType.flyerSpot),
+      //   stateChanged: (state) => addRemoveActivityType(state, ChallengeActivityType.flyerSpot),
+      // ),
     ];
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
