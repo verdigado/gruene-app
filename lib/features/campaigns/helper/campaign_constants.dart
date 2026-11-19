@@ -86,6 +86,8 @@ class CampaignConstants {
   static const featurePropertyIsAssigned = 'is_assigned';
   static const featurePropertyColor = 'color';
   static const featurePropertyVisualIdentifierId = 'visual_identifier_id';
+  static const featurePropertyName = 'name';
+  static const featurePropertyTypeLabel = 'type_label';
 
   static String focusAreaMapIdProperty = 'id';
   static String focusAreaMapScoreColorProperty = 'score_color';

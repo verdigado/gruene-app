@@ -15,6 +15,9 @@ extension ActionAreaDetailModelMapFeature on ActionAreaDetailModel {
         CampaignConstants.featurePropertyIsAssigned: team != null,
         CampaignConstants.featurePropertyVisualIdentifierId: visualIdentifierId,
         CampaignConstants.featurePropertyColor: visualIdentifierColor,
+        // shown in the selection dialog for overlapping action areas
+        CampaignConstants.featurePropertyName: name,
+        CampaignConstants.featurePropertyTypeLabel: type.toLabel(),
       },
       geometry: polygon.toTurfPolygon(),
     );

@@ -13,14 +13,15 @@ extension PoiServiceTypeMapping on PoiServiceType {
     }
   }
 
-  AreaType toApiAreasGetType() {
+  List<AreaType> toApiAreasGetTypes() {
     switch (this) {
+      // flyer action areas are shown in the door tab
       case PoiServiceType.door:
-        return AreaType.house;
+        return [AreaType.house, AreaType.flyerSpot];
       case PoiServiceType.flyer:
-        return AreaType.flyerSpot;
+        return [AreaType.flyerSpot];
       case PoiServiceType.poster:
-        return AreaType.poster;
+        return [AreaType.poster];
     }
   }
 
@@ -37,14 +38,15 @@ extension PoiServiceTypeMapping on PoiServiceType {
     }
   }
 
-  RouteType toRoutesApiGetType() {
+  List<RouteType> toRoutesApiGetTypes() {
     switch (this) {
       case PoiServiceType.poster:
-        return RouteType.poster;
+        return [RouteType.poster];
+      // flyer routes are shown in the door tab
       case PoiServiceType.door:
-        return RouteType.house;
+        return [RouteType.house, RouteType.flyerSpot];
       case PoiServiceType.flyer:
-        return RouteType.flyerSpot;
+        return [RouteType.flyerSpot];
     }
   }
 
