@@ -8,7 +8,8 @@ extension PoiServiceTypeMapping on PoiServiceType {
       case PoiServiceType.door:
         return PoiType.house;
       case PoiServiceType.flyer:
-        return PoiType.flyerSpot;
+        // TODO #1266: FLYER_SPOT is no longer a pin type (api#744), the flyer pin client is removed
+        throw UnimplementedError();
     }
   }
 
