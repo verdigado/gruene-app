@@ -5,7 +5,7 @@ class ChallengeMembershipTimeElapsedHandler extends BaseNotificationHandler {
   void processMessage(RemoteMessage message, BuildContext? context) {
     final challengeId = _getChallengeId(message);
     if (context == null || challengeId == null) return;
-    ChallengeHelper.openChallenge(context, challengeId);
+    ChallengeHelper.openChallengeIfExists(context, challengeId);
   }
 
   @override
@@ -23,7 +23,7 @@ class ChallengeMembershipTimeElapsedHandler extends BaseNotificationHandler {
       '',
     );
     if (context == null || challengeId == null) return;
-    ChallengeHelper.openChallenge(context, challengeId);
+    ChallengeHelper.openChallengeIfExists(context, challengeId);
   }
 
   String? _getChallengeId(RemoteMessage message) {

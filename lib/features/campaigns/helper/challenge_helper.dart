@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Visibility;
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/constants/route_locations.dart';
+import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/api/challenge_api_service.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
@@ -84,6 +85,17 @@ class ChallengeHelper {
 
   static void openChallenge(BuildContext context, String challengeId, {Object? extra}) {
     context.push(RouteLocations.getRoute([RouteLocations.campaignChallengesDetail, challengeId]), extra: extra);
+  }
+
+  /// Opens the challenge only if it still exists, e.g. for notifications of challenges deleted in the meantime.
+  static Future<void> openChallengeIfExists(BuildContext context, String challengeId) async {
+    try {
+      await GetIt.I<ChallengeApiService>().getChallenge(challengeId);
+    } on ApiException catch (e) {
+      if (e.statusCode == 404) return;
+    }
+    if (!context.mounted) return;
+    openChallenge(context, challengeId);
   }
 
   static void openChallengeAsChallenge(BuildContext context, Challenge challenge) {
