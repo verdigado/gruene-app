@@ -298,7 +298,13 @@ class _MapContainerState extends State<MapContainer>
           return distanceA.compareTo(distanceB);
         });
 
-        feature = await _userMultiSelect(poiMarkers);
+        feature = await _userMultiSelect(poiMarkers, (item) {
+          var itemsOnSamePos = poiMarkers
+              .map(MapHelper.extractLatLngFromFeature)
+              .where((x) => x == MapHelper.extractLatLngFromFeature(item));
+          var isDuplicate = itemsOnSamePos.length > 1;
+          return _getMultiSelectRow(item, isDuplicate);
+        });
       } else {
         feature = MapHelper.getClosestFeature(poiMarkers, targetLatLng);
       }
@@ -335,7 +341,8 @@ class _MapContainerState extends State<MapContainer>
     final routes = jsonFeaturesRoutes.map((e) => e as Map<String, dynamic>).toList();
 
     if (routes.isNotEmpty) {
-      final feature = MapHelper.getClosestFeature(routes, targetLatLng);
+      final feature = await _selectRouteOrArea(routes, targetLatLng);
+      if (feature == null || !mounted) return true;
 
       _onRouteClick(feature);
       return true;
@@ -352,11 +359,22 @@ class _MapContainerState extends State<MapContainer>
     final actionAreas = jsonFeaturesActionAreas.map((e) => e as Map<String, dynamic>).toList();
 
     if (actionAreas.isNotEmpty) {
-      final feature = MapHelper.getClosestFeature(actionAreas, targetLatLng);
+      // the touch target also catches areas next to the tap, only offer the ones it is in
+      final tappedAreas = MapHelper.filterPolygonsContaining(actionAreas, targetLatLng);
+      final feature = await _selectRouteOrArea(tappedAreas, targetLatLng);
+      if (feature == null || !mounted) return true;
+
       _onActionAreaClick(feature);
       return true;
     }
     return false;
+  }
+
+  /// Returns the only feature in [features], or lets the user choose one if several (e.g. a flyer and a door
+  /// route) are at the tapped spot. Returns null if the user closes the selection.
+  Future<Map<String, dynamic>?> _selectRouteOrArea(List<Map<String, dynamic>> features, LatLng targetLatLng) async {
+    if (features.length == 1) return features.single;
+    return _userMultiSelect(MapHelper.sortByDistance(features, targetLatLng), _getRouteOrAreaSelectRow);
   }
 
   Future<bool> _findAndHandleClickExperienceAreas(Point<double> point, LatLng targetLatLng) async {
@@ -825,7 +843,10 @@ class _MapContainerState extends State<MapContainer>
     Timer(Duration(milliseconds: 500), () => _loadDataOnMap());
   }
 
-  Future<Map<String, dynamic>?> _userMultiSelect(List<Map<String, dynamic>> features) async {
+  Future<Map<String, dynamic>?> _userMultiSelect(
+    List<Map<String, dynamic>> features,
+    Widget Function(Map<String, dynamic> feature) buildRow,
+  ) async {
     var theme = Theme.of(context);
 
     var selectedFeature = await showDialog<Map<String, dynamic>>(
@@ -847,17 +868,7 @@ class _MapContainerState extends State<MapContainer>
                   ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: 250),
                     child: RawScrollbar(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: features.map((item) {
-                            var itemsOnSamePos = features
-                                .map(MapHelper.extractLatLngFromFeature)
-                                .where((x) => x == MapHelper.extractLatLngFromFeature(item));
-                            var isDuplicate = itemsOnSamePos.length > 1;
-                            return _getMultiSelectRow(item, isDuplicate);
-                          }).toList(),
-                        ),
-                      ),
+                      child: SingleChildScrollView(child: Column(children: features.map(buildRow).toList())),
                     ),
                   ),
                 ],
@@ -913,6 +924,38 @@ class _MapContainerState extends State<MapContainer>
           ),
         );
       },
+    );
+  }
+
+  Widget _getRouteOrAreaSelectRow(Map<String, dynamic> feature) {
+    var theme = Theme.of(context);
+    var name = MapHelper.extractNameFromFeature(feature);
+    return GestureDetector(
+      onTap: () => Navigator.maybePop(context, feature),
+      child: Card(
+        color: theme.colorScheme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        shadowColor: ThemeColors.textDisabled,
+        child: InkWell(
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name.isEmpty ? '-' : name,
+                  style: theme.textTheme.labelMedium!.copyWith(color: ThemeColors.text, fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  MapHelper.extractTypeLabelFromFeature(feature),
+                  style: theme.textTheme.labelMedium!.copyWith(color: ThemeColors.text),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
