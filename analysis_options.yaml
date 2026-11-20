@@ -20,6 +20,7 @@ analyzer:
 linter:
   rules:
     - always_use_package_imports
+    - deprecated_member_use_from_same_package
     - directives_ordering
     - prefer_single_quotes
     - require_trailing_commas

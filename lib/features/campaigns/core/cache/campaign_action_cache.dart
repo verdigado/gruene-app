@@ -271,9 +271,8 @@ class CampaignActionCache extends ChangeNotifier {
           markerItems.add(model.toVirtualActionAreaDetailModel().toFeature());
 
         // flyer actions are converted to door actions when the database is upgraded
-        case CampaignActionType.addFlyer:
-        case CampaignActionType.editFlyer:
-        case CampaignActionType.deleteFlyer:
+        // ignore: deprecated_member_use_from_same_package
+        case CampaignActionType.addFlyer || CampaignActionType.editFlyer || CampaignActionType.deleteFlyer:
         case CampaignActionType.unknown:
         case null:
           throw UnimplementedError();
@@ -373,9 +372,8 @@ class CampaignActionCache extends ChangeNotifier {
       case CampaignActionType.addDoor:
       case CampaignActionType.editDoor:
       case CampaignActionType.deleteDoor:
-      case CampaignActionType.addFlyer:
-      case CampaignActionType.editFlyer:
-      case CampaignActionType.deleteFlyer:
+      // ignore: deprecated_member_use_from_same_package
+      case CampaignActionType.addFlyer || CampaignActionType.editFlyer || CampaignActionType.deleteFlyer:
       case CampaignActionType.editActionAreaStatus:
       case CampaignActionType.editActionAreaAssignment:
       case null:
@@ -398,9 +396,8 @@ class CampaignActionCache extends ChangeNotifier {
       case CampaignActionType.addDoor:
       case CampaignActionType.editDoor:
       case CampaignActionType.deleteDoor:
-      case CampaignActionType.addFlyer:
-      case CampaignActionType.editFlyer:
-      case CampaignActionType.deleteFlyer:
+      // ignore: deprecated_member_use_from_same_package
+      case CampaignActionType.addFlyer || CampaignActionType.editFlyer || CampaignActionType.deleteFlyer:
       case CampaignActionType.editRouteStatus:
       case CampaignActionType.editRouteAssignment:
       case null:
@@ -521,9 +518,8 @@ class CampaignActionCache extends ChangeNotifier {
               campaignActionDatabase.delete(action.id!);
 
             // flyer actions are converted to door actions when the database is upgraded
-            case CampaignActionType.addFlyer:
-            case CampaignActionType.editFlyer:
-            case CampaignActionType.deleteFlyer:
+            // ignore: deprecated_member_use_from_same_package
+            case CampaignActionType.addFlyer || CampaignActionType.editFlyer || CampaignActionType.deleteFlyer:
             case CampaignActionType.unknown:
             case null:
               throw UnimplementedError();
