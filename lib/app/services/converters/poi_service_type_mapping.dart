@@ -7,9 +7,6 @@ extension PoiServiceTypeMapping on PoiServiceType {
         return PoiType.poster;
       case PoiServiceType.door:
         return PoiType.house;
-      case PoiServiceType.flyer:
-        // TODO #1266: FLYER_SPOT is no longer a pin type (api#744), the flyer pin client is removed
-        throw UnimplementedError();
     }
   }
 
@@ -18,8 +15,6 @@ extension PoiServiceTypeMapping on PoiServiceType {
       // flyer action areas are shown in the door tab
       case PoiServiceType.door:
         return [AreaType.house, AreaType.flyerSpot];
-      case PoiServiceType.flyer:
-        return [AreaType.flyerSpot];
       case PoiServiceType.poster:
         return [AreaType.poster];
     }
@@ -33,7 +28,6 @@ extension PoiServiceTypeMapping on PoiServiceType {
         if (posterStatus != null) statusSuffix = '_${posterStatus.name}';
         return '$typeName$statusSuffix';
       case PoiServiceType.door:
-      case PoiServiceType.flyer:
         return typeName;
     }
   }
@@ -45,8 +39,6 @@ extension PoiServiceTypeMapping on PoiServiceType {
       // flyer routes are shown in the door tab
       case PoiServiceType.door:
         return [RouteType.house, RouteType.flyerSpot];
-      case PoiServiceType.flyer:
-        return [RouteType.flyerSpot];
     }
   }
 
@@ -56,8 +48,6 @@ extension PoiServiceTypeMapping on PoiServiceType {
         return PoiCacheType.poster;
       case PoiServiceType.door:
         return PoiCacheType.door;
-      case PoiServiceType.flyer:
-        return PoiCacheType.flyer;
     }
   }
 }

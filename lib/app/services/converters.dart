@@ -4,7 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/geocode/nominatim.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_detail_model.dart';
-import 'package:gruene_app/app/models/campaigns/flyer/flyer_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_list_item_model.dart';

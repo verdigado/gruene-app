@@ -90,8 +90,6 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
         t.campaigns.focusArea.activities.poster.recommendation,
         2,
       ),
-      // There is no flyer tab any more that opens the focus-area detail; the flyer advice is part of the door tab.
-      PoiServiceType.flyer => const <Widget>[],
     };
     if (content.isEmpty) return SizedBox.shrink();
 

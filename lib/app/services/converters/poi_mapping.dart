@@ -43,22 +43,6 @@ extension PoiMapping on Poi {
     );
   }
 
-  FlyerDetailModel toFlyerDetail() {
-    // TODO #1266: FLYER_SPOT is no longer a pin type (api#744), the flyer pin client is removed
-    throw UnimplementedError();
-    // final poi = this;
-    // if (poi.type != PoiType.flyerSpot) {
-    //   throw Exception('Unexpected PoiType');
-    // }
-    // return FlyerDetailModel(
-    //   id: poi.id,
-    //   address: poi.address.toAddressModel(),
-    //   flyerCount: poi.flyerSpot!.flyerCount.toInt(),
-    //   createdAt: poi.createdAt.toLocalDateTimeString(),
-    //   location: coords.toLatLng(),
-    // );
-  }
-
   PosterListItemModel toPosterListItem() {
     final poi = this;
     if (poi.type != PoiType.poster) {
