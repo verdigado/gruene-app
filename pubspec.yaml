@@ -103,6 +103,7 @@ dev_dependencies:
   chopper_generator: ^8.0.0
   json_serializable: ^6.6.1
   swagger_dart_code_generator: ^4.1.1
+  mocktail: ^1.0.5
 #----------------------------------------------------
 
 dependency_overrides:
