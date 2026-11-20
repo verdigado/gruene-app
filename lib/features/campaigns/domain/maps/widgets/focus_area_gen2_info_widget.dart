@@ -66,15 +66,30 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
   }
 
   Widget _getRecommendationWidget(ThemeData theme) {
-    final activities = t.campaigns.focusArea.activities;
+    // Translations are accessed by their full path (not via a local variable), so `slang analyze` sees them as used.
     final content = switch (poiType) {
       // Flyers are no longer an activity of their own, so older focus areas show their flyer advice below the
       // door advice. Newer focus areas carry no flyer values and show only the door part.
       PoiServiceType.door => _joinActivitySections([
-        _getActivitySection(theme, activities.door.label, activities.door.recommendation, 1),
-        _getActivitySection(theme, activities.flyer.label, activities.flyer.recommendation, 3),
+        _getActivitySection(
+          theme,
+          t.campaigns.focusArea.activities.door.label,
+          t.campaigns.focusArea.activities.door.recommendation,
+          1,
+        ),
+        _getActivitySection(
+          theme,
+          t.campaigns.focusArea.activities.flyer.label,
+          t.campaigns.focusArea.activities.flyer.recommendation,
+          3,
+        ),
       ]),
-      PoiServiceType.poster => _getActivitySection(theme, activities.poster.label, activities.poster.recommendation, 2),
+      PoiServiceType.poster => _getActivitySection(
+        theme,
+        t.campaigns.focusArea.activities.poster.label,
+        t.campaigns.focusArea.activities.poster.recommendation,
+        2,
+      ),
       // There is no flyer tab any more that opens the focus-area detail; the flyer advice is part of the door tab.
       PoiServiceType.flyer => const <Widget>[],
     };
