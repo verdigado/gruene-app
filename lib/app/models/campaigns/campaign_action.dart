@@ -15,12 +15,10 @@ class CampaignAction {
   }
 
   int? get actionTypeValue {
-    _ensureStableEnumValues();
     return actionType?.index;
   }
 
   set actionTypeValue(int? value) {
-    _ensureStableEnumValues();
     if (value == null) {
       actionType = null;
     } else {
@@ -28,19 +26,6 @@ class CampaignAction {
           ? CampaignActionType.values[value]
           : CampaignActionType.unknown;
     }
-  }
-
-  void _ensureStableEnumValues() {
-    assert(CampaignActionType.unknown.index == 0);
-    assert(CampaignActionType.addPoster.index == 1);
-    assert(CampaignActionType.editPoster.index == 2);
-    assert(CampaignActionType.deletePoster.index == 3);
-    assert(CampaignActionType.addDoor.index == 4);
-    assert(CampaignActionType.editDoor.index == 5);
-    assert(CampaignActionType.deleteDoor.index == 6);
-    assert(CampaignActionType.addFlyer.index == 7);
-    assert(CampaignActionType.editFlyer.index == 8);
-    assert(CampaignActionType.deleteFlyer.index == 9);
   }
 
   Map<String, dynamic> toMap() {
@@ -78,6 +63,8 @@ class CampaignAction {
   }
 }
 
+/// Stored by index in the offline queue: only append new values, never reorder or remove any
+/// (checked by test/app/models/campaigns/campaign_action_test.dart).
 enum CampaignActionType {
   unknown,
   addPoster,
@@ -86,8 +73,20 @@ enum CampaignActionType {
   addDoor,
   editDoor,
   deleteDoor,
+  @Deprecated(
+    'Flyer pins no longer exist (gruene-api#744). Kept so the stored index values stay stable; '
+    'queued flyer actions are converted to door actions by the database upgrade.',
+  )
   addFlyer,
+  @Deprecated(
+    'Flyer pins no longer exist (gruene-api#744). Kept so the stored index values stay stable; '
+    'queued flyer actions are converted to door actions by the database upgrade.',
+  )
   editFlyer,
+  @Deprecated(
+    'Flyer pins no longer exist (gruene-api#744). Kept so the stored index values stay stable; '
+    'queued flyer actions are converted to door actions by the database upgrade.',
+  )
   deleteFlyer,
   editRouteStatus,
   editRouteAssignment,

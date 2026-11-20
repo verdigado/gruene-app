@@ -1,3 +1,6 @@
+// The flyer action types are deprecated; converting them is what this file is for.
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:convert';
 
 import 'package:gruene_app/app/models/campaigns/campaign_action.dart';
