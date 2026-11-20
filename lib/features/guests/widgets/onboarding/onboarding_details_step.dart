@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/widgets/form_section.dart';
-import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
+import 'package:gruene_app/features/guests/utils/birth_date.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/privacy_policy_consent.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
@@ -78,7 +78,7 @@ class OnboardingDetailsStep extends StatelessWidget {
               ),
             ],
           ),
-          PrivacyConsentField(consent: privacyConsent),
+          PrivacyPolicyConsent(consent: privacyConsent),
         ],
       ),
     );

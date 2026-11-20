@@ -10,14 +10,6 @@ import 'package:gruene_app/features/guests/widgets/expiry_info.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GuestInvitationDetailExtra {
-  final GuestInvitation invitation;
-  final Division division;
-  final void Function(GuestInvitation updated) onChanged;
-
-  const GuestInvitationDetailExtra({required this.invitation, required this.division, required this.onChanged});
-}
-
 class GuestInvitationDetailScreen extends StatefulWidget {
   final GuestInvitationDetailExtra extra;
 
@@ -77,4 +69,12 @@ class _GuestInvitationDetailScreenState extends State<GuestInvitationDetailScree
       ),
     );
   }
+}
+
+class GuestInvitationDetailExtra {
+  final GuestInvitation invitation;
+  final Division division;
+  final void Function(GuestInvitation updated) onChanged;
+
+  const GuestInvitationDetailExtra({required this.invitation, required this.division, required this.onChanged});
 }

@@ -31,7 +31,7 @@ class WelcomeView extends StatelessWidget {
           child: FilledButton(
             onPressed: () => context.read<AuthBloc>().add(LoginRequested()),
             child: Text(
-              t.login.loginMembers,
+              t.common.actions.login,
               style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
             ),
           ),

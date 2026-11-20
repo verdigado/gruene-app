@@ -58,24 +58,23 @@
     "rejected": "Dieses Passwort ist zu einfach oder nicht erlaubt. Bitte wähle ein anderes.",
     "action": "Zugang einrichten"
   },
-  "done": {
+  "login": {
     "title": "Dein Zugang ist eingerichtet",
-    "hint": "Melde Dich jetzt mit Deiner E-Mail-Adresse und Deinem Passwort an. Danach richtest Du die Zwei-Faktor-Authentifizierung ein.",
-    "action": "Jetzt anmelden"
+    "hint": "Melde Dich jetzt mit Deiner E-Mail-Adresse und Deinem Passwort an. Danach richtest Du die Zwei-Faktor-Authentifizierung ein."
   },
   "refused": {
     "title": "Kein Gastzugang möglich",
-    "hint": "Mit dieser E-Mail-Adresse ist kein Gastzugang möglich. Bitte wende Dich an die Person, die Dich eingeladen hat.",
-    "action": "Zur Anmeldung"
+    "hint": "Mit dieser E-Mail-Adresse ist kein Gastzugang möglich. Bitte wende Dich an die Person, die Dich eingeladen hat."
   },
   "invalid": {
     "title": "Diese Einladung ist nicht mehr gültig",
-    "hint": "Sie ist abgelaufen, wurde zurückgezogen oder bereits verwendet. Wende Dich an die Person, die Dich eingeladen hat.",
-    "action": "Zur Anmeldung"
+    "hint": "Sie ist abgelaufen, wurde zurückgezogen oder bereits verwendet. Wende Dich an die Person, die Dich eingeladen hat."
   },
   "loggedIn": {
     "title": "Du bist bereits angemeldet",
-    "hint": "Um die Einladung anzunehmen, melde Dich zuerst ab und öffne danach den Link aus der E-Mail erneut.",
-    "action": "Zur App"
+    "hint": "Um die Einladung anzunehmen, melde Dich zuerst ab und öffne danach den Link aus der E-Mail erneut."
+  },
+  "lookupFailed": {
+    "title": "Die Einladung konnte nicht geprüft werden"
   }
 }

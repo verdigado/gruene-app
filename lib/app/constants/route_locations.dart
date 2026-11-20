@@ -14,7 +14,7 @@ class RouteLocations {
   static const String pushNotifications = 'push-notifications';
   static const String membershipCard = 'membership-card';
   static const String profileSearch = 'profile-search';
-  static const String guestOnboarding = 'guest-invitation';
+  static const String guestOnboarding = 'guest-onboarding';
   static const String guests = 'guests';
   static const String guestInvite = 'invite';
   static const String guestInvitations = 'invitations';

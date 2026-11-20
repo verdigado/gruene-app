@@ -4,10 +4,10 @@ import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
-class PrivacyConsentField extends StatelessWidget {
+class PrivacyPolicyConsent extends StatelessWidget {
   final ValueNotifier<bool> consent;
 
-  const PrivacyConsentField({super.key, required this.consent});
+  const PrivacyPolicyConsent({super.key, required this.consent});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +16,7 @@ class PrivacyConsentField extends StatelessWidget {
     return FormField(
       initialValue: consent.value,
       validator: (value) => value == true ? null : t.common.legal.privacyPolicy.required,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       builder: (field) => CheckboxListTile(
         value: field.value,
         onChanged: (value) {
@@ -35,10 +36,15 @@ class PrivacyConsentField extends StatelessWidget {
           ),
         ),
         subtitle: field.hasError
-            ? Text(field.errorText!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error))
+            ? Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  field.errorText!,
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error),
+                ),
+              )
             : null,
       ),
     );
   }
 }
-

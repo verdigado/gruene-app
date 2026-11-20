@@ -35,11 +35,7 @@ class SettingsScreen extends StatelessWidget {
             isExternal: true,
           ),
           SectionTitle(title: t.settings.legalSettings),
-          TextListItem(
-            title: t.common.legal.imprint,
-            onPress: () => openUrl(imprintUrl, context),
-            isExternal: true,
-          ),
+          TextListItem(title: t.common.legal.imprint, onPress: () => openUrl(imprintUrl, context), isExternal: true),
           TextListItem(
             title: t.common.legal.privacyPolicy.title,
             onPress: () => openUrl(privacyPolicyUrl, context),

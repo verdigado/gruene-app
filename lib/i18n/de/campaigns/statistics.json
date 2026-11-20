@@ -24,5 +24,5 @@
     "flyer": "Flyer"
   },
   "asAt": "Stand",
-  "noTeams": "In Deinem ${division} existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
+  "noTeams": "In deinem ${division} existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
 }

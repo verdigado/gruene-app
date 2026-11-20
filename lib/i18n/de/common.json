@@ -33,7 +33,8 @@
     "remove": "Entfernen",
     "select": "Auswählen",
     "done": "Fertig",
-    "next": "Weiter"
+    "next": "Weiter",
+    "login": "Jetzt anmelden"
   },
   "map": {
     "mapData": "Kartendaten",

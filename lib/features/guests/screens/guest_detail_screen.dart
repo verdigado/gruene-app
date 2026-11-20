@@ -14,13 +14,6 @@ import 'package:gruene_app/features/guests/widgets/guest_history_timeline.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
-class GuestDetailExtra {
-  final Division division;
-  final void Function(Guest updated) onChanged;
-
-  const GuestDetailExtra({required this.division, required this.onChanged});
-}
-
 class GuestDetailScreen extends StatelessWidget {
   final String guestId;
   final GuestDetailExtra extra;
@@ -104,4 +97,11 @@ class GuestDetailView extends StatelessWidget {
       ),
     );
   }
+}
+
+class GuestDetailExtra {
+  final Division division;
+  final void Function(Guest updated) onChanged;
+
+  const GuestDetailExtra({required this.division, required this.onChanged});
 }

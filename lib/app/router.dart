@@ -8,7 +8,7 @@ import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/utils/profile_feature_checker.dart';
 import 'package:gruene_app/app/widgets/bottom_navigation.dart';
-import 'package:gruene_app/features/guests/utils/guest_onboarding.dart';
+import 'package:gruene_app/features/guests/utils/guest_invitation_link.dart';
 
 GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
   return GoRouter(
@@ -46,18 +46,20 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
     redirect: (context, state) {
       final currentPath = state.uri.path;
       final isLoginOpen = currentPath.startsWith(Routes.login.path);
-      final isMfaOpen = currentPath.startsWith(Routes.mfa.path);
+      final isPublicRouteOpen = Routes.public.any((route) => currentPath.startsWith(route.path));
 
       final authBloc = context.read<AuthBloc>();
       final isLoggedIn = authBloc.state is Authenticated;
       final isLoggedOut = authBloc.state is Unauthenticated;
 
-      if (currentPath == Routes.guestOnboarding.path) {
-        if (!isInvitationHandled(invitationToken(state.uri))) return null;
+      if (isInvitationLink(state.uri)) {
+        WidgetsBinding.instance
+          ..addPostFrameCallback((_) => openInvitationLink(navigatorKey, invitationToken(state.uri)))
+          ..ensureVisualUpdate();
         return isLoggedIn ? Routes.news.path : Routes.login.path;
       }
 
-      if (isLoggedOut && !isMfaOpen) {
+      if (isLoggedOut && !isPublicRouteOpen) {
         return Routes.login.path;
       }
 
