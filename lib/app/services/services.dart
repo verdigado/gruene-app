@@ -7,7 +7,6 @@ import 'package:gruene_app/app/services/api/division_api_service.dart';
 import 'package:gruene_app/app/services/api/door_api_service.dart';
 import 'package:gruene_app/app/services/api/event_api_service.dart';
 import 'package:gruene_app/app/services/api/experience_area_api_service.dart';
-import 'package:gruene_app/app/services/api/flyer_api_service.dart';
 import 'package:gruene_app/app/services/api/news_api_service.dart';
 import 'package:gruene_app/app/services/api/poster_api_service.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
@@ -25,7 +24,6 @@ void initializeApiServices() {
   GetIt.I.registerLazySingleton(ToolApiService.new);
   GetIt.I.registerLazySingleton(PosterApiService.new);
   GetIt.I.registerLazySingleton(DoorApiService.new);
-  GetIt.I.registerLazySingleton(FlyerApiService.new);
   GetIt.I.registerLazySingleton(RouteApiService.new);
   GetIt.I.registerLazySingleton(ActionAreaApiService.new);
   GetIt.I.registerLazySingleton(ExperienceAreaApiService.new);
