@@ -44,7 +44,7 @@ abstract class BasePoiApiService extends BaseApiService {
 
   Future<List<Route>> loadRoutesInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async => send(
     request: (api) => api.v1CampaignsRoutesGet(
-      type: [poiType.toRoutesApiGetType()],
+      type: poiType.toRoutesApiGetTypes(),
       bbox: locationSW.toGeoJsonBBoxString(locationNE),
       campaignId: campaignId,
     ),
@@ -64,7 +64,7 @@ abstract class BasePoiApiService extends BaseApiService {
   Future<List<Area>> loadActionAreasInRegion(String campaignId, LatLng locationSW, LatLng locationNE) async => send(
     request: (api) => api.v1CampaignsAreasGet(
       bbox: locationSW.toGeoJsonBBoxString(locationNE),
-      type: [poiType.toApiAreasGetType()],
+      type: poiType.toApiAreasGetTypes(),
       campaignId: campaignId,
     ),
     map: (result) => result.data,

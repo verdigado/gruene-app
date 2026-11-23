@@ -15,6 +15,9 @@ extension RouteDetailModelMapFeature on RouteDetailModel {
         CampaignConstants.featurePropertyIsAssigned: team != null,
         CampaignConstants.featurePropertyColor: visualIdentifierColor,
         CampaignConstants.featurePropertyVisualIdentifierId: visualIdentifierId,
+        // shown in the selection dialog for overlapping routes
+        CampaignConstants.featurePropertyName: name,
+        CampaignConstants.featurePropertyTypeLabel: type.toLabel(),
       },
       geometry: lineString.toTurfLine(),
     );
