@@ -160,7 +160,7 @@ class _MapContainerState extends State<MapContainer>
         : CameraPosition(target: defaultStartLocation, zoom: zoomLevelUserOverview);
 
     Widget addMarker = SizedBox(height: 0, width: 0);
-    if (popups.isEmpty && _showAddMarker & !_isInFocusMode) {
+    if (widget.addPOIClicked != null && popups.isEmpty && _showAddMarker & !_isInFocusMode) {
       addMarker = Center(
         child: Container(
           padding: EdgeInsets.only(bottom: 65 /* height of the add_marker icon to position it exactly on the middle */),

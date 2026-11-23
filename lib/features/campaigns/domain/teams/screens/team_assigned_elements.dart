@@ -218,12 +218,11 @@ class _TeamAssignedElementsState extends State<TeamAssignedElements> {
     MapScreenController mapScreenController;
     String route;
     switch (assignedElement.type) {
+      // flyer routes and action areas are shown in the door tab
       case TeamAssignmentType.door:
+      case TeamAssignmentType.flyer:
         route = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignDoorDetail]);
         mapScreenController = GetIt.I<MapScreenController>(instanceName: PoiServiceType.door.toString());
-      case TeamAssignmentType.flyer:
-        route = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignFlyerDetail]);
-        mapScreenController = GetIt.I<MapScreenController>(instanceName: PoiServiceType.flyer.toString());
       case TeamAssignmentType.poster:
         route = RouteLocations.getRoute([RouteLocations.campaigns, RouteLocations.campaignPosterDetail]);
         mapScreenController = GetIt.I<MapScreenController>(instanceName: PoiServiceType.poster.toString());
