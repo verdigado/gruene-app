@@ -18,12 +18,18 @@ import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart
 import 'package:gruene_app/app/models/campaigns/route/route_assignment_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/api/action_area_api_service.dart';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/api/door_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/api/poster_api_service.dart';
 import 'package:gruene_app/app/services/api/route_api_service.dart';
+import 'package:gruene_app/app/services/api/stand_api_service.dart';
 import 'package:gruene_app/app/services/campaign_action_database.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/logger.dart';
@@ -80,6 +86,13 @@ class CampaignActionCache extends ChangeNotifier {
           getJson: (poi) => poi.toJson(),
           getMarker: (poi, tempId) => poi.toVirtualPoiDetailModel(tempId).toFeature(),
         );
+      case PoiCacheType.stand:
+        return await _addCreateAction<StandCreateModel>(
+          poiType: poiType,
+          poi: poiCreate as StandCreateModel,
+          getJson: (poi) => poi.toJson(),
+          getMarker: (poi, tempId) => poi.toVirtualPoiDetailModel(tempId).toFeature(),
+        );
       case PoiCacheType.route:
         throw UnimplementedError();
       case PoiCacheType.actionArea:
@@ -133,6 +146,15 @@ class CampaignActionCache extends ChangeNotifier {
           getId: (poi) => poi.id,
           getJson: (poi) => poi.toJson(),
           mergeUpdates: (action, poiUpdate) => poiUpdate,
+          getMarker: (poi) => poi.toVirtualPoiDetailModel().toFeature(),
+        );
+      case PoiCacheType.stand:
+        return await _addUpdateAction<StandUpdateModel>(
+          poiType: poiType,
+          poi: poi as StandUpdateModel,
+          getId: (poi) => poi.id,
+          getJson: (poi) => poi.toJson(),
+          mergeUpdates: (action, poiUpdate) => action.toStandUpdate().mergeWith(poiUpdate),
           getMarker: (poi) => poi.toVirtualPoiDetailModel().toFeature(),
         );
       case PoiCacheType.route:
@@ -256,6 +278,26 @@ class CampaignActionCache extends ChangeNotifier {
           var model = _getDeleteMarker(PoiCacheType.door, action.poiId!);
           markerItems.add(model.toFeature());
 
+        case CampaignActionType.addStand:
+          var model = action.toStandCreate();
+          markerItems.add(model.toVirtualPoiDetailModel(action.poiTempId).toFeature());
+        case CampaignActionType.editStand:
+          var model = action.toStandUpdate();
+          markerItems.add(model.toVirtualPoiDetailModel().toFeature());
+        case CampaignActionType.deleteStand:
+          var model = _getDeleteMarker(PoiCacheType.stand, action.poiId!);
+          markerItems.add(model.toFeature());
+        case CampaignActionType.addStandEntry:
+        case CampaignActionType.editStandEntry:
+        case CampaignActionType.deleteStandEntry:
+          // the stand of a Termin is shown where the person last saw it
+          var model = PoiDetailModel.virtual(
+            id: action.poiId,
+            status: PoiServiceType.stand.name,
+            location: action.standOfEntryAction().location,
+          );
+          markerItems.add(model.toFeature());
+
         case CampaignActionType.editRouteStatus:
           var model = action.toRouteStatusUpdate();
           markerItems.add(model.toVirtualRouteDetailModel().toFeature());
@@ -300,6 +342,15 @@ class CampaignActionCache extends ChangeNotifier {
             getValueSafe(() => poiType.getCacheDeleteAction()),
           ].where((x) => x != null).cast<int>().toList();
         }
+      case PoiCacheType.stand:
+        return [
+          CampaignActionType.addStand,
+          CampaignActionType.editStand,
+          CampaignActionType.deleteStand,
+          CampaignActionType.addStandEntry,
+          CampaignActionType.editStandEntry,
+          CampaignActionType.deleteStandEntry,
+        ].map((a) => a.index).toList();
       case PoiCacheType.actionArea:
         return [
           CampaignActionType.editActionAreaStatus,
@@ -333,6 +384,155 @@ class CampaignActionCache extends ChangeNotifier {
       transformAddAction: (action) => action.toDoorCreate().toDoorDetailModel(poiId),
     );
     return detailModel;
+  }
+
+  /// The stand with all changes still in the queue. Its flyer total stays the last one from the API
+  /// until the queue is synced; the app does not add up flyer counts itself.
+  Future<StandDetailModel> getPoiAsStandDetail(String poiId) async {
+    final actions = await _findActionsByPoiId(poiId);
+    final localEntryIds = <String>{};
+    StandDetailModel? stand;
+    for (final action in actions) {
+      switch (action.actionType) {
+        case CampaignActionType.addStand:
+          final firstEntryId = _localEntryId(action);
+          localEntryIds.add(firstEntryId);
+          stand = action.toStandCreate().toStandDetailModel(poiId, firstEntryId: firstEntryId);
+        case CampaignActionType.editStand:
+          stand = action.toStandUpdate().toStandDetailModel();
+        case CampaignActionType.addStandEntry:
+          final (:entry, :oldStandDetail) = action.toStandEntryCreate();
+          final entryId = _localEntryId(action);
+          localEntryIds.add(entryId);
+          stand = (stand ?? oldStandDetail).withEntry(entry.toStandEntryModel(entryId));
+        case CampaignActionType.editStandEntry:
+          final (:entry, :oldStandDetail) = action.toStandEntryUpdate();
+          stand = (stand ?? oldStandDetail).withEntry(entry.toStandEntryModel());
+        case CampaignActionType.deleteStandEntry:
+          final (:entryId, :oldStandDetail) = action.toStandEntryDelete();
+          stand = (stand ?? oldStandDetail).withoutEntry(entryId);
+        default:
+          break;
+      }
+    }
+    if (stand == null) throw StateError('Stand $poiId is not in the queue');
+
+    // a stand seen earlier can still list a queued Termin that was deleted again in the meantime
+    final entries = stand.entries.where((e) => !_isLocalEntryId(e.id) || localEntryIds.contains(e.id)).toList()
+      ..sort((a, b) => b.startAt.compareTo(a.startAt));
+    return stand.copyWith(entries: entries, isCached: true);
+  }
+
+  /// Queues a new Termin for a stand, which may itself still be in the queue.
+  Future<turf.Feature> addStandEntry(
+    String standId,
+    StandEntryCreateModel entry,
+    StandDetailModel oldStandDetail,
+  ) async {
+    await _appendActionToCache(
+      CampaignAction(
+        poiId: int.parse(standId),
+        actionType: CampaignActionType.addStandEntry,
+        serialized: jsonEncode({'entry': entry.toJson(), 'oldStandDetail': oldStandDetail.toJson()}),
+      ),
+    );
+    return oldStandDetail.toVirtualPoiDetailModel().toFeature();
+  }
+
+  /// Queues a change of a Termin. A Termin that is still in the queue is changed there.
+  Future<turf.Feature> updateStandEntry(
+    String standId,
+    StandEntryUpdateModel entry,
+    StandDetailModel oldStandDetail,
+  ) async {
+    final actions = await _findActionsByPoiId(standId);
+    final queuedAction = _findQueuedEntryAction(actions, entry.entryId);
+    final values = StandEntryCreateModel(startAt: entry.startAt, endAt: entry.endAt, flyerCount: entry.flyerCount);
+
+    if (queuedAction?.actionType == CampaignActionType.addStand) {
+      // the first Termin of a stand that is still in the queue
+      final standCreate = queuedAction!.toStandCreate();
+      queuedAction.serialized = jsonEncode(standCreate.withFirstEntry(values).toJson());
+      await _updateAction(queuedAction);
+    } else if (queuedAction != null) {
+      queuedAction.serialized = jsonEncode({'entry': values.toJson(), 'oldStandDetail': oldStandDetail.toJson()});
+      await _updateAction(queuedAction);
+    } else {
+      final serialized = jsonEncode({'entry': entry.toJson(), 'oldStandDetail': oldStandDetail.toJson()});
+      final previousEdit = actions
+          .where((a) => a.actionType == CampaignActionType.editStandEntry)
+          .where((a) => a.toStandEntryUpdate().entry.entryId == entry.entryId)
+          .firstOrNull;
+      if (previousEdit != null) {
+        previousEdit.serialized = serialized;
+        await _updateAction(previousEdit);
+      } else {
+        await _appendActionToCache(
+          CampaignAction(
+            poiId: int.parse(standId),
+            actionType: CampaignActionType.editStandEntry,
+            serialized: serialized,
+          ),
+        );
+      }
+    }
+    notifyListeners();
+    return oldStandDetail.toVirtualPoiDetailModel().toFeature();
+  }
+
+  /// Queues the deletion of a Termin. A Termin that is still in the queue is removed from it.
+  Future<turf.Feature> deleteStandEntry(String standId, String entryId, StandDetailModel oldStandDetail) async {
+    final actions = await _findActionsByPoiId(standId);
+    final queuedAction = _findQueuedEntryAction(actions, entryId);
+
+    if (queuedAction?.actionType == CampaignActionType.addStand) {
+      // the first Termin of a queued stand: the next queued Termin takes its place
+      final nextEntryAction = actions.where((a) => a.actionType == CampaignActionType.addStandEntry).firstOrNull;
+      if (nextEntryAction == null) {
+        throw StateError('The last Termin of a stand cannot be deleted, the stand has to be deleted instead');
+      }
+      final standCreate = queuedAction!.toStandCreate();
+      queuedAction.serialized = jsonEncode(
+        standCreate.withFirstEntry(nextEntryAction.toStandEntryCreate().entry).toJson(),
+      );
+      await _updateAction(queuedAction);
+      await campaignActionDatabase.delete(nextEntryAction.id!);
+    } else if (queuedAction != null) {
+      await campaignActionDatabase.delete(queuedAction.id!);
+    } else {
+      final previousEdits = actions
+          .where((a) => a.actionType == CampaignActionType.editStandEntry)
+          .where((a) => a.toStandEntryUpdate().entry.entryId == entryId);
+      for (final edit in previousEdits) {
+        await campaignActionDatabase.delete(edit.id!);
+      }
+      await campaignActionDatabase.create(
+        CampaignAction(
+          poiId: int.parse(standId),
+          actionType: CampaignActionType.deleteStandEntry,
+          serialized: jsonEncode({'entryId': entryId, 'oldStandDetail': oldStandDetail.toJson()}),
+        ),
+      );
+    }
+    notifyListeners();
+    return oldStandDetail.toVirtualPoiDetailModel().toFeature();
+  }
+
+  /// Termine that are still in the queue get an id from their queued action, which cannot clash with API ids.
+  static const _localEntryIdPrefix = 'local-';
+
+  String _localEntryId(CampaignAction action) => '$_localEntryIdPrefix${action.id}';
+
+  bool _isLocalEntryId(String entryId) => entryId.startsWith(_localEntryIdPrefix);
+
+  /// The queued action that creates the Termin with this id: an `addStandEntry`, or the `addStand` of its first Termin.
+  CampaignAction? _findQueuedEntryAction(List<CampaignAction> actions, String entryId) {
+    if (!_isLocalEntryId(entryId)) return null;
+    final actionId = int.parse(entryId.substring(_localEntryIdPrefix.length));
+    return actions
+        .where((a) => a.id == actionId)
+        .where((a) => a.actionType == CampaignActionType.addStand || a.actionType == CampaignActionType.addStandEntry)
+        .singleOrNull;
   }
 
   Future<RouteStatusUpdateModel> getPoiAsRouteDetail(String poiId) async {
@@ -376,6 +576,12 @@ class CampaignActionCache extends ChangeNotifier {
       case CampaignActionType.addFlyer || CampaignActionType.editFlyer || CampaignActionType.deleteFlyer:
       case CampaignActionType.editActionAreaStatus:
       case CampaignActionType.editActionAreaAssignment:
+      case CampaignActionType.addStand:
+      case CampaignActionType.editStand:
+      case CampaignActionType.deleteStand:
+      case CampaignActionType.addStandEntry:
+      case CampaignActionType.editStandEntry:
+      case CampaignActionType.deleteStandEntry:
       case null:
         throw UnimplementedError();
     }
@@ -400,6 +606,12 @@ class CampaignActionCache extends ChangeNotifier {
       case CampaignActionType.addFlyer || CampaignActionType.editFlyer || CampaignActionType.deleteFlyer:
       case CampaignActionType.editRouteStatus:
       case CampaignActionType.editRouteAssignment:
+      case CampaignActionType.addStand:
+      case CampaignActionType.editStand:
+      case CampaignActionType.deleteStand:
+      case CampaignActionType.addStandEntry:
+      case CampaignActionType.editStandEntry:
+      case CampaignActionType.deleteStandEntry:
       case null:
         throw UnimplementedError();
     }
@@ -440,7 +652,7 @@ class CampaignActionCache extends ChangeNotifier {
     return actionCacheList;
   }
 
-  void flushCache() async {
+  Future<void> flushCache() async {
     if (_isflushing) return;
     try {
       _isflushing = true;
@@ -448,6 +660,7 @@ class CampaignActionCache extends ChangeNotifier {
 
       var posterApiService = GetIt.I<PosterApiService>();
       var doorApiService = GetIt.I<DoorApiService>();
+      var standApiService = GetIt.I<StandApiService>();
       var routeApiService = GetIt.I<RouteApiService>();
       var areaApiService = GetIt.I<ActionAreaApiService>();
       final allActions = await campaignActionDatabase.readAll();
@@ -495,6 +708,34 @@ class CampaignActionCache extends ChangeNotifier {
 
             case CampaignActionType.deletePoster:
               await posterApiService.deletePoi(action.poiId!.toString());
+              campaignActionDatabase.delete(action.id!);
+
+            case CampaignActionType.addStand:
+              var model = action.toStandCreate();
+              var newStandMarker = await standApiService.createNewStand(model);
+              await updateIds(newStandMarker.id!);
+              campaignActionDatabase.delete(action.id!);
+
+            case CampaignActionType.editStand:
+              var model = action.toStandUpdate();
+              await standApiService.updateStand(model);
+              campaignActionDatabase.delete(action.id!);
+
+            case CampaignActionType.deleteStand:
+              await standApiService.deletePoi(action.poiId!.toString());
+              campaignActionDatabase.delete(action.id!);
+
+            // Termin actions refer to their stand by poiId, which is updated once a queued stand is created
+            case CampaignActionType.addStandEntry:
+              await standApiService.addStandEntry(action.poiId!.toString(), action.toStandEntryCreate().entry);
+              campaignActionDatabase.delete(action.id!);
+
+            case CampaignActionType.editStandEntry:
+              await standApiService.updateStandEntry(action.poiId!.toString(), action.toStandEntryUpdate().entry);
+              campaignActionDatabase.delete(action.id!);
+
+            case CampaignActionType.deleteStandEntry:
+              await standApiService.deleteStandEntry(action.poiId!.toString(), action.toStandEntryDelete().entryId);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editRouteStatus:
@@ -646,6 +887,12 @@ class CampaignActionCache extends ChangeNotifier {
       PoiCacheType.door.getCacheDeleteAction(),
       PoiCacheType.poster.getCacheEditAction(),
       PoiCacheType.poster.getCacheDeleteAction(),
+      PoiCacheType.stand.getCacheEditAction(),
+      PoiCacheType.stand.getCacheDeleteAction(),
+      // the stand or the Termin was deleted on the server in the meantime
+      CampaignActionType.addStandEntry,
+      CampaignActionType.editStandEntry,
+      CampaignActionType.deleteStandEntry,
     ];
     if (e.statusCode == 404 && itemNotFoundActions.contains(currentAction)) {
       // POI seems to be deleted (before) and cannot be edited afterwards
