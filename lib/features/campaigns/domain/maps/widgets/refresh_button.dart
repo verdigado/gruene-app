@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -68,6 +69,10 @@ class _RefreshButtonState extends State<RefreshButton> {
       _currentCount = newCount;
       _animateIcon = isFlushing;
     });
+    if (!isFlushing && campaignActionCache.refusedActionCount > 0) {
+      campaignActionCache.takeRefusedActionCount();
+      showSnackBar(context: context, text: t.campaigns.sync.refusedActions);
+    }
   }
 
   void _flushCachedData() {
