@@ -92,4 +92,10 @@ enum CampaignActionType {
   editRouteAssignment,
   editActionAreaStatus,
   editActionAreaAssignment,
+  addStand,
+  editStand,
+  deleteStand,
+  addStandEntry,
+  editStandEntry,
+  deleteStandEntry,
 }
