@@ -53,6 +53,19 @@ class CampaignActionCache extends ChangeNotifier {
 
   bool get isFlushing => _isflushing;
 
+  int _refusedActionCount = 0;
+
+  /// Number of actions the API refused for good and that were dropped from the queue, not yet shown to the person.
+  /// Which actions are dropped when refused is decided in [_handleError].
+  int get refusedActionCount => _refusedActionCount;
+
+  /// Returns [refusedActionCount] and resets it, once the person has been told.
+  int takeRefusedActionCount() {
+    final count = _refusedActionCount;
+    _refusedActionCount = 0;
+    return count;
+  }
+
   Future<bool> isCached(String poiId, PoiCacheType poiType) async {
     return campaignActionDatabase.actionsWithPoiIdExists(poiId, _getActionsForCacheType(poiType));
   }
@@ -665,11 +678,20 @@ class CampaignActionCache extends ChangeNotifier {
       var areaApiService = GetIt.I<ActionAreaApiService>();
       final allActions = await campaignActionDatabase.readAll();
       var failingPoiIds = <int>[];
+      // queued stands the API refused to create: their later changes and Termine cannot be sent either
+      var refusedQueuedStandIds = <int>{};
 
       for (int i = 0; i < allActions.length; i++) {
         var action = allActions[i];
 
         if (failingPoiIds.contains(action.coalescedPoiId())) continue;
+
+        if (_standActions.contains(action.actionType) && refusedQueuedStandIds.contains(action.coalescedPoiId())) {
+          await campaignActionDatabase.delete(action.id!);
+          _refusedActionCount++;
+          notifyListeners();
+          continue;
+        }
 
         updateIds(int newPoiId) async => await _updateIdsInCache(
           oldId: action.poiTempId,
@@ -766,12 +788,18 @@ class CampaignActionCache extends ChangeNotifier {
               throw UnimplementedError();
           }
         } on ApiException catch (e) {
-          if (_handleError(e, action.actionType!)) {
-            campaignActionDatabase.delete(action.id!);
-          } else {
-            logger.e('Flushing Campaign Action (${action.actionType!.name}) failed: ${e.statusCode}');
-            failingPoiIds.add(action.coalescedPoiId());
-            continue;
+          switch (_handleError(e, action.actionType!)) {
+            case _SyncFailure.drop:
+              campaignActionDatabase.delete(action.id!);
+            case _SyncFailure.dropAndReport:
+              logger.w('Campaign Action (${action.actionType!.name}) refused by the API: ${e.statusCode}');
+              await campaignActionDatabase.delete(action.id!);
+              _refusedActionCount++;
+              if (action.actionType == CampaignActionType.addStand) refusedQueuedStandIds.add(action.poiTempId);
+            case _SyncFailure.retry:
+              logger.e('Flushing Campaign Action (${action.actionType!.name}) failed: ${e.statusCode}');
+              failingPoiIds.add(action.coalescedPoiId());
+              continue;
           }
         }
         notifyListeners();
@@ -881,7 +909,24 @@ class CampaignActionCache extends ChangeNotifier {
     return result != null;
   }
 
-  bool _handleError(ApiException e, CampaignActionType currentAction) {
+  static const _standActions = [
+    CampaignActionType.addStand,
+    CampaignActionType.editStand,
+    CampaignActionType.deleteStand,
+    CampaignActionType.addStandEntry,
+    CampaignActionType.editStandEntry,
+    CampaignActionType.deleteStandEntry,
+  ];
+
+  /// Actions that are dropped and reported when the API refuses them for good (see [_refusedStatusCodes]).
+  /// Other actions are retried with the next sync; further pin types can opt in here.
+  static const _actionsDroppedWhenRefused = _standActions;
+
+  /// Status codes with which the API refuses an action for good, so a retry cannot help:
+  /// 400 validation (e.g. flyers for a Termin after today), 403 no write access, 409 e.g. not a stand or no photos.
+  static const _refusedStatusCodes = [400, 403, 409];
+
+  _SyncFailure _handleError(ApiException e, CampaignActionType currentAction) {
     var itemNotFoundActions = [
       PoiCacheType.door.getCacheEditAction(),
       PoiCacheType.door.getCacheDeleteAction(),
@@ -896,8 +941,22 @@ class CampaignActionCache extends ChangeNotifier {
     ];
     if (e.statusCode == 404 && itemNotFoundActions.contains(currentAction)) {
       // POI seems to be deleted (before) and cannot be edited afterwards
-      return true;
+      return _SyncFailure.drop;
     }
-    return false;
+    if (_refusedStatusCodes.contains(e.statusCode) && _actionsDroppedWhenRefused.contains(currentAction)) {
+      return _SyncFailure.dropAndReport;
+    }
+    return _SyncFailure.retry;
   }
+}
+
+enum _SyncFailure {
+  /// Keep the action and try again with the next sync.
+  retry,
+
+  /// Remove the action silently, e.g. a change of a pin deleted in the meantime.
+  drop,
+
+  /// Remove the action and tell the person that the change was not saved.
+  dropAndReport,
 }

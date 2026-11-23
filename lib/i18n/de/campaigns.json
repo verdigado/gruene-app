@@ -5,6 +5,9 @@
     "confirmStoringCache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
     "storingCacheSuccess": "Die lokalen Änderungen wurden nun gespeichert. Bitte sende diese per E-Mail an beteiligung@gruene.de. Damit unterstützt Du uns bei der Problemlösung!"
   },
+  "sync": {
+    "refusedActions": "Einige Änderungen konnten nicht gespeichert werden und wurden verworfen."
+  },
   "map": {
     "noMapDataInfo": "Bitte zoome in die Karte, um mehr Informationen zu sehen.",
     "identicalPositions": "Identische Position"

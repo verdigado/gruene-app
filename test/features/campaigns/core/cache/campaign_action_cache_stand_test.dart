@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
@@ -73,6 +74,7 @@ void main() {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
     registerFallbackValue(_newStand());
+    registerFallbackValue(PosterCreateModel(address: _address, location: _location, campaignId: ''));
     registerFallbackValue(_newEntry(DateTime(2026)));
     registerFallbackValue(StandEntryUpdateModel(entryId: '', startAt: DateTime(2026), endAt: DateTime(2026)));
     registerFallbackValue(
@@ -102,6 +104,7 @@ void main() {
     when(() => standApi.deleteStandEntry(any(), any())).thenAnswer((_) async => _serverStand());
 
     cache = CampaignActionCache();
+    cache.takeRefusedActionCount(); // the cache is a singleton
   });
 
   tearDown(GetIt.I.reset);
@@ -256,6 +259,7 @@ void main() {
 
     verifyNever(() => standApi.addStandEntry(any(), any()));
     expect(await cache.getCachedActionCount(), 2);
+    expect(cache.refusedActionCount, 0);
   });
 
   test('deleting the first Termin of a stand created offline makes the next queued Termin the first', () async {
@@ -385,5 +389,75 @@ void main() {
     final point = marker.geometry! as turf.Point;
     expect(point.coordinates.lat, _location.latitude);
     expect(point.coordinates.lng, _location.longitude);
+  });
+
+  group('actions the API refuses for good', () {
+    test('a refused Termin is dropped and reported', () async {
+      when(() => standApi.addStandEntry(any(), any())).thenThrow(ApiException(statusCode: 400));
+      await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10), flyerCount: 5), _serverStand());
+
+      await cache.flushCache();
+
+      expect(await cache.getCachedActionCount(), 0);
+      expect(cache.refusedActionCount, 1);
+    });
+
+    test('a refused stand is dropped with its changes and Termine', () async {
+      when(() => standApi.createNewStand(any())).thenThrow(ApiException(statusCode: 409));
+      final standId = await storeQueuedStand();
+      await cache.addStandEntry(
+        standId,
+        _newEntry(DateTime(2026, 11, 14, 10)),
+        await cache.getPoiAsStandDetail(standId),
+      );
+
+      await cache.flushCache();
+
+      verifyNever(() => standApi.addStandEntry(any(), any()));
+      expect(await cache.getCachedActionCount(), 0);
+      expect(cache.refusedActionCount, 2);
+    });
+
+    test('a change of a stand without write access is dropped and reported', () async {
+      when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 403));
+      await cache.updatePoi(
+        PoiCacheType.stand,
+        StandUpdateModel(
+          id: '4711',
+          address: _address,
+          location: _location,
+          name: 'Wochenmarkt',
+          oldStandDetail: _serverStand(),
+        ),
+      );
+
+      await cache.flushCache();
+
+      expect(await cache.getCachedActionCount(), 0);
+      expect(cache.refusedActionCount, 1);
+    });
+
+    test('reporting resets the count', () async {
+      when(() => standApi.deleteStandEntry(any(), any())).thenThrow(ApiException(statusCode: 400));
+      await cache.deleteStandEntry('4711', '1', _serverStand());
+      await cache.flushCache();
+
+      expect(cache.takeRefusedActionCount(), 1);
+      expect(cache.refusedActionCount, 0);
+    });
+
+    test('poster actions are still retried, as before', () async {
+      final posterApi = GetIt.I<PosterApiService>();
+      when(() => posterApi.createNewPoster(any())).thenThrow(ApiException(statusCode: 400));
+      await cache.storeNewPoi(
+        PoiCacheType.poster,
+        PosterCreateModel(address: _address, location: _location, campaignId: 'campaign-1'),
+      );
+
+      await cache.flushCache();
+
+      expect(await cache.getCachedActionCount(), 1);
+      expect(cache.refusedActionCount, 0);
+    });
   });
 }
