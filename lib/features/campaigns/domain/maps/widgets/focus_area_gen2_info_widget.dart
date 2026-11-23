@@ -90,6 +90,8 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
         t.campaigns.focusArea.activities.poster.recommendation,
         2,
       ),
+      // The stand tab shows no focus areas
+      PoiServiceType.stand => const <Widget>[],
     };
     if (content.isEmpty) return SizedBox.shrink();
 

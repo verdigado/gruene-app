@@ -7,6 +7,8 @@ extension PoiServiceTypeMapping on PoiServiceType {
         return PoiType.poster;
       case PoiServiceType.door:
         return PoiType.house;
+      case PoiServiceType.stand:
+        return PoiType.stand;
     }
   }
 
@@ -17,6 +19,8 @@ extension PoiServiceTypeMapping on PoiServiceType {
         return [AreaType.house, AreaType.flyerSpot];
       case PoiServiceType.poster:
         return [AreaType.poster];
+      case PoiServiceType.stand:
+        throw UnsupportedError('The stand tab shows no action areas');
     }
   }
 
@@ -28,6 +32,7 @@ extension PoiServiceTypeMapping on PoiServiceType {
         if (posterStatus != null) statusSuffix = '_${posterStatus.name}';
         return '$typeName$statusSuffix';
       case PoiServiceType.door:
+      case PoiServiceType.stand:
         return typeName;
     }
   }
@@ -39,6 +44,8 @@ extension PoiServiceTypeMapping on PoiServiceType {
       // flyer routes are shown in the door tab
       case PoiServiceType.door:
         return [RouteType.house, RouteType.flyerSpot];
+      case PoiServiceType.stand:
+        throw UnsupportedError('The stand tab shows no routes');
     }
   }
 
@@ -48,6 +55,9 @@ extension PoiServiceTypeMapping on PoiServiceType {
         return PoiCacheType.poster;
       case PoiServiceType.door:
         return PoiCacheType.door;
+      case PoiServiceType.stand:
+        // TODO #1266: stands are cached for offline use with the stand offline queue
+        throw UnimplementedError();
     }
   }
 }
