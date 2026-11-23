@@ -66,31 +66,80 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
   }
 
   Widget _getRecommendationWidget(ThemeData theme) {
-    var labelActivityType = '';
-    var labelActivityRecommendation = '';
-    int? activityKey;
-    switch (poiType) {
-      case PoiServiceType.door:
-        labelActivityType = t.campaigns.focusArea.activities.door.label;
-        labelActivityRecommendation = t.campaigns.focusArea.activities.door.recommendation;
-        activityKey = 1;
-      case PoiServiceType.poster:
-        labelActivityType = t.campaigns.focusArea.activities.poster.label;
-        labelActivityRecommendation = t.campaigns.focusArea.activities.poster.recommendation;
-        activityKey = 2;
-      case PoiServiceType.flyer:
-        labelActivityType = t.campaigns.focusArea.activities.flyer.label;
-        labelActivityRecommendation = t.campaigns.focusArea.activities.flyer.recommendation;
-        activityKey = 3;
-    }
+    // Translations are accessed by their full path (not via a local variable), so `slang analyze` sees them as used.
+    final content = switch (poiType) {
+      // Flyers are no longer an activity of their own, so older focus areas show their flyer advice below the
+      // door advice. Newer focus areas carry no flyer values and show only the door part.
+      PoiServiceType.door => _joinActivitySections([
+        _getActivitySection(
+          theme,
+          t.campaigns.focusArea.activities.door.label,
+          t.campaigns.focusArea.activities.door.recommendation,
+          1,
+        ),
+        _getActivitySection(
+          theme,
+          t.campaigns.focusArea.activities.flyer.label,
+          t.campaigns.focusArea.activities.flyer.recommendation,
+          3,
+        ),
+      ]),
+      PoiServiceType.poster => _getActivitySection(
+        theme,
+        t.campaigns.focusArea.activities.poster.label,
+        t.campaigns.focusArea.activities.poster.recommendation,
+        2,
+      ),
+      // There is no flyer tab any more that opens the focus-area detail; the flyer advice is part of the door tab.
+      PoiServiceType.flyer => const <Widget>[],
+    };
+    if (content.isEmpty) return SizedBox.shrink();
 
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        alignment: Alignment.centerLeft,
+        decoration: boxShadowDecoration,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Icon(Icons.campaign_outlined),
+                SizedBox(width: 8),
+                Text(t.campaigns.focusArea.intensityRecommendation, style: theme.textTheme.titleSmall),
+              ],
+            ),
+            ...content,
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Joins the non-empty [sections], separated by a divider.
+  List<Widget> _joinActivitySections(List<List<Widget>> sections) {
+    final result = <Widget>[];
+    for (final section in sections.where((section) => section.isNotEmpty)) {
+      if (result.isNotEmpty) result.addAll([SizedBox(height: 8), Divider(height: 1)]);
+      result.addAll(section);
+    }
+    return result;
+  }
+
+  /// The intensity and recommendation of one activity, or an empty list if the focus area has neither.
+  List<Widget> _getActivitySection(
+    ThemeData theme,
+    String labelActivityType,
+    String labelActivityRecommendation,
+    int activityKey,
+  ) {
     var activityValue = int.tryParse(
       _getAttribute('${CampaignConstants.focusAreaAttributeActivityBase}$activityKey') ?? '',
     );
     var activityRecommendationValue = _getAttribute(
       CampaignConstants.focusAreaAttributeActivityRecommendation(activityKey),
     );
-    if ([activityValue, activityRecommendationValue].every((x) => x == null)) return SizedBox.shrink();
 
     var content = <Widget>[];
     if (activityValue != null) {
@@ -135,26 +184,7 @@ class FocusAreaGen2InfoWidget extends StatelessWidget {
       ]);
     }
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        alignment: Alignment.centerLeft,
-        decoration: boxShadowDecoration,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Icon(Icons.campaign_outlined),
-                SizedBox(width: 8),
-                Text(t.campaigns.focusArea.intensityRecommendation, style: theme.textTheme.titleSmall),
-              ],
-            ),
-            ...content,
-          ],
-        ),
-      ),
-    );
+    return content;
   }
 
   Widget _getMilieuWidget(ThemeData theme) {
