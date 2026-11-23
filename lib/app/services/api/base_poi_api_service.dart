@@ -1,12 +1,17 @@
 import 'dart:async';
 
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
 import 'package:gruene_app/app/geo/geo.dart';
 import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/utils/file_cache_manager.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 abstract class BasePoiApiService extends BaseApiService {
@@ -79,6 +84,44 @@ abstract class BasePoiApiService extends BaseApiService {
     request: (api) => api.v1CampaignsPoisPoiIdDelete(poiId: poiId),
     map: (p) {},
   );
+
+  /// Uploads a photo from a local file and deletes the file afterwards. Only posters and stands can have photos.
+  Future<Poi> storeNewPhoto(String poiId, String imageFileLocation) async {
+    final timeStamp = DateFormat('yyMMdd_HHmmss').format(DateTime.now());
+    final fileManager = GetIt.I<FileManager>();
+    final photo = await fileManager.retrieveFileData(imageFileLocation);
+    final poi = await send<Poi, Poi>(
+      request: (api) => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: poiId,
+        image: http.MultipartFile.fromBytes(
+          'image',
+          photo,
+          filename: 'poi_${poiId}_$timeStamp.jpg',
+          contentType: MediaType('image', 'jpeg'),
+        ),
+      ),
+    );
+    fileManager.deleteFile(imageFileLocation);
+    return poi;
+  }
+
+  /// Deletes and uploads photos of a pin. Returns the pin after the last change, or null if nothing changed.
+  Future<Poi?> updatePhotos(
+    String poiId, {
+    required Iterable<String> deletedPhotoIds,
+    required Iterable<String> newImageFileLocations,
+  }) async {
+    Poi? poi;
+    for (final photoId in deletedPhotoIds) {
+      poi = await send<Poi, Poi>(
+        request: (api) => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: poiId, photoId: photoId),
+      );
+    }
+    for (final imageFileLocation in newImageFileLocations) {
+      poi = await storeNewPhoto(poiId, imageFileLocation);
+    }
+    return poi;
+  }
 
   bool filterByCutOffDate(Poi poi) {
     if (Config.poiFilterCutOffDate == null) return true;

@@ -27,6 +27,26 @@ extension PoiMapping on Poi {
     );
   }
 
+  StandDetailModel toStandDetail() {
+    final poi = this;
+    if (poi.type != PoiType.stand) {
+      throw Exception('Unexpected PoiType');
+    }
+    final stand = poi.stand!;
+    return StandDetailModel(
+      id: poi.id,
+      address: poi.address.toAddressModel(),
+      location: poi.coords.toLatLng(),
+      name: stand.name,
+      description: stand.description,
+      comment: stand.comment,
+      flyerCountTotal: stand.flyerCountTotal.toInt(),
+      entries: stand.entries.map((entry) => entry.toStandEntry()).toList(),
+      photos: _getPosterPhotos(),
+      createdAt: poi.createdAt.toLocalDateTimeString(),
+    );
+  }
+
   PosterDetailModel toPosterDetail() {
     final poi = this;
     if (poi.type != PoiType.poster) {
@@ -89,6 +109,11 @@ extension PoiMapping on Poi {
     photos.sortByIdDescending();
     return photos.first.imageUrl;
   }
+}
+
+extension on PoiStandEntry {
+  StandEntryModel toStandEntry() =>
+      StandEntryModel(id: id, startAt: startAt.toLocal(), endAt: endAt.toLocal(), flyerCount: flyerCount.toInt());
 }
 
 extension on ImageSrcSet {

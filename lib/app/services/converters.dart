@@ -9,6 +9,8 @@ import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart
 import 'package:gruene_app/app/models/campaigns/posters/poster_list_item_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/team/new_team_details.dart';
 import 'package:gruene_app/app/services/api/challenge_api_service.dart';
 import 'package:gruene_app/app/services/api/division_api_service.dart';
