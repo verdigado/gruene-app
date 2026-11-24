@@ -13,6 +13,7 @@ import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
+import 'package:gruene_app/app/widgets/number_badge.dart';
 import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_badge.dart';
 import 'package:gruene_app/features/campaigns/domain/challenges/widgets/challenge_time_indicator.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/progress_with_label.dart';
@@ -481,7 +482,6 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
   List<Widget> _getEmptyStatInfo(String infoText) {
     var mediaQuery = MediaQuery.sizeOf(context);
-    var theme = Theme.of(context);
     var myPadding = EdgeInsets.symmetric(vertical: 4);
     var myDecoration = BoxDecoration(borderRadius: BorderRadius.circular(6), color: ThemeColors.primary);
     var memberItemWidgets = [1, 2].map((index) {
@@ -496,17 +496,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
           children: [
             Row(
               children: [
-                Container(
-                  height: 32,
-                  width: 32,
-                  decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
-                  child: Center(
-                    child: Text(
-                      index.toString(),
-                      style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background),
-                    ),
-                  ),
-                ),
+                NumberBadge(number: index),
                 SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

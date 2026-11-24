@@ -6,6 +6,7 @@ import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
+import 'package:gruene_app/app/widgets/number_badge.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/statistics_context_switcher.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -197,15 +198,7 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
         crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 12,
         children: [
-          Container(
-            height: 32,
-            width: 32,
-            decoration: BoxDecoration(color: ThemeColors.primary, shape: BoxShape.circle),
-
-            child: Center(
-              child: Text(index.toString(), style: theme.textTheme.displayMedium?.apply(color: ThemeColors.background)),
-            ),
-          ),
+          NumberBadge(number: index),
           Expanded(
             child: Column(
               mainAxisAlignment: .start,
