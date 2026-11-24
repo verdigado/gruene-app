@@ -9,6 +9,7 @@ import 'package:flutter_keycloak_authenticator/flutter_keycloak_authenticator.da
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gruene_app/app/auth/bloc/auth_bloc.dart';
 import 'package:gruene_app/app/auth/repository/auth_repository.dart';
 import 'package:gruene_app/app/constants/config.dart';
@@ -152,44 +153,60 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => PushNotificationSettingsBloc()..add(LoadSettings())),
         BlocProvider(create: (context) => BookmarkCubit()),
       ],
-      child: Builder(
-        builder: (context) {
-          return BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, authState) {
-              final router = createAppRouter(context, navigatorKey);
-              final isLoginLoading = authState is AuthLoading;
+      child: _AppRouter(navigatorKey: navigatorKey),
+    );
+  }
+}
 
-              // Prevent flickering if current login state is not yet known
-              if (isLoginLoading) {
-                return MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  theme: appTheme,
-                  home: CleanLayout(showAppBar: false),
-                );
-              }
+class _AppRouter extends StatefulWidget {
+  final GlobalKey<NavigatorState> navigatorKey;
 
-              SchedulerBinding.instance.addPostFrameCallback((_) {
-                final initialMessage = GetIt.I<PushNotificationListener>().initialMessage;
-                if (initialMessage == null) {
-                  return;
-                }
-                initialMessage.processMessage(navigatorKey.currentContext);
-              });
+  const _AppRouter({required this.navigatorKey});
 
-              return MaterialApp.router(
-                debugShowCheckedModeBanner: false,
-                locale: TranslationProvider.of(context).flutterLocale,
-                supportedLocales: AppLocaleUtils.supportedLocales,
-                localizationsDelegates: GlobalMaterialLocalizations.delegates,
-                routeInformationParser: router.routeInformationParser,
-                routerDelegate: router.routerDelegate,
-                routeInformationProvider: router.routeInformationProvider,
-                theme: appTheme,
-              );
-            },
-          );
-        },
-      ),
+  @override
+  State<_AppRouter> createState() => _AppRouterState();
+}
+
+class _AppRouterState extends State<_AppRouter> {
+  late final GoRouter _router = createAppRouter(widget.navigatorKey);
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AuthBloc, AuthState>(
+      // Execute redirects on auth change (i.e. login or logout)
+      listener: (context, authState) => _router.refresh(),
+      builder: (context, authState) {
+        final isLoginLoading = authState is AuthLoading;
+
+        // Prevent flickering if current login state is not yet known
+        if (isLoginLoading) {
+          return MaterialApp(debugShowCheckedModeBanner: false, theme: appTheme, home: CleanLayout(showAppBar: false));
+        }
+
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          final initialMessage = GetIt.I<PushNotificationListener>().initialMessage;
+          if (initialMessage != null) {
+            initialMessage.processMessage(widget.navigatorKey.currentContext);
+          }
+        });
+
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          locale: TranslationProvider.of(context).flutterLocale,
+          supportedLocales: AppLocaleUtils.supportedLocales,
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
+          routeInformationParser: _router.routeInformationParser,
+          routerDelegate: _router.routerDelegate,
+          routeInformationProvider: _router.routeInformationProvider,
+          theme: appTheme,
+        );
+      },
     );
   }
 }
