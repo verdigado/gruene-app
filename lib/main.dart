@@ -100,7 +100,7 @@ Future<void> main() async {
   initializeNotificationHandlers();
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(TranslationProvider(child: MyApp(navigatorKey: navigatorKey)));
+  runApp(TranslationProvider(child: App(navigatorKey: navigatorKey)));
 }
 
 void initializeTimers() {
@@ -131,10 +131,10 @@ void initializeNotificationHandlers() {
   registerCampaignNotificationHandlers();
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  const MyApp({super.key, required this.navigatorKey});
+  const App({super.key, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
