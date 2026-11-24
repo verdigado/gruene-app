@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_entry_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_form_rules.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/widgets/stand_entry_list.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
@@ -15,14 +18,32 @@ import 'package:gruene_app/i18n/translations.g.dart';
 
 typedef OnSaveStandCallback = Future<void> Function(StandUpdateModel standUpdate);
 
+/// Saves a change of a Termin of [stand] and returns the stand with the change applied.
+typedef OnSaveStandEntryCallback = Future<StandDetailModel> Function(
+  StandDetailModel stand,
+  StandEntryUpdateModel entry,
+);
+
+/// Deletes a Termin of [stand] and returns the stand without it.
+typedef OnDeleteStandEntryCallback = Future<StandDetailModel> Function(StandDetailModel stand, String entryId);
+
 /// Edits a stand in a bottom sheet over the map: its fields, its address and, with all its Termine,
 /// deleting it. `Ort` cannot be changed (decision in #1260); the address can be corrected.
 class StandEdit extends StatefulWidget {
   final StandDetailModel stand;
   final OnSaveStandCallback onSave;
   final OnDeletePoiCallback onDelete;
+  final OnSaveStandEntryCallback onSaveEntry;
+  final OnDeleteStandEntryCallback onDeleteEntry;
 
-  const StandEdit({super.key, required this.stand, required this.onSave, required this.onDelete});
+  const StandEdit({
+    super.key,
+    required this.stand,
+    required this.onSave,
+    required this.onDelete,
+    required this.onSaveEntry,
+    required this.onDeleteEntry,
+  });
 
   @override
   State<StandEdit> createState() => _StandEditState();
@@ -41,6 +62,10 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
   final _nameTextController = TextEditingController();
   final _descriptionTextController = TextEditingController();
   final _commentTextController = TextEditingController();
+
+  /// The stand with the Termin changes made in this view, so the list shows them
+  /// and saving the stand does not bring back a changed or deleted Termin.
+  late StandDetailModel _stand = widget.stand;
 
   /// Errors are shown after the first attempt to save and then kept up to date.
   bool _showErrors = false;
@@ -128,9 +153,9 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
                 ),
                 error: _errors.comment,
               ),
-              if (widget.stand.entries.isNotEmpty) ...[
+              if (_stand.entries.isNotEmpty) ...[
                 _sectionLabel(t.campaigns.stand.entries),
-                StandEntryList(entries: widget.stand.entries, withYear: true),
+                StandEntryList(entries: _stand.entries, withYear: true, onEntryTap: _openEntry),
               ],
               Padding(
                 padding: const EdgeInsets.only(top: 24, bottom: 12),
@@ -169,9 +194,27 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
     );
   }
 
+  Future<void> _openEntry(StandEntryModel entry) => MapConsumer.showModalEditForm(
+    context,
+    () => StandEntryEdit(
+      entry: entry,
+      otherEntries: _stand.entries.where((e) => e.id != entry.id).toList(),
+      standName: _stand.name,
+      onSave: (update) async => _applyEntryChange(await widget.onSaveEntry(_stand, update)),
+      // the last Termin cannot be deleted, only the whole stand (decision in #1260)
+      onDelete: _stand.entries.length > 1
+          ? (entryId) async => _applyEntryChange(await widget.onDeleteEntry(_stand, entryId))
+          : null,
+    ),
+  );
+
+  void _applyEntryChange(StandDetailModel stand) {
+    if (mounted) setState(() => _stand = stand);
+  }
+
   void _onDeletePressed() => confirmDelete(
     context,
-    confirmationDialogText: t.campaigns.stand.deleteConfirmation(count: widget.stand.entries.length),
+    confirmationDialogText: t.campaigns.stand.deleteConfirmation(count: _stand.entries.length),
     onDeletePressed: () async {
       await widget.onDelete(widget.stand.id);
       if (mounted) Navigator.maybePop(context);
@@ -192,7 +235,7 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
         name: _nameTextController.text.trim(),
         description: emptyToNull(_descriptionTextController.text),
         comment: emptyToNull(_commentTextController.text),
-        oldStandDetail: widget.stand,
+        oldStandDetail: _stand,
       ),
     );
     if (mounted) Navigator.maybePop(context);

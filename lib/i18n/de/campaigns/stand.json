@@ -17,6 +17,12 @@
   "edit": {
     "title": "Wahlkampfstand bearbeiten"
   },
+  "entryEdit": {
+    "title": "Termin bearbeiten",
+    "delete": "Termin löschen",
+    "deleteConfirmation": "Möchtest du den Termin am ${date} von ${from} bis ${to} Uhr wirklich löschen? Seine verteilten Flyer werden aus der Summe entfernt.",
+    "lastEntryHint": "Der einzige Termin eines Stands kann nicht gelöscht werden. Wenn der Stand weg soll, lösche ihn unter „Wahlkampfstand bearbeiten“."
+  },
   "deleteConfirmation(param=count)": {
     "zero": "Möchtest du diesen Wahlkampfstand wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
     "one": "Möchtest du diesen Wahlkampfstand und seinen Termin wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
@@ -36,7 +42,8 @@
     "nameRequired": "Bitte gib einen Namen ein.",
     "tooLong": "Höchstens ${max} Zeichen.",
     "toBeforeFrom": "\"Bis\" muss nach \"Von\" liegen.",
-    "flyerCount": "Bitte gib eine ganze Zahl ab 0 ein."
+    "flyerCount": "Bitte gib eine ganze Zahl ab 0 ein.",
+    "overlap": "Dieser Termin überschneidet sich mit dem Termin am ${date} von ${from} bis ${to} Uhr."
   },
   "futureDateWithFlyers": {
     "message": "Für einen Termin in der Zukunft können keine verteilten Flyer eingetragen werden. Die eingetragene Anzahl wird gelöscht.",

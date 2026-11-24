@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_form_rules.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   group('defaultEntryTimes', () {
@@ -114,6 +117,52 @@ void main() {
 
     test('saves no count for a Termin after today', () {
       expect(StandFormRules.flyerCountToSave('42', isAfterToday: true), isNull);
+    });
+  });
+
+  group('overlap', () {
+    setUpAll(() async {
+      Intl.defaultLocale = 'de_DE';
+      await initializeDateFormatting('de_DE');
+    });
+
+    final morning = StandEntryModel(
+      id: 'morning',
+      startAt: DateTime(2026, 11, 4, 10),
+      endAt: DateTime(2026, 11, 4, 12),
+      flyerCount: 0,
+    );
+
+    test('finds a Termin whose time overlaps', () {
+      expect(StandFormRules.findOverlap(DateTime(2026, 11, 4, 11), DateTime(2026, 11, 4, 13), [morning]), morning);
+      expect(StandFormRules.findOverlap(DateTime(2026, 11, 4, 9), DateTime(2026, 11, 4, 14), [morning]), morning);
+    });
+
+    test('a Termin starting when another ends does not overlap', () {
+      expect(StandFormRules.findOverlap(DateTime(2026, 11, 4, 12), DateTime(2026, 11, 4, 14), [morning]), isNull);
+      expect(StandFormRules.findOverlap(DateTime(2026, 11, 4, 8), DateTime(2026, 11, 4, 10), [morning]), isNull);
+    });
+
+    test('several Termine on the same day are allowed', () {
+      expect(StandFormRules.findOverlap(DateTime(2026, 11, 4, 14), DateTime(2026, 11, 4, 16), [morning]), isNull);
+    });
+
+    test('compares the times of Termine from the API (UTC) with local times', () {
+      final fromApi = StandEntryModel(
+        id: 'api',
+        startAt: DateTime(2026, 11, 4, 10).toUtc(),
+        endAt: DateTime(2026, 11, 4, 12).toUtc(),
+        flyerCount: 0,
+      );
+      expect(StandFormRules.findOverlap(DateTime(2026, 11, 4, 11), DateTime(2026, 11, 4, 13), [fromApi]), fromApi);
+      expect(StandFormRules.findOverlap(DateTime(2026, 11, 4, 12), DateTime(2026, 11, 4, 13), [fromApi]), isNull);
+    });
+
+    test('the message names the overlapping Termin', () {
+      expect(
+        StandFormRules.overlapMessage(morning),
+        'Dieser Termin überschneidet sich mit dem Termin am 04.11.2026 von 10:00 bis 12:00 Uhr.',
+      );
     });
   });
 }

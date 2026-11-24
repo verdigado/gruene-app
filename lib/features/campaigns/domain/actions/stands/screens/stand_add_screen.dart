@@ -7,6 +7,7 @@ import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/app/widgets/picker_field.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/save_cancel_on_create_widget.dart';
@@ -191,7 +192,7 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
               cityTextController: cityTextController,
             ),
             _field(
-              _PickerField(
+              PickerField(
                 label: t.campaigns.stand.date,
                 value: DateFormat(t.campaigns.stand.dateFormat).format(_date),
                 onTap: _pickDate,
@@ -203,14 +204,14 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
                 spacing: 12,
                 children: [
                   Expanded(
-                    child: _PickerField(
+                    child: PickerField(
                       label: t.campaigns.stand.from,
                       value: _from.format(context),
                       onTap: () => _pickTime(_from, (time) => _from = time),
                     ),
                   ),
                   Expanded(
-                    child: _PickerField(
+                    child: PickerField(
                       label: t.campaigns.stand.to,
                       value: _to.format(context),
                       onTap: () => _pickTime(_to, (time) => _to = time),
@@ -368,39 +369,5 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
       ),
     );
     return confirmed ?? false;
-  }
-}
-
-/// Looks like a [TextInputField], but opens a picker instead of the keyboard.
-class _PickerField extends StatelessWidget {
-  final String label;
-  final String value;
-  final VoidCallback onTap;
-
-  const _PickerField({required this.label, required this.value, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Material(
-      color: theme.colorScheme.surface,
-      borderRadius: BorderRadius.circular(5),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(5),
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.all(4),
-          child: InputDecorator(
-            decoration: InputDecoration(
-              labelText: label,
-              border: InputBorder.none,
-              labelStyle: theme.textTheme.labelMedium?.apply(color: ThemeColors.textDisabled),
-              floatingLabelStyle: theme.textTheme.labelSmall?.apply(color: ThemeColors.textDisabled),
-            ),
-            child: Text(value, style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.text)),
-          ),
-        ),
-      ),
-    );
   }
 }

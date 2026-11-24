@@ -104,6 +104,7 @@ void main() {
     expect(find.text('120 Flyer'), findsOneWidget);
     expect(find.text('0 Flyer'), findsNWidgets(2));
     expect(find.text('Alle anzeigen'), findsNothing);
+    expect(find.byIcon(Icons.edit_outlined), findsNothing); // read-only
     expect(find.textContaining(' – '), findsNothing);
   });
 
@@ -137,6 +138,7 @@ void main() {
     await tester.tap(find.text('Alle anzeigen'));
     await tester.pumpAndSettle();
 
+    expect(find.byIcon(Icons.edit_outlined), findsNothing); // read-only
     final shown = tester.widgetList<Text>(find.textContaining('.2026 · ')).map((t) => t.data!.substring(0, 14));
     expect(shown, ['Mo. 09.11.2026', 'Fr. 06.11.2026', 'Mi. 04.11.2026', 'Di. 03.11.2026', 'Mo. 02.11.2026']);
   });

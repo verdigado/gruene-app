@@ -27,6 +27,13 @@ class StandEntryFormats {
     );
   }
 
+  /// Date and times of a Termin for the texts naming it, e.g. "am 04.11.2026 von 19:57 bis 21:57 Uhr".
+  static ({String date, String from, String to}) parts(StandEntryModel entry) => (
+    date: DateFormat(t.campaigns.stand.entryRangeDateFormat).format(entry.startAt.toLocal()),
+    from: DateFormat(_timeFormat).format(entry.startAt.toLocal()),
+    to: DateFormat(_timeFormat).format(entry.endAt.toLocal()),
+  );
+
   static String flyerCount(StandEntryModel entry) => t.campaigns.stand.entryFlyerCount(count: entry.flyerCount);
 
   /// Newest first: latest date and start time at the top.
