@@ -37,6 +37,15 @@ class ApiException implements Exception {
 
   ApiException({required this.statusCode, this.message, this.url});
 
+  Map<String, dynamic>? get body {
+    try {
+      final decoded = jsonDecode(message ?? '');
+      return decoded is Map<String, dynamic> ? decoded : null;
+    } on FormatException {
+      return null;
+    }
+  }
+
   @override
   String toString() => 'ApiException($statusCode) on $url: $message';
 }
