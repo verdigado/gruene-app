@@ -54,7 +54,7 @@ class _FutureLoadingScreenState<T> extends State<FutureLoadingScreen<T>> {
         }
 
         final data = snapshot.data;
-        if (snapshot.hasError || !snapshot.hasData || data == null) {
+        if (snapshot.hasError || data is! T) {
           return layoutBuilder(
             ErrorScreen(
               error: snapshot.error ?? Exception(),
