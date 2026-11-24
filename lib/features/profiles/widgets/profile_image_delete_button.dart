@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
+import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart';
@@ -15,7 +16,11 @@ class ProfileImageDeleteButton extends StatelessWidget {
   Future<void> _deleteProfileImage(BuildContext context) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    final confirmed = await showConfirmationDialog(context);
+    final confirmed = await showConfirmationDialog(
+      context,
+      title: t.profiles.profileImage.confirmDelete.title,
+      content: t.profiles.profileImage.confirmDelete.text,
+    );
 
     if (confirmed != true) return;
 
@@ -50,21 +55,3 @@ class ProfileImageDeleteButton extends StatelessWidget {
     );
   }
 }
-
-Future<bool?> showConfirmationDialog(BuildContext context) => showDialog<bool>(
-  context: context,
-  builder: (context) {
-    final theme = Theme.of(context);
-    return AlertDialog(
-      title: Text(t.profiles.profileImage.confirmDelete.title, style: theme.textTheme.titleLarge),
-      content: Text(t.profiles.profileImage.confirmDelete.text),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-      contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 8),
-      actionsPadding: EdgeInsets.all(8),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(t.common.actions.cancel)),
-        TextButton(onPressed: () => Navigator.of(context).pop(true), child: Text(t.common.actions.delete)),
-      ],
-    );
-  },
-);
