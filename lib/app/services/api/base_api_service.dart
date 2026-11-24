@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chopper/chopper.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
@@ -6,26 +8,26 @@ abstract class BaseApiService {
   final grueneApi = GetIt.I<GrueneApi>();
 
   Future<T> send<S, T>({required Future<Response<S>> Function(GrueneApi api) request, T Function(S data)? map}) async {
-    final response = await request(grueneApi);
-
-    handleApiError(response);
-
-    final body = response.body as S;
+    final body = _requireBody(await request(grueneApi));
     return map == null ? body as T : map(body);
   }
 
   Response<T> handleApiError<T>(Response<T> response) {
-    if (!response.isSuccessful || (!_isNullable<T>() && response.body == null)) {
+    _requireBody(response);
+    return response;
+  }
+
+  T _requireBody<T>(Response<T> response) {
+    final body = response.body;
+    if (!response.isSuccessful || body is! T) {
       throw ApiException(
         statusCode: response.statusCode,
         message: response.error?.toString(),
         url: response.base.request?.url,
       );
     }
-    return response;
+    return body;
   }
-
-  bool _isNullable<T>() => null is T;
 }
 
 class ApiException implements Exception {
