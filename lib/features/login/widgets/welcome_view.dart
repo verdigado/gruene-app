@@ -59,7 +59,7 @@ class WelcomeView extends StatelessWidget {
               onPressed: () => openUrl(termsOfUseUrl, context),
               child: Text(t.common.termsOfUse, style: theme.textTheme.labelSmall),
             ),
-          ].withDividers(HorizontalDivider()),
+          ].withDividers(HorizontalDivider(color: theme.primaryColor)),
         ),
       ],
     );
