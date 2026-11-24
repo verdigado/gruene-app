@@ -25,8 +25,7 @@
     "lastApprovedLogin": "Letzte freigegebene Anmeldung",
     "delete": {
       "title": "App als zweiten Faktor löschen",
-      "description(rich)": "Bitte entferne die App in ${openAccountSettings(Deiner Account-Verwaltung)} und richte eine neue Methode ein, bevor Du sie hier deaktivierst.\n\nSollte die App ${appName} Deine einzige 2FA-Methode sein, wirst Du Dich ansonsten nach dem Deaktivieren nicht mehr anmelden können!",
-      "submit": "Jetzt löschen"
+      "description(rich)": "Bitte entferne die App in ${openAccountSettings(Deiner Account-Verwaltung)} und richte eine neue Methode ein, bevor Du sie hier deaktivierst.\n\nSollte die App ${appName} Deine einzige 2FA-Methode sein, wirst Du Dich ansonsten nach dem Deaktivieren nicht mehr anmelden können!"
     }
   },
   "verify": {

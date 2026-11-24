@@ -6,6 +6,7 @@ import 'package:gruene_app/app/utils/date.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/app/widgets/page_info.dart';
 import 'package:gruene_app/features/events/bloc/events_bloc.dart';
 import 'package:gruene_app/features/events/utils/utils.dart';
@@ -63,19 +64,16 @@ class EventDetail extends StatelessWidget {
           icon: Icons.people,
           text: '$accepted ${t.events.accepted}, $tentative ${t.common.maybe}, $declined ${t.events.declined}',
           onPress: accepted > 0
-              ? () => showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text(t.events.accepted),
-                    content: SizedBox(
-                      width: double.maxFinite,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: event.attendees.length,
-                        itemBuilder: (context, index) => Text(event.attendees[index].name),
-                      ),
+              ? () => showAlertDialog(
+                  context,
+                  title: t.events.accepted,
+                  content: SizedBox(
+                    width: double.maxFinite,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: event.attendees.length,
+                      itemBuilder: (context, index) => Text(event.attendees[index].name),
                     ),
-                    actions: [TextButton(onPressed: Navigator.of(context).pop, child: Text(t.common.actions.close))],
                   ),
                 )
               : null,

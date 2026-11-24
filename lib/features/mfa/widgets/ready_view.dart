@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gruene_app/app/constants/urls.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_event.dart';
@@ -70,43 +71,28 @@ class _ReadyViewState extends State<ReadyView> {
             if (lastGrantedChallenge != null)
               LoginAttemptCard(challenge: lastGrantedChallenge, title: t.mfa.ready.lastApprovedLogin),
             Spacer(),
-            OutlinedButton(onPressed: () => showMfaDeletionDialog(context), child: Text(t.mfa.ready.delete.title)),
+            OutlinedButton(onPressed: _deleteMfa, child: Text(t.mfa.ready.delete.title)),
           ],
         );
       },
     );
   }
 
-  void showMfaDeletionDialog(BuildContext context) {
-    final theme = Theme.of(context);
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Center(child: Text(t.mfa.ready.delete.title, style: theme.textTheme.titleMedium)),
-        content: Text.rich(
-          t.mfa.ready.delete.description(
-            appName: TextSpan(text: t.common.appName),
-            openAccountSettings: (text) => TextSpan(
-              text: text,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: ThemeColors.primary,
-                decoration: TextDecoration.underline,
-              ),
-              recognizer: TapGestureRecognizer()..onTap = () => openUrl(mfaSettingsUrl, context),
-            ),
-          ),
+  void _deleteMfa() => showConfirmationDialog(
+    context,
+    title: t.mfa.ready.delete.title,
+    label: t.common.actions.delete,
+    onConfirmed: () => context.read<MfaBloc>().add(DeleteMfa()),
+    content: Text.rich(
+      t.mfa.ready.delete.description(
+        appName: TextSpan(text: t.common.appName),
+        openAccountSettings: (text) => TextSpan(
+          text: text,
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: ThemeColors.primary, decoration: TextDecoration.underline),
+          recognizer: TapGestureRecognizer()..onTap = () => openUrl(mfaSettingsUrl, context),
         ),
-        actions: [
-          TextButton(onPressed: Navigator.of(context).pop, child: Text(t.common.actions.cancel)),
-          TextButton(
-            onPressed: () {
-              context.read<MfaBloc>().add(DeleteMfa());
-              Navigator.of(context).pop();
-            },
-            child: Text(t.mfa.ready.delete.submit),
-          ),
-        ],
       ),
-    );
-  }
+    ),
+  );
 }

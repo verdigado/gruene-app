@@ -6,6 +6,7 @@ import 'package:gruene_app/app/services/api/event_api_service.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/utils/utils.dart';
+import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/app/widgets/full_screen_dialog.dart';
@@ -60,16 +61,7 @@ class EventDetailScreen extends StatelessWidget {
       appBar: MainAppBar(
         title: t.events.title,
         appBarAction: !calendar.readOnly
-            ? IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () async {
-                  final deleted = await showEventDeleteDialog(context, event);
-                  if (deleted == true && context.mounted) {
-                    Navigator.of(context).pop();
-                    context.read<EventsBloc>().add(DeleteEvent(calendarEvent: event));
-                  }
-                },
-              )
+            ? IconButton(icon: Icon(Icons.delete), onPressed: () => showEventDeleteDialog(context, event))
             : null,
       ),
       body: SizedBox(
@@ -104,35 +96,20 @@ class EventDetailScreen extends StatelessWidget {
   }
 }
 
-class EventDeletionConfirmationDialog extends StatelessWidget {
-  final CalendarEvent event;
-
-  const EventDeletionConfirmationDialog({super.key, required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(t.events.delete),
-      content: Text(t.events.deleteDescription),
-      actions: [
-        TextButton(onPressed: Navigator.of(context).pop, child: Text(t.common.actions.cancel)),
-        TextButton(
-          child: Text(t.common.actions.delete),
-          onPressed: () async => await tryAndNotify(
-            function: () async {
-              Navigator.of(context).pop(true);
-              await GetIt.I<EventApiService>().deleteEvent(event);
-            },
-            context: context,
-            onSuccess: (context, _) => showSnackBar(context: context, text: t.events.deleted),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-Future<bool?> showEventDeleteDialog(BuildContext context, CalendarEvent event) => showDialog<bool>(
-  context: context,
-  builder: (_) => EventDeletionConfirmationDialog(event: event),
+Future<void> showEventDeleteDialog(BuildContext context, CalendarEvent event) => showConfirmationDialog(
+  context,
+  title: t.events.delete,
+  label: t.common.actions.delete,
+  content: Text(t.events.deleteDescription),
+  onConfirmed: () => tryAndNotify(
+    function: () async {
+      await GetIt.I<EventApiService>().deleteEvent(event);
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        context.read<EventsBloc>().add(DeleteEvent(calendarEvent: event));
+      }
+    },
+    context: context,
+    onSuccess: (context, _) => showSnackBar(context: context, text: t.events.deleted),
+  ),
 );

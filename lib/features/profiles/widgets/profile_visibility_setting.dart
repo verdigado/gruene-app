@@ -7,6 +7,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/app/widgets/dialog_close_button.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';
@@ -53,13 +54,10 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
     );
 
     if (_selectedVisibility == Visibility.private && team != null && mounted) {
-      await showDialog<bool>(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text(t.profiles.visibility.privateProfileInTeamTitle),
-          content: Text(t.profiles.visibility.privateProfileInTeamHint(team: team.name)),
-          actions: [TextButton(onPressed: Navigator.of(context).pop, child: Text(t.common.actions.confirm))],
-        ),
+      await showAlertDialog(
+        context,
+        title: t.profiles.visibility.privateProfileInTeamTitle,
+        content: t.profiles.visibility.privateProfileInTeamHint(team: team.name),
       );
     }
 
