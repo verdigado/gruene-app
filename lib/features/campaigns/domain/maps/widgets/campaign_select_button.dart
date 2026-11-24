@@ -16,14 +16,17 @@ class _CampaignSelectButtonState extends State<CampaignSelectButton> {
   @override
   void initState() {
     super.initState();
-    _newCampaignNotifier.addListener(() => setState(() {}));
+    _newCampaignNotifier.addListener(_onNewCampaignsChanged);
   }
 
   @override
   void dispose() {
-    _newCampaignNotifier.removeListener(() => setState(() {}));
+    // the same function as added: a new closure would not be removed and keep this state alive
+    _newCampaignNotifier.removeListener(_onNewCampaignsChanged);
     super.dispose();
   }
+
+  void _onNewCampaignsChanged() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
