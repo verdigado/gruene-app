@@ -8,8 +8,7 @@ extension PoiTypeMapping on PoiType {
       case PoiType.house:
         return PoiServiceType.door;
       case PoiType.stand:
-        // TODO #1266: map the new pin type STAND to PoiServiceType.stand
-        throw UnimplementedError();
+        return PoiServiceType.stand;
       case PoiType.swaggerGeneratedUnknown:
         throw UnimplementedError();
     }
