@@ -56,8 +56,7 @@ extension PoiServiceTypeMapping on PoiServiceType {
       case PoiServiceType.door:
         return PoiCacheType.door;
       case PoiServiceType.stand:
-        // TODO #1266: stands are cached for offline use with the stand offline queue
-        throw UnimplementedError();
+        return PoiCacheType.stand;
     }
   }
 }

@@ -16,6 +16,12 @@ import 'package:gruene_app/app/models/campaigns/posters/poster_update_model.dart
 import 'package:gruene_app/app/models/campaigns/route/route_assignment_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
@@ -32,3 +38,5 @@ part 'converters/poster_create_model_mapping.dart';
 part 'converters/poster_update_model_mapping.dart';
 part 'converters/route_assignment_update_model_mapping.dart';
 part 'converters/route_status_update_model_mapping.dart';
+part 'converters/stand_create_model_mapping.dart';
+part 'converters/stand_update_model_mapping.dart';
