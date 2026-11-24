@@ -21,7 +21,8 @@ class StandDetailModel implements BasicPoi {
   final String? description;
   final String? comment;
 
-  /// Sum of the flyer counts of all Termine, calculated by the API. The app never adds them up itself.
+  /// Sum of the flyer counts of all Termine, calculated by the API.
+  /// Shown through [displayedFlyerTotal], which covers changes not yet synced.
   final int flyerCountTotal;
 
   /// Newest first, as returned by the API. Empty if all Termine were deleted.
@@ -44,6 +45,11 @@ class StandDetailModel implements BasicPoi {
     required this.createdAt,
     this.isCached = false,
   });
+
+  /// The flyer total to show: [flyerCountTotal] from the API, or, while changes to this stand are still queued,
+  /// the provisional total of its Termine with those changes applied (#1266). It equals the API total plus the
+  /// queued changes, because the API total is the sum of the Termine it was loaded with.
+  int get displayedFlyerTotal => isCached ? entries.fold(0, (sum, entry) => sum + entry.flyerCount) : flyerCountTotal;
 
   StandDetailModel copyWith({List<StandEntryModel>? entries, bool? isCached}) => StandDetailModel(
     id: id,

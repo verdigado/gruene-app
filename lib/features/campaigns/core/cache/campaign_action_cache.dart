@@ -399,8 +399,8 @@ class CampaignActionCache extends ChangeNotifier {
     return detailModel;
   }
 
-  /// The stand with all changes still in the queue. Its flyer total stays the last one from the API
-  /// until the queue is synced; the app does not add up flyer counts itself.
+  /// The stand with all changes still in the queue. Its [StandDetailModel.flyerCountTotal] stays the last one
+  /// from the API; the detail shows the provisional [StandDetailModel.displayedFlyerTotal] until the queue is synced.
   Future<StandDetailModel> getPoiAsStandDetail(String poiId) async {
     final actions = await _findActionsByPoiId(poiId);
     final localEntryIds = <String>{};
