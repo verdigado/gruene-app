@@ -12,7 +12,20 @@ import 'package:gruene_app/features/campaigns/domain/shared/widgets/campaign_sel
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
-class CampaignsScreen extends StatelessWidget {
+class CampaignsScreen extends StatefulWidget {
+  final StatefulNavigationShell navigationShell;
+
+  final List<Widget> children;
+
+  const CampaignsScreen({super.key, required this.navigationShell, required this.children});
+
+  @override
+  State<CampaignsScreen> createState() => _CampaignsScreenState();
+}
+
+class _CampaignsScreenState extends State<CampaignsScreen> {
+  final _activeCampaignNotifier = GetIt.I<ActiveCampaignNotifier>();
+
   final List<TabModelBase> campaignTabs = [
     TabModelBase(label: t.campaigns.door.label),
     TabModelBase(label: t.campaigns.poster.label),
@@ -22,23 +35,32 @@ class CampaignsScreen extends StatelessWidget {
     TabModelBase(label: t.campaigns.statistics.label),
   ];
 
-  final StatefulNavigationShell navigationShell;
+  @override
+  void initState() {
+    super.initState();
+    // added once and removed on dispose: the notifier outlives this screen
+    _activeCampaignNotifier.addListener(_onActiveCampaignChanged);
+  }
 
-  final List<Widget> children;
+  @override
+  void dispose() {
+    _activeCampaignNotifier.removeListener(_onActiveCampaignChanged);
+    super.dispose();
+  }
 
-  CampaignsScreen({super.key, required this.navigationShell, required this.children});
+  void _onActiveCampaignChanged() {
+    if (!mounted) return;
+    showCampaignSelectDialog(context, enforceSelect: true);
+  }
 
   @override
   Widget build(BuildContext context) {
-    var activeCampaignNotifier = GetIt.I<ActiveCampaignNotifier>();
-    if (!activeCampaignNotifier.isCurrentCampaignActive) {
+    if (!_activeCampaignNotifier.isCurrentCampaignActive) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
         showCampaignSelectDialog(context, enforceSelect: true);
       });
     }
-    activeCampaignNotifier.addListener(() {
-      showCampaignSelectDialog(context, enforceSelect: true);
-    });
 
     return RouterTabScreen(
       appBarBuilder: (PreferredSizeWidget tabBar) => MainAppBar(
@@ -49,8 +71,8 @@ class CampaignsScreen extends StatelessWidget {
       ),
       tabs: campaignTabs,
       scrollableBody: false,
-      navigationShell: navigationShell,
-      children: children,
+      navigationShell: widget.navigationShell,
+      children: widget.children,
     );
   }
 }
