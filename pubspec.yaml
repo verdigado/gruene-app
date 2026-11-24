@@ -127,6 +127,7 @@ flutter:
     - assets/symbols/posters/
     - assets/symbols/posters/svg_inverted/
     - assets/symbols/doors/
+    - assets/symbols/stands/
     - assets/symbols/flyer/
     - assets/symbols/polling_stations/
     - assets/symbols/events/

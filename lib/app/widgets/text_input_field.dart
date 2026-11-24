@@ -15,6 +15,8 @@ class TextInputField extends StatefulWidget {
 
   final bool selectAllTextOnFocus;
 
+  final bool enabled;
+
   const TextInputField({
     required this.labelText,
     required this.textController,
@@ -22,6 +24,7 @@ class TextInputField extends StatefulWidget {
     this.borderColor,
     this.inputType = InputFieldType.string,
     this.selectAllTextOnFocus = false,
+    this.enabled = true,
     super.key,
   });
 
@@ -75,6 +78,7 @@ class _TextInputFieldState extends State<TextInputField> {
         },
         child: TextFormField(
           controller: widget.textController,
+          enabled: widget.enabled,
           keyboardType: inputType,
           inputFormatters: formatters,
           style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.text),

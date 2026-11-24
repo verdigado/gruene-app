@@ -93,6 +93,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<FileManager>(FileManager());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.poster.toString());
   GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.door.toString());
+  GetIt.I.registerSingleton<MapScreenController>(MapScreenController(), instanceName: PoiServiceType.stand.toString());
   GetIt.I.registerSingleton<TeamRefreshController>(TeamRefreshController());
   GetIt.I.registerSingleton<VisualIdentifierHelper>(VisualIdentifierHelper());
   initializeApiServices();

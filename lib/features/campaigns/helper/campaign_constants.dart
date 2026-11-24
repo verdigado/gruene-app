@@ -3,6 +3,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class CampaignConstants {
   static const dummyImageAssetName = 'assets/splash/logo_android12.png';
   static const doorAssetName = 'assets/symbols/doors/door.png';
+  static const standAssetName = 'assets/symbols/stands/stand.png';
   static const flyerAssetName = 'assets/symbols/flyer/flyer.png';
   static const posterOkAssetName = 'assets/symbols/posters/poster.png';
   static const posterDamagedAssetName = 'assets/symbols/posters/poster_damaged.png';

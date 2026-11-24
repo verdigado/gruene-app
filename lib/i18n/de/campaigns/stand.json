@@ -1,3 +1,32 @@
 {
-  "label": "Stand"
+  "label": "Stand",
+  "add": {
+    "title": "Wahlkampfstand eintragen"
+  },
+  "name": "Name",
+  "description": "Beschreibung",
+  "location": "Ort",
+  "comment": "Kommentar",
+  "date": "Datum",
+  "dateFormat": "EEEE, d. MMMM y",
+  "from": "Von",
+  "to": "Bis",
+  "flyerCount": "Verteilte Flyer (optional)",
+  "flyerCountFutureHint": "Verteilte Flyer kannst du eintragen, sobald der Termin stattgefunden hat.",
+  "errors": {
+    "nameRequired": "Bitte gib einen Namen ein.",
+    "tooLong": "Höchstens ${max} Zeichen.",
+    "toBeforeFrom": "\"Bis\" muss nach \"Von\" liegen.",
+    "flyerCount": "Bitte gib eine ganze Zahl ab 0 ein."
+  },
+  "futureDateWithFlyers": {
+    "message": "Für einen Termin in der Zukunft können keine verteilten Flyer eingetragen werden. Die eingetragene Anzahl wird gelöscht.",
+    "confirm": "Datum übernehmen",
+    "decline": "Abbrechen"
+  },
+  "discardChanges": {
+    "message": "Deine Eingaben wurden noch nicht gespeichert. Möchtest du sie verwerfen?",
+    "confirm": "Verwerfen",
+    "decline": "Weiter bearbeiten"
+  }
 }
