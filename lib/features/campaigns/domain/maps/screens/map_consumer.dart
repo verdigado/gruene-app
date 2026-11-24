@@ -227,10 +227,14 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
       context: context,
       backgroundColor: theme.colorScheme.surface,
       useRootNavigator: true,
-      builder: (context) => SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
-          child: getEditWidget(),
+      // keeps the sheet above the keyboard, so the focused field scrolls into view instead of behind it
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+            child: getEditWidget(),
+          ),
         ),
       ),
     );

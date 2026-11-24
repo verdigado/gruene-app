@@ -4,6 +4,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_entry_formats.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/widgets/stand_entry_list.dart';
+import 'package:gruene_app/features/campaigns/domain/shared/widgets/sheet_header.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
@@ -30,7 +31,7 @@ class StandDetail extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _SheetHeader(title: poi.name, subtitle: t.campaigns.stand.type),
+        SheetHeader(title: poi.name, subtitle: t.campaigns.stand.type),
         Flexible(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -62,6 +63,18 @@ class StandDetail extends StatelessWidget {
             ),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: ElevatedButton(
+            onPressed: () => Navigator.maybePop(context, ModalDetailResult.edit),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ThemeColors.primary,
+              foregroundColor: ThemeColors.background,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            ),
+            child: Text(t.common.actions.edit),
+          ),
+        ),
       ],
     );
   }
@@ -83,7 +96,7 @@ class StandDetail extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _SheetHeader(title: t.campaigns.stand.entries, subtitle: poi.name),
+          SheetHeader(title: t.campaigns.stand.entries, subtitle: poi.name),
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -94,43 +107,6 @@ class StandDetail extends StatelessWidget {
       ),
     ),
   );
-}
-
-class _SheetHeader extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _SheetHeader({required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    // the close button is centered on the title line; its 48 px tap target adds the space above the title
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 4, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: theme.textTheme.titleMedium?.apply(color: ThemeColors.text, fontWeightDelta: 2),
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-                onPressed: () => Navigator.maybePop(context, ModalDetailResult.close),
-              ),
-            ],
-          ),
-          Text(subtitle, style: theme.textTheme.bodySmall?.apply(color: ThemeColors.textDisabled)),
-        ],
-      ),
-    );
-  }
 }
 
 /// Label on the left, value on the right; at large font sizes the value moves below the label.
