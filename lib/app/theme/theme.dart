@@ -35,7 +35,7 @@ class ThemeColors {
   // Middle Grey (#9CABAF)
   static const Color textDisabled = Color(0xFF9CABAF);
 
-  static const Color warning = Colors.amber;
+  static const Color warning = Color(0xFFA16207);
 
   static const Color textWarning = Color(0xFFCB4040);
 
