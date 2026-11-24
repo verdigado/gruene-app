@@ -15,7 +15,6 @@ import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/guests/models/keycloak_password_policy.dart';
-import 'package:gruene_app/features/guests/repositories/guest_repository.dart';
 import 'package:gruene_app/features/guests/utils/birth_date.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_details_step.dart';
 import 'package:gruene_app/features/guests/widgets/onboarding/onboarding_login_step.dart';
@@ -120,7 +119,6 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
       password: _password.text,
     ),
     onSuccess: (_, _) {
-      markGuestInvitationHandled(widget.token);
       if (!mounted) return;
       _password.clear();
       _passwordRepeat.clear();
@@ -137,14 +135,9 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
           if (mounted) setState(() => _rejectedPassword = _password.text);
           return;
         case HttpStatus.notFound:
-          markGuestInvitationHandled(widget.token);
           _leaveOnboarding(context, title: t.guests.onboarding.invalid.title, hint: t.guests.onboarding.invalid.hint);
           return;
-        case HttpStatus.conflict:
-          markGuestInvitationHandled(widget.token);
-          _leaveOnboarding(context, title: t.guests.onboarding.refused.title, hint: t.guests.onboarding.refused.hint);
-          return;
-        case HttpStatus.unprocessableEntity:
+        case HttpStatus.conflict || HttpStatus.unprocessableEntity:
           _leaveOnboarding(context, title: t.guests.onboarding.refused.title, hint: t.guests.onboarding.refused.hint);
           return;
       }

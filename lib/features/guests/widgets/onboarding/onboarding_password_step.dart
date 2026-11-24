@@ -120,7 +120,7 @@ class _Rule extends StatelessWidget {
         children: [
           Icon(
             fulfilled ? Icons.check_circle : Icons.circle_outlined,
-            size: 18,
+            size: 16,
             color: fulfilled ? ThemeColors.secondary : theme.colorScheme.outline,
           ),
           Expanded(

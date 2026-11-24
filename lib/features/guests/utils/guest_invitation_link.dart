@@ -9,14 +9,13 @@ import 'package:gruene_app/app/utils/error.dart';
 import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/widgets/alert.dart';
-import 'package:gruene_app/features/guests/repositories/guest_repository.dart';
 import 'package:gruene_app/features/guests/screens/guest_onboarding_screen.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 /// Path of the invitation link sent to guests, e.g. https://app.gruene.de/guest-invitation#token=abc
-const _invitationLinkPath = '/guest-invitation';
+const _guestInvitationLinkPath = '/guest-invitation';
 
-bool isGuestInvitationLink(Uri uri) => uri.path == _invitationLinkPath;
+bool isGuestInvitationLink(Uri uri) => uri.path == _guestInvitationLinkPath;
 
 String? guestInvitationToken(Uri uri) {
   final token = Uri.splitQueryString(uri.fragment)['token'];
@@ -25,7 +24,7 @@ String? guestInvitationToken(Uri uri) {
 
 Future<void> openGuestInvitationLink(GlobalKey<NavigatorState> navigatorKey, String? token) async {
   final context = navigatorKey.currentContext;
-  if (context == null || isGuestInvitationHandled(token)) return;
+  if (context == null) return;
 
   if (token == null) {
     showAlertDialog(context, title: t.guests.onboarding.invalid.title, content: t.guests.onboarding.invalid.hint);
@@ -42,7 +41,6 @@ Future<void> openGuestInvitationLink(GlobalKey<NavigatorState> navigatorKey, Str
     context: context,
     onSuccess: (context, invitation) {
       if (invitation == null) {
-        markGuestInvitationHandled(token);
         showAlertDialog(context, title: t.guests.onboarding.invalid.title, content: t.guests.onboarding.invalid.hint);
         return;
       }

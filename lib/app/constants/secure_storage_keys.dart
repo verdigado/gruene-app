@@ -7,8 +7,6 @@ class SecureStorageKeys {
   static const String pushNotificationsEnabled = 'push_notifications.enabled';
   static const String pushNotificationsTopicMap = 'push_notifications.topic_map';
   static const String pushNotificationsFcmTopics = 'push_notifications.subscribed_fcm_topics';
-  // guests
-  static const String guestsHandledInvitations = 'guests.handled_invitations';
   // news
   static const String newsDivisionFilters = 'news.division_filters';
   // events
