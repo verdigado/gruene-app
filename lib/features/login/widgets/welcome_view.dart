@@ -49,15 +49,15 @@ class WelcomeView extends StatelessWidget {
           children: [
             TextButton(
               onPressed: () => openUrl(privacyPolicyUrl, context),
-              child: Text(t.common.legal.privacyPolicy.title, style: theme.textTheme.labelSmall),
+              child: Text(t.legal.privacyPolicy.title, style: theme.textTheme.labelSmall),
             ),
             TextButton(
               onPressed: () => openUrl(imprintUrl, context),
-              child: Text(t.common.legal.imprint, style: theme.textTheme.labelSmall),
+              child: Text(t.legal.imprint, style: theme.textTheme.labelSmall),
             ),
             TextButton(
               onPressed: () => openUrl(termsOfUseUrl, context),
-              child: Text(t.common.legal.termsOfUse, style: theme.textTheme.labelSmall),
+              child: Text(t.legal.termsOfUse, style: theme.textTheme.labelSmall),
             ),
           ].withDividers(HorizontalDivider(color: theme.primaryColor)),
         ),

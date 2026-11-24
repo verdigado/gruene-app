@@ -87,14 +87,5 @@
     "emailRequired": "Bitte gib eine E-Mail-Adresse ein.",
     "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "divisionRequired": "Bitte wähle eine Gliederung aus."
-  },
-  "legal": {
-    "imprint": "Impressum",
-    "termsOfUse": "Nutzungsbedingungen",
-    "privacyPolicy": {
-      "title": "Datenschutzerklärung",
-      "label(rich)": "Ich habe die ${openPrivacyPolicy(Datenschutzerklärung)} gelesen und bin einverstanden.",
-      "required": "Bitte stimme der Datenschutzerklärung zu."
-    }
   }
 }

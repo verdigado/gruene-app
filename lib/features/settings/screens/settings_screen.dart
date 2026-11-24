@@ -24,7 +24,7 @@ class SettingsScreen extends StatelessWidget {
       body: ExpandingScrollView(
         padding: const EdgeInsets.fromLTRB(0, 16, 0, 32),
         children: [
-          SectionTitle(title: t.settings.generalSettings),
+          SectionTitle(title: t.settings.general),
           TextListItem(
             title: t.settings.pushNotifications.title,
             onPress: () => context.pushNested(Routes.pushNotifications.path),
@@ -34,18 +34,14 @@ class SettingsScreen extends StatelessWidget {
             onPress: () => openUrl(grueneAppFeedbackUrl, context),
             isExternal: true,
           ),
-          SectionTitle(title: t.settings.legalSettings),
-          TextListItem(title: t.common.legal.imprint, onPress: () => openUrl(imprintUrl, context), isExternal: true),
+          SectionTitle(title: t.legal.title),
+          TextListItem(title: t.legal.imprint, onPress: () => openUrl(imprintUrl, context), isExternal: true),
           TextListItem(
-            title: t.common.legal.privacyPolicy.title,
+            title: t.legal.privacyPolicy.title,
             onPress: () => openUrl(privacyPolicyUrl, context),
             isExternal: true,
           ),
-          TextListItem(
-            title: t.common.legal.termsOfUse,
-            onPress: () => openUrl(termsOfUseUrl, context),
-            isExternal: true,
-          ),
+          TextListItem(title: t.legal.termsOfUse, onPress: () => openUrl(termsOfUseUrl, context), isExternal: true),
           Spacer(),
           isLoggedIn
               ? Padding(

@@ -15,7 +15,7 @@ class PrivacyPolicyConsent extends StatelessWidget {
 
     return FormField(
       initialValue: consent.value,
-      validator: (value) => value == true ? null : t.common.legal.privacyPolicy.required,
+      validator: (value) => value == true ? null : t.legal.privacyPolicy.required,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       builder: (field) => CheckboxListTile(
         value: field.value,
@@ -27,7 +27,7 @@ class PrivacyPolicyConsent extends StatelessWidget {
         contentPadding: EdgeInsets.zero,
         controlAffinity: ListTileControlAffinity.leading,
         title: Text.rich(
-          t.common.legal.privacyPolicy.label(
+          t.legal.privacyPolicy.label(
             openPrivacyPolicy: (text) => TextSpan(
               text: text,
               style: TextStyle(color: theme.colorScheme.primary, decoration: TextDecoration.underline),

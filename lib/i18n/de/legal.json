@@ -1,0 +1,10 @@
+{
+  "title": "Rechtliches",
+  "imprint": "Impressum",
+  "termsOfUse": "Nutzungsbedingungen",
+  "privacyPolicy": {
+    "title": "Datenschutzerklärung",
+    "label(rich)": "Ich habe die ${openPrivacyPolicy(Datenschutzerklärung)} gelesen und bin einverstanden.",
+    "required": "Bitte stimme der Datenschutzerklärung zu."
+  }
+}

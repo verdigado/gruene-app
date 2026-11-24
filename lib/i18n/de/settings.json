@@ -1,7 +1,6 @@
 {
   "title": "App-Einstellungen",
-  "generalSettings": "App",
-  "legalSettings": "Rechtliches",
+  "general": "App",
   "pushNotifications": {
     "title": "Push Nachrichten",
     "disableAll": "Vollständig deaktivieren",
