@@ -8,7 +8,7 @@ import 'package:gruene_app/app/services/api/news_api_service.dart';
 import 'package:gruene_app/app/utils/divisions.dart';
 import 'package:gruene_app/app/widgets/app_bar.dart';
 import 'package:gruene_app/app/widgets/filter_bar.dart';
-import 'package:gruene_app/features/news/repository/news_repository.dart';
+import 'package:gruene_app/features/news/repositories/news_repository.dart';
 import 'package:gruene_app/features/news/utils/utils.dart';
 import 'package:gruene_app/features/news/widgets/news_filter_dialog.dart';
 import 'package:gruene_app/features/news/widgets/news_list.dart';

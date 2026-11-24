@@ -5,7 +5,7 @@ import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/date_range_filter.dart';
 import 'package:gruene_app/app/widgets/filter_dialog.dart';
 import 'package:gruene_app/app/widgets/selection.dart';
-import 'package:gruene_app/features/news/repository/news_repository.dart';
+import 'package:gruene_app/features/news/repositories/news_repository.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
