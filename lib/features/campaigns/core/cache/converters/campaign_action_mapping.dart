@@ -30,20 +30,6 @@ extension CampaignActionMapping on CampaignAction {
     return model;
   }
 
-  FlyerCreateModel toFlyerCreate() {
-    var data = jsonDecode(serialized!) as Map<String, dynamic>;
-    var model = FlyerCreateModel.fromJson(data.convertLatLongField());
-
-    return model;
-  }
-
-  FlyerUpdateModel toFlyerUpdate() {
-    var data = jsonDecode(serialized!) as Map<String, dynamic>;
-    var model = FlyerUpdateModel.fromJson(data.updateIdField(poiId!).convertLatLongField());
-
-    return model;
-  }
-
   PosterListItemModel toPosterListItemFromUpdate(DateTime originalCreatedAt) {
     var updateModel = toPosterUpdate().toPosterDetailModel();
     var lastPhoto = updateModel.latestPhoto();
