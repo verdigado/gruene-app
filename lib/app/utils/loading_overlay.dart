@@ -14,7 +14,8 @@ void showLoadingOverlay(BuildContext context) {
       ],
     ),
   );
-  Overlay.of(context, rootOverlay: true).insert(_overlay!);
+  // Overlay.of does not work for the root navigator
+  Navigator.of(context, rootNavigator: true).overlay!.insert(_overlay!);
 }
 
 void hideLoadingOverlay() {
@@ -25,8 +26,9 @@ void hideLoadingOverlay() {
 Future<T?> tryAndNotify<T>({
   required Future<T> Function() function,
   required BuildContext context,
-  String? errorMessage,
   void Function(BuildContext rootContext, T value)? onSuccess,
+  String Function(Object error) getErrorMessage = getErrorMessage,
+  void Function(BuildContext rootContext, Object error)? onError,
   void Function(bool loading)? setLoading,
 }) async {
   final rootContext = Navigator.of(context, rootNavigator: true).context;
@@ -39,10 +41,7 @@ Future<T?> tryAndNotify<T>({
     return value;
   } catch (error) {
     if (rootContext.mounted) {
-      showSnackBar(
-        context: rootContext,
-        text: getErrorMessage(error, defaultMessage: errorMessage),
-      );
+      onError != null ? onError(rootContext, error) : showSnackBar(context: rootContext, text: getErrorMessage(error));
     }
   } finally {
     setLoading != null ? setLoading(false) : hideLoadingOverlay();
