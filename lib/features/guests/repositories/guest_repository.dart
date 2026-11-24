@@ -5,19 +5,19 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/secure_storage_keys.dart';
 
 /// Android restarts a killed app with the link it was opened with until its task is removed from the recent apps.
-final _handledInvitationTokens = <String>{};
+final _handledGuestInvitationTokens = <String>{};
 
-Future<void> loadHandledInvitations() async {
+Future<void> loadHandledGuestInvitations() async {
   final stored = await GetIt.I<FlutterSecureStorage>().read(key: SecureStorageKeys.guestsHandledInvitations);
-  if (stored != null) _handledInvitationTokens.addAll(List<String>.from(jsonDecode(stored) as List));
+  if (stored != null) _handledGuestInvitationTokens.addAll(List<String>.from(jsonDecode(stored) as List));
 }
 
-void markInvitationHandled(String? token) {
-  if (token == null || !_handledInvitationTokens.add(token)) return;
+void markGuestInvitationHandled(String? token) {
+  if (token == null || !_handledGuestInvitationTokens.add(token)) return;
   GetIt.I<FlutterSecureStorage>().write(
     key: SecureStorageKeys.guestsHandledInvitations,
-    value: jsonEncode(_handledInvitationTokens.toList()),
+    value: jsonEncode(_handledGuestInvitationTokens.toList()),
   );
 }
 
-bool isInvitationHandled(String? token) => _handledInvitationTokens.contains(token);
+bool isGuestInvitationHandled(String? token) => _handledGuestInvitationTokens.contains(token);

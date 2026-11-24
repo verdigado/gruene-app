@@ -16,16 +16,16 @@ import 'package:gruene_app/i18n/translations.g.dart';
 /// Path of the invitation link sent to guests, e.g. https://app.gruene.de/guest-invitation#token=abc
 const _invitationLinkPath = '/guest-invitation';
 
-bool isInvitationLink(Uri uri) => uri.path == _invitationLinkPath;
+bool isGuestInvitationLink(Uri uri) => uri.path == _invitationLinkPath;
 
-String? invitationToken(Uri uri) {
+String? guestInvitationToken(Uri uri) {
   final token = Uri.splitQueryString(uri.fragment)['token'];
   return token.isNullOrEmpty() ? null : token;
 }
 
-Future<void> openInvitationLink(GlobalKey<NavigatorState> navigatorKey, String? token) async {
+Future<void> openGuestInvitationLink(GlobalKey<NavigatorState> navigatorKey, String? token) async {
   final context = navigatorKey.currentContext;
-  if (context == null || isInvitationHandled(token)) return;
+  if (context == null || isGuestInvitationHandled(token)) return;
 
   if (token == null) {
     showAlertDialog(context, title: t.guests.onboarding.invalid.title, content: t.guests.onboarding.invalid.hint);
@@ -42,7 +42,7 @@ Future<void> openInvitationLink(GlobalKey<NavigatorState> navigatorKey, String? 
     context: context,
     onSuccess: (context, invitation) {
       if (invitation == null) {
-        markInvitationHandled(token);
+        markGuestInvitationHandled(token);
         showAlertDialog(context, title: t.guests.onboarding.invalid.title, content: t.guests.onboarding.invalid.hint);
         return;
       }
@@ -58,7 +58,7 @@ Future<void> openInvitationLink(GlobalKey<NavigatorState> navigatorKey, String? 
       action: TextButton(
         onPressed: () {
           Navigator.pop(context);
-          openInvitationLink(navigatorKey, token);
+          openGuestInvitationLink(navigatorKey, token);
         },
         child: Text(t.error.retry),
       ),

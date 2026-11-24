@@ -120,7 +120,7 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
       password: _password.text,
     ),
     onSuccess: (_, _) {
-      markInvitationHandled(widget.token);
+      markGuestInvitationHandled(widget.token);
       if (!mounted) return;
       _password.clear();
       _passwordRepeat.clear();
@@ -137,11 +137,11 @@ class _OnboardingStepsState extends State<_OnboardingSteps> {
           if (mounted) setState(() => _rejectedPassword = _password.text);
           return;
         case HttpStatus.notFound:
-          markInvitationHandled(widget.token);
+          markGuestInvitationHandled(widget.token);
           _leaveOnboarding(context, title: t.guests.onboarding.invalid.title, hint: t.guests.onboarding.invalid.hint);
           return;
         case HttpStatus.conflict:
-          markInvitationHandled(widget.token);
+          markGuestInvitationHandled(widget.token);
           _leaveOnboarding(context, title: t.guests.onboarding.refused.title, hint: t.guests.onboarding.refused.hint);
           return;
         case HttpStatus.unprocessableEntity:

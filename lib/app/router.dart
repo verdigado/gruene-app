@@ -52,9 +52,9 @@ GoRouter createAppRouter(GlobalKey<NavigatorState> navigatorKey) {
       final isLoggedIn = authBloc.state is Authenticated;
       final isLoggedOut = authBloc.state is Unauthenticated;
 
-      if (isInvitationLink(state.uri)) {
+      if (isGuestInvitationLink(state.uri)) {
         WidgetsBinding.instance
-          ..addPostFrameCallback((_) => openInvitationLink(navigatorKey, invitationToken(state.uri)))
+          ..addPostFrameCallback((_) => openGuestInvitationLink(navigatorKey, guestInvitationToken(state.uri)))
           ..ensureVisualUpdate();
         return isLoggedIn ? Routes.news.path : Routes.login.path;
       }

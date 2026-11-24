@@ -65,7 +65,7 @@ Future<void> main() async {
   GetIt.I.registerSingleton<FlutterSecureStorage>(secureStorage);
 
   // Necessary preparation before creating the router for its redirect
-  await loadHandledInvitations();
+  await loadHandledGuestInvitations();
 
   final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
