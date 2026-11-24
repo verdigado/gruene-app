@@ -13,7 +13,6 @@ class OnboardingWelcomeStep extends StatelessWidget {
     final theme = Theme.of(context);
     final inviter = invitation.inviterName;
     final division = invitation.divisionName;
-    final steps = t.guests.onboarding.welcome.steps;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -28,8 +27,13 @@ class OnboardingWelcomeStep extends StatelessWidget {
               : t.guests.onboarding.welcome.invited,
         ),
         Text(t.guests.onboarding.welcome.hint),
-        for (final (index, step) in [steps.details, steps.password, steps.login, steps.mfa].indexed)
-          StepListItem(number: index + 1, title: step.title, hint: step.hint),
+        for (final (index, (title, hint)) in [
+          (t.guests.onboarding.welcome.steps.details.title, t.guests.onboarding.welcome.steps.details.hint),
+          (t.guests.onboarding.welcome.steps.password.title, t.guests.onboarding.welcome.steps.password.hint),
+          (t.guests.onboarding.welcome.steps.login.title, t.guests.onboarding.welcome.steps.login.hint),
+          (t.guests.onboarding.welcome.steps.mfa.title, t.guests.onboarding.welcome.steps.mfa.hint),
+        ].indexed)
+          StepListItem(number: index + 1, title: title, hint: hint),
       ],
     );
   }

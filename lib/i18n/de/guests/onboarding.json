@@ -5,7 +5,7 @@
     "invitedBy": "${inviter} hat Dich eingeladen, im ${division} beim Wahlkampf mitzuhelfen.",
     "invited": "Du wurdest eingeladen, beim Wahlkampf mitzuhelfen.",
     "hint": "Dafür richten wir Dir einen Zugang ein. So geht es weiter:",
-    "steps(interface=Steps)": {
+    "steps": {
       "details": {
         "title": "@:guests.onboarding.details.title",
         "hint": "Dein Name und Geburtsdatum"
