@@ -76,7 +76,7 @@ class _VerifyViewState extends State<VerifyView> {
         children: [
           Center(child: SizedBox(height: 128, child: SvgPicture.asset('assets/graphics/mfa_verify.svg'))),
           Text(t.mfa.verify.title, textAlign: TextAlign.center, style: theme.textTheme.displayLarge),
-          Text(t.mfa.verify.description, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
+          Text(t.mfa.verify.text, textAlign: TextAlign.center),
           LoginAttemptCard(challenge: state.challenge!),
           Spacer(),
           FilledButton(

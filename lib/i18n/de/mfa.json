@@ -3,7 +3,7 @@
   "label": "2FA",
   "intro": {
     "title": "Nutze die App als 2-Faktor-Authentifizierung!",
-    "description(rich)": "Mit der App ${appName} als zweiten Faktor kannst Du Dich ganz einfach im Grünen Netz anmelden.\n\nFür die Einrichtung musst Du nur mit Deiner Kamera den QR-Code in ${openAccountSettings(Deiner Account-Verwaltung)} einscannen.\n\nIm Anschluss öffne die App jedes Mal, wenn Du eine Anmeldung im Grünen Netz freigeben willst.\n\nMehr Informationen zur Einrichtung findest Du ${openMfaInformation(hier)}.",
+    "text(rich)": "Mit der App ${appName} als zweiten Faktor kannst Du Dich ganz einfach im Grünen Netz anmelden.\n\nFür die Einrichtung musst Du nur mit Deiner Kamera den QR-Code in ${openAccountSettings(Deiner Account-Verwaltung)} einscannen.\n\nIm Anschluss öffne die App jedes Mal, wenn Du eine Anmeldung im Grünen Netz freigeben willst.\n\nMehr Informationen zur Einrichtung findest Du ${openMfaInformation(hier)}.",
     "startSetup": "Jetzt einrichten"
   },
   "tokenScan": {
@@ -25,12 +25,12 @@
     "lastApprovedLogin": "Letzte freigegebene Anmeldung",
     "delete": {
       "title": "App als zweiten Faktor löschen",
-      "description(rich)": "Bitte entferne die App in ${openAccountSettings(Deiner Account-Verwaltung)} und richte eine neue Methode ein, bevor Du sie hier deaktivierst.\n\nSollte die App ${appName} Deine einzige 2FA-Methode sein, wirst Du Dich ansonsten nach dem Deaktivieren nicht mehr anmelden können!"
+      "text(rich)": "Bitte entferne die App in ${openAccountSettings(Deiner Account-Verwaltung)} und richte eine neue Methode ein, bevor Du sie hier deaktivierst.\n\nSollte die App ${appName} Deine einzige 2FA-Methode sein, wirst Du Dich ansonsten nach dem Deaktivieren nicht mehr anmelden können!"
     }
   },
   "verify": {
     "title": "Bist Du das?",
-    "description": "Eine Anwendung fordert Zugriff auf Deinen Account an.",
+    "text": "Eine Anwendung fordert Zugriff auf Deinen Account an.",
     "application": "Anwendung:",
     "device": "Gerät:",
     "date": "Datum:",

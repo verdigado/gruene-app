@@ -20,7 +20,7 @@ class IntroView extends StatelessWidget {
       children: [
         Text(t.mfa.intro.title, textAlign: TextAlign.center, style: theme.textTheme.displayMedium),
         Text.rich(
-          t.mfa.intro.description(
+          t.mfa.intro.text(
             appName: TextSpan(text: t.common.appName),
             openAccountSettings: (text) => TextSpan(
               text: text,

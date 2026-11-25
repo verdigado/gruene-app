@@ -84,7 +84,7 @@ class _ReadyViewState extends State<ReadyView> {
     label: t.common.actions.delete,
     onConfirmed: () => context.read<MfaBloc>().add(DeleteMfa()),
     content: Text.rich(
-      t.mfa.ready.delete.description(
+      t.mfa.ready.delete.text(
         appName: TextSpan(text: t.common.appName),
         openAccountSettings: (text) => TextSpan(
           text: text,
