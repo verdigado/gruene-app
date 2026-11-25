@@ -6,7 +6,6 @@ import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_form_rules.dart';
-import 'package:gruene_app/features/campaigns/domain/actions/stands/widgets/stand_entry_list.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/multiline_text_input_field.dart';
@@ -15,8 +14,9 @@ import 'package:gruene_app/i18n/translations.g.dart';
 
 typedef OnSaveStandCallback = Future<void> Function(StandUpdateModel standUpdate);
 
-/// Edits a stand in a bottom sheet over the map: its fields, its address and, with all its Termine,
-/// deleting it. `Ort` cannot be changed (decision in #1260); the address can be corrected.
+/// Edits the base data of a stand in a bottom sheet over the map: its fields, its address and deleting it with all
+/// its Termine. The Termine themselves are managed in the detail. `Ort` cannot be changed (decision in #1260); the
+/// address can be corrected.
 class StandEdit extends StatefulWidget {
   final StandDetailModel stand;
   final OnSaveStandCallback onSave;
@@ -128,10 +128,6 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
                 ),
                 error: _errors.comment,
               ),
-              if (widget.stand.entries.isNotEmpty) ...[
-                _sectionLabel(t.campaigns.stand.entries),
-                StandEntryList(entries: widget.stand.entries, withYear: true),
-              ],
               Padding(
                 padding: const EdgeInsets.only(top: 24, bottom: 12),
                 child: DeleteAndSaveWidget(onDelete: _onDeletePressed, onSave: _onSavePressed),

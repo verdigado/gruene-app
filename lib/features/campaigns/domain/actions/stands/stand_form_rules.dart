@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_entry_formats.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 /// Field rules of the stand form, as decided in #1260.
@@ -47,6 +49,16 @@ abstract final class StandFormRules {
     if (trimmed.isEmpty) return null;
     final count = int.tryParse(trimmed);
     return count == null || count < 0 ? t.campaigns.stand.errors.flyerCount : null;
+  }
+
+  /// The first of [otherEntries] whose time overlaps [startAt]–[endAt]; one ending when the other starts does not.
+  /// The app prevents overlapping Termine of a stand; the API does not refuse them (decision in #1260).
+  static StandEntryModel? findOverlap(DateTime startAt, DateTime endAt, Iterable<StandEntryModel> otherEntries) =>
+      otherEntries.where((e) => startAt.isBefore(e.endAt) && e.startAt.isBefore(endAt)).firstOrNull;
+
+  static String overlapMessage(StandEntryModel overlapping) {
+    final (:date, :from, :to) = StandEntryFormats.parts(overlapping);
+    return t.campaigns.stand.errors.overlap(date: date, from: from, to: to);
   }
 
   /// No count for a Termin after today; the API stores an empty count as 0.

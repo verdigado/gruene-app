@@ -91,7 +91,7 @@ void main() {
 
   bool isOpen() => find.text('Wahlkampfstand bearbeiten').evaluate().isNotEmpty;
 
-  testWidgets('shows the stand fields, its address and all Termine with the year', (tester) async {
+  testWidgets('shows the stand fields and its address, but no Termine', (tester) async {
     await openEdit(tester, _stand());
 
     expect(find.text('Wahlkampfstand bearbeiten'), findsOneWidget);
@@ -99,8 +99,8 @@ void main() {
     expect(tester.widget<TextField>(_input('Beschreibung')).controller!.text, 'Vor dem Bäcker');
     expect(tester.widget<TextField>(_input('Kommentar')).controller!.text, 'Strom vom Kiosk');
     expect(find.text('Goethestraße'), findsOneWidget);
-    expect(find.text('Mi. 04.11.2026 · 10:00–12:00 Uhr'), findsOneWidget);
-    expect(find.text('Mo. 02.11.2026 · 10:00–12:00 Uhr'), findsOneWidget);
+    expect(find.text('Termine'), findsNothing);
+    expect(find.textContaining(' Uhr'), findsNothing);
     expect(find.text('Eintrag löschen'), findsOneWidget);
   });
 
@@ -215,8 +215,8 @@ void main() {
     expect(firstLineBottom, lessThanOrEqualTo(screenHeight - keyboardHeight));
   });
 
-  testWidgets('is usable at large font sizes, also with many Termine', (tester) async {
-    await openEdit(tester, _stand(entries: [for (var day = 1; day <= 20; day++) _entry(day)]), textScale: 2);
+  testWidgets('is usable at large font sizes', (tester) async {
+    await openEdit(tester, _stand(), textScale: 2);
 
     expect(tester.takeException(), isNull);
     await tapVisible(tester, find.text('Speichern'));

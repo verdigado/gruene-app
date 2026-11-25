@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/api/stand_api_service.dart';
@@ -18,7 +19,8 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 /// Map of the Stand tab.
 ///
 /// Shows all stands of the campaign, past ones included, plus those still waiting in the offline queue.
-/// No route or area layers. Tapping a stand opens its detail in a bottom sheet, and from there its edit view (#1277).
+/// No route or area layers. Tapping a stand opens its detail in a bottom sheet, where its Termine are managed, and
+/// from there the edit view of its base data (#1277).
 class StandScreen extends StatefulWidget {
   const StandScreen({super.key});
 
@@ -29,6 +31,10 @@ class StandScreen extends StatefulWidget {
 class _StandScreenState extends MapConsumer<StandScreen, StandCreateModel, StandDetailModel, StandUpdateModel> {
   static const _poiType = PoiServiceType.stand;
   final _standApiService = GetIt.I<StandApiService>();
+
+  /// The stand as changed by Termin edits in its detail. The edit view opened from there starts from it, so saving
+  /// the stand does not bring back a changed or deleted Termin.
+  StandDetailModel? _changedStand;
 
   _StandScreenState() : super(_poiType);
 
@@ -63,13 +69,28 @@ class _StandScreenState extends MapConsumer<StandScreen, StandCreateModel, Stand
 
   void _onFeatureClick(dynamic rawFeature) {
     final feature = rawFeature as Map<String, dynamic>;
+    _changedStand = null;
     super.onFeatureClick<StandDetailModel>(
       feature,
       () => getPoiFromFeature<StandDetailModel>(feature),
-      (stand) => StandDetail(poi: stand),
-      (stand) => StandEdit(stand: stand, onSave: savePoi, onDelete: deletePoi),
+      (stand) => StandDetail(poi: stand, onSaveEntry: _saveEntry, onDeleteEntry: _deleteEntry),
+      (stand) => StandEdit(stand: _changedStand ?? stand, onSave: savePoi, onDelete: deletePoi),
       useBottomSheet: true,
     );
+  }
+
+  /// Queues the change of a Termin and returns the stand with all its queued changes, including the provisional
+  /// flyer total.
+  Future<StandDetailModel> _saveEntry(StandDetailModel stand, StandEntryUpdateModel entry) async {
+    final marker = await campaignActionCache.updateStandEntry(stand.id, entry, stand);
+    mapController.setPoiMarkerSource([marker]);
+    return _changedStand = await campaignActionCache.getPoiAsStandDetail(stand.id);
+  }
+
+  Future<StandDetailModel> _deleteEntry(StandDetailModel stand, String entryId) async {
+    final marker = await campaignActionCache.deleteStandEntry(stand.id, entryId, stand);
+    mapController.setPoiMarkerSource([marker]);
+    return _changedStand = await campaignActionCache.getPoiAsStandDetail(stand.id);
   }
 
   @override
