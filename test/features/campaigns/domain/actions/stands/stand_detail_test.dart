@@ -149,7 +149,7 @@ void main() {
     expect(find.text('Mi. 04.11. · 10:00–12:00 Uhr'), findsOneWidget);
     expect(find.text('120 Flyer'), findsOneWidget);
     expect(find.text('0 Flyer'), findsNWidgets(2));
-    expect(find.text('Alle anzeigen'), findsNothing);
+    expect(find.textContaining('Alle anzeigen'), findsNothing);
     expect(find.textContaining(' – '), findsNothing);
   });
 
@@ -166,7 +166,7 @@ void main() {
     expect(find.text('02.11.2026 – 09.11.2026'), findsOneWidget);
     final shown = tester.widgetList<Text>(find.textContaining(' Uhr')).map((t) => t.data).toList();
     expect(shown, ['Mo. 09.11. · 10:00–12:00 Uhr', 'Fr. 06.11. · 10:00–12:00 Uhr', 'Mi. 04.11. · 10:00–12:00 Uhr']);
-    expect(find.text('Alle anzeigen'), findsOneWidget);
+    expect(find.text('Alle anzeigen (5)'), findsOneWidget);
   });
 
   testWidgets('Alle anzeigen shows all Termine with the year, newest first', (tester) async {
@@ -179,8 +179,8 @@ void main() {
       ),
     );
 
-    await tester.ensureVisible(find.text('Alle anzeigen'));
-    await tester.tap(find.text('Alle anzeigen'));
+    await tester.ensureVisible(find.text('Alle anzeigen (5)'));
+    await tester.tap(find.text('Alle anzeigen (5)'));
     await tester.pumpAndSettle();
 
     final shown = tester.widgetList<Text>(find.textContaining('.2026 · ')).map((t) => t.data!.substring(0, 14));
@@ -225,8 +225,8 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    await tester.scrollUntilVisible(find.text('Alle anzeigen'), 100, scrollable: find.byType(Scrollable).last);
-    await tester.tap(find.text('Alle anzeigen'));
+    await tester.scrollUntilVisible(find.text('Alle anzeigen (20)'), 100, scrollable: find.byType(Scrollable).last);
+    await tester.tap(find.text('Alle anzeigen (20)'));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
   });
@@ -310,7 +310,7 @@ void main() {
         ),
       );
 
-      await tapVisible(tester, find.text('Alle anzeigen'));
+      await tapVisible(tester, find.text('Alle anzeigen (5)'));
       await tapVisible(tester, find.text('Mo. 02.11.2026 · 10:00–12:00 Uhr'));
       await deleteOpenEntry(tester);
 
@@ -397,7 +397,7 @@ void main() {
         ),
       );
 
-      await tapVisible(tester, find.text('Alle anzeigen'));
+      await tapVisible(tester, find.text('Alle anzeigen (5)'));
       expect(addButton(), findsNWidgets(2)); // in the detail below and in the full list
       await tapVisible(tester, addButton().last);
       await tester.enterText(flyerCountInput(), '30');

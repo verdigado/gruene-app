@@ -30,7 +30,7 @@ typedef OnDeleteStandEntryCallback = Future<StandDetailModel> Function(StandDeta
 /// Detail of a stand, shown in a bottom sheet over the map. Its Termine are managed here, not in the stand edit view.
 ///
 /// Shows the latest [latestEntryCount] Termine without the year. With more, a line with the date range of all
-/// Termine comes first, and `Alle anzeigen` opens the full list (with the year). Both offer `Termin hinzufügen`,
+/// Termine comes first, and `Alle anzeigen (n)` opens the full list (with the year). Both offer `Termin hinzufügen`,
 /// and tapping a Termin in either opens it for editing; the detail stays open and shows the change.
 class StandDetail extends StatefulWidget {
   static const latestEntryCount = 3;
@@ -101,7 +101,10 @@ class _StandDetailState extends State<StandDetail> {
                 if (hasMoreEntries)
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: TextButton(onPressed: _showAllEntries, child: Text(t.campaigns.stand.showAllEntries)),
+                    child: TextButton(
+                      onPressed: _showAllEntries,
+                      child: Text(t.campaigns.stand.showAllEntries(count: entries.length)),
+                    ),
                   ),
               ],
             ),

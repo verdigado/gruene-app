@@ -4,7 +4,7 @@
   "where": "Wo",
   "flyerCountTotal": "Verteilte Flyer",
   "entries": "Termine",
-  "showAllEntries": "Alle anzeigen",
+  "showAllEntries": "Alle anzeigen (${count})",
   "entryDateShortFormat": "E dd.MM.",
   "entryDateLongFormat": "E dd.MM.yyyy",
   "entryRangeDateFormat": "dd.MM.yyyy",
