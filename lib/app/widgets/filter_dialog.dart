@@ -52,7 +52,6 @@ class FilterDialog extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             child: FilledButton(
               onPressed: Navigator.of(context).pop,
-              style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(48))),
               child: Text(
                 t.common.actions.applyFilter,
                 style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),

@@ -15,6 +15,7 @@ class IntroView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ExpandingScrollView(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 32,
       children: [
         Text(t.mfa.intro.title, textAlign: TextAlign.center, style: theme.textTheme.displayMedium),
@@ -41,7 +42,6 @@ class IntroView extends StatelessWidget {
         ),
         FilledButton(
           onPressed: () => context.pushNested(Routes.mfaTokenScan.path),
-          style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
           child: Text(
             t.mfa.intro.startSetup,
             style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),

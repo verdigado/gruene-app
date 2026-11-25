@@ -81,7 +81,6 @@ class _VerifyViewState extends State<VerifyView> {
           Spacer(),
           FilledButton(
             onPressed: () => onReply(true),
-            style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
             child: Text(
               t.mfa.verify.approve,
               style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
@@ -89,7 +88,6 @@ class _VerifyViewState extends State<VerifyView> {
           ),
           OutlinedButton(
             onPressed: () => onReply(false),
-            style: ButtonStyle(minimumSize: WidgetStateProperty.all(Size.fromHeight(56))),
             child: Text(
               t.mfa.verify.deny,
               style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.tertiary),
