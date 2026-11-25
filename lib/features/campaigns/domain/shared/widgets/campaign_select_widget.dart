@@ -154,7 +154,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(titleText, style: theme.textTheme.titleLarge),
-                DialogCloseButton(onClose: _closeAndSave),
+                widget.mode != CampaignSelectMode.enforceSelect ? DialogCloseButton() : SizedBox(height: 64),
               ],
             ),
             Text(hintText, style: theme.textTheme.bodySmall),
@@ -165,9 +165,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
                     child: SingleChildScrollView(
                       child: RadioGroup(
                         groupValue: _selectedCampaignId,
-                        onChanged: (value) => setState(() {
-                          _selectedCampaignId = value!;
-                        }),
+                        onChanged: (value) => _select(value!),
                         child: Column(
                           children: [
                             widget.mode == CampaignSelectMode.statistics
@@ -212,12 +210,8 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
     );
   }
 
-  void _closeAndSave() {
-    if (widget.mode == CampaignSelectMode.enforceSelect && !_activeCampaigns.isCampaignActive(_selectedCampaignId)) {
-      // Don't allow closing without selection if selection is enforced
-      return;
-    }
-    var selectedCampaign = _selectedCampaignId == CampaignConstants.allCampaignsId
+  void _select(String campaignId) {
+    var selectedCampaign = campaignId == CampaignConstants.allCampaignsId
         ? Campaign(
             id: CampaignConstants.allCampaignsId,
             scope: .federal,
@@ -227,7 +221,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
             divisionKey: '',
             electionDate: DateTime.now(),
           )
-        : _activeCampaigns.firstWhere((c) => c.id == _selectedCampaignId);
+        : _activeCampaigns.firstWhere((c) => c.id == campaignId);
     Navigator.of(context).pop(CampaignSelectResult.success(selectedCampaign));
   }
 
@@ -255,11 +249,7 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
       ),
       padding: EdgeInsets.symmetric(vertical: 6),
       child: InkWell(
-        onTap: () {
-          setState(() {
-            _selectedCampaignId = campaignId;
-          });
-        },
+        onTap: () => _select(campaignId),
         child: Row(
           children: [
             Radio<String>(
