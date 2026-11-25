@@ -4,6 +4,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_detail.dart';
+import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -41,8 +42,12 @@ void main() {
     await initializeDateFormatting('de_DE');
   });
 
+  /// The result the detail was closed with, like the map receives it.
+  ModalDetailResult? detailResult;
+
   /// Shows the detail in a bottom sheet over a page, like the map does.
   Future<void> openDetail(WidgetTester tester, StandDetailModel stand, {double textScale = 1}) async {
+    detailResult = null;
     tester.view.physicalSize = const Size(411, 900) * tester.view.devicePixelRatio;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -54,7 +59,7 @@ void main() {
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
-              onPressed: () => showModalBottomSheet<void>(
+              onPressed: () async => detailResult = await showModalBottomSheet<ModalDetailResult>(
                 context: context,
                 builder: (_) => StandDetail(poi: stand),
               ),
@@ -142,6 +147,16 @@ void main() {
     final closeCenter = tester.getCenter(find.byIcon(Icons.close)).dy;
     final nameCenter = tester.getCenter(find.text('Infostand am S-Bahnhof')).dy;
     expect(closeCenter, moreOrLessEquals(nameCenter, epsilon: 1));
+  });
+
+  testWidgets('Bearbeiten closes the detail and asks the map to open the edit view', (tester) async {
+    await openDetail(tester, _stand());
+
+    await tester.tap(find.text('Bearbeiten'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Infostand am S-Bahnhof'), findsNothing);
+    expect(detailResult, ModalDetailResult.edit);
   });
 
   testWidgets('the close button closes the detail', (tester) async {

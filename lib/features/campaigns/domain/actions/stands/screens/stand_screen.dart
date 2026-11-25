@@ -9,6 +9,7 @@ import 'package:gruene_app/app/services/api/stand_api_service.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_add_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_detail.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_with_location.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
@@ -17,7 +18,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 /// Map of the Stand tab.
 ///
 /// Shows all stands of the campaign, past ones included, plus those still waiting in the offline queue.
-/// No route or area layers. Tapping a stand opens its detail in a bottom sheet (#1277).
+/// No route or area layers. Tapping a stand opens its detail in a bottom sheet, and from there its edit view (#1277).
 class StandScreen extends StatefulWidget {
   const StandScreen({super.key});
 
@@ -66,8 +67,7 @@ class _StandScreenState extends MapConsumer<StandScreen, StandCreateModel, Stand
       feature,
       () => getPoiFromFeature<StandDetailModel>(feature),
       (stand) => StandDetail(poi: stand),
-      // the detail offers no editing yet; the stand edit view follows (#1277)
-      (_) => const SizedBox.shrink(),
+      (stand) => StandEdit(stand: stand, onSave: savePoi, onDelete: deletePoi),
       useBottomSheet: true,
     );
   }

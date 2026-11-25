@@ -14,6 +14,14 @@
   "add": {
     "title": "Wahlkampfstand eintragen"
   },
+  "edit": {
+    "title": "Wahlkampfstand bearbeiten"
+  },
+  "deleteConfirmation(param=count)": {
+    "zero": "Möchtest du diesen Wahlkampfstand wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+    "one": "Möchtest du diesen Wahlkampfstand und seinen Termin wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+    "other": "Möchtest du diesen Wahlkampfstand und alle seine ${count} Termine wirklich löschen? Dies kann nicht rückgängig gemacht werden."
+  },
   "name": "Name",
   "description": "Beschreibung",
   "location": "Ort",
