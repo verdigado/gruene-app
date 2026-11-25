@@ -28,14 +28,24 @@ class ProfileVisibilitySetting extends StatefulWidget {
 class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
   late Visibility _selectedVisibility;
 
+  bool get _hasChanges => _selectedVisibility != widget.profile.privacy.overall;
+
   @override
   void initState() {
     super.initState();
     _selectedVisibility = widget.profile.privacy.overall;
   }
 
-  Future<void> _updateProfile() async {
-    if (widget.profile.privacy.overall == _selectedVisibility) {
+  void _discardChanges() => showConfirmationDialog(
+    context,
+    title: t.common.confirmDiscard.title,
+    content: Text(t.common.confirmDiscard.text),
+    label: t.common.actions.discard,
+    onConfirmed: () => Navigator.pop(context),
+  );
+
+  Future<void> _save() async {
+    if (!_hasChanges) {
       Navigator.pop(context);
       return;
     }
@@ -57,7 +67,7 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
       await showAlertDialog(
         context,
         title: t.profiles.visibility.privateProfileInTeamTitle,
-        content: t.profiles.visibility.privateProfileInTeamHint(team: team.name),
+        content: Text(t.profiles.visibility.privateProfileInTeamHint(team: team.name)),
       );
     }
 
@@ -74,9 +84,9 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
     final theme = Theme.of(context);
 
     return PopScope(
-      canPop: false,
+      canPop: !_hasChanges,
       onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) _updateProfile();
+        if (!didPop) _discardChanges();
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -89,14 +99,14 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
                 Icon(Icons.visibility),
                 Text(t.profiles.visibility.title, style: Theme.of(context).textTheme.titleMedium),
                 Spacer(),
-                DialogCloseButton(onClose: _updateProfile),
+                DialogCloseButton(onClose: () => Navigator.maybePop(context)),
               ],
             ),
           ),
           Padding(
             padding: screenPadding.copyWith(top: 0, bottom: 64),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               spacing: 8,
               children: [
@@ -124,6 +134,14 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
                   getLabel: (value) => visibilityShortLabel(value),
                   update: (visibility) => setState(() => _selectedVisibility = visibility),
                 ),
+                SizedBox(height: 16),
+                FilledButton(
+                  onPressed: _save,
+                  child: Text(
+                    t.common.actions.save,
+                    style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+                  ),
+                ),
               ],
             ),
           ),
@@ -140,5 +158,8 @@ Future<Profile?> showProfileVisibilitySetting(
 }) async => await showModalBottomSheet<Profile>(
   context: context,
   useRootNavigator: true,
+  isScrollControlled: true,
+  // Swiping down pops the sheet without consulting the PopScope, so unsaved changes would be discarded without asking
+  enableDrag: false,
   builder: (context) => ProfileVisibilitySetting(profile: profile, explicitTeamHint: explicitTeamHint),
 );

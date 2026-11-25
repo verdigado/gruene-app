@@ -24,6 +24,7 @@
     "undo": "Rückgängig",
     "consent": "Verstanden",
     "confirm": "Bestätigen",
+    "discard": "Verwerfen",
     "settings": "Einstellungen",
     "openSettings": "Einstellungen öffnen",
     "close": "Schließen",
@@ -36,6 +37,10 @@
     "select": "Auswählen",
     "done": "Fertig",
     "next": "Weiter"
+  },
+  "confirmDiscard": {
+    "title": "Änderungen verwerfen?",
+    "text": "Deine Änderungen sind noch nicht gespeichert. Willst Du ohne zu Speichern fortfahren?"
   },
   "map": {
     "mapData": "Kartendaten",
