@@ -65,6 +65,7 @@ class _StandScreenState extends MapConsumer<StandScreen, StandCreateModel, Stand
       null,
       (location, address, _) => StandAddScreen(location: location, address: address ?? AddressModel()),
       saveNewAndGetMarkerItem,
+      scrollAddScreen: false,
     );
   }
 
@@ -77,6 +78,7 @@ class _StandScreenState extends MapConsumer<StandScreen, StandCreateModel, Stand
       (stand) => StandDetail(poi: stand, onAddEntry: _addEntry, onSaveEntry: _saveEntry, onDeleteEntry: _deleteEntry),
       (stand) => StandEdit(stand: _changedStand ?? stand, onSave: savePoi, onDelete: deletePoi),
       useBottomSheet: true,
+      bottomSheetMaxHeightFactor: StandDetail.maxHeightFactor,
     );
   }
 

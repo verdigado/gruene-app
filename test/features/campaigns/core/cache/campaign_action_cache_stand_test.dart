@@ -316,6 +316,55 @@ void main() {
     expect(sent.deletedPhotoIds, ['p1']);
   });
 
+  test('photos changed on a stand created offline are uploaded with the stand, never deleted', () async {
+    when(() => standApi.updateStand(any()))
+        .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
+    final marker = await cache.storeNewPoi(
+      PoiCacheType.stand,
+      StandCreateModel(
+        location: _location,
+        address: _address,
+        name: 'Marktplatz',
+        firstEntry: _newEntry(DateTime(2026, 11, 7, 10)),
+        imageFileLocations: ['/photos/a.jpg', '/photos/b.jpg'],
+        campaignId: 'campaign-1',
+      ),
+    );
+    final standId = marker.id.toString();
+    final queuedStand = await cache.getPoiAsStandDetail(standId);
+    expect(queuedStand.photosNewestFirst.map((p) => p.imageUrl), ['/photos/b.jpg', '/photos/a.jpg']);
+
+    final newPhoto = PosterPhotoModel(
+      id: 'new-1',
+      imageUrl: '/photos/c.jpg',
+      thumbnailUrl: '/photos/c.jpg',
+      createdAt: DateTime(2026, 11, 21),
+    );
+    await cache.updatePoi(
+      PoiCacheType.stand,
+      StandUpdateModel(
+        id: standId,
+        address: _address,
+        location: _location,
+        name: 'Marktplatz',
+        oldStandDetail: queuedStand,
+        deletedPhotoIds: ['/photos/a.jpg'],
+        newPhotos: [newPhoto],
+      ),
+    );
+
+    final shownStand = await cache.getPoiAsStandDetail(standId);
+    expect(shownStand.photosNewestFirst.map((p) => p.imageUrl), ['/photos/c.jpg', '/photos/b.jpg']);
+
+    await cache.flushCache();
+
+    final created = verify(() => standApi.createNewStand(captureAny())).captured.single as StandCreateModel;
+    expect(created.imageFileLocations, ['/photos/b.jpg', '/photos/c.jpg']);
+    final sent = verify(() => standApi.updateStand(captureAny())).captured.single as StandUpdateModel;
+    expect(sent.deletedPhotoIds, isEmpty);
+    expect(sent.newPhotos, isEmpty);
+  });
+
   test('a queued Termin deleted again does not show in a stand saved while it was queued', () async {
     await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10)), _serverStand());
     final standWithQueuedEntry = await cache.getPoiAsStandDetail('4711');

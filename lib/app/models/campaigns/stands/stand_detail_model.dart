@@ -51,19 +51,23 @@ class StandDetailModel implements BasicPoi {
   /// queued changes, because the API total is the sum of the Termine it was loaded with.
   int get displayedFlyerTotal => isCached ? entries.fold(0, (sum, entry) => sum + entry.flyerCount) : flyerCountTotal;
 
-  StandDetailModel copyWith({List<StandEntryModel>? entries, bool? isCached}) => StandDetailModel(
-    id: id,
-    address: address,
-    location: location,
-    name: name,
-    description: description,
-    comment: comment,
-    flyerCountTotal: flyerCountTotal,
-    entries: entries ?? this.entries,
-    photos: photos,
-    createdAt: createdAt,
-    isCached: isCached ?? this.isCached,
-  );
+  /// The photos, newest first. Photos not uploaded yet have their local file as id, so they are sorted by date.
+  List<PosterPhotoModel> get photosNewestFirst => photos.toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+  StandDetailModel copyWith({List<StandEntryModel>? entries, List<PosterPhotoModel>? photos, bool? isCached}) =>
+      StandDetailModel(
+        id: id,
+        address: address,
+        location: location,
+        name: name,
+        description: description,
+        comment: comment,
+        flyerCountTotal: flyerCountTotal,
+        entries: entries ?? this.entries,
+        photos: photos ?? this.photos,
+        createdAt: createdAt,
+        isCached: isCached ?? this.isCached,
+      );
 
   factory StandDetailModel.fromJson(Map<String, dynamic> json) =>
       _$StandDetailModelFromJson(json.convertLatLongField());

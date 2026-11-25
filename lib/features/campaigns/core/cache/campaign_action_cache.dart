@@ -164,7 +164,7 @@ class CampaignActionCache extends ChangeNotifier {
       case PoiCacheType.stand:
         return await _addUpdateAction<StandUpdateModel>(
           poiType: poiType,
-          poi: poi as StandUpdateModel,
+          poi: await _movePhotoChangesToQueuedStand(poi as StandUpdateModel),
           getId: (poi) => poi.id,
           getJson: (poi) => poi.toJson(),
           mergeUpdates: (action, poiUpdate) => action.toStandUpdate().mergeWith(poiUpdate),
@@ -219,6 +219,36 @@ class CampaignActionCache extends ChangeNotifier {
           throw ArgumentError('Unknown route update type');
         }
     }
+  }
+
+  /// The photos of a stand that is still in the queue are not in the API yet. Photos added to or removed from it are
+  /// added to or removed from the queued stand instead, so that its later change does not delete a photo the API
+  /// never had.
+  Future<StandUpdateModel> _movePhotoChangesToQueuedStand(StandUpdateModel standUpdate) async {
+    if (standUpdate.newPhotos.isEmpty && standUpdate.deletedPhotoIds.isEmpty) return standUpdate;
+    final createAction = (await _findActionsByPoiId(standUpdate.id))
+        .where((action) => action.actionType == CampaignActionType.addStand)
+        .singleOrNull;
+    if (createAction == null) return standUpdate;
+
+    final standCreate = createAction.toStandCreate();
+    final queuedStand = standCreate.withImageFileLocations([
+      // queued photos have their local file as id
+      ...standCreate.imageFileLocations.where((file) => !standUpdate.deletedPhotoIds.contains(file)),
+      ...standUpdate.newPhotos.map((photo) => photo.imageUrl),
+    ]);
+    createAction.serialized = jsonEncode(queuedStand.toJson());
+    await _updateAction(createAction);
+
+    return StandUpdateModel(
+      id: standUpdate.id,
+      address: standUpdate.address,
+      location: standUpdate.location,
+      name: standUpdate.name,
+      description: standUpdate.description,
+      comment: standUpdate.comment,
+      oldStandDetail: standUpdate.oldStandDetail.copyWith(photos: queuedStand.toQueuedPhotos()),
+    );
   }
 
   Future<turf.Feature> _addUpdateAction<T>({

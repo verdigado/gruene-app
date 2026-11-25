@@ -1,10 +1,13 @@
+import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/photo_carousel.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/multiline_text_input_field.dart';
@@ -19,7 +22,7 @@ StandEntryModel _entry(int day, {int flyerCount = 0}) => StandEntryModel(
   flyerCount: flyerCount,
 );
 
-StandDetailModel _stand({List<StandEntryModel>? entries}) => StandDetailModel(
+StandDetailModel _stand({List<StandEntryModel>? entries, List<PosterPhotoModel> photos = const []}) => StandDetailModel(
   id: '4711',
   address: AddressModel(street: 'Goethestraße', houseNumber: '25', zipCode: '10625', city: 'Berlin'),
   location: LatLng(52.52, 13.405),
@@ -28,9 +31,12 @@ StandDetailModel _stand({List<StandEntryModel>? entries}) => StandDetailModel(
   comment: 'Strom vom Kiosk',
   flyerCountTotal: 200,
   entries: entries ?? [_entry(4, flyerCount: 120), _entry(2, flyerCount: 80)],
-  photos: const [],
+  photos: photos,
   createdAt: '01.11.2026 10:00',
 );
+
+PosterPhotoModel _photo(String id) =>
+    PosterPhotoModel(id: id, imageUrl: '/photos/$id.jpg', thumbnailUrl: '/photos/$id.jpg', createdAt: DateTime(2026));
 
 /// The text field inside the input with this label.
 Finder _input(String label) => find.descendant(
@@ -221,5 +227,93 @@ void main() {
     expect(tester.takeException(), isNull);
     await tapVisible(tester, find.text('Speichern'));
     expect(saved, hasLength(1));
+  });
+
+  group('photos', () {
+    testWidgets('without photos, the form shows the logo and the camera button', (tester) async {
+      await openEdit(tester, _stand());
+
+      expect(find.byType(CarouselSlider), findsNothing);
+      expect(find.byWidgetPredicate((w) => w is Image && w.image is AssetImage), findsOneWidget);
+      expect(find.byIcon(Icons.photo_camera_outlined), findsOneWidget);
+    });
+
+    testWidgets('the camera button and the page dots lie on top of the photos', (tester) async {
+      await openEdit(tester, _stand(photos: [_photo('7'), _photo('8')]));
+
+      final photoArea = tester.getRect(find.byType(PhotoCarouselEditor));
+      final camera = tester.getRect(find.byIcon(Icons.photo_camera_outlined));
+      expect(photoArea.contains(camera.topLeft) && photoArea.contains(camera.bottomRight), isTrue);
+      expect(camera.center.dx, greaterThan(photoArea.center.dx));
+      expect(camera.center.dy, lessThan(photoArea.center.dy));
+
+      final photos = tester.getRect(find.byType(CarouselSlider));
+      final dots = find.descendant(
+        of: find.byType(PhotoCarouselEditor),
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w is Container &&
+              w.decoration is BoxDecoration &&
+              (w.decoration! as BoxDecoration).shape == BoxShape.circle,
+        ),
+      );
+      // two dots and the round camera button
+      expect(dots, findsNWidgets(3));
+      final firstDot = tester.getRect(dots.first);
+      expect(photos.contains(firstDot.center), isTrue);
+      expect(firstDot.center.dy, greaterThan(photos.center.dy));
+    });
+
+    testWidgets('the camera button offers to take or pick a photo', (tester) async {
+      await openEdit(tester, _stand());
+
+      await tester.tap(find.byIcon(Icons.photo_camera_outlined));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Foto aufnehmen'), findsOneWidget);
+      expect(find.text('Datei hochladen'), findsOneWidget);
+    });
+
+    testWidgets('a photo deleted in the full view is deleted when saving, the others stay', (tester) async {
+      await openEdit(tester, _stand(photos: [_photo('7'), _photo('8')]));
+      expect(tester.widget<CarouselSlider>(find.byType(CarouselSlider)).itemCount, 2);
+
+      // the full view keeps loading the (missing) photo files, so it never settles
+      Future<void> pumpFullView() async {
+        for (var i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 200));
+        }
+      }
+
+      await tester.tap(find.byType(CarouselSlider));
+      await pumpFullView();
+      await tester.tap(find.byIcon(Icons.more_vert_outlined));
+      await pumpFullView();
+      await tester.tap(find.text('Foto löschen'));
+      await pumpFullView();
+      expect(
+        find.text('Fotos helfen anderen, den Stand wiederzuerkennen. Bitte lösche sie mit Bedacht!'),
+        findsOneWidget,
+      );
+      await tester.tap(find.widgetWithText(TextButton, 'Foto löschen'));
+      await pumpFullView();
+      await tester.tap(find.byIcon(Icons.close_outlined));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<CarouselSlider>(find.byType(CarouselSlider)).itemCount, 1);
+      await tapVisible(tester, find.text('Speichern'));
+
+      expect(saved.single.deletedPhotoIds, ['7']);
+      expect(saved.single.newPhotos, isEmpty);
+    });
+
+    testWidgets('saving without photo changes sends none', (tester) async {
+      await openEdit(tester, _stand(photos: [_photo('7')]));
+
+      await tapVisible(tester, find.text('Speichern'));
+
+      expect(saved.single.deletedPhotoIds, isEmpty);
+      expect(saved.single.newPhotos, isEmpty);
+    });
   });
 }

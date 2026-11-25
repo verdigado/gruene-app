@@ -11,9 +11,10 @@ import 'package:gruene_app/app/services/api/campaign_api_service.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/photo_carousel.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_add_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/multiline_text_input_field.dart';
-import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart' hide Image;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -70,7 +71,9 @@ void main() {
                 MaterialPageRoute<StandCreateModel>(
                   builder: (_) => Scaffold(
                     backgroundColor: Theme.of(context).colorScheme.secondary,
-                    body: SingleChildScrollView(
+                    // as ContentPage with withScroll: false (MapConsumer.addPOIClicked with scrollAddScreen: false)
+                    body: Padding(
+                      padding: const EdgeInsets.only(bottom: 50),
                       child: StandAddScreen(
                         location: LatLng(52.52, 13.405),
                         address:
@@ -118,7 +121,12 @@ void main() {
   testWidgets('shows the fields in the order of the mockup', (tester) async {
     await openAddScreen(tester);
 
-    final labels = ['Name', 'Beschreibung', 'Ort', 'Datum', 'Von', _flyerCount, 'Kommentar', 'Speichern'];
+    // the photos come first, right below the title
+    final photoTop = tester.getTopLeft(find.byType(PhotoCarouselEditor)).dy;
+    expect(tester.getTopLeft(find.text('Wahlkampfstand eintragen')).dy, lessThan(photoTop));
+    expect(tester.getTopLeft(find.text('Name')).dy, greaterThan(photoTop));
+    // `Speichern` stays at the bottom of the screen, see below
+    final labels = ['Name', 'Beschreibung', 'Ort', 'Datum', 'Von', _flyerCount, 'Kommentar'];
     final tops = [for (final label in labels) tester.getTopLeft(find.text(label).first).dy];
     expect(tops, orderedEquals([...tops]..sort()));
     expect(find.text('Wahlkampfstand eintragen'), findsOneWidget);
@@ -160,6 +168,30 @@ void main() {
     expect(stand.firstEntry.startAt, DateTime(2026, 11, 4, 17, 45));
     expect(stand.firstEntry.endAt, DateTime(2026, 11, 4, 19, 45));
     expect(stand.firstEntry.flyerCount, 120);
+    expect(stand.imageFileLocations, isEmpty);
+  });
+
+  testWidgets('the title and the buttons stay in place while the fields scroll', (tester) async {
+    await openAddScreen(tester);
+    final screenHeight = tester.view.physicalSize.height / tester.view.devicePixelRatio;
+    final titleTop = tester.getTopLeft(find.text('Wahlkampfstand eintragen')).dy;
+    final saveTop = tester.getTopLeft(find.text('Speichern')).dy;
+    final nameTop = tester.getTopLeft(find.text('Name')).dy;
+    expect(tester.getBottomLeft(find.text('Speichern')).dy, lessThan(screenHeight));
+
+    await tester.drag(find.text('Name'), const Offset(0, -300));
+    await tester.pumpAndSettle();
+
+    expect(tester.getTopLeft(find.text('Wahlkampfstand eintragen')).dy, titleTop);
+    expect(tester.getTopLeft(find.text('Speichern')).dy, saveTop);
+    expect(tester.getTopLeft(find.text('Name')).dy, lessThan(nameTop));
+  });
+
+  testWidgets('without photos, the form shows the logo and the camera button', (tester) async {
+    await openAddScreen(tester);
+
+    expect(find.byWidgetPredicate((w) => w is Image && w.image is AssetImage), findsOneWidget);
+    expect(find.byIcon(Icons.photo_camera_outlined), findsOneWidget);
   });
 
   testWidgets('saves an empty flyer count as 0', (tester) async {

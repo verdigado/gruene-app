@@ -1,5 +1,8 @@
+import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gruene_app/app/constants/design_constants.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
@@ -8,6 +11,7 @@ import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_detail.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
+import 'package:gruene_app/features/campaigns/helper/picture_gallery_view.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -25,6 +29,7 @@ StandDetailModel _stand({
   String? description,
   String? comment,
   bool isCached = false,
+  List<PosterPhotoModel> photos = const [],
 }) => StandDetailModel(
   id: '4711',
   address: AddressModel(street: 'Goethestraße', houseNumber: '25', zipCode: '10625', city: 'Berlin'),
@@ -34,10 +39,13 @@ StandDetailModel _stand({
   comment: comment,
   flyerCountTotal: flyerCountTotal,
   entries: entries ?? [_entry(4, flyerCount: 120), _entry(2, flyerCount: 80)],
-  photos: const [],
+  photos: photos,
   createdAt: '01.11.2026 10:00',
   isCached: isCached,
 );
+
+PosterPhotoModel _photo(String id, DateTime createdAt) =>
+    PosterPhotoModel(id: id, imageUrl: '/photos/$id.jpg', thumbnailUrl: '/photos/$id.jpg', createdAt: createdAt);
 
 void main() {
   setUpAll(() async {
@@ -414,6 +422,101 @@ void main() {
       await tapVisible(tester, addButton());
       expect(tester.takeException(), isNull);
       expect(find.text('Speichern'), findsOneWidget);
+    });
+  });
+
+  group('photos', () {
+    testWidgets('without photos, there is no image area', (tester) async {
+      await openDetail(tester, _stand());
+
+      expect(find.byType(CarouselSlider), findsNothing);
+      expect(find.byType(Image), findsNothing);
+    });
+
+    testWidgets('shows the photos newest first, below the name and above Wo', (tester) async {
+      await openDetail(
+        tester,
+        _stand(photos: [_photo('1', DateTime(2026, 11, 1)), _photo('3', DateTime(2026, 11, 3))]),
+      );
+
+      final slider = tester.widget<CarouselSlider>(find.byType(CarouselSlider));
+      expect(slider.itemCount, 2);
+      // the carousel also builds the neighbouring pages; the shown one is in the middle
+      final carouselCenter = tester.getCenter(find.byType(CarouselSlider)).dx;
+      final shown = find
+          .byType(Image)
+          .evaluate()
+          .reduce(
+            (a, b) =>
+                (tester.getCenter(find.byWidget(a.widget)).dx - carouselCenter).abs() <
+                    (tester.getCenter(find.byWidget(b.widget)).dx - carouselCenter).abs()
+                ? a
+                : b,
+          );
+      expect(((shown.widget as Image).image as FileImage).file.path, '/photos/3.jpg');
+      final carouselTop = tester.getTopLeft(find.byType(CarouselSlider)).dy;
+      expect(tester.getTopLeft(find.text('Infostand am S-Bahnhof')).dy, lessThan(carouselTop));
+      expect(tester.getTopLeft(find.text('Wo')).dy, greaterThan(carouselTop));
+    });
+
+    testWidgets('tapping a photo opens the photos full screen, without edit actions', (tester) async {
+      await openDetail(tester, _stand(photos: [_photo('1', DateTime(2026, 11, 1))]));
+
+      await tester.tap(find.byType(CarouselSlider));
+      // the full view keeps loading the (missing) photo file, so it never settles
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(PictureGalleryView), findsOneWidget);
+      expect(find.byIcon(Icons.more_vert_outlined), findsNothing);
+      expect(find.text('Aktuelles Bild'), findsNothing);
+    });
+
+    testWidgets('photos and 3 Termine fit without scrolling, as the map shows the detail', (tester) async {
+      // the screen of a Galaxy S21 in dp
+      tester.view.physicalSize = const Size(384, 854) * tester.view.devicePixelRatio;
+      addTearDown(tester.view.reset);
+      final stand = _stand(
+        entries: [_entry(2), _entry(3), _entry(4)],
+        photos: [_photo('1', DateTime(2026, 11, 1)), _photo('2', DateTime(2026, 11, 2))],
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              // as MapConsumer.showDetailBottomSheet with StandDetail.maxHeightFactor
+              builder: (context) => TextButton(
+                onPressed: () => showModalBottomSheet<void>(
+                  context: context,
+                  isScrollControlled: true,
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.sizeOf(context).height * StandDetail.maxHeightFactor,
+                  ),
+                  builder: (_) => Padding(
+                    padding: const EdgeInsets.only(bottom: DesignConstants.bottomPadding),
+                    child: StandDetail(
+                      poi: stand,
+                      onAddEntry: (stand, _) async => stand,
+                      onSaveEntry: (stand, _) async => stand,
+                      onDeleteEntry: (stand, _) async => stand,
+                    ),
+                  ),
+                ),
+                child: const Text('open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      final detailScroll = find
+          .descendant(
+            of: find.descendant(of: find.byType(StandDetail), matching: find.byType(SingleChildScrollView)),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      expect(tester.state<ScrollableState>(detailScroll).position.maxScrollExtent, 0);
     });
   });
 }

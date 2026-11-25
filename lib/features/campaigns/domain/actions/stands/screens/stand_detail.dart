@@ -4,6 +4,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/photo_carousel.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_entry_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_entry_formats.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/widgets/stand_entry_list.dart';
@@ -29,11 +30,19 @@ typedef OnDeleteStandEntryCallback = Future<StandDetailModel> Function(StandDeta
 
 /// Detail of a stand, shown in a bottom sheet over the map. Its Termine are managed here, not in the stand edit view.
 ///
+/// Its photos come first, newest first; tapping one opens them full screen. Without photos there is no image area.
+///
 /// Shows the latest [latestEntryCount] Termine without the year. With more, a line with the date range of all
 /// Termine comes first, and `Alle anzeigen (n)` opens the full list (with the year). Both offer `Termin hinzufügen`,
 /// and tapping a Termin in either opens it for editing; the detail stays open and shows the change.
 class StandDetail extends StatefulWidget {
   static const latestEntryCount = 3;
+
+  /// The detail may take up to this part of the screen, so that its photos and up to 3 Termine fit without scrolling
+  /// on a phone like the Galaxy S21. With more Termine, the date range and `Alle anzeigen` may need scrolling.
+  static const maxHeightFactor = 0.86;
+
+  static const photoHeight = 120.0;
 
   final StandDetailModel poi;
   final OnAddStandEntryCallback onAddEntry;
@@ -83,6 +92,7 @@ class _StandDetailState extends State<StandDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                PhotoCarousel(photos: poi.photosNewestFirst, height: StandDetail.photoHeight),
                 _ValueRow(label: t.campaigns.stand.where, value: _address(poi)),
                 _ValueRow(label: t.campaigns.stand.flyerCountTotal, value: poi.displayedFlyerTotal.toString()),
                 if (description.isNotEmpty) _TextBlock(label: t.campaigns.stand.description, text: description),
