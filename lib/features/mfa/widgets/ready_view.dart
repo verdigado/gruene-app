@@ -1,12 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gruene_app/app/constants/urls.dart';
-import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/utils/link.dart';
 import 'package:gruene_app/app/widgets/alert.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/features/mfa/bloc/mfa_bloc.dart';
@@ -86,12 +84,7 @@ class _ReadyViewState extends State<ReadyView> {
     content: Text.rich(
       t.mfa.ready.delete.text(
         appName: TextSpan(text: t.common.appName),
-        openAccountSettings: (text) => TextSpan(
-          text: text,
-          style: Theme.of(context).textTheme.bodyMedium
-              ?.copyWith(color: ThemeColors.primary, decoration: TextDecoration.underline),
-          recognizer: TapGestureRecognizer()..onTap = () => openUrl(mfaSettingsUrl, context),
-        ),
+        openAccountSettings: (text) => inlineLink(context, text: text, url: mfaSettingsUrl),
       ),
     ),
   );

@@ -1,9 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/routes.dart';
 import 'package:gruene_app/app/constants/urls.dart';
-import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/utils/open_url.dart';
+import 'package:gruene_app/app/utils/link.dart';
 import 'package:gruene_app/app/utils/utils.dart';
 import 'package:gruene_app/app/widgets/expanding_scroll_view.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
@@ -22,22 +20,8 @@ class IntroView extends StatelessWidget {
         Text.rich(
           t.mfa.intro.text(
             appName: TextSpan(text: t.common.appName),
-            openAccountSettings: (text) => TextSpan(
-              text: text,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: ThemeColors.primary,
-                decoration: TextDecoration.underline,
-              ),
-              recognizer: TapGestureRecognizer()..onTap = () => openUrl(mfaSettingsUrl, context),
-            ),
-            openMfaInformation: (text) => TextSpan(
-              text: text,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: ThemeColors.primary,
-                decoration: TextDecoration.underline,
-              ),
-              recognizer: TapGestureRecognizer()..onTap = () => openUrl(mfaInformationUrl, context),
-            ),
+            openAccountSettings: (text) => inlineLink(context, text: text, url: mfaSettingsUrl),
+            openMfaInformation: (text) => inlineLink(context, text: text, url: mfaInformationUrl),
           ),
         ),
         FilledButton(
