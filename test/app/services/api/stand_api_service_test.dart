@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:chopper/chopper.dart' as chopper;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart';
@@ -293,6 +294,35 @@ void main() {
         () => service.deleteStandEntry('4711', '2'),
         throwsA(isA<ApiException>().having((e) => e.statusCode, 'statusCode', 409)),
       );
+    });
+  });
+
+  group('map pins', () {
+    tearDown(() => dotenv.clean());
+
+    test('loads stands of the campaign as one stand pin each, ignoring POI_FILTER_DATE', () async {
+      // the stand was created on 01.11.2026, before the cut-off date
+      dotenv.loadFromString(envString: 'POI_FILTER_DATE=15.11.2026');
+      when(
+        () => api.v1CampaignsPoisGet(
+          type: any(named: 'type'),
+          bbox: any(named: 'bbox'),
+          campaignId: any(named: 'campaignId'),
+        ),
+      ).thenAnswer((_) async => _ok(FindPoisResponse(data: [_stand()], total: 1, offset: 0, limit: 100)));
+
+      final markers = await service.loadPoisInRegion('campaign-1', LatLng(52.5, 13.4), LatLng(52.6, 13.5));
+
+      expect(markers, hasLength(1));
+      expect(markers.single.id, 4711);
+      expect(markers.single.status, 'stand');
+      verify(
+        () => api.v1CampaignsPoisGet(
+          type: PoiType.stand,
+          bbox: any(named: 'bbox'),
+          campaignId: ['campaign-1'],
+        ),
+      ).called(1);
     });
   });
 }

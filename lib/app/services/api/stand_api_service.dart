@@ -15,6 +15,10 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class StandApiService extends BasePoiApiService {
   StandApiService() : super(poiType: PoiServiceType.stand);
 
+  /// The map shows every stand of the campaign, also those created before `POI_FILTER_DATE`.
+  @override
+  bool filterByCutOffDate(Poi poi) => true;
+
   Future<PoiDetailModel> createNewStand(StandCreateModel newStand) async {
     var poi = await send<Poi, Poi>(
       request: (api) => api.v1CampaignsPoisPost(
