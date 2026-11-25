@@ -124,6 +124,7 @@ void main() {
     final stand = await cache.getPoiAsStandDetail(standId);
     expect(stand.name, 'Marktplatz');
     expect(stand.entries.single.flyerCount, 80);
+    expect(stand.displayedFlyerTotal, 80);
     expect(stand.isCached, isTrue);
   });
 
@@ -203,7 +204,7 @@ void main() {
     verifyNever(() => standApi.updateStandEntry(any(), any()));
   });
 
-  test('the detail shows queued Termin changes and keeps the flyer total from the API', () async {
+  test('the detail shows queued Termin changes and their provisional flyer total', () async {
     await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10), flyerCount: 50), _serverStand());
     await cache.updateStandEntry(
       '4711',
@@ -219,7 +220,8 @@ void main() {
 
     final stand = await cache.getPoiAsStandDetail('4711');
 
-    expect(stand.flyerCountTotal, 250);
+    expect(stand.flyerCountTotal, 250); // the last total from the API is kept
+    expect(stand.displayedFlyerTotal, 140);
     expect(stand.entries.map((e) => e.flyerCount), [50, 90]); // newest first
     expect(stand.isCached, isTrue);
     expect(await cache.isCached('4711', PoiCacheType.stand), isTrue);
