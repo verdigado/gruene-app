@@ -17,6 +17,9 @@
   "edit": {
     "title": "Wahlkampfstand bearbeiten"
   },
+  "entryAdd": {
+    "title": "Termin hinzufügen"
+  },
   "entryEdit": {
     "title": "Termin bearbeiten",
     "delete": "Termin löschen",

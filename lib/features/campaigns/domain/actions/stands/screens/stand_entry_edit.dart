@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -12,26 +13,40 @@ import 'package:gruene_app/features/campaigns/domain/shared/widgets/sheet_header
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
 
-/// Edits one Termin of a stand in a bottom sheet over the stand edit view: `Datum`, `Von`, `Bis` and
-/// `Verteilte Flyer`, with the same rules as when creating the stand (#1268), and without overlapping
-/// [otherEntries]. Without [onDelete] (the last Termin of a stand), a hint replaces `Termin löschen`.
+/// Edits one Termin of a stand, or adds one ([StandEntryEdit.add]), in a bottom sheet over the stand detail:
+/// `Datum`, `Von`, `Bis` and `Verteilte Flyer`, with the same rules as when creating the stand (#1268), and without
+/// overlapping [otherEntries]. When editing without [onDelete] (the last Termin of a stand), a hint replaces
+/// `Termin löschen`.
 class StandEntryEdit extends StatefulWidget {
-  final StandEntryModel entry;
+  /// The Termin being edited; null when adding one.
+  final StandEntryModel? entry;
   final List<StandEntryModel> otherEntries;
   final String standName;
-  final Future<void> Function(StandEntryUpdateModel entry) onSave;
+  final Future<void> Function(StandEntryUpdateModel entry)? onSave;
+  final Future<void> Function(StandEntryCreateModel entry)? onAdd;
   final Future<void> Function(String entryId)? onDelete;
   final DateTime Function() now;
 
   const StandEntryEdit({
     super.key,
-    required this.entry,
+    required StandEntryModel this.entry,
     required this.otherEntries,
     required this.standName,
-    required this.onSave,
+    required Future<void> Function(StandEntryUpdateModel entry) this.onSave,
     required this.onDelete,
     this.now = DateTime.now,
-  });
+  }) : onAdd = null;
+
+  /// Adds a Termin, prefilled like the first Termin of a new stand (#1268): today, ending now.
+  const StandEntryEdit.add({
+    super.key,
+    required this.otherEntries,
+    required this.standName,
+    required Future<void> Function(StandEntryCreateModel entry) this.onAdd,
+    this.now = DateTime.now,
+  }) : entry = null,
+       onSave = null,
+       onDelete = null;
 
   @override
   State<StandEntryEdit> createState() => _StandEntryEditState();
@@ -51,11 +66,19 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
   @override
   void initState() {
     super.initState();
-    final startAt = widget.entry.startAt.toLocal();
-    _date = DateUtils.dateOnly(startAt);
-    _from = TimeOfDay.fromDateTime(startAt);
-    _to = TimeOfDay.fromDateTime(widget.entry.endAt.toLocal());
-    if (!_isAfterToday) _flyerCountTextController.text = widget.entry.flyerCount.toString();
+    final entry = widget.entry;
+    if (entry == null) {
+      final defaults = StandFormRules.defaultEntryTimes(widget.now());
+      _date = defaults.date;
+      _from = defaults.from;
+      _to = defaults.to;
+    } else {
+      final startAt = entry.startAt.toLocal();
+      _date = DateUtils.dateOnly(startAt);
+      _from = TimeOfDay.fromDateTime(startAt);
+      _to = TimeOfDay.fromDateTime(entry.endAt.toLocal());
+      if (!_isAfterToday) _flyerCountTextController.text = entry.flyerCount.toString();
+    }
     _flyerCountTextController.addListener(_onInputChanged);
   }
 
@@ -94,7 +117,10 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SheetHeader(title: t.campaigns.stand.entryEdit.title, subtitle: widget.standName),
+        SheetHeader(
+          title: widget.entry == null ? t.campaigns.stand.entryAdd.title : t.campaigns.stand.entryEdit.title,
+          subtitle: widget.standName,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -140,7 +166,7 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
                 error: _errors.flyerCount,
                 hint: _isAfterToday ? t.campaigns.stand.flyerCountFutureHint : null,
               ),
-              if (widget.onDelete == null)
+              if (widget.entry != null && widget.onDelete == null)
                 Padding(
                   padding: const EdgeInsets.only(top: 16),
                   child: Text(
@@ -244,13 +270,13 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
   }
 
   void _onDeletePressed() {
-    final (:date, :from, :to) = StandEntryFormats.parts(widget.entry);
+    final (:date, :from, :to) = StandEntryFormats.parts(widget.entry!);
     confirmDelete(
       context,
       title: t.campaigns.stand.entryEdit.delete,
       confirmationDialogText: t.campaigns.stand.entryEdit.deleteConfirmation(date: date, from: from, to: to),
       onDeletePressed: () async {
-        await widget.onDelete!(widget.entry.id);
+        await widget.onDelete!(widget.entry!.id);
         if (mounted) Navigator.maybePop(context);
       },
     );
@@ -260,14 +286,17 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
     setState(() => _showErrors = true);
     if (!_validate()) return;
 
-    await widget.onSave(
-      StandEntryUpdateModel(
-        entryId: widget.entry.id,
-        startAt: StandFormRules.combine(_date, _from),
-        endAt: StandFormRules.combine(_date, _to),
-        flyerCount: StandFormRules.flyerCountToSave(_flyerCountTextController.text, isAfterToday: _isAfterToday),
-      ),
-    );
+    final startAt = StandFormRules.combine(_date, _from);
+    final endAt = StandFormRules.combine(_date, _to);
+    final flyerCount = StandFormRules.flyerCountToSave(_flyerCountTextController.text, isAfterToday: _isAfterToday);
+    final entry = widget.entry;
+    if (entry == null) {
+      await widget.onAdd!(StandEntryCreateModel(startAt: startAt, endAt: endAt, flyerCount: flyerCount));
+    } else {
+      await widget.onSave!(
+        StandEntryUpdateModel(entryId: entry.id, startAt: startAt, endAt: endAt, flyerCount: flyerCount),
+      );
+    }
     if (mounted) Navigator.maybePop(context);
   }
 }

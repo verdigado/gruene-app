@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
@@ -46,15 +47,22 @@ void main() {
 
   /// The result the detail was closed with, like the map receives it.
   ModalDetailResult? detailResult;
+  late List<StandEntryCreateModel> addedEntries;
   late List<StandEntryUpdateModel> savedEntries;
   late List<String> deletedEntryIds;
 
   /// Shows the detail in a bottom sheet over a page, like the map does.
-  Future<void> openDetail(WidgetTester tester, StandDetailModel stand, {double textScale = 1}) async {
+  Future<void> openDetail(
+    WidgetTester tester,
+    StandDetailModel stand, {
+    double textScale = 1,
+    double screenWidth = 411,
+  }) async {
     detailResult = null;
+    addedEntries = [];
     savedEntries = [];
     deletedEntryIds = [];
-    tester.view.physicalSize = const Size(411, 900) * tester.view.devicePixelRatio;
+    tester.view.physicalSize = Size(screenWidth, 900) * tester.view.devicePixelRatio;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
       MaterialApp(
@@ -69,6 +77,16 @@ void main() {
                 context: context,
                 builder: (_) => StandDetail(
                   poi: stand,
+                  onAddEntry: (stand, entry) async {
+                    addedEntries.add(entry);
+                    final added = StandEntryModel(
+                      id: 'local-1',
+                      startAt: entry.startAt,
+                      endAt: entry.endAt,
+                      flyerCount: entry.flyerCount ?? 0,
+                    );
+                    return stand.copyWith(entries: [...stand.entries, added], isCached: true);
+                  },
                   onSaveEntry: (stand, entry) async {
                     savedEntries.add(entry);
                     final changed = StandEntryModel(
@@ -314,6 +332,88 @@ void main() {
       // the remaining Termin is the last one of the stand
       await tapVisible(tester, find.text('Mo. 02.11. · 10:00–12:00 Uhr'));
       expect(find.text('Termin löschen'), findsNothing);
+    });
+  });
+
+  group('Termin hinzufügen', () {
+    Finder addButton() => find.widgetWithText(TextButton, 'Termin hinzufügen');
+
+    Finder flyerCountInput() => find.descendant(
+      of: find.byWidgetPredicate((w) => w is TextInputField && w.labelText == 'Verteilte Flyer (optional)'),
+      matching: find.byType(TextField),
+    );
+
+    Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+      await tester.ensureVisible(finder);
+      await tester.pumpAndSettle();
+      await tester.tap(finder);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('is offered right of the title of the Termin list', (tester) async {
+      // the test font draws every character as a square, much wider than on a device
+      await openDetail(tester, _stand(), screenWidth: 600);
+
+      expect(addButton(), findsOneWidget);
+      expect(find.descendant(of: addButton(), matching: find.byIcon(Icons.add)), findsOneWidget);
+      final title = tester.getRect(find.text('Termine'));
+      final button = tester.getRect(addButton());
+      expect(button.left, greaterThan(title.right));
+      expect(button.center.dy, moreOrLessEquals(title.center.dy, epsilon: 1));
+    });
+
+    testWidgets('opens the add form, without delete', (tester) async {
+      await openDetail(tester, _stand());
+
+      await tapVisible(tester, addButton());
+
+      // the title of the form; the button stays in the detail below
+      expect(find.text('Termin hinzufügen'), findsNWidgets(2));
+      expect(find.text('Termin löschen'), findsNothing);
+      expect(find.textContaining('Der einzige Termin'), findsNothing);
+    });
+
+    testWidgets('a new Termin shows in the list and counts in the total, and the detail stays open', (tester) async {
+      await openDetail(tester, _stand());
+
+      await tapVisible(tester, addButton());
+      await tester.enterText(flyerCountInput(), '30');
+      await tapVisible(tester, find.text('Speichern'));
+
+      expect(addedEntries.single.flyerCount, 30);
+      expect(find.text('Infostand am S-Bahnhof'), findsOneWidget);
+      expect(find.text('30 Flyer'), findsOneWidget);
+      // the provisional total: 120 + 80 + 30
+      expect(find.text('230'), findsOneWidget);
+    });
+
+    testWidgets('the full Termin list offers it as well and shows the new Termin', (tester) async {
+      await openDetail(
+        tester,
+        _stand(
+          entries: [
+            for (final day in [2, 9, 4, 6, 3]) _entry(day),
+          ],
+        ),
+      );
+
+      await tapVisible(tester, find.text('Alle anzeigen'));
+      expect(addButton(), findsNWidgets(2)); // in the detail below and in the full list
+      await tapVisible(tester, addButton().last);
+      await tester.enterText(flyerCountInput(), '30');
+      await tapVisible(tester, find.text('Speichern'));
+
+      expect(addedEntries, hasLength(1));
+      expect(find.text('30 Flyer'), findsNWidgets(2)); // in the full list and in the latest 3 of the detail
+    });
+
+    testWidgets('is usable at large font sizes', (tester) async {
+      await openDetail(tester, _stand(), textScale: 2);
+
+      expect(tester.takeException(), isNull);
+      await tapVisible(tester, addButton());
+      expect(tester.takeException(), isNull);
+      expect(find.text('Speichern'), findsOneWidget);
     });
   });
 }
