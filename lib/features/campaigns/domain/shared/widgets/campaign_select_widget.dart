@@ -151,9 +151,11 @@ class _CampaignSelectWidgetState extends State<CampaignSelectWidget> {
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: 8,
               children: [
+                Icon(Icons.how_to_vote_outlined, color: ThemeColors.text),
                 Text(titleText, style: theme.textTheme.titleLarge),
+                Spacer(),
                 widget.mode != CampaignSelectMode.enforceSelect ? DialogCloseButton() : SizedBox(height: 64),
               ],
             ),
