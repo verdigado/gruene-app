@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
-import 'package:gruene_app/features/campaigns/controllers/map_container_controller.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
+import 'package:gruene_app/app/services/api/enums.dart';
+import 'package:gruene_app/app/services/api/stand_api_service.dart';
+import 'package:gruene_app/app/services/converters.dart';
+import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_add_screen.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_with_location.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 
 /// Map of the Stand tab.
 ///
-/// Stands are not loaded yet: their pins (#1269) and adding a stand (#1268)
-/// build on the stand API client (#1266).
+/// Shows only the stands still waiting in the offline queue; loading stands from the API is #1269,
+/// their detail and editing #1277.
 class StandScreen extends StatefulWidget {
   const StandScreen({super.key});
 
@@ -14,34 +25,50 @@ class StandScreen extends StatefulWidget {
   State<StandScreen> createState() => _StandScreenState();
 }
 
-class _StandScreenState extends State<StandScreen> {
-  final MapContainerController _mapContainerController = MapContainerController();
+class _StandScreenState extends MapConsumer<StandScreen, StandCreateModel, StandDetailModel, StandUpdateModel> {
+  static const _poiType = PoiServiceType.stand;
+  final _standApiService = GetIt.I<StandApiService>();
+
+  _StandScreenState() : super(_poiType);
 
   @override
-  void dispose() {
-    _mapContainerController.dispose();
-    super.dispose();
-  }
+  StandApiService get campaignService => _standApiService;
 
   @override
   Widget build(BuildContext context) {
     return MapWithLocation(
-      mapContainerController: _mapContainerController,
-      onMapCreated: null,
-      addPOIClicked: null,
-      loadVisiblePois: null,
-      getMarkerImages: () => {},
-      getBasicPoiFromFeature: _getBasicPoiFromFeature,
+      mapContainerController: mapContainerController,
+      onMapCreated: onMapCreated,
+      addPOIClicked: _addPOIClicked,
+      loadVisiblePois: _loadCachedStands,
+      getMarkerImages: () => {_poiType.name: CampaignConstants.standAssetName},
+      getBasicPoiFromFeature: (feature) => getPoiFromFeature<BasicPoi>(feature),
       onFeatureClick: null,
       onNoFeatureClick: null,
-      showBottomDetailSheet: _showBottomDetailSheet,
+      showBottomDetailSheet: showDetailBottomSheet,
       showMapInfoAfterCameraMove: null,
       addMapLayersForContext: (_) async {},
     );
   }
 
-  Future<BasicPoi> _getBasicPoiFromFeature(Map<String, dynamic> feature) =>
-      throw UnsupportedError('The stand map shows no pins yet');
+  void _addPOIClicked(LatLng location) {
+    super.addPOIClicked<Object, StandAddScreen, StandCreateModel>(
+      location,
+      null,
+      (location, address, _) => StandAddScreen(location: location, address: address ?? AddressModel()),
+      saveNewAndGetMarkerItem,
+    );
+  }
 
-  Future<U?> _showBottomDetailSheet<U>(Widget detailWidget) async => null;
+  Future<void> _loadCachedStands(String campaignId, LatLng locationSW, LatLng locationNE, bool loadCached) async {
+    if (!loadCached) return;
+    final markerItems = await campaignActionCache.getLayerItems(_poiType.toPoiCacheType());
+    mapController.setPoiMarkerSource(markerItems);
+  }
+
+  @override
+  Future<StandDetailModel> getPoi(String poiId) => campaignService.getPoiAsStandDetail(poiId);
+
+  @override
+  Future<StandDetailModel> getCachedPoi(String poiId) => campaignActionCache.getPoiAsStandDetail(poiId);
 }
