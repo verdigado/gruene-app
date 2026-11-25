@@ -7,7 +7,7 @@ import 'package:gruene_app/i18n/translations.g.dart';
 /// Termine of a stand, newest first: when each took place and its flyers.
 ///
 /// The detail shows the latest ones without the year; the full list shows all with the year.
-/// Read-only without [onEntryTap]; with it (the stand edit view), each Termin has a pen and opens on tap.
+/// Read-only without [onEntryTap]; with it, each Termin has a chevron and opens on tap.
 class StandEntryList extends StatelessWidget {
   final List<StandEntryModel> entries;
   final bool withYear;
@@ -44,7 +44,7 @@ class StandEntryList extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 12),
                       child: Icon(
-                        Icons.edit_outlined,
+                        Icons.chevron_right,
                         size: 20,
                         color: ThemeColors.textDisabled,
                         semanticLabel: t.common.actions.edit,

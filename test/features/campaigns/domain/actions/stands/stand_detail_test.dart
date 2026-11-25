@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
+import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_detail.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -44,10 +46,14 @@ void main() {
 
   /// The result the detail was closed with, like the map receives it.
   ModalDetailResult? detailResult;
+  late List<StandEntryUpdateModel> savedEntries;
+  late List<String> deletedEntryIds;
 
   /// Shows the detail in a bottom sheet over a page, like the map does.
   Future<void> openDetail(WidgetTester tester, StandDetailModel stand, {double textScale = 1}) async {
     detailResult = null;
+    savedEntries = [];
+    deletedEntryIds = [];
     tester.view.physicalSize = const Size(411, 900) * tester.view.devicePixelRatio;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -61,7 +67,29 @@ void main() {
             builder: (context) => TextButton(
               onPressed: () async => detailResult = await showModalBottomSheet<ModalDetailResult>(
                 context: context,
-                builder: (_) => StandDetail(poi: stand),
+                builder: (_) => StandDetail(
+                  poi: stand,
+                  onSaveEntry: (stand, entry) async {
+                    savedEntries.add(entry);
+                    final changed = StandEntryModel(
+                      id: entry.entryId,
+                      startAt: entry.startAt,
+                      endAt: entry.endAt,
+                      flyerCount: entry.flyerCount ?? 0,
+                    );
+                    return stand.copyWith(
+                      entries: [for (final e in stand.entries) e.id == entry.entryId ? changed : e],
+                      isCached: true,
+                    );
+                  },
+                  onDeleteEntry: (stand, entryId) async {
+                    deletedEntryIds.add(entryId);
+                    return stand.copyWith(
+                      entries: stand.entries.where((e) => e.id != entryId).toList(),
+                      isCached: true,
+                    );
+                  },
+                ),
               ),
               child: const Text('open'),
             ),
@@ -104,7 +132,6 @@ void main() {
     expect(find.text('120 Flyer'), findsOneWidget);
     expect(find.text('0 Flyer'), findsNWidgets(2));
     expect(find.text('Alle anzeigen'), findsNothing);
-    expect(find.byIcon(Icons.edit_outlined), findsNothing); // read-only
     expect(find.textContaining(' – '), findsNothing);
   });
 
@@ -138,7 +165,6 @@ void main() {
     await tester.tap(find.text('Alle anzeigen'));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.edit_outlined), findsNothing); // read-only
     final shown = tester.widgetList<Text>(find.textContaining('.2026 · ')).map((t) => t.data!.substring(0, 14));
     expect(shown, ['Mo. 09.11.2026', 'Fr. 06.11.2026', 'Mi. 04.11.2026', 'Di. 03.11.2026', 'Mo. 02.11.2026']);
   });
@@ -185,5 +211,109 @@ void main() {
     await tester.tap(find.text('Alle anzeigen'));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+  });
+
+  group('Termine', () {
+    Finder flyerCountInput() => find.descendant(
+      of: find.byWidgetPredicate((w) => w is TextInputField && w.labelText == 'Verteilte Flyer (optional)'),
+      matching: find.byType(TextField),
+    );
+
+    Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+      await tester.ensureVisible(finder);
+      await tester.pumpAndSettle();
+      await tester.tap(finder);
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> deleteOpenEntry(WidgetTester tester) async {
+      await tapVisible(tester, find.text('Termin löschen'));
+      await tester.tap(find.text('Löschen'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('each Termin has a chevron to show it can be edited', (tester) async {
+      await openDetail(tester, _stand());
+
+      expect(find.byIcon(Icons.chevron_right), findsNWidgets(2));
+    });
+
+    testWidgets('tapping a Termin opens it for editing', (tester) async {
+      await openDetail(tester, _stand());
+
+      await tapVisible(tester, find.text('Mi. 04.11. · 10:00–12:00 Uhr'));
+
+      expect(find.text('Termin bearbeiten'), findsOneWidget);
+      expect(find.text('Termin löschen'), findsOneWidget);
+    });
+
+    testWidgets('a saved Termin shows its new values, and the detail stays open', (tester) async {
+      await openDetail(tester, _stand());
+
+      await tapVisible(tester, find.text('Mi. 04.11. · 10:00–12:00 Uhr'));
+      await tester.enterText(flyerCountInput(), '150');
+      await tapVisible(tester, find.text('Speichern'));
+
+      expect(savedEntries.single.flyerCount, 150);
+      expect(find.text('Termin bearbeiten'), findsNothing);
+      expect(find.text('Infostand am S-Bahnhof'), findsOneWidget);
+      expect(find.text('150 Flyer'), findsOneWidget);
+      // the provisional total: 150 + 80
+      expect(find.text('230'), findsOneWidget);
+    });
+
+    testWidgets('a deleted Termin is gone from the detail', (tester) async {
+      await openDetail(tester, _stand(entries: [_entry(2), _entry(3), _entry(4)]));
+
+      await tapVisible(tester, find.text('Mi. 04.11. · 10:00–12:00 Uhr'));
+      await deleteOpenEntry(tester);
+
+      expect(deletedEntryIds, ['4']);
+      expect(find.text('Mi. 04.11. · 10:00–12:00 Uhr'), findsNothing);
+      expect(find.text('Infostand am S-Bahnhof'), findsOneWidget);
+    });
+
+    testWidgets('the only Termin of a stand cannot be deleted', (tester) async {
+      await openDetail(tester, _stand(entries: [_entry(4)]));
+
+      await tapVisible(tester, find.text('Mi. 04.11. · 10:00–12:00 Uhr'));
+
+      expect(find.text('Termin löschen'), findsNothing);
+      expect(find.textContaining('Der einzige Termin eines Stands kann nicht gelöscht werden.'), findsOneWidget);
+    });
+
+    testWidgets('Termine can be edited in the full list, which shows the change', (tester) async {
+      await openDetail(
+        tester,
+        _stand(
+          entries: [
+            for (final day in [2, 9, 4, 6, 3]) _entry(day),
+          ],
+        ),
+      );
+
+      await tapVisible(tester, find.text('Alle anzeigen'));
+      await tapVisible(tester, find.text('Mo. 02.11.2026 · 10:00–12:00 Uhr'));
+      await deleteOpenEntry(tester);
+
+      expect(deletedEntryIds, ['2']);
+      expect(find.text('Mo. 02.11.2026 · 10:00–12:00 Uhr'), findsNothing);
+      expect(find.text('Di. 03.11.2026 · 10:00–12:00 Uhr'), findsOneWidget);
+    });
+
+    testWidgets('a Termin change is made on the stand as already changed', (tester) async {
+      await openDetail(tester, _stand(entries: [_entry(2), _entry(3), _entry(4)]));
+
+      await tapVisible(tester, find.text('Mi. 04.11. · 10:00–12:00 Uhr'));
+      await deleteOpenEntry(tester);
+      await tapVisible(tester, find.text('Di. 03.11. · 10:00–12:00 Uhr'));
+      await deleteOpenEntry(tester);
+
+      expect(deletedEntryIds, ['4', '3']);
+      expect(find.textContaining(' Uhr'), findsOneWidget);
+      // the remaining Termin is the last one of the stand
+      await tapVisible(tester, find.text('Mo. 02.11. · 10:00–12:00 Uhr'));
+      expect(find.text('Termin löschen'), findsNothing);
+    });
   });
 }
