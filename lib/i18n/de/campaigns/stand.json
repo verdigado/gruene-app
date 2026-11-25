@@ -1,5 +1,16 @@
 {
   "label": "Stand",
+  "type": "Wahlkampfstand",
+  "where": "Wo",
+  "flyerCountTotal": "Verteilte Flyer",
+  "entries": "Termine",
+  "showAllEntries": "Alle anzeigen",
+  "entryDateShortFormat": "E dd.MM.",
+  "entryDateLongFormat": "E dd.MM.yyyy",
+  "entryRangeDateFormat": "dd.MM.yyyy",
+  "entryWhen": "${date} · ${from}–${to} Uhr",
+  "entryRange": "${from} – ${to}",
+  "entryFlyerCount": "${count} Flyer",
   "add": {
     "title": "Wahlkampfstand eintragen"
   },
