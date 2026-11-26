@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Visibility;
 import 'package:get_it/get_it.dart';
-import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/services/api/profile_api_service.dart';
 import 'package:gruene_app/app/services/api/team_api_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -14,6 +13,12 @@ import 'package:gruene_app/app/widgets/stable_height_text.dart';
 import 'package:gruene_app/features/profiles/utils/profile_visibility.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
+
+Future<Profile?> showProfileVisibilitySetting(BuildContext context, Profile profile, {bool explicitTeamHint = false}) =>
+    showModalAppBottomSheet(
+      context,
+      builder: (context) => ProfileVisibilitySetting(profile: profile, explicitTeamHint: explicitTeamHint),
+    );
 
 class ProfileVisibilitySetting extends StatefulWidget {
   final Profile profile;
@@ -35,14 +40,6 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
     super.initState();
     _selectedVisibility = widget.profile.privacy.overall;
   }
-
-  void _discardChanges() => showConfirmationDialog(
-    context,
-    title: t.common.confirmDiscard.title,
-    content: Text(t.common.confirmDiscard.text),
-    label: t.common.actions.discard,
-    onConfirmed: () => Navigator.pop(context),
-  );
 
   Future<void> _save() async {
     if (!_hasChanges) {
@@ -83,66 +80,48 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
     final minVisibilityShort = visibilityShortLabel(minVisibility);
     final theme = Theme.of(context);
 
-    return PopScope(
-      canPop: !_hasChanges,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) _discardChanges();
-      },
-      child: ModalBottomSheet(
-        title: t.profiles.visibility.title,
-        leading: Icon(Icons.visibility),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          spacing: 8,
-          children: [
-            if (widget.explicitTeamHint) ...[
-              Text(
-                t.profiles.visibility.teamVisibilityHint(
-                  minVisibility: minVisibilityLabel,
-                  minVisibilityShort: minVisibilityShort,
-                ),
-              ),
-              SizedBox(height: 8),
-            ],
+    return ModalBottomSheet(
+      title: t.profiles.visibility.title,
+      leading: Icon(Icons.visibility),
+      hasUnsavedChanges: _hasChanges,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
+        children: [
+          if (widget.explicitTeamHint) ...[
             Text(
-              visibilityLabel(_selectedVisibility),
-              style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
-            ),
-            StableHeightText(
-              text: visibilityHint(_selectedVisibility),
-              longestText: visibilityHint(Visibility.private),
-              style: theme.textTheme.bodyMedium!,
-            ),
-            OptionSlider(
-              values: profileVisibilityOptions,
-              value: _selectedVisibility,
-              getLabel: (value) => visibilityShortLabel(value),
-              update: (visibility) => setState(() => _selectedVisibility = visibility),
-            ),
-            SizedBox(height: 16),
-            FilledButton(
-              onPressed: _save,
-              child: Text(
-                t.common.actions.save,
-                style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+              t.profiles.visibility.teamVisibilityHint(
+                minVisibility: minVisibilityLabel,
+                minVisibilityShort: minVisibilityShort,
               ),
             ),
+            SizedBox(height: 8),
           ],
-        ),
+          Text(
+            visibilityLabel(_selectedVisibility),
+            style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
+          ),
+          StableHeightText(
+            text: visibilityHint(_selectedVisibility),
+            longestText: visibilityHint(Visibility.private),
+            style: theme.textTheme.bodyMedium!,
+          ),
+          OptionSlider(
+            values: profileVisibilityOptions,
+            value: _selectedVisibility,
+            getLabel: (value) => visibilityShortLabel(value),
+            update: (visibility) => setState(() => _selectedVisibility = visibility),
+          ),
+          SizedBox(height: 16),
+          FilledButton(
+            onPressed: _save,
+            child: Text(
+              t.common.actions.save,
+              style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-Future<Profile?> showProfileVisibilitySetting(
-  BuildContext context,
-  Profile profile, {
-  bool explicitTeamHint = false,
-}) => showModalBottomSheet<Profile>(
-  context: context,
-  useRootNavigator: true,
-  // Swiping down pops the sheet without consulting the PopScope, so unsaved changes would be discarded without asking
-  enableDrag: false,
-  builder: (context) => ProfileVisibilitySetting(profile: profile, explicitTeamHint: explicitTeamHint),
-);
