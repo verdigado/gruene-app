@@ -180,6 +180,33 @@ void main() {
     verifyNever(() => standApi.updateStandEntry(any(), any()));
   });
 
+  test('a Termin changed again after a change of the stand shows its latest values', () async {
+    StandEntryUpdateModel change(int flyerCount) => StandEntryUpdateModel(
+      entryId: '1',
+      startAt: DateTime(2026, 11, 7, 10),
+      endAt: DateTime(2026, 11, 7, 12),
+      flyerCount: flyerCount,
+    );
+    await cache.updateStandEntry('4711', change(10), _serverStand());
+    await cache.updatePoi(
+      PoiCacheType.stand,
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: _location,
+        name: 'Wochenmarkt',
+        oldStandDetail: await cache.getPoiAsStandDetail('4711'),
+      ),
+    );
+    await cache.updateStandEntry('4711', change(20), await cache.getPoiAsStandDetail('4711'));
+
+    final stand = await cache.getPoiAsStandDetail('4711');
+
+    expect(stand.name, 'Wochenmarkt');
+    expect(stand.entries.firstWhere((e) => e.id == '1').flyerCount, 20);
+    expect(stand.displayedFlyerTotal, 140); // 120 + 20
+  });
+
   test('a Termin added and deleted again offline is never sent', () async {
     await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10)), _serverStand());
     final queuedEntry = (await cache.getPoiAsStandDetail('4711')).entries.first;

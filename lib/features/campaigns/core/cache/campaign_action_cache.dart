@@ -445,7 +445,10 @@ class CampaignActionCache extends ChangeNotifier {
           localEntryIds.add(firstEntryId);
           stand = action.toStandCreate().toStandDetailModel(poiId, firstEntryId: firstEntryId);
         case CampaignActionType.editStand:
-          stand = action.toStandUpdate().toStandDetailModel();
+          // a change of the stand itself: its Termine are those built so far, as a queued Termin change is updated in
+          // place and can be newer than the Termine in this change's snapshot
+          final edited = action.toStandUpdate().toStandDetailModel();
+          stand = stand == null ? edited : edited.copyWith(entries: stand.entries);
         case CampaignActionType.addStandEntry:
           final (:entry, :oldStandDetail) = action.toStandEntryCreate();
           final entryId = _localEntryId(action);
