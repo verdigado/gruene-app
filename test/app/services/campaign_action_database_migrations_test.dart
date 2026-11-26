@@ -24,7 +24,8 @@ Future<void> _createV1Schema(Database db, int version) => db.execute('''
   )
 ''');
 
-// Action type values as stored in version 1 (see CampaignAction._ensureStableEnumValues)
+// Action type values as stored in version 1, kept stable by CampaignActionType
+// (checked by test/app/models/campaigns/campaign_action_test.dart)
 const _addPoster = 1;
 const _addDoor = 4;
 const _editDoor = 5;

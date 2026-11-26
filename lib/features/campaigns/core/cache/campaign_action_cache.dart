@@ -21,10 +21,12 @@ import 'package:gruene_app/app/models/campaigns/route/route_status_update_model.
 import 'package:gruene_app/app/models/campaigns/stands/stand_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/api/action_area_api_service.dart';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/services/api/base_poi_api_service.dart';
 import 'package:gruene_app/app/services/api/door_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/api/poster_api_service.dart';
@@ -125,6 +127,7 @@ class CampaignActionCache extends ChangeNotifier {
   }
 
   Future<turf.Feature> deletePoi(PoiCacheType poiType, String poiId) async {
+    if (poiType == PoiCacheType.stand) poiId = _resolveStandId(poiId);
     final action = CampaignAction(poiId: int.parse(poiId), actionType: poiType.getCacheDeleteAction());
 
     var poiCacheList = await _findActionsByPoiId(poiId);
@@ -164,7 +167,7 @@ class CampaignActionCache extends ChangeNotifier {
       case PoiCacheType.stand:
         return await _addUpdateAction<StandUpdateModel>(
           poiType: poiType,
-          poi: await _movePhotoChangesToQueuedStand(poi as StandUpdateModel),
+          poi: await _movePhotoChangesToQueuedStand(_resolveStandUpdate(poi as StandUpdateModel)),
           getId: (poi) => poi.id,
           getJson: (poi) => poi.toJson(),
           mergeUpdates: (action, poiUpdate) => action.toStandUpdate().mergeWith(poiUpdate),
@@ -226,10 +229,12 @@ class CampaignActionCache extends ChangeNotifier {
   /// never had.
   Future<StandUpdateModel> _movePhotoChangesToQueuedStand(StandUpdateModel standUpdate) async {
     if (standUpdate.newPhotos.isEmpty && standUpdate.deletedPhotoIds.isEmpty) return standUpdate;
-    final createAction = (await _findActionsByPoiId(standUpdate.id))
-        .where((action) => action.actionType == CampaignActionType.addStand)
-        .singleOrNull;
-    if (createAction == null) return standUpdate;
+    final actions = await _findActionsByPoiId(standUpdate.id);
+    final createAction = actions.where((action) => action.actionType == CampaignActionType.addStand).singleOrNull;
+    if (createAction == null) {
+      _refuseDeletingSyncedQueuedPhotos(standUpdate, actions);
+      return standUpdate;
+    }
 
     final standCreate = createAction.toStandCreate();
     final queuedStand = standCreate.withImageFileLocations([
@@ -249,6 +254,24 @@ class CampaignActionCache extends ChangeNotifier {
       comment: standUpdate.comment,
       oldStandDetail: standUpdate.oldStandDetail.copyWith(photos: queuedStand.toQueuedPhotos()),
     );
+  }
+
+  /// A photo that was in the queue when the stand was opened still shows its local file. If no queued change holds it
+  /// any more, it was uploaded by a sync in the meantime, and the id the API gave it is unknown: deleting it by its
+  /// queued id would fail. The change is refused, so that the person opens the stand again instead.
+  void _refuseDeletingSyncedQueuedPhotos(StandUpdateModel standUpdate, List<CampaignAction> actions) {
+    final queuedPhotoIds = actions
+        .where((action) => action.actionType == CampaignActionType.editStand)
+        .expand((action) => action.toStandUpdate().newPhotos)
+        .map((photo) => photo.id)
+        .toSet();
+    final syncedQueuedPhotoIds = standUpdate.oldStandDetail.photos
+        .where((photo) => !photo.imageUrl.startsWith('http'))
+        .map((photo) => photo.id)
+        .where((id) => standUpdate.deletedPhotoIds.contains(id) && !queuedPhotoIds.contains(id));
+    if (syncedQueuedPhotoIds.isNotEmpty) {
+      throw OutdatedStandException('Photos $syncedQueuedPhotoIds were synced, their ids from the API are unknown');
+    }
   }
 
   Future<turf.Feature> _addUpdateAction<T>({
@@ -431,7 +454,15 @@ class CampaignActionCache extends ChangeNotifier {
 
   /// The stand with all changes still in the queue. Its [StandDetailModel.flyerCountTotal] stays the last one
   /// from the API; the detail shows the provisional [StandDetailModel.displayedFlyerTotal] until the queue is synced.
-  Future<StandDetailModel> getPoiAsStandDetail(String poiId) async {
+  Future<StandDetailModel> getPoiAsStandDetail(String standId) async {
+    final stand = await findQueuedStandDetail(standId);
+    if (stand == null) throw StateError('Stand $standId is not in the queue');
+    return stand;
+  }
+
+  /// Like [getPoiAsStandDetail], but null if no change of the stand is queued, e.g. because a sync just sent them.
+  Future<StandDetailModel?> findQueuedStandDetail(String standId) async {
+    final poiId = _resolveStandId(standId);
     final actions = await _findActionsByPoiId(poiId);
     final localEntryIds = <String>{};
     StandDetailModel? stand;
@@ -442,7 +473,10 @@ class CampaignActionCache extends ChangeNotifier {
           localEntryIds.add(firstEntryId);
           stand = action.toStandCreate().toStandDetailModel(poiId, firstEntryId: firstEntryId);
         case CampaignActionType.editStand:
-          stand = action.toStandUpdate().toStandDetailModel();
+          // a change of the stand itself: its Termine are those built so far, as a queued Termin change is updated in
+          // place and can be newer than the Termine in this change's snapshot
+          final edited = action.toStandUpdate().toStandDetailModel();
+          stand = stand == null ? edited : edited.copyWith(entries: stand.entries);
         case CampaignActionType.addStandEntry:
           final (:entry, :oldStandDetail) = action.toStandEntryCreate();
           final entryId = _localEntryId(action);
@@ -458,7 +492,7 @@ class CampaignActionCache extends ChangeNotifier {
           break;
       }
     }
-    if (stand == null) throw StateError('Stand $poiId is not in the queue');
+    if (stand == null) return null;
 
     // a stand seen earlier can still list a queued Termin that was deleted again in the meantime
     final entries = stand.entries.where((e) => !_isLocalEntryId(e.id) || localEntryIds.contains(e.id)).toList()
@@ -467,11 +501,9 @@ class CampaignActionCache extends ChangeNotifier {
   }
 
   /// Queues a new Termin for a stand, which may itself still be in the queue.
-  Future<turf.Feature> addStandEntry(
-    String standId,
-    StandEntryCreateModel entry,
-    StandDetailModel oldStandDetail,
-  ) async {
+  Future<turf.Feature> addStandEntry(String standId, StandEntryCreateModel entry, StandDetailModel standSeen) async {
+    standId = _resolveStandId(standId);
+    final oldStandDetail = _resolveStand(standSeen);
     await _appendActionToCache(
       CampaignAction(
         poiId: int.parse(standId),
@@ -485,9 +517,17 @@ class CampaignActionCache extends ChangeNotifier {
   /// Queues a change of a Termin. A Termin that is still in the queue is changed there.
   Future<turf.Feature> updateStandEntry(
     String standId,
-    StandEntryUpdateModel entry,
-    StandDetailModel oldStandDetail,
+    StandEntryUpdateModel entrySeen,
+    StandDetailModel standSeen,
   ) async {
+    standId = _resolveStandId(standId);
+    final oldStandDetail = _resolveStand(standSeen);
+    final entry = StandEntryUpdateModel(
+      entryId: _resolveEntryId(entrySeen.entryId),
+      startAt: entrySeen.startAt,
+      endAt: entrySeen.endAt,
+      flyerCount: entrySeen.flyerCount,
+    );
     final actions = await _findActionsByPoiId(standId);
     final queuedAction = _findQueuedEntryAction(actions, entry.entryId);
     final values = StandEntryCreateModel(startAt: entry.startAt, endAt: entry.endAt, flyerCount: entry.flyerCount);
@@ -524,7 +564,10 @@ class CampaignActionCache extends ChangeNotifier {
   }
 
   /// Queues the deletion of a Termin. A Termin that is still in the queue is removed from it.
-  Future<turf.Feature> deleteStandEntry(String standId, String entryId, StandDetailModel oldStandDetail) async {
+  Future<turf.Feature> deleteStandEntry(String standId, String entryIdSeen, StandDetailModel standSeen) async {
+    standId = _resolveStandId(standId);
+    final oldStandDetail = _resolveStand(standSeen);
+    final entryId = _resolveEntryId(entryIdSeen);
     final actions = await _findActionsByPoiId(standId);
     final queuedAction = _findQueuedEntryAction(actions, entryId);
 
@@ -569,13 +612,72 @@ class CampaignActionCache extends ChangeNotifier {
   bool _isLocalEntryId(String entryId) => entryId.startsWith(_localEntryIdPrefix);
 
   /// The queued action that creates the Termin with this id: an `addStandEntry`, or the `addStand` of its first Termin.
+  /// Throws [OutdatedStandException] if the id is a local one whose action is gone, as the API cannot know that
+  /// Termin by this id.
   CampaignAction? _findQueuedEntryAction(List<CampaignAction> actions, String entryId) {
     if (!_isLocalEntryId(entryId)) return null;
     final actionId = int.parse(entryId.substring(_localEntryIdPrefix.length));
-    return actions
+    final action = actions
         .where((a) => a.id == actionId)
         .where((a) => a.actionType == CampaignActionType.addStand || a.actionType == CampaignActionType.addStandEntry)
         .singleOrNull;
+    if (action == null) throw OutdatedStandException('Termin $entryId was synced, its id from the API is unknown');
+    return action;
+  }
+
+  /// Ids the API gave to stands and Termine sent from the queue, by their temporary id. A stand detail opened before
+  /// the sync still shows the temporary ids; changes made there are queued with the ids from the API instead.
+  final _syncedStandIds = <String, String>{};
+  final _syncedEntryIds = <String, String>{};
+
+  String _resolveStandId(String standId) => _syncedStandIds[standId] ?? standId;
+
+  /// The id of the stand in the API: the one a sync gave it, if [standId] is the temporary id of a queued stand.
+  String syncedStandId(String standId) => _resolveStandId(standId);
+
+  String _resolveEntryId(String entryId) => _syncedEntryIds[entryId] ?? entryId;
+
+  StandDetailModel _resolveStand(StandDetailModel stand) => stand.copyWith(
+    id: _resolveStandId(stand.id),
+    entries: [
+      for (final e in stand.entries)
+        StandEntryModel(id: _resolveEntryId(e.id), startAt: e.startAt, endAt: e.endAt, flyerCount: e.flyerCount),
+    ],
+  );
+
+  StandUpdateModel _resolveStandUpdate(StandUpdateModel update) => StandUpdateModel(
+    id: _resolveStandId(update.id),
+    address: update.address,
+    location: update.location,
+    name: update.name,
+    description: update.description,
+    comment: update.comment,
+    oldStandDetail: _resolveStand(update.oldStandDetail),
+    deletedPhotoIds: update.deletedPhotoIds,
+    newPhotos: update.newPhotos,
+  );
+
+  /// Remembers the id the API gave to a Termin sent from the queue: the one in [stand] that the person had not seen
+  /// before and that has the values of [entry]. If someone else added a Termin with the same values in the meantime,
+  /// it is unclear which one it is, so no id is remembered: a change of it from a stand opened before the sync is
+  /// then refused instead of changing the other Termin.
+  void _rememberSyncedEntryId(
+    CampaignAction action,
+    StandDetailModel stand,
+    StandEntryCreateModel entry,
+    StandDetailModel standSeen,
+  ) {
+    final knownIds = {...standSeen.entries.map((e) => e.id), ..._syncedEntryIds.values};
+    final candidates = stand.entries
+        .where((e) => !knownIds.contains(e.id))
+        .where((e) => e.startAt.isAtSameMomentAs(entry.startAt) && e.endAt.isAtSameMomentAs(entry.endAt))
+        .where((e) => e.flyerCount == (entry.flyerCount ?? 0))
+        .toList();
+    if (candidates.length == 1) {
+      _syncedEntryIds[_localEntryId(action)] = candidates.single.id;
+    } else {
+      logger.w('Id of the synced Termin ${_localEntryId(action)} unknown, ${candidates.length} Termine match');
+    }
   }
 
   Future<RouteStatusUpdateModel> getPoiAsRouteDetail(String poiId) async {
@@ -723,6 +825,8 @@ class CampaignActionCache extends ChangeNotifier {
           continue;
         }
 
+        Future<void> savePhotoStep(String photo, PhotoStep step) => _savePhotoStep(action, photo, step);
+
         updateIds(int newPoiId) async => await _updateIdsInCache(
           oldId: action.poiTempId,
           newId: newPoiId,
@@ -734,13 +838,13 @@ class CampaignActionCache extends ChangeNotifier {
           switch (action.actionType) {
             case CampaignActionType.addPoster:
               var model = action.toPosterCreate();
-              var newPosterMarker = await posterApiService.createNewPoster(model);
+              var newPosterMarker = await posterApiService.createNewPoster(model, onPhotoStep: savePhotoStep);
               await updateIds(newPosterMarker.id!);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editPoster:
               var model = action.toPosterUpdate();
-              await posterApiService.updatePoster(model);
+              await posterApiService.updatePoster(model, onPhotoStep: savePhotoStep);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.addDoor:
@@ -764,13 +868,19 @@ class CampaignActionCache extends ChangeNotifier {
 
             case CampaignActionType.addStand:
               var model = action.toStandCreate();
-              var newStandMarker = await standApiService.createNewStand(model);
-              await updateIds(newStandMarker.id!);
-              campaignActionDatabase.delete(action.id!);
+              var newStand = await standApiService.createNewStand(model);
+              _syncedStandIds[action.poiTempId.toString()] = newStand.id;
+              // a new stand has only its first Termin
+              final firstEntry = newStand.entries.singleOrNull;
+              if (firstEntry != null) _syncedEntryIds[_localEntryId(action)] = firstEntry.id;
+              await updateIds(int.parse(newStand.id));
+              await _resolveStoredSnapshots(newStand.id, allActions, except: i);
+              await _queuePhotosOfCreatedStand(model, newStand, allActions, startIndex: i + 1);
+              await campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editStand:
               var model = action.toStandUpdate();
-              await standApiService.updateStand(model);
+              await standApiService.updateStand(model, onPhotoStep: savePhotoStep);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.deleteStand:
@@ -779,7 +889,10 @@ class CampaignActionCache extends ChangeNotifier {
 
             // Termin actions refer to their stand by poiId, which is updated once a queued stand is created
             case CampaignActionType.addStandEntry:
-              await standApiService.addStandEntry(action.poiId!.toString(), action.toStandEntryCreate().entry);
+              final (:entry, :oldStandDetail) = action.toStandEntryCreate();
+              final stand = await standApiService.addStandEntry(action.poiId!.toString(), entry);
+              _rememberSyncedEntryId(action, stand, entry, oldStandDetail);
+              await _resolveStoredSnapshots(action.poiId!.toString(), allActions, except: i);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editStandEntry:
@@ -825,12 +938,20 @@ class CampaignActionCache extends ChangeNotifier {
               logger.w('Campaign Action (${action.actionType!.name}) refused by the API: ${e.statusCode}');
               await campaignActionDatabase.delete(action.id!);
               _refusedActionCount++;
+              // createNewStand only creates the stand (its photos follow as an editStand), so a refused addStand
+              // means the stand does not exist on the server
               if (action.actionType == CampaignActionType.addStand) refusedQueuedStandIds.add(action.poiTempId);
             case _SyncFailure.retry:
               logger.e('Flushing Campaign Action (${action.actionType!.name}) failed: ${e.statusCode}');
               failingPoiIds.add(action.coalescedPoiId());
               continue;
           }
+        } catch (e, stackTrace) {
+          // not an answer of the API, e.g. a photo file that cannot be read: kept for the next sync, and the other
+          // pins are still sent instead of the whole queue stopping here on every sync
+          logger.e('Flushing Campaign Action (${action.actionType?.name}) failed', error: e, stackTrace: stackTrace);
+          failingPoiIds.add(action.coalescedPoiId());
+          continue;
         }
         notifyListeners();
       }
@@ -843,6 +964,103 @@ class CampaignActionCache extends ChangeNotifier {
       }
       _isflushing = false;
       notifyListeners();
+    }
+  }
+
+  /// Drops a photo step from a queued change once it is done, so that a retry of the change does not repeat it.
+  /// The change is read again, as the person may have changed it while it was being sent. A photo whose file is gone
+  /// while it is still queued cannot be uploaded any more and is reported like a refused change.
+  Future<void> _savePhotoStep(CampaignAction action, String photo, PhotoStep step) async {
+    if (step == PhotoStep.fileMissing) {
+      _refusedActionCount++;
+      notifyListeners();
+    }
+    final current = await campaignActionDatabase.read(action.id!);
+    final data = current?.serialized == null ? null : jsonDecode(current!.serialized!) as Map<String, dynamic>;
+    // a new poster keeps its one photo as `imageFileLocation`; its action is removed once the photo is sent
+    if (data == null || !data.containsKey('newPhotos')) return;
+
+    switch (step) {
+      case PhotoStep.deleted:
+        (data['deletedPhotoIds'] as List<dynamic>).remove(photo);
+      case PhotoStep.uploaded || PhotoStep.fileMissing:
+        (data['newPhotos'] as List<dynamic>).removeWhere((p) => (p as Map<String, dynamic>)['imageUrl'] == photo);
+    }
+    current!.serialized = jsonEncode(data);
+    await campaignActionDatabase.update(current);
+  }
+
+  /// Gives the stand snapshots kept by the queued actions of a stand the ids the sync got from the API so far.
+  /// They were taken before the sync, so they can still have the temporary id of the stand or of a Termin whose
+  /// action is gone now; the stand detail would drop such a Termin. Stored in the database, so this also holds after
+  /// the app is restarted. All stand actions keep their snapshot as `oldStandDetail`.
+  Future<void> _resolveStoredSnapshots(String standId, List<CampaignAction> allActions, {required int except}) async {
+    for (var j = 0; j < allActions.length; j++) {
+      final action = allActions[j];
+      if (j == except || action.poiId.toString() != standId || !_standActions.contains(action.actionType)) continue;
+      final data = action.serialized == null ? null : jsonDecode(action.serialized!) as Map<String, dynamic>;
+      final snapshot = data?['oldStandDetail'] as Map<String, dynamic>?;
+      if (data == null || snapshot == null) continue;
+
+      data['oldStandDetail'] = _resolveStand(StandDetailModel.fromJson(snapshot)).toJson();
+      action.serialized = jsonEncode(data);
+      await _updateAction(action);
+    }
+  }
+
+  /// Hands the photos of a stand just created from the queue to a change of that stand, which uploads them later in
+  /// the same sync. A failed upload is then retried as that change, without creating the stand a second time.
+  /// A change of the stand already queued gets the photos; otherwise a new one is queued and added to [allActions].
+  Future<void> _queuePhotosOfCreatedStand(
+    StandCreateModel standCreate,
+    StandDetailModel createdStand,
+    List<CampaignAction> allActions, {
+    required int startIndex,
+  }) async {
+    if (standCreate.imageFileLocations.isEmpty) return;
+    final photoUpload = StandUpdateModel(
+      id: createdStand.id,
+      address: createdStand.address,
+      location: createdStand.location,
+      name: createdStand.name,
+      description: createdStand.description,
+      comment: createdStand.comment,
+      oldStandDetail: createdStand,
+      newPhotos: standCreate.toQueuedPhotos(),
+    );
+
+    final index = allActions.indexWhere(
+      (a) => a.actionType == CampaignActionType.editStand && a.poiId.toString() == createdStand.id,
+      startIndex,
+    );
+    if (index >= 0) {
+      final queuedChange = allActions[index];
+      // the queued change is newer, so its values win; the photos come first, as they were added first
+      final merged = photoUpload.mergeWith(queuedChange.toStandUpdate());
+      // its snapshot was taken before the sync and still has the temporary id of the first Termin, whose action is
+      // gone now; the stand as created by the API has the real Termin ids
+      final withCreatedStand = StandUpdateModel(
+        id: merged.id,
+        address: merged.address,
+        location: merged.location,
+        name: merged.name,
+        description: merged.description,
+        comment: merged.comment,
+        oldStandDetail: createdStand,
+        deletedPhotoIds: merged.deletedPhotoIds,
+        newPhotos: merged.newPhotos,
+      );
+      queuedChange.serialized = jsonEncode(withCreatedStand.toJson());
+      await _updateAction(queuedChange);
+    } else {
+      final action = await campaignActionDatabase.create(
+        CampaignAction(
+          poiId: int.parse(createdStand.id),
+          actionType: CampaignActionType.editStand,
+          serialized: jsonEncode(photoUpload.toJson()),
+        ),
+      );
+      allActions.add(action);
     }
   }
 
@@ -978,6 +1196,17 @@ class CampaignActionCache extends ChangeNotifier {
     }
     return _SyncFailure.retry;
   }
+}
+
+/// A Termin or photo was changed in a stand opened before the sync, and the id the API gave it is unknown.
+/// The change is not queued; the stand has to be opened again.
+class OutdatedStandException implements Exception {
+  final String message;
+
+  OutdatedStandException(this.message);
+
+  @override
+  String toString() => 'OutdatedStandException: $message';
 }
 
 enum _SyncFailure {

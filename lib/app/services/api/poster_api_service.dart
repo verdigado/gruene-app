@@ -12,7 +12,7 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 class PosterApiService extends BasePoiApiService {
   PosterApiService() : super(poiType: PoiServiceType.poster);
 
-  Future<PoiDetailModel> createNewPoster(PosterCreateModel newPoster) async {
+  Future<PoiDetailModel> createNewPoster(PosterCreateModel newPoster, {OnPhotoStep? onPhotoStep}) async {
     var poi = await send<Poi, Poi>(
       request: (api) => api.v1CampaignsPoisPost(
         body: CreatePoi(
@@ -24,12 +24,12 @@ class PosterApiService extends BasePoiApiService {
       ),
     );
     if (newPoster.imageFileLocation != null) {
-      poi = await storeNewPhoto(poi.id, newPoster.imageFileLocation!);
+      poi = await storeNewPhoto(poi.id, newPoster.imageFileLocation!, onPhotoStep: onPhotoStep) ?? poi;
     }
     return poi.toMarkerItem();
   }
 
-  Future<PoiDetailModel> updatePoster(PosterUpdateModel posterUpdate) async {
+  Future<PoiDetailModel> updatePoster(PosterUpdateModel posterUpdate, {OnPhotoStep? onPhotoStep}) async {
     final poi = await send<Poi, Poi>(
       request: (api) => api.v1CampaignsPoisPoiIdPut(
         poiId: posterUpdate.id,
@@ -46,6 +46,7 @@ class PosterApiService extends BasePoiApiService {
       posterUpdate.id,
       deletedPhotoIds: posterUpdate.deletedPhotoIds,
       newImageFileLocations: posterUpdate.newPhotos.map((photo) => photo.imageUrl),
+      onPhotoStep: onPhotoStep,
     );
     return (poiWithPhotos ?? poi).toMarkerItem();
   }

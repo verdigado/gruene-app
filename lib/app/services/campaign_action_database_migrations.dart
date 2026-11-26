@@ -72,7 +72,8 @@ class CampaignActionDatabaseMigrations {
   /// - `deleteFlyer` → `deleteDoor` (the delete endpoint does not depend on the pin type)
   /// - `addFlyer` followed by `deleteFlyer` of the same pin → all actions of that pin are dropped
   static Future<void> _migrateFlyerActionsToDoors(DatabaseExecutor db) async {
-    // Stored values of the flyer action types, see CampaignAction._ensureStableEnumValues
+    // Stored values of the flyer action types, kept stable by CampaignActionType
+    // (checked by test/app/models/campaigns/campaign_action_test.dart)
     final addFlyer = CampaignActionType.addFlyer.index;
     final editFlyer = CampaignActionType.editFlyer.index;
     final deleteFlyer = CampaignActionType.deleteFlyer.index;

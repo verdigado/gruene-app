@@ -54,20 +54,24 @@ class StandDetailModel implements BasicPoi {
   /// The photos, newest first. Photos not uploaded yet have their local file as id, so they are sorted by date.
   List<PosterPhotoModel> get photosNewestFirst => photos.toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-  StandDetailModel copyWith({List<StandEntryModel>? entries, List<PosterPhotoModel>? photos, bool? isCached}) =>
-      StandDetailModel(
-        id: id,
-        address: address,
-        location: location,
-        name: name,
-        description: description,
-        comment: comment,
-        flyerCountTotal: flyerCountTotal,
-        entries: entries ?? this.entries,
-        photos: photos ?? this.photos,
-        createdAt: createdAt,
-        isCached: isCached ?? this.isCached,
-      );
+  StandDetailModel copyWith({
+    String? id,
+    List<StandEntryModel>? entries,
+    List<PosterPhotoModel>? photos,
+    bool? isCached,
+  }) => StandDetailModel(
+    id: id ?? this.id,
+    address: address,
+    location: location,
+    name: name,
+    description: description,
+    comment: comment,
+    flyerCountTotal: flyerCountTotal,
+    entries: entries ?? this.entries,
+    photos: photos ?? this.photos,
+    createdAt: createdAt,
+    isCached: isCached ?? this.isCached,
+  );
 
   factory StandDetailModel.fromJson(Map<String, dynamic> json) =>
       _$StandDetailModelFromJson(json.convertLatLongField());

@@ -3,6 +3,8 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/picker_field.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
@@ -62,6 +64,9 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
   /// Errors are shown after the first attempt to save and then kept up to date.
   bool _showErrors = false;
   ({String? to, String? flyerCount}) _errors = (to: null, flyerCount: null);
+
+  /// Set while a save or delete is running, so that a second tap does not queue the change twice.
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -275,14 +280,12 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
       context,
       title: t.campaigns.stand.entryEdit.delete,
       confirmationDialogText: t.campaigns.stand.entryEdit.deleteConfirmation(date: date, from: from, to: to),
-      onDeletePressed: () async {
-        await widget.onDelete!(widget.entry!.id);
-        if (mounted) Navigator.maybePop(context);
-      },
+      onDeletePressed: () => _runOnce(() => widget.onDelete!(widget.entry!.id)),
     );
   }
 
   Future<void> _onSavePressed() async {
+    if (_isSaving) return;
     setState(() => _showErrors = true);
     if (!_validate()) return;
 
@@ -290,13 +293,27 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
     final endAt = StandFormRules.combine(_date, _to);
     final flyerCount = StandFormRules.flyerCountToSave(_flyerCountTextController.text, isAfterToday: _isAfterToday);
     final entry = widget.entry;
-    if (entry == null) {
-      await widget.onAdd!(StandEntryCreateModel(startAt: startAt, endAt: endAt, flyerCount: flyerCount));
-    } else {
-      await widget.onSave!(
-        StandEntryUpdateModel(entryId: entry.id, startAt: startAt, endAt: endAt, flyerCount: flyerCount),
-      );
+    await _runOnce(
+      () => entry == null
+          ? widget.onAdd!(StandEntryCreateModel(startAt: startAt, endAt: endAt, flyerCount: flyerCount))
+          : widget.onSave!(
+              StandEntryUpdateModel(entryId: entry.id, startAt: startAt, endAt: endAt, flyerCount: flyerCount),
+            ),
+    );
+  }
+
+  /// Runs [change] and closes the form, unless a change is already running. If it fails, the form stays usable.
+  Future<void> _runOnce(Future<void> Function() change) async {
+    if (_isSaving) return;
+    _isSaving = true;
+    try {
+      await change();
+      if (mounted) Navigator.maybePop(context);
+    } catch (e, stackTrace) {
+      logger.e('Saving a Termin failed', error: e, stackTrace: stackTrace);
+      if (mounted) showSnackBar(context: context, text: t.campaigns.stand.saveFailed);
+    } finally {
+      _isSaving = false;
     }
-    if (mounted) Navigator.maybePop(context);
   }
 }

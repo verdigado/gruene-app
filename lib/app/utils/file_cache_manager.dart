@@ -23,7 +23,7 @@ class FileManager {
     return p.join(await _getStore(), p.basename(filename));
   }
 
-  void deleteFile(String filename) async {
+  Future<void> deleteFile(String filename) async {
     var fullFileName = await _getFullFileName(filename);
     var file = File(fullFileName);
     if (await file.exists()) {

@@ -7,6 +7,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/photo_carousel.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
@@ -55,10 +56,14 @@ void main() {
   late List<StandUpdateModel> saved;
   late List<String> deleted;
 
+  /// Thrown by the next save, if set.
+  Exception? saveError;
+
   /// Opens the edit view the way the map does ([MapConsumer.showModalEditForm]).
   Future<void> openEdit(WidgetTester tester, StandDetailModel stand, {double textScale = 1}) async {
     saved = [];
     deleted = [];
+    saveError = null;
     tester.view.physicalSize = const Size(411, 900) * tester.view.devicePixelRatio;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -74,7 +79,12 @@ void main() {
                 context,
                 () => StandEdit(
                   stand: stand,
-                  onSave: (update) async => saved.add(update),
+                  onSave: (update) async {
+                    final error = saveError;
+                    saveError = null;
+                    if (error != null) throw error;
+                    saved.add(update);
+                  },
                   onDelete: (id) async => deleted.add(id),
                 ),
               ),
@@ -129,6 +139,33 @@ void main() {
     expect(update.location, stand.location);
     expect(update.oldStandDetail, same(stand));
     expect(isOpen(), isFalse);
+  });
+
+  testWidgets('a failed save says so, stays open, and Speichern works again', (tester) async {
+    await openEdit(tester, _stand());
+    saveError = Exception('database not available');
+
+    await tapVisible(tester, find.text('Speichern'));
+
+    expect(find.text('Die Änderung konnte nicht gespeichert werden. Bitte versuche es noch einmal.'), findsOneWidget);
+    expect(saved, isEmpty);
+    expect(isOpen(), isTrue);
+
+    await tapVisible(tester, find.text('Speichern'));
+
+    expect(saved, hasLength(1));
+    expect(isOpen(), isFalse);
+  });
+
+  testWidgets('a change of a stand synced in the meantime asks to open it again', (tester) async {
+    await openEdit(tester, _stand());
+    saveError = OutdatedStandException('photo was synced');
+
+    await tapVisible(tester, find.text('Speichern'));
+
+    expect(find.textContaining('Der Stand wurde inzwischen synchronisiert'), findsOneWidget);
+    expect(saved, isEmpty);
+    expect(isOpen(), isTrue);
   });
 
   testWidgets('does not save without a name and shows why', (tester) async {

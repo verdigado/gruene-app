@@ -90,9 +90,19 @@ class CampaignActionDatabase {
     return result.map((json) => CampaignAction.fromMap(json)).toList();
   }
 
+  Future<CampaignAction?> read(int id) async {
+    final db = await instance.database;
+    final result = await db.query(
+      CampaignActionFields.tableName,
+      where: '${CampaignActionFields.id} = ?',
+      whereArgs: [id],
+    );
+    return result.map((json) => CampaignAction.fromMap(json)).singleOrNull;
+  }
+
   Future<void> update(CampaignAction campaignAction) async {
     final db = await instance.database;
-    db.update(
+    await db.update(
       CampaignActionFields.tableName,
       campaignAction.toMap(),
       where: '${CampaignActionFields.id} = ?',

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/photo_edit_controller.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
@@ -193,20 +196,30 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
     String? emptyToNull(String value) => value.trim().isEmpty ? null : value.trim();
 
     _isSaving = true;
-    final newPhotos = await _photos.prepareNewPhotos();
-    await widget.onSave(
-      StandUpdateModel(
-        id: widget.stand.id,
-        address: getAddress(),
-        location: widget.stand.location,
-        name: _nameTextController.text.trim(),
-        description: emptyToNull(_descriptionTextController.text),
-        comment: emptyToNull(_commentTextController.text),
-        oldStandDetail: widget.stand,
-        deletedPhotoIds: _photos.deletedPhotoIds,
-        newPhotos: newPhotos,
-      ),
-    );
-    if (mounted) Navigator.maybePop(context);
+    try {
+      final newPhotos = await _photos.prepareNewPhotos();
+      await widget.onSave(
+        StandUpdateModel(
+          id: widget.stand.id,
+          address: getAddress(),
+          location: widget.stand.location,
+          name: _nameTextController.text.trim(),
+          description: emptyToNull(_descriptionTextController.text),
+          comment: emptyToNull(_commentTextController.text),
+          oldStandDetail: widget.stand,
+          deletedPhotoIds: _photos.deletedPhotoIds,
+          newPhotos: newPhotos,
+        ),
+      );
+      if (mounted) Navigator.maybePop(context);
+    } on OutdatedStandException {
+      if (mounted) showSnackBar(context: context, text: t.campaigns.stand.outdated);
+    } catch (e, stackTrace) {
+      logger.e('Saving the stand ${widget.stand.id} failed', error: e, stackTrace: stackTrace);
+      if (mounted) showSnackBar(context: context, text: t.campaigns.stand.saveFailed);
+    } finally {
+      // if saving failed, Speichern works again
+      _isSaving = false;
+    }
   }
 }

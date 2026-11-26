@@ -19,34 +19,31 @@ class StandApiService extends BasePoiApiService {
   @override
   bool filterByCutOffDate(Poi poi) => true;
 
-  Future<PoiDetailModel> createNewStand(StandCreateModel newStand) async {
-    var poi = await send<Poi, Poi>(
-      request: (api) => api.v1CampaignsPoisPost(
-        body: CreatePoi(
-          campaignId: newStand.campaignId,
-          coords: newStand.location.toGeoJsonCoords(),
-          type: poiType.toApiPoisType(),
-          address: newStand.address.toPoiAddress(),
-          stand: CreatePoiStand(
-            name: newStand.name,
-            description: newStand.description,
-            comment: newStand.comment,
-            firstEntry: CreatePoiStandEntry(
-              startAt: newStand.firstEntry.startAt.toUtc(),
-              endAt: newStand.firstEntry.endAt.toUtc(),
-              flyerCount: newStand.firstEntry.flyerCount?.toDouble(),
-            ),
+  /// Creates the stand with its first Termin, without its photos: the offline queue uploads them as a change of the
+  /// created stand, so that a failed upload is retried without creating the stand again.
+  Future<StandDetailModel> createNewStand(StandCreateModel newStand) => send(
+    request: (api) => api.v1CampaignsPoisPost(
+      body: CreatePoi(
+        campaignId: newStand.campaignId,
+        coords: newStand.location.toGeoJsonCoords(),
+        type: poiType.toApiPoisType(),
+        address: newStand.address.toPoiAddress(),
+        stand: CreatePoiStand(
+          name: newStand.name,
+          description: newStand.description,
+          comment: newStand.comment,
+          firstEntry: CreatePoiStandEntry(
+            startAt: newStand.firstEntry.startAt.toUtc(),
+            endAt: newStand.firstEntry.endAt.toUtc(),
+            flyerCount: newStand.firstEntry.flyerCount?.toDouble(),
           ),
         ),
       ),
-    );
-    for (final imageFileLocation in newStand.imageFileLocations) {
-      poi = await storeNewPhoto(poi.id, imageFileLocation);
-    }
-    return poi.toMarkerItem();
-  }
+    ),
+    map: (poi) => poi.toStandDetail(),
+  );
 
-  Future<PoiDetailModel> updateStand(StandUpdateModel standUpdate) async {
+  Future<PoiDetailModel> updateStand(StandUpdateModel standUpdate, {OnPhotoStep? onPhotoStep}) async {
     final poi = await send<Poi, Poi>(
       request: (api) => api.v1CampaignsPoisPoiIdPut(
         poiId: standUpdate.id,
@@ -60,6 +57,7 @@ class StandApiService extends BasePoiApiService {
       standUpdate.id,
       deletedPhotoIds: standUpdate.deletedPhotoIds,
       newImageFileLocations: standUpdate.newPhotos.map((photo) => photo.imageUrl),
+      onPhotoStep: onPhotoStep,
     );
     return (poiWithPhotos ?? poi).toMarkerItem();
   }

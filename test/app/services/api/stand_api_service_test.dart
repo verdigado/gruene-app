@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:chopper/chopper.dart' as chopper;
@@ -95,23 +96,18 @@ void main() {
     GetIt.I.registerSingleton<GrueneApi>(api);
     GetIt.I.registerSingleton<FileManager>(fileManager);
     when(() => fileManager.retrieveFileData(any())).thenAnswer((_) async => Uint8List.fromList([1, 2, 3]));
+    when(() => fileManager.deleteFile(any())).thenAnswer((_) async {});
     service = StandApiService();
   });
 
   tearDown(GetIt.I.reset);
 
-  test('creates a stand with its first Termin in UTC and uploads its photos', () async {
+  test('creates a stand with its first Termin in UTC, without uploading its photos', () async {
     when(() => api.v1CampaignsPoisPost(body: any(named: 'body')))
         .thenAnswer((_) async => _ok(_stand(), statusCode: 201));
-    when(
-      () => api.v1CampaignsPoisPoiIdPhotosPost(
-        poiId: any(named: 'poiId'),
-        image: any(named: 'image'),
-      ),
-    ).thenAnswer((_) async => _ok(_stand(photos: [_photo('p1')]), statusCode: 201));
 
     final startAt = DateTime(2026, 11, 21, 10);
-    final marker = await service.createNewStand(
+    final stand = await service.createNewStand(
       StandCreateModel(
         location: LatLng(52.52, 13.405),
         address: _address,
@@ -132,17 +128,17 @@ void main() {
     expect(body.stand!.firstEntry.startAt.isUtc, isTrue);
     expect(body.stand!.firstEntry.flyerCount, isNull);
 
-    verify(
+    // the offline queue uploads the photos as a change of the created stand
+    verifyNever(
       () => api.v1CampaignsPoisPoiIdPhotosPost(
-        poiId: '4711',
+        poiId: any(named: 'poiId'),
         image: any(named: 'image'),
       ),
-    ).called(2);
-    verify(() => fileManager.deleteFile('/photos/a.jpg')).called(1);
-    verify(() => fileManager.deleteFile('/photos/b.jpg')).called(1);
+    );
+    verifyNever(() => fileManager.deleteFile(any()));
 
-    expect(marker.id, 4711);
-    expect(marker.status, 'stand');
+    expect(stand.id, '4711');
+    expect(stand.entries.map((e) => e.id), ['2', '1']);
   });
 
   test('reads a stand with its Termine and the flyer total from the API', () async {
@@ -214,6 +210,273 @@ void main() {
     expect(body.stand!.comment, 'Neuer Name');
     verify(() => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: '4711', photoId: 'p1')).called(1);
     verify(() => fileManager.deleteFile('/photos/c.jpg')).called(1);
+  });
+
+  test('a retried change takes a photo deleted by an earlier try as deleted and still uploads the new one', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(() => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: '4711', photoId: 'p1'))
+        .thenAnswer((_) async => _failed(404));
+    when(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand(photos: [_photo('p2')]), statusCode: 201));
+
+    final marker = await service.updateStand(
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: LatLng(52.52, 13.405),
+        name: 'Marktplatz',
+        oldStandDetail: StandDetailModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          flyerCountTotal: 250,
+          entries: const [],
+          photos: const [],
+          createdAt: '01.11.2026 10:00',
+        ),
+        deletedPhotoIds: ['p1'],
+        newPhotos: [
+          PosterPhotoModel(id: 'new', imageUrl: '/photos/c.jpg', thumbnailUrl: '', createdAt: DateTime(2026)),
+        ],
+      ),
+    );
+
+    verify(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: '4711',
+        image: any(named: 'image'),
+      ),
+    ).called(1);
+    verify(() => fileManager.deleteFile('/photos/c.jpg')).called(1);
+    expect(marker.id, 4711);
+  });
+
+  test('a photo delete refused for another reason still fails the change', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(() => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: '4711', photoId: 'p1'))
+        .thenAnswer((_) async => _failed(500));
+
+    expect(
+      () => service.updateStand(
+        StandUpdateModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          oldStandDetail: StandDetailModel(
+            id: '4711',
+            address: _address,
+            location: LatLng(52.52, 13.405),
+            name: 'Marktplatz',
+            flyerCountTotal: 250,
+            entries: const [],
+            photos: const [],
+            createdAt: '01.11.2026 10:00',
+          ),
+          deletedPhotoIds: ['p1'],
+        ),
+      ),
+      throwsA(isA<ApiException>().having((e) => e.statusCode, 'statusCode', 500)),
+    );
+  });
+
+  test('reports each photo step before the file of an uploaded photo is deleted, and a missing file', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(() => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: '4711', photoId: 'p1'))
+        .thenAnswer((_) async => _ok(_stand()));
+    when(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand(photos: [_photo('p2')]), statusCode: 201));
+    final events = <String>[];
+    when(() => fileManager.deleteFile(any())).thenAnswer((invocation) async {
+      events.add('file deleted ${invocation.positionalArguments.single}');
+    });
+    when(() => fileManager.retrieveFileData('/photos/gone.jpg'))
+        .thenThrow(const PathNotFoundException('/photos/gone.jpg', OSError()));
+    PosterPhotoModel photo(String file) =>
+        PosterPhotoModel(id: file, imageUrl: file, thumbnailUrl: file, createdAt: DateTime(2026));
+
+    await service.updateStand(
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: LatLng(52.52, 13.405),
+        name: 'Marktplatz',
+        oldStandDetail: StandDetailModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          flyerCountTotal: 250,
+          entries: const [],
+          photos: const [],
+          createdAt: '01.11.2026 10:00',
+        ),
+        deletedPhotoIds: ['p1'],
+        newPhotos: [photo('/photos/c.jpg'), photo('/photos/gone.jpg')],
+      ),
+      onPhotoStep: (photo, step) async => events.add('${step.name} $photo'),
+    );
+
+    expect(events, [
+      'deleted p1',
+      'uploaded /photos/c.jpg',
+      'file deleted /photos/c.jpg',
+      'fileMissing /photos/gone.jpg',
+    ]);
+  });
+
+  test('an uploaded photo whose file cannot be deleted does not fail the change', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand(photos: [_photo('p2')]), statusCode: 201));
+    when(() => fileManager.deleteFile('/photos/c.jpg')).thenThrow(const FileSystemException('locked', '/photos/c.jpg'));
+
+    final marker = await service.updateStand(
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: LatLng(52.52, 13.405),
+        name: 'Marktplatz',
+        oldStandDetail: StandDetailModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          flyerCountTotal: 250,
+          entries: const [],
+          photos: const [],
+          createdAt: '01.11.2026 10:00',
+        ),
+        newPhotos: [
+          PosterPhotoModel(id: 'new', imageUrl: '/photos/c.jpg', thumbnailUrl: '', createdAt: DateTime(2026)),
+        ],
+      ),
+    );
+
+    expect(marker.id, 4711);
+    verify(() => fileManager.deleteFile('/photos/c.jpg')).called(1);
+  });
+
+  test('a photo whose file cannot be read fails the change instead of being dropped', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(() => fileManager.retrieveFileData('/photos/c.jpg'))
+        .thenThrow(const FileSystemException('Permission denied', '/photos/c.jpg'));
+
+    await expectLater(
+      service.updateStand(
+        StandUpdateModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          oldStandDetail: StandDetailModel(
+            id: '4711',
+            address: _address,
+            location: LatLng(52.52, 13.405),
+            name: 'Marktplatz',
+            flyerCountTotal: 250,
+            entries: const [],
+            photos: const [],
+            createdAt: '01.11.2026 10:00',
+          ),
+          newPhotos: [
+            PosterPhotoModel(id: 'new', imageUrl: '/photos/c.jpg', thumbnailUrl: '', createdAt: DateTime(2026)),
+          ],
+        ),
+      ),
+      throwsA(isA<FileSystemException>()),
+    );
+    verifyNever(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    );
+  });
+
+  test('a retried change skips a photo whose file was deleted by an earlier upload', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand(photos: [_photo('p2')]), statusCode: 201));
+    when(() => fileManager.retrieveFileData('/photos/a.jpg'))
+        .thenThrow(const PathNotFoundException('/photos/a.jpg', OSError()));
+    PosterPhotoModel photo(String file) =>
+        PosterPhotoModel(id: file, imageUrl: file, thumbnailUrl: file, createdAt: DateTime(2026));
+
+    await service.updateStand(
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: LatLng(52.52, 13.405),
+        name: 'Marktplatz',
+        oldStandDetail: StandDetailModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          flyerCountTotal: 250,
+          entries: const [],
+          photos: const [],
+          createdAt: '01.11.2026 10:00',
+        ),
+        newPhotos: [photo('/photos/a.jpg'), photo('/photos/b.jpg')],
+      ),
+    );
+
+    verify(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: '4711',
+        image: any(named: 'image'),
+      ),
+    ).called(1);
+    verify(() => fileManager.deleteFile('/photos/b.jpg')).called(1);
   });
 
   group('Termine', () {
