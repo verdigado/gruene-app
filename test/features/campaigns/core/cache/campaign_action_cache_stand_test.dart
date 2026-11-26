@@ -393,6 +393,61 @@ void main() {
     expect(await cache.getCachedActionCount(), 0);
   });
 
+  group('deleting a photo of a stand created offline, in an edit opened before the sync', () {
+    Future<(String, StandDetailModel)> storeStandWithPhoto() async {
+      final marker = await cache.storeNewPoi(
+        PoiCacheType.stand,
+        StandCreateModel(
+          location: _location,
+          address: _address,
+          name: 'Marktplatz',
+          firstEntry: _newEntry(DateTime(2026, 11, 7, 10)),
+          imageFileLocations: ['/photos/a.jpg'],
+          campaignId: 'campaign-1',
+        ),
+      );
+      final standId = marker.id.toString();
+      return (standId, await cache.getPoiAsStandDetail(standId));
+    }
+
+    StandUpdateModel deletePhoto(String standId, StandDetailModel standSeen) => StandUpdateModel(
+      id: standId,
+      address: _address,
+      location: _location,
+      name: 'Marktplatz',
+      oldStandDetail: standSeen,
+      deletedPhotoIds: ['/photos/a.jpg'],
+    );
+
+    test('is refused once the photo was uploaded, as its id from the API is unknown', () async {
+      when(() => standApi.updateStand(any()))
+          .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
+      final (standId, standSeen) = await storeStandWithPhoto();
+      await cache.flushCache();
+
+      expect(
+        () => cache.updatePoi(PoiCacheType.stand, deletePhoto(standId, standSeen)),
+        throwsA(isA<OutdatedStandException>()),
+      );
+      expect(await cache.getCachedActionCount(), 0);
+    });
+
+    test('takes the photo out of the queue while its upload is still queued', () async {
+      when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 500));
+      final (standId, standSeen) = await storeStandWithPhoto();
+      await cache.flushCache();
+
+      await cache.updatePoi(PoiCacheType.stand, deletePhoto(standId, standSeen));
+
+      when(() => standApi.updateStand(any()))
+          .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
+      await cache.flushCache();
+      final sent = verify(() => standApi.updateStand(captureAny())).captured.last as StandUpdateModel;
+      expect(sent.newPhotos, isEmpty);
+      expect(sent.deletedPhotoIds, isEmpty);
+    });
+  });
+
   test('a stand created offline keeps its first Termin while a later Termin of it is retried', () async {
     when(() => standApi.createNewStand(any()))
         .thenAnswer((_) async => _serverStand().copyWith(entries: [_serverStand().entries.last]));

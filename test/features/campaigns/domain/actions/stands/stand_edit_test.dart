@@ -7,6 +7,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/photo_carousel.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
@@ -154,6 +155,17 @@ void main() {
 
     expect(saved, hasLength(1));
     expect(isOpen(), isFalse);
+  });
+
+  testWidgets('a change of a stand synced in the meantime asks to open it again', (tester) async {
+    await openEdit(tester, _stand());
+    saveError = OutdatedStandException('photo was synced');
+
+    await tapVisible(tester, find.text('Speichern'));
+
+    expect(find.textContaining('Der Stand wurde inzwischen synchronisiert'), findsOneWidget);
+    expect(saved, isEmpty);
+    expect(isOpen(), isTrue);
   });
 
   testWidgets('does not save without a name and shows why', (tester) async {

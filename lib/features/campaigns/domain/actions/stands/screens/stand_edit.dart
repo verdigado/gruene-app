@@ -5,6 +5,7 @@ import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/photo_edit_controller.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
@@ -211,6 +212,8 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
         ),
       );
       if (mounted) Navigator.maybePop(context);
+    } on OutdatedStandException {
+      if (mounted) showSnackBar(context: context, text: t.campaigns.stand.outdated);
     } catch (e, stackTrace) {
       logger.e('Saving the stand ${widget.stand.id} failed', error: e, stackTrace: stackTrace);
       if (mounted) showSnackBar(context: context, text: t.campaigns.stand.saveFailed);

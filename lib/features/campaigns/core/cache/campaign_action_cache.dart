@@ -228,10 +228,12 @@ class CampaignActionCache extends ChangeNotifier {
   /// never had.
   Future<StandUpdateModel> _movePhotoChangesToQueuedStand(StandUpdateModel standUpdate) async {
     if (standUpdate.newPhotos.isEmpty && standUpdate.deletedPhotoIds.isEmpty) return standUpdate;
-    final createAction = (await _findActionsByPoiId(standUpdate.id))
-        .where((action) => action.actionType == CampaignActionType.addStand)
-        .singleOrNull;
-    if (createAction == null) return standUpdate;
+    final actions = await _findActionsByPoiId(standUpdate.id);
+    final createAction = actions.where((action) => action.actionType == CampaignActionType.addStand).singleOrNull;
+    if (createAction == null) {
+      _refuseDeletingSyncedQueuedPhotos(standUpdate, actions);
+      return standUpdate;
+    }
 
     final standCreate = createAction.toStandCreate();
     final queuedStand = standCreate.withImageFileLocations([
@@ -251,6 +253,24 @@ class CampaignActionCache extends ChangeNotifier {
       comment: standUpdate.comment,
       oldStandDetail: standUpdate.oldStandDetail.copyWith(photos: queuedStand.toQueuedPhotos()),
     );
+  }
+
+  /// A photo that was in the queue when the stand was opened still shows its local file. If no queued change holds it
+  /// any more, it was uploaded by a sync in the meantime, and the id the API gave it is unknown: deleting it by its
+  /// queued id would fail. The change is refused, so that the person opens the stand again instead.
+  void _refuseDeletingSyncedQueuedPhotos(StandUpdateModel standUpdate, List<CampaignAction> actions) {
+    final queuedPhotoIds = actions
+        .where((action) => action.actionType == CampaignActionType.editStand)
+        .expand((action) => action.toStandUpdate().newPhotos)
+        .map((photo) => photo.id)
+        .toSet();
+    final syncedQueuedPhotoIds = standUpdate.oldStandDetail.photos
+        .where((photo) => !photo.imageUrl.startsWith('http'))
+        .map((photo) => photo.id)
+        .where((id) => standUpdate.deletedPhotoIds.contains(id) && !queuedPhotoIds.contains(id));
+    if (syncedQueuedPhotoIds.isNotEmpty) {
+      throw OutdatedStandException('Photos $syncedQueuedPhotoIds were synced, their ids from the API are unknown');
+    }
   }
 
   Future<turf.Feature> _addUpdateAction<T>({
@@ -593,7 +613,7 @@ class CampaignActionCache extends ChangeNotifier {
         .where((a) => a.id == actionId)
         .where((a) => a.actionType == CampaignActionType.addStand || a.actionType == CampaignActionType.addStandEntry)
         .singleOrNull;
-    if (action == null) throw OutdatedStandException(entryId);
+    if (action == null) throw OutdatedStandException('Termin $entryId was synced, its id from the API is unknown');
     return action;
   }
 
@@ -1129,15 +1149,15 @@ class CampaignActionCache extends ChangeNotifier {
   }
 }
 
-/// A Termin was changed in a stand detail opened before the sync, and the id the API gave it is unknown.
+/// A Termin or photo was changed in a stand opened before the sync, and the id the API gave it is unknown.
 /// The change is not queued; the stand has to be opened again.
 class OutdatedStandException implements Exception {
-  final String entryId;
+  final String message;
 
-  OutdatedStandException(this.entryId);
+  OutdatedStandException(this.message);
 
   @override
-  String toString() => 'OutdatedStandException: Termin $entryId was synced, its id from the API is unknown';
+  String toString() => 'OutdatedStandException: $message';
 }
 
 enum _SyncFailure {
