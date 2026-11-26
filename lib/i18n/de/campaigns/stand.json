@@ -31,6 +31,7 @@
     "one": "Möchtest du diesen Wahlkampfstand und seinen Termin wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
     "other": "Möchtest du diesen Wahlkampfstand und alle seine ${count} Termine wirklich löschen? Dies kann nicht rückgängig gemacht werden."
   },
+  "outdated": "Der Stand wurde inzwischen synchronisiert, deine Änderung wurde nicht gespeichert. Bitte schließe den Stand, öffne ihn neu und versuche es noch einmal.",
   "photoDeleteConfirmation": "Fotos helfen anderen, den Stand wiederzuerkennen. Bitte lösche sie mit Bedacht!",
   "name": "Name",
   "description": "Beschreibung",

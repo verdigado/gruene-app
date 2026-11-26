@@ -4,6 +4,8 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/photo_carousel.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_entry_edit.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_entry_formats.dart';
@@ -182,7 +184,7 @@ class _StandDetailState extends State<StandDetail> {
       () => StandEntryEdit.add(
         otherEntries: stand.entries,
         standName: stand.name,
-        onAdd: (entry) async => _applyEntryChange(await widget.onAddEntry(stand, entry)),
+        onAdd: (entry) => _changeEntry(() => widget.onAddEntry(stand, entry)),
       ),
     );
   }
@@ -195,17 +197,24 @@ class _StandDetailState extends State<StandDetail> {
         entry: entry,
         otherEntries: stand.entries.where((e) => e.id != entry.id).toList(),
         standName: stand.name,
-        onSave: (update) async => _applyEntryChange(await widget.onSaveEntry(stand, update)),
+        onSave: (update) => _changeEntry(() => widget.onSaveEntry(stand, update)),
         // the last Termin cannot be deleted, only the whole stand (decision in #1260)
         onDelete: stand.entries.length > 1
-            ? (entryId) async => _applyEntryChange(await widget.onDeleteEntry(stand, entryId))
+            ? (entryId) => _changeEntry(() => widget.onDeleteEntry(stand, entryId))
             : null,
       ),
     );
   }
 
-  void _applyEntryChange(StandDetailModel stand) {
-    if (mounted) _stand.value = stand;
+  /// Applies a Termin change. If the stand was synced since it was opened and the change cannot be matched to it,
+  /// nothing is saved and the person is asked to open the stand again.
+  Future<void> _changeEntry(Future<StandDetailModel> Function() change) async {
+    try {
+      final stand = await change();
+      if (mounted) _stand.value = stand;
+    } on OutdatedStandException {
+      if (mounted) showSnackBar(context: context, text: t.campaigns.stand.outdated);
+    }
   }
 }
 

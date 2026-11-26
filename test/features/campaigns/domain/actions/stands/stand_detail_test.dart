@@ -9,6 +9,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/core/cache/campaign_action_cache.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_detail.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/features/campaigns/helper/picture_gallery_view.dart';
@@ -59,6 +60,9 @@ void main() {
   late List<StandEntryUpdateModel> savedEntries;
   late List<String> deletedEntryIds;
 
+  /// Thrown by saving a Termin, if set.
+  Exception? saveError;
+
   /// Shows the detail in a bottom sheet over a page, like the map does.
   Future<void> openDetail(
     WidgetTester tester,
@@ -70,6 +74,7 @@ void main() {
     addedEntries = [];
     savedEntries = [];
     deletedEntryIds = [];
+    saveError = null;
     tester.view.physicalSize = Size(screenWidth, 900) * tester.view.devicePixelRatio;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -96,6 +101,7 @@ void main() {
                     return stand.copyWith(entries: [...stand.entries, added], isCached: true);
                   },
                   onSaveEntry: (stand, entry) async {
+                    if (saveError != null) throw saveError!;
                     savedEntries.add(entry);
                     final changed = StandEntryModel(
                       id: entry.entryId,
@@ -286,6 +292,20 @@ void main() {
       expect(find.text('150 Flyer'), findsOneWidget);
       // the provisional total: 150 + 80
       expect(find.text('230'), findsOneWidget);
+    });
+
+    testWidgets('a Termin of a stand synced in the meantime is not saved, and the person is told', (tester) async {
+      await openDetail(tester, _stand());
+      saveError = OutdatedStandException('local-1');
+
+      await tapVisible(tester, find.text('Mi. 04.11. · 10:00–12:00 Uhr'));
+      await tester.enterText(flyerCountInput(), '150');
+      await tapVisible(tester, find.text('Speichern'));
+
+      expect(find.textContaining('Der Stand wurde inzwischen synchronisiert'), findsOneWidget);
+      expect(find.text('Termin bearbeiten'), findsNothing);
+      expect(find.text('150 Flyer'), findsNothing);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('a deleted Termin is gone from the detail', (tester) async {

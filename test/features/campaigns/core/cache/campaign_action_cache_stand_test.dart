@@ -479,6 +479,84 @@ void main() {
     expect(point.coordinates.lng, _location.longitude);
   });
 
+  group('a stand detail opened before the sync', () {
+    test('changes the first Termin of a stand created offline with the ids from the API', () async {
+      // the created stand has only its first Termin
+      when(() => standApi.createNewStand(any()))
+          .thenAnswer((_) async => _serverStand().copyWith(entries: [_serverStand().entries.last]));
+      final standId = await storeQueuedStand();
+      final standSeen = await cache.getPoiAsStandDetail(standId);
+      final entrySeen = standSeen.entries.single;
+
+      await cache.flushCache();
+      await cache.updateStandEntry(
+        standId,
+        StandEntryUpdateModel(
+          entryId: entrySeen.id,
+          startAt: entrySeen.startAt,
+          endAt: entrySeen.endAt,
+          flyerCount: 30,
+        ),
+        standSeen,
+      );
+
+      final stand = await cache.getPoiAsStandDetail(standId);
+      expect(stand.id, '4711');
+      expect(stand.entries.single.id, '1');
+      expect(stand.entries.single.flyerCount, 30);
+
+      await cache.flushCache();
+      final sent =
+          verify(() => standApi.updateStandEntry('4711', captureAny())).captured.single as StandEntryUpdateModel;
+      expect(sent.entryId, '1');
+      expect(sent.flyerCount, 30);
+    });
+
+    test('deletes a Termin queued before the sync with its id from the API', () async {
+      when(() => standApi.addStandEntry(any(), any())).thenAnswer(
+        (_) async => _serverStand().copyWith(
+          entries: [
+            ..._serverStand().entries,
+            StandEntryModel(
+              id: '3',
+              startAt: DateTime(2026, 11, 21, 10),
+              endAt: DateTime(2026, 11, 21, 12),
+              flyerCount: 0,
+            ),
+          ],
+        ),
+      );
+      await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10)), _serverStand());
+      final standSeen = await cache.getPoiAsStandDetail('4711');
+      final queuedEntry = standSeen.entries.firstWhere((e) => e.id.startsWith('local-'));
+
+      await cache.flushCache();
+      await cache.deleteStandEntry('4711', queuedEntry.id, standSeen);
+      await cache.flushCache();
+
+      verify(() => standApi.deleteStandEntry('4711', '3')).called(1);
+    });
+
+    test('refuses a Termin whose id from the API is unknown instead of losing the change', () async {
+      await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10)), _serverStand());
+      final standSeen = await cache.getPoiAsStandDetail('4711');
+      final queuedEntry = standSeen.entries.firstWhere((e) => e.id.startsWith('local-'));
+
+      // the API returns the stand without a Termin at these times, so its new id cannot be told
+      await cache.flushCache();
+
+      expect(
+        () => cache.updateStandEntry(
+          '4711',
+          StandEntryUpdateModel(entryId: queuedEntry.id, startAt: queuedEntry.startAt, endAt: queuedEntry.endAt),
+          standSeen,
+        ),
+        throwsA(isA<OutdatedStandException>()),
+      );
+      expect(await cache.getCachedActionCount(), 0);
+    });
+  });
+
   group('actions the API refuses for good', () {
     test('a refused Termin is dropped and reported', () async {
       when(() => standApi.addStandEntry(any(), any())).thenThrow(ApiException(statusCode: 400));
