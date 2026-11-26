@@ -49,7 +49,7 @@ class MediaHelper {
       builder: (context) {
         return AlertDialog(
           content: Text(
-            t.campaigns.poster.photoConsentMessage,
+            t.campaigns.photo.consentMessage,
             textAlign: TextAlign.center,
             style: theme.textTheme.labelMedium?.apply(fontSizeDelta: 1),
           ),
@@ -133,15 +133,18 @@ class MediaHelper {
     );
   }
 
-  static void showPictureGalleryInFullView({
+  /// Shows the photos full screen; the menu offers the actions that are given (see [PictureGalleryView]).
+  static Future<void> showPictureGalleryInFullView({
     required BuildContext context,
     required GetImageProviderCallback getImageProvider,
     required GetAllImagesCallback getAllImages,
     required int currentImageIndex,
-    required RemoveImageCallback removeImage,
-    required DownloadImageCallback downloadImage,
-    required ReplaceImageWithCameraCallback replaceImageWithCamera,
-    required ReplaceImageWithDeviceCallback replaceImageWithDevice,
+    RemoveImageCallback? removeImage,
+    DownloadImageCallback? downloadImage,
+    ReplaceImageWithCameraCallback? replaceImageWithCamera,
+    ReplaceImageWithDeviceCallback? replaceImageWithDevice,
+    String? deleteConfirmationText,
+    String? currentPictureLabel,
   }) async {
     await showDialog<void>(
       context: Navigator.of(context).context,
@@ -154,6 +157,8 @@ class MediaHelper {
         downloadImage: downloadImage,
         replaceImageWithCamera: replaceImageWithCamera,
         replaceImageWithDevice: replaceImageWithDevice,
+        deleteConfirmationText: deleteConfirmationText,
+        currentPictureLabel: currentPictureLabel,
       ),
     );
   }
@@ -172,11 +177,11 @@ class MediaHelper {
     GetIt.I<FileManager>().clearAllFiles();
   }
 
-  static void storeImageOnDevice(PosterPhotoModel currentPhoto) async {
+  static void storeImageOnDevice(PosterPhotoModel currentPhoto, {String fileNamePrefix = 'poster'}) async {
     var imageUrl = currentPhoto.imageUrl;
 
     var now = DateTime.now();
-    var fileName = 'poster_${now.toTimeStamp()}.jpg';
+    var fileName = '${fileNamePrefix}_${now.toTimeStamp()}.jpg';
 
     if (imageUrl.isNetworkImageUrl()) {
       final Response response = await get(Uri.parse(imageUrl));

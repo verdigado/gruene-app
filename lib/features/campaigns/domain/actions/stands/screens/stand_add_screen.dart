@@ -9,7 +9,9 @@ import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
 import 'package:gruene_app/app/widgets/picker_field.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/photo_edit_controller.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/photo_carousel.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/save_cancel_on_create_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_form_rules.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
@@ -18,7 +20,9 @@ import 'package:gruene_app/i18n/translations.g.dart';
 import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
-/// Creates a stand together with its first Termin.
+/// Creates a stand together with its first Termin and its photos. Its title and buttons stay in place while the
+/// fields scroll (the title scrolls along when a large font makes it fill the screen), so it needs a page that does
+/// not scroll itself (`scrollAddScreen: false`).
 class StandAddScreen extends StatefulWidget {
   final LatLng location;
   final AddressModel address;
@@ -46,6 +50,7 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
   final _descriptionTextController = TextEditingController();
   final _commentTextController = TextEditingController();
   final _flyerCountTextController = TextEditingController();
+  final _photos = PhotoEditController();
 
   late DateTime _date;
   late TimeOfDay _from;
@@ -96,6 +101,7 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
     _descriptionTextController.dispose();
     _commentTextController.dispose();
     _flyerCountTextController.dispose();
+    _photos.dispose();
     super.dispose();
   }
 
@@ -137,7 +143,9 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
     _to.toString(),
   ].join('\u0000');
 
-  bool get _hasChanges => _currentValues() != _initialValues;
+  bool get _hasChanges => _currentValues() != _initialValues || _photos.hasChanges;
+
+  bool _isSaving = false;
 
   bool _validate() {
     _errors = (
@@ -156,95 +164,131 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: _onPopInvoked,
-      child: Container(
-        margin: EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              t.campaigns.stand.add.title,
-              style: theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface),
-            ),
-            Text(
-              _campaignName,
-              style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.grey200),
-              overflow: TextOverflow.ellipsis,
-            ),
-            _field(
-              TextInputField(labelText: t.campaigns.stand.name, textController: _nameTextController),
-              error: _errors.name,
-            ),
-            _field(
-              MultiLineTextInputField(
-                labelText: t.campaigns.stand.description,
-                hint: '',
-                textController: _descriptionTextController,
-                maxLength: StandFormRules.descriptionMaxLength,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final header = [
+              Text(t.campaigns.stand.add.title, style: _titleStyle(theme)),
+              Text(
+                _campaignName,
+                style: theme.textTheme.bodyMedium!.apply(color: ThemeColors.grey200),
+                overflow: TextOverflow.ellipsis,
               ),
-              error: _errors.description,
-            ),
-            _sectionLabel(t.campaigns.stand.location),
-            CreateAddressWidget(
-              streetTextController: streetTextController,
-              houseNumberTextController: houseNumberTextController,
-              zipCodeTextController: zipCodeTextController,
-              cityTextController: cityTextController,
-            ),
-            _field(
-              PickerField(
-                label: t.campaigns.stand.date,
-                value: DateFormat(t.campaigns.stand.dateFormat).format(_date),
-                onTap: _pickDate,
-              ),
-            ),
-            _field(
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 12,
-                children: [
-                  Expanded(
-                    child: PickerField(
-                      label: t.campaigns.stand.from,
-                      value: _from.format(context),
-                      onTap: () => _pickTime(_from, (time) => _from = time),
+            ];
+            // only the fields scroll; the title stays in place unless a large font makes it fill the screen
+            final headerIsFixed = _titleHeight(theme, constraints.maxWidth) <= constraints.maxHeight / 4;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (headerIsFixed) ...header,
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (!headerIsFixed) ...header,
+                        Padding(
+                          padding: EdgeInsets.only(top: 12),
+                          child: PhotoCarouselEditor(
+                            controller: _photos,
+                            deleteConfirmationText: t.campaigns.stand.photoDeleteConfirmation,
+                            downloadFileNamePrefix: 'stand',
+                          ),
+                        ),
+                        _field(
+                          TextInputField(labelText: t.campaigns.stand.name, textController: _nameTextController),
+                          error: _errors.name,
+                        ),
+                        _field(
+                          MultiLineTextInputField(
+                            labelText: t.campaigns.stand.description,
+                            hint: '',
+                            textController: _descriptionTextController,
+                            maxLength: StandFormRules.descriptionMaxLength,
+                          ),
+                          error: _errors.description,
+                        ),
+                        _sectionLabel(t.campaigns.stand.location),
+                        CreateAddressWidget(
+                          streetTextController: streetTextController,
+                          houseNumberTextController: houseNumberTextController,
+                          zipCodeTextController: zipCodeTextController,
+                          cityTextController: cityTextController,
+                        ),
+                        _field(
+                          PickerField(
+                            label: t.campaigns.stand.date,
+                            value: DateFormat(t.campaigns.stand.dateFormat).format(_date),
+                            onTap: _pickDate,
+                          ),
+                        ),
+                        _field(
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 12,
+                            children: [
+                              Expanded(
+                                child: PickerField(
+                                  label: t.campaigns.stand.from,
+                                  value: _from.format(context),
+                                  onTap: () => _pickTime(_from, (time) => _from = time),
+                                ),
+                              ),
+                              Expanded(
+                                child: PickerField(
+                                  label: t.campaigns.stand.to,
+                                  value: _to.format(context),
+                                  onTap: () => _pickTime(_to, (time) => _to = time),
+                                ),
+                              ),
+                            ],
+                          ),
+                          error: _errors.to,
+                        ),
+                        _field(
+                          TextInputField(
+                            labelText: t.campaigns.stand.flyerCount,
+                            textController: _flyerCountTextController,
+                            inputType: InputFieldType.numbers,
+                            enabled: !_isAfterToday,
+                          ),
+                          error: _errors.flyerCount,
+                          hint: _isAfterToday ? t.campaigns.stand.flyerCountFutureHint : null,
+                        ),
+                        _field(
+                          MultiLineTextInputField(
+                            labelText: t.campaigns.stand.comment,
+                            hint: '',
+                            textController: _commentTextController,
+                            maxLength: StandFormRules.commentMaxLength,
+                          ),
+                          error: _errors.comment,
+                        ),
+                      ],
                     ),
                   ),
-                  Expanded(
-                    child: PickerField(
-                      label: t.campaigns.stand.to,
-                      value: _to.format(context),
-                      onTap: () => _pickTime(_to, (time) => _to = time),
-                    ),
-                  ),
-                ],
-              ),
-              error: _errors.to,
-            ),
-            _field(
-              TextInputField(
-                labelText: t.campaigns.stand.flyerCount,
-                textController: _flyerCountTextController,
-                inputType: InputFieldType.numbers,
-                enabled: !_isAfterToday,
-              ),
-              error: _errors.flyerCount,
-              hint: _isAfterToday ? t.campaigns.stand.flyerCountFutureHint : null,
-            ),
-            _field(
-              MultiLineTextInputField(
-                labelText: t.campaigns.stand.comment,
-                hint: '',
-                textController: _commentTextController,
-                maxLength: StandFormRules.commentMaxLength,
-              ),
-              error: _errors.comment,
-            ),
-            SaveCancelOnCreateWidget(onSave: _onSavePressed),
-          ],
+                ),
+                SaveCancelOnCreateWidget(onSave: _onSavePressed),
+              ],
+            );
+          },
         ),
       ),
     );
+  }
+
+  TextStyle _titleStyle(ThemeData theme) => theme.textTheme.displayMedium!.apply(color: theme.colorScheme.surface);
+
+  double _titleHeight(ThemeData theme, double maxWidth) {
+    final painter = TextPainter(
+      text: TextSpan(text: t.campaigns.stand.add.title, style: _titleStyle(theme)),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout(maxWidth: maxWidth);
+    final height = painter.height;
+    painter.dispose();
+    return height;
   }
 
   Widget _sectionLabel(String text) {
@@ -314,12 +358,16 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
     });
   }
 
-  void _onSavePressed(BuildContext localContext) {
+  Future<void> _onSavePressed(BuildContext localContext) async {
+    if (_isSaving) return;
     setState(() => _showErrors = true);
     if (!_validate()) return;
 
     String? emptyToNull(String value) => value.trim().isEmpty ? null : value.trim();
 
+    _isSaving = true;
+    final newPhotos = await _photos.prepareNewPhotos();
+    if (!mounted) return;
     Navigator.of(context).pop(
       StandCreateModel(
         location: widget.location,
@@ -332,6 +380,7 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
           endAt: StandFormRules.combine(_date, _to),
           flyerCount: StandFormRules.flyerCountToSave(_flyerCountTextController.text, isAfterToday: _isAfterToday),
         ),
+        imageFileLocations: newPhotos.map((photo) => photo.imageUrl).toList(),
         campaignId: getCurrentCampaignId()!,
       ),
     );

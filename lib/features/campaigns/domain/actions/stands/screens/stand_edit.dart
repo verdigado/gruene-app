@@ -3,8 +3,10 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/photo_edit_controller.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
+import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/photo_carousel.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/stand_form_rules.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
@@ -14,9 +16,9 @@ import 'package:gruene_app/i18n/translations.g.dart';
 
 typedef OnSaveStandCallback = Future<void> Function(StandUpdateModel standUpdate);
 
-/// Edits the base data of a stand in a bottom sheet over the map: its fields, its address and deleting it with all
-/// its Termine. The Termine themselves are managed in the detail. `Ort` cannot be changed (decision in #1260); the
-/// address can be corrected.
+/// Edits the base data of a stand in a bottom sheet over the map: its photos, its fields, its address and deleting it
+/// with all its Termine. The Termine themselves are managed in the detail. `Ort` cannot be changed (decision in
+/// #1260); the address can be corrected.
 class StandEdit extends StatefulWidget {
   final StandDetailModel stand;
   final OnSaveStandCallback onSave;
@@ -41,6 +43,9 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
   final _nameTextController = TextEditingController();
   final _descriptionTextController = TextEditingController();
   final _commentTextController = TextEditingController();
+  late final _photos = PhotoEditController(widget.stand.photosNewestFirst);
+
+  bool _isSaving = false;
 
   /// Errors are shown after the first attempt to save and then kept up to date.
   bool _showErrors = false;
@@ -64,6 +69,7 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
     _nameTextController.dispose();
     _descriptionTextController.dispose();
     _commentTextController.dispose();
+    _photos.dispose();
     super.dispose();
   }
 
@@ -92,6 +98,11 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              PhotoCarouselEditor(
+                controller: _photos,
+                deleteConfirmationText: t.campaigns.stand.photoDeleteConfirmation,
+                downloadFileNamePrefix: 'stand',
+              ),
               _field(
                 TextInputField(
                   labelText: t.campaigns.stand.name,
@@ -175,11 +186,14 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
   );
 
   Future<void> _onSavePressed() async {
+    if (_isSaving) return;
     setState(() => _showErrors = true);
     if (!_validate()) return;
 
     String? emptyToNull(String value) => value.trim().isEmpty ? null : value.trim();
 
+    _isSaving = true;
+    final newPhotos = await _photos.prepareNewPhotos();
     await widget.onSave(
       StandUpdateModel(
         id: widget.stand.id,
@@ -189,6 +203,8 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
         description: emptyToNull(_descriptionTextController.text),
         comment: emptyToNull(_commentTextController.text),
         oldStandDetail: widget.stand,
+        deletedPhotoIds: _photos.deletedPhotoIds,
+        newPhotos: newPhotos,
       ),
     );
     if (mounted) Navigator.maybePop(context);

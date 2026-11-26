@@ -116,8 +116,10 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     LatLng location,
     GetAdditionalDataBeforeCallback<U>? acquireAdditionalDataBefore,
     GetAddScreenCallback<V, U> getAddScreen,
-    SaveNewAndGetMarkerCallback<W> saveAndGetMarker,
-  ) async {
+    SaveNewAndGetMarkerCallback<W> saveAndGetMarker, {
+    // false for an add screen that scrolls its fields itself, e.g. to keep its title and buttons in place
+    bool scrollAddScreen = true,
+  }) async {
     var locationAddress = _nominatimService.getLocationAddress(location);
     U? additionalData;
     if (acquireAdditionalDataBefore != null) {
@@ -137,6 +139,7 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
               final address = snapshot.data;
               return ContentPage(
                 title: getCurrentRoute().name.safe(),
+                withScroll: scrollAddScreen,
                 child: getAddScreen(location, address, additionalData),
               );
             },
@@ -180,12 +183,17 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     // fixed popover size; without it, the popover takes the size of its content
     Size? desiredSize,
     bool useBottomSheet = false,
+    // see [showDetailBottomSheet]
+    double? bottomSheetMaxHeightFactor,
   }) async {
     U poi = await getPoi();
     final poiDetailWidget = getPoiDetail(poi);
     if (useBottomSheet) {
       await mapController.setFocusToMarkerItem(feature);
-      var result = await showDetailBottomSheet<ModalDetailResult>(poiDetailWidget);
+      var result = await showDetailBottomSheet<ModalDetailResult>(
+        poiDetailWidget,
+        maxHeightFactor: bottomSheetMaxHeightFactor,
+      );
       if (result != null && result == ModalDetailResult.edit) {
         _editPoi(() => getPoiEdit(poi));
       }
@@ -199,10 +207,15 @@ abstract class MapConsumer<T extends StatefulWidget, PoiCreateType, PoiDetailTyp
     }
   }
 
-  Future<U?> showDetailBottomSheet<U>(Widget detailWidget) async {
+  /// Shows a detail over the map. It is at most 9/16 of the screen high, or, with [maxHeightFactor], up to that part
+  /// of the screen; either way it is only as high as its content.
+  Future<U?> showDetailBottomSheet<U>(Widget detailWidget, {double? maxHeightFactor}) async {
     final theme = Theme.of(context);
     return await showModalBottomSheet<U>(
-      isScrollControlled: false,
+      isScrollControlled: maxHeightFactor != null,
+      constraints: maxHeightFactor == null
+          ? null
+          : BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * maxHeightFactor),
       isDismissible: true,
       barrierColor: Colors.transparent,
       context: context,
