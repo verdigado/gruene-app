@@ -834,6 +834,7 @@ class CampaignActionCache extends ChangeNotifier {
               final firstEntry = newStand.entries.singleOrNull;
               if (firstEntry != null) _syncedEntryIds[_localEntryId(action)] = firstEntry.id;
               await updateIds(int.parse(newStand.id));
+              await _resolveStoredSnapshots(newStand.id, allActions, except: i);
               await _queuePhotosOfCreatedStand(model, newStand, allActions, startIndex: i + 1);
               await campaignActionDatabase.delete(action.id!);
 
@@ -851,6 +852,7 @@ class CampaignActionCache extends ChangeNotifier {
               final (:entry, :oldStandDetail) = action.toStandEntryCreate();
               final stand = await standApiService.addStandEntry(action.poiId!.toString(), entry);
               _rememberSyncedEntryId(action, stand, entry, oldStandDetail);
+              await _resolveStoredSnapshots(action.poiId!.toString(), allActions, except: i);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editStandEntry:
@@ -916,6 +918,24 @@ class CampaignActionCache extends ChangeNotifier {
       }
       _isflushing = false;
       notifyListeners();
+    }
+  }
+
+  /// Gives the stand snapshots kept by the queued actions of a stand the ids the sync got from the API so far.
+  /// They were taken before the sync, so they can still have the temporary id of the stand or of a Termin whose
+  /// action is gone now; the stand detail would drop such a Termin. Stored in the database, so this also holds after
+  /// the app is restarted. All stand actions keep their snapshot as `oldStandDetail`.
+  Future<void> _resolveStoredSnapshots(String standId, List<CampaignAction> allActions, {required int except}) async {
+    for (var j = 0; j < allActions.length; j++) {
+      final action = allActions[j];
+      if (j == except || action.poiId.toString() != standId || !_standActions.contains(action.actionType)) continue;
+      final data = action.serialized == null ? null : jsonDecode(action.serialized!) as Map<String, dynamic>;
+      final snapshot = data?['oldStandDetail'] as Map<String, dynamic>?;
+      if (data == null || snapshot == null) continue;
+
+      data['oldStandDetail'] = _resolveStand(StandDetailModel.fromJson(snapshot)).toJson();
+      action.serialized = jsonEncode(data);
+      await _updateAction(action);
     }
   }
 

@@ -393,6 +393,23 @@ void main() {
     expect(await cache.getCachedActionCount(), 0);
   });
 
+  test('a stand created offline keeps its first Termin while a later Termin of it is retried', () async {
+    when(() => standApi.createNewStand(any()))
+        .thenAnswer((_) async => _serverStand().copyWith(entries: [_serverStand().entries.last]));
+    when(() => standApi.addStandEntry(any(), any())).thenThrow(ApiException(statusCode: 500));
+    final standId = await storeQueuedStand();
+    await cache.addStandEntry(standId, _newEntry(DateTime(2026, 11, 14, 10)), await cache.getPoiAsStandDetail(standId));
+
+    await cache.flushCache();
+
+    expect(await cache.getCachedActionCount(), 1);
+    final stand = await cache.getPoiAsStandDetail('4711');
+    expect(stand.id, '4711');
+    expect(stand.entries, hasLength(2));
+    expect(stand.entries.last.id, '1');
+    expect(stand.entries.first.id, startsWith('local-'));
+  });
+
   test('a stand created and changed offline keeps its Termine while its photo upload is retried', () async {
     when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 500));
     final marker = await cache.storeNewPoi(
