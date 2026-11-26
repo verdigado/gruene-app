@@ -506,6 +506,40 @@ void main() {
       expect(cache.refusedActionCount, 2);
     });
 
+    test('a refused photo of a stand created offline keeps the stand and its Termine', () async {
+      when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 409));
+      final marker = await cache.storeNewPoi(
+        PoiCacheType.stand,
+        StandCreateModel(
+          location: _location,
+          address: _address,
+          name: 'Marktplatz',
+          firstEntry: _newEntry(DateTime(2026, 11, 7, 10)),
+          imageFileLocations: ['/photos/a.jpg'],
+          campaignId: 'campaign-1',
+        ),
+      );
+      final standId = marker.id.toString();
+      await cache.addStandEntry(
+        standId,
+        _newEntry(DateTime(2026, 11, 14, 10)),
+        await cache.getPoiAsStandDetail(standId),
+      );
+      await cache.addStandEntry(
+        standId,
+        _newEntry(DateTime(2026, 11, 21, 10)),
+        await cache.getPoiAsStandDetail(standId),
+      );
+
+      await cache.flushCache();
+
+      verify(() => standApi.createNewStand(any())).called(1);
+      verify(() => standApi.addStandEntry('4711', any())).called(2);
+      expect(await cache.getCachedActionCount(), 0);
+      // only the photo upload is reported as refused
+      expect(cache.refusedActionCount, 1);
+    });
+
     test('a change of a stand without write access is dropped and reported', () async {
       when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 403));
       await cache.updatePoi(

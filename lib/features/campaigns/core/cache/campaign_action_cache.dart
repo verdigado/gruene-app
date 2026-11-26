@@ -826,6 +826,8 @@ class CampaignActionCache extends ChangeNotifier {
               logger.w('Campaign Action (${action.actionType!.name}) refused by the API: ${e.statusCode}');
               await campaignActionDatabase.delete(action.id!);
               _refusedActionCount++;
+              // createNewStand only creates the stand (its photos follow as an editStand), so a refused addStand
+              // means the stand does not exist on the server
               if (action.actionType == CampaignActionType.addStand) refusedQueuedStandIds.add(action.poiTempId);
             case _SyncFailure.retry:
               logger.e('Flushing Campaign Action (${action.actionType!.name}) failed: ${e.statusCode}');
