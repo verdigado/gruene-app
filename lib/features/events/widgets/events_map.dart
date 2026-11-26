@@ -184,6 +184,7 @@ Future<void> _showBottomSheet({
   showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
+    clipBehavior: Clip.antiAlias,
     builder: (context) {
       String? selectedEventId;
       return StatefulBuilder(
@@ -197,6 +198,7 @@ Future<void> _showBottomSheet({
 
             return ModalBottomSheet(
               image: event?.image,
+              title: event?.title,
               onClose: () => Navigator.pop(context),
               aside: calendar != null && !calendar.readOnly
                   ? Positioned(

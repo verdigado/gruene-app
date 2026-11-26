@@ -17,7 +17,7 @@ class DialogCloseButton extends StatelessWidget {
         backgroundColor: theme.colorScheme.surface,
         child: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: onClose ?? Navigator.of(context).pop,
+          onPressed: onClose ?? Navigator.of(context).maybePop,
           color: theme.colorScheme.onSurface,
         ),
       ),

@@ -8,7 +8,7 @@ import 'package:gruene_app/app/utils/loading_overlay.dart';
 import 'package:gruene_app/app/utils/profiles.dart';
 import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/alert.dart';
-import 'package:gruene_app/app/widgets/dialog_close_button.dart';
+import 'package:gruene_app/app/widgets/modal_bottom_sheet.dart';
 import 'package:gruene_app/app/widgets/option_slider.dart';
 import 'package:gruene_app/app/widgets/stable_height_text.dart';
 import 'package:gruene_app/features/profiles/utils/profile_visibility.dart';
@@ -88,64 +88,48 @@ class _ProfileVisibilitySettingState extends State<ProfileVisibilitySetting> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) _discardChanges();
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: horizontalScreenPadding,
-            child: Row(
-              spacing: 8,
-              children: [
-                Icon(Icons.visibility),
-                Text(t.profiles.visibility.title, style: Theme.of(context).textTheme.titleMedium),
-                Spacer(),
-                DialogCloseButton(onClose: () => Navigator.maybePop(context)),
-              ],
+      child: ModalBottomSheet(
+        title: t.profiles.visibility.title,
+        leading: Icon(Icons.visibility),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            if (widget.explicitTeamHint) ...[
+              Text(
+                t.profiles.visibility.teamVisibilityHint(
+                  minVisibility: minVisibilityLabel,
+                  minVisibilityShort: minVisibilityShort,
+                ),
+              ),
+              SizedBox(height: 8),
+            ],
+            Text(
+              visibilityLabel(_selectedVisibility),
+              style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
             ),
-          ),
-          Padding(
-            padding: screenPadding.copyWith(top: 0, bottom: 64),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              spacing: 8,
-              children: [
-                if (widget.explicitTeamHint) ...[
-                  Text(
-                    t.profiles.visibility.teamVisibilityHint(
-                      minVisibility: minVisibilityLabel,
-                      minVisibilityShort: minVisibilityShort,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                ],
-                Text(
-                  visibilityLabel(_selectedVisibility),
-                  style: theme.textTheme.titleSmall?.apply(color: ThemeColors.textDark),
-                ),
-                StableHeightText(
-                  text: visibilityHint(_selectedVisibility),
-                  longestText: visibilityHint(Visibility.private),
-                  style: theme.textTheme.bodyMedium!,
-                ),
-                OptionSlider(
-                  values: profileVisibilityOptions,
-                  value: _selectedVisibility,
-                  getLabel: (value) => visibilityShortLabel(value),
-                  update: (visibility) => setState(() => _selectedVisibility = visibility),
-                ),
-                SizedBox(height: 16),
-                FilledButton(
-                  onPressed: _save,
-                  child: Text(
-                    t.common.actions.save,
-                    style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
-                  ),
-                ),
-              ],
+            StableHeightText(
+              text: visibilityHint(_selectedVisibility),
+              longestText: visibilityHint(Visibility.private),
+              style: theme.textTheme.bodyMedium!,
             ),
-          ),
-        ],
+            OptionSlider(
+              values: profileVisibilityOptions,
+              value: _selectedVisibility,
+              getLabel: (value) => visibilityShortLabel(value),
+              update: (visibility) => setState(() => _selectedVisibility = visibility),
+            ),
+            SizedBox(height: 16),
+            FilledButton(
+              onPressed: _save,
+              child: Text(
+                t.common.actions.save,
+                style: theme.textTheme.titleMedium?.apply(color: theme.colorScheme.surface),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -155,10 +139,9 @@ Future<Profile?> showProfileVisibilitySetting(
   BuildContext context,
   Profile profile, {
   bool explicitTeamHint = false,
-}) async => await showModalBottomSheet<Profile>(
+}) => showModalBottomSheet<Profile>(
   context: context,
   useRootNavigator: true,
-  isScrollControlled: true,
   // Swiping down pops the sheet without consulting the PopScope, so unsaved changes would be discarded without asking
   enableDrag: false,
   builder: (context) => ProfileVisibilitySetting(profile: profile, explicitTeamHint: explicitTeamHint),

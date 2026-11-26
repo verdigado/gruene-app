@@ -39,7 +39,6 @@ class EventDetail extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
-        Text(event.title, style: theme.textTheme.titleLarge),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [Text(calendar.displayName), if (categories.isNotEmpty) Text(event.categories.join(', '))],
