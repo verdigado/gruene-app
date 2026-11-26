@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/constants/config.dart';
@@ -8,6 +10,7 @@ import 'package:gruene_app/app/services/api/base_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/converters.dart';
 import 'package:gruene_app/app/utils/file_cache_manager.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -86,10 +89,19 @@ abstract class BasePoiApiService extends BaseApiService {
   );
 
   /// Uploads a photo from a local file and deletes the file afterwards. Only posters and stands can have photos.
-  Future<Poi> storeNewPhoto(String poiId, String imageFileLocation) async {
+  ///
+  /// Returns null without uploading if the file is gone: it was deleted after an earlier upload of a queued action
+  /// that failed further on and is now retried, so uploading it again is neither possible nor wanted.
+  Future<Poi?> storeNewPhoto(String poiId, String imageFileLocation) async {
     final timeStamp = DateFormat('yyMMdd_HHmmss').format(DateTime.now());
     final fileManager = GetIt.I<FileManager>();
-    final photo = await fileManager.retrieveFileData(imageFileLocation);
+    final Uint8List photo;
+    try {
+      photo = await fileManager.retrieveFileData(imageFileLocation);
+    } on FileSystemException catch (e) {
+      logger.w('Photo $imageFileLocation of pin $poiId not uploaded, its file is gone: ${e.message}');
+      return null;
+    }
     final poi = await send<Poi, Poi>(
       request: (api) => api.v1CampaignsPoisPoiIdPhotosPost(
         poiId: poiId,
@@ -118,7 +130,7 @@ abstract class BasePoiApiService extends BaseApiService {
       );
     }
     for (final imageFileLocation in newImageFileLocations) {
-      poi = await storeNewPhoto(poiId, imageFileLocation);
+      poi = await storeNewPhoto(poiId, imageFileLocation) ?? poi;
     }
     return poi;
   }

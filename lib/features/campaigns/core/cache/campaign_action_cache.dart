@@ -764,9 +764,10 @@ class CampaignActionCache extends ChangeNotifier {
 
             case CampaignActionType.addStand:
               var model = action.toStandCreate();
-              var newStandMarker = await standApiService.createNewStand(model);
-              await updateIds(newStandMarker.id!);
-              campaignActionDatabase.delete(action.id!);
+              var newStand = await standApiService.createNewStand(model);
+              await updateIds(int.parse(newStand.id));
+              await _queuePhotosOfCreatedStand(model, newStand, allActions, startIndex: i + 1);
+              await campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editStand:
               var model = action.toStandUpdate();
@@ -843,6 +844,48 @@ class CampaignActionCache extends ChangeNotifier {
       }
       _isflushing = false;
       notifyListeners();
+    }
+  }
+
+  /// Hands the photos of a stand just created from the queue to a change of that stand, which uploads them later in
+  /// the same sync. A failed upload is then retried as that change, without creating the stand a second time.
+  /// A change of the stand already queued gets the photos; otherwise a new one is queued and added to [allActions].
+  Future<void> _queuePhotosOfCreatedStand(
+    StandCreateModel standCreate,
+    StandDetailModel createdStand,
+    List<CampaignAction> allActions, {
+    required int startIndex,
+  }) async {
+    if (standCreate.imageFileLocations.isEmpty) return;
+    final photoUpload = StandUpdateModel(
+      id: createdStand.id,
+      address: createdStand.address,
+      location: createdStand.location,
+      name: createdStand.name,
+      description: createdStand.description,
+      comment: createdStand.comment,
+      oldStandDetail: createdStand,
+      newPhotos: standCreate.toQueuedPhotos(),
+    );
+
+    final index = allActions.indexWhere(
+      (a) => a.actionType == CampaignActionType.editStand && a.poiId.toString() == createdStand.id,
+      startIndex,
+    );
+    if (index >= 0) {
+      final queuedChange = allActions[index];
+      // the queued change is newer, so its values win; the photos come first, as they were added first
+      queuedChange.serialized = jsonEncode(photoUpload.mergeWith(queuedChange.toStandUpdate()).toJson());
+      await _updateAction(queuedChange);
+    } else {
+      final action = await campaignActionDatabase.create(
+        CampaignAction(
+          poiId: int.parse(createdStand.id),
+          actionType: CampaignActionType.editStand,
+          serialized: jsonEncode(photoUpload.toJson()),
+        ),
+      );
+      allActions.add(action);
     }
   }
 

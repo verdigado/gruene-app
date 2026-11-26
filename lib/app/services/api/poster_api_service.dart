@@ -24,7 +24,7 @@ class PosterApiService extends BasePoiApiService {
       ),
     );
     if (newPoster.imageFileLocation != null) {
-      poi = await storeNewPhoto(poi.id, newPoster.imageFileLocation!);
+      poi = await storeNewPhoto(poi.id, newPoster.imageFileLocation!) ?? poi;
     }
     return poi.toMarkerItem();
   }

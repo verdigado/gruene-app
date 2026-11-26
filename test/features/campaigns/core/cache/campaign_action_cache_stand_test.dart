@@ -97,8 +97,7 @@ void main() {
       ..registerSingleton<ActionAreaApiService>(_MockActionAreaApiService())
       ..registerSingleton<FileManager>(fileManager);
 
-    when(() => standApi.createNewStand(any()))
-        .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
+    when(() => standApi.createNewStand(any())).thenAnswer((_) async => _serverStand());
     when(() => standApi.addStandEntry(any(), any())).thenAnswer((_) async => _serverStand());
     when(() => standApi.updateStandEntry(any(), any())).thenAnswer((_) async => _serverStand());
     when(() => standApi.deleteStandEntry(any(), any())).thenAnswer((_) async => _serverStand());
@@ -316,7 +315,7 @@ void main() {
     expect(sent.deletedPhotoIds, ['p1']);
   });
 
-  test('photos changed on a stand created offline are uploaded with the stand, never deleted', () async {
+  test('photos changed on a stand created offline are uploaded after the stand, never deleted', () async {
     when(() => standApi.updateStand(any()))
         .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
     final marker = await cache.storeNewPoi(
@@ -358,11 +357,49 @@ void main() {
 
     await cache.flushCache();
 
-    final created = verify(() => standApi.createNewStand(captureAny())).captured.single as StandCreateModel;
-    expect(created.imageFileLocations, ['/photos/b.jpg', '/photos/c.jpg']);
+    verify(() => standApi.createNewStand(any())).called(1);
+    // the photos are uploaded with the queued change of the created stand
     final sent = verify(() => standApi.updateStand(captureAny())).captured.single as StandUpdateModel;
+    expect(sent.id, '4711');
     expect(sent.deletedPhotoIds, isEmpty);
-    expect(sent.newPhotos, isEmpty);
+    expect(sent.newPhotos.map((p) => p.imageUrl), ['/photos/b.jpg', '/photos/c.jpg']);
+    expect(await cache.getCachedActionCount(), 0);
+  });
+
+  test('a failed photo upload of a stand created offline is retried without creating the stand again', () async {
+    when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 500));
+    final marker = await cache.storeNewPoi(
+      PoiCacheType.stand,
+      StandCreateModel(
+        location: _location,
+        address: _address,
+        name: 'Marktplatz',
+        firstEntry: _newEntry(DateTime(2026, 11, 7, 10)),
+        imageFileLocations: ['/photos/a.jpg', '/photos/b.jpg'],
+        campaignId: 'campaign-1',
+      ),
+    );
+    await cache.addStandEntry(
+      marker.id.toString(),
+      _newEntry(DateTime(2026, 11, 14, 10)),
+      await cache.getPoiAsStandDetail(marker.id.toString()),
+    );
+
+    await cache.flushCache();
+    expect(await cache.getCachedActionCount(), 1);
+    // the Termin is not held back by the failed photos
+    verify(() => standApi.addStandEntry('4711', any())).called(1);
+
+    when(() => standApi.updateStand(any()))
+        .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
+    await cache.flushCache();
+
+    verify(() => standApi.createNewStand(any())).called(1);
+    final sent = verify(() => standApi.updateStand(captureAny())).captured.last as StandUpdateModel;
+    expect(sent.id, '4711');
+    expect(sent.newPhotos.map((p) => p.imageUrl), ['/photos/a.jpg', '/photos/b.jpg']);
+    expect(await cache.getCachedActionCount(), 0);
+    expect(cache.refusedActionCount, 0);
   });
 
   test('a queued Termin deleted again does not show in a stand saved while it was queued', () async {
