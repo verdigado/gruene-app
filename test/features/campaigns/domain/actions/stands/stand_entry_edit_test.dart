@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
@@ -35,6 +37,9 @@ void main() {
   late List<StandEntryUpdateModel> saved;
   late List<String> deleted;
 
+  /// If set, saving waits for it, like the queue writing to its database.
+  Completer<void>? saveGate;
+
   /// Opens the Termin like the stand edit view does ([MapConsumer.showModalEditForm]).
   Future<void> openEntry(
     WidgetTester tester,
@@ -45,6 +50,7 @@ void main() {
   }) async {
     saved = [];
     deleted = [];
+    saveGate = null;
     tester.view.physicalSize = const Size(411, 900) * tester.view.devicePixelRatio;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -62,7 +68,10 @@ void main() {
                   entry: entry,
                   otherEntries: otherEntries,
                   standName: 'Infostand am S-Bahnhof',
-                  onSave: (update) async => saved.add(update),
+                  onSave: (update) async {
+                    saved.add(update);
+                    await saveGate?.future;
+                  },
                   onDelete: canDelete ? (id) async => deleted.add(id) : null,
                   now: _now,
                 ),
@@ -110,6 +119,23 @@ void main() {
     expect(update.startAt, DateTime(2026, 11, 2, 10));
     expect(update.endAt, DateTime(2026, 11, 2, 12));
     expect(update.flyerCount, 95);
+    expect(isOpen(), isFalse);
+  });
+
+  testWidgets('a second tap on Speichern while saving does not save the Termin twice', (tester) async {
+    await openEntry(tester, pastEntry);
+    saveGate = Completer<void>();
+
+    await tester.ensureVisible(find.text('Speichern'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Speichern'));
+    await tester.pump();
+    await tester.tap(find.text('Speichern'));
+    await tester.pump();
+    saveGate!.complete();
+    await tester.pumpAndSettle();
+
+    expect(saved, hasLength(1));
     expect(isOpen(), isFalse);
   });
 
