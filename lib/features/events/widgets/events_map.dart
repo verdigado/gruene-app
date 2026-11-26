@@ -116,8 +116,12 @@ class _EventsMapState extends State<EventsMap> {
     final position = positionRequest.position;
     if (position == null) return;
 
+    final userLocation = LatLng(position.latitude, position.longitude);
+    // The camera target is restricted to germanyBounds, so a location outside would end up at the nearest edge.
+    if (!germanyBounds.contains(userLocation)) return;
+
     final cameraUpdate = CameraUpdate.newCameraPosition(
-      CameraPosition(target: LatLng(position.latitude, position.longitude), bearing: 0, tilt: 0, zoom: userZoom),
+      CameraPosition(target: userLocation, bearing: 0, tilt: 0, zoom: userZoom),
     );
     await mapController?.animateCamera(cameraUpdate);
     setState(() => followUserLocation = true);
