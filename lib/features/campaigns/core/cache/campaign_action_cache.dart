@@ -454,6 +454,13 @@ class CampaignActionCache extends ChangeNotifier {
   /// The stand with all changes still in the queue. Its [StandDetailModel.flyerCountTotal] stays the last one
   /// from the API; the detail shows the provisional [StandDetailModel.displayedFlyerTotal] until the queue is synced.
   Future<StandDetailModel> getPoiAsStandDetail(String standId) async {
+    final stand = await findQueuedStandDetail(standId);
+    if (stand == null) throw StateError('Stand $standId is not in the queue');
+    return stand;
+  }
+
+  /// Like [getPoiAsStandDetail], but null if no change of the stand is queued, e.g. because a sync just sent them.
+  Future<StandDetailModel?> findQueuedStandDetail(String standId) async {
     final poiId = _resolveStandId(standId);
     final actions = await _findActionsByPoiId(poiId);
     final localEntryIds = <String>{};
@@ -484,7 +491,7 @@ class CampaignActionCache extends ChangeNotifier {
           break;
       }
     }
-    if (stand == null) throw StateError('Stand $poiId is not in the queue');
+    if (stand == null) return null;
 
     // a stand seen earlier can still list a queued Termin that was deleted again in the meantime
     final entries = stand.entries.where((e) => !_isLocalEntryId(e.id) || localEntryIds.contains(e.id)).toList()
@@ -623,6 +630,9 @@ class CampaignActionCache extends ChangeNotifier {
   final _syncedEntryIds = <String, String>{};
 
   String _resolveStandId(String standId) => _syncedStandIds[standId] ?? standId;
+
+  /// The id of the stand in the API: the one a sync gave it, if [standId] is the temporary id of a queued stand.
+  String syncedStandId(String standId) => _resolveStandId(standId);
 
   String _resolveEntryId(String entryId) => _syncedEntryIds[entryId] ?? entryId;
 

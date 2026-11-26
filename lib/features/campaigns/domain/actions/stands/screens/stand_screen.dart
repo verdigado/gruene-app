@@ -9,6 +9,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/api/stand_api_service.dart';
 import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
+import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_add_screen.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_detail.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/stands/screens/stand_edit.dart';
@@ -16,6 +17,7 @@ import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.d
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_with_location.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:turf/turf.dart' as turf;
 
 /// Map of the Stand tab.
 ///
@@ -85,22 +87,52 @@ class _StandScreenState extends MapConsumer<StandScreen, StandCreateModel, Stand
   /// Queues a new Termin and returns the stand with all its queued changes, including the provisional flyer total.
   Future<StandDetailModel> _addEntry(StandDetailModel stand, StandEntryCreateModel entry) async {
     final marker = await campaignActionCache.addStandEntry(stand.id, entry, stand);
-    mapController.setPoiMarkerSource([marker]);
-    return _changedStand = await campaignActionCache.getPoiAsStandDetail(stand.id);
+    return _afterChange(stand, marker);
   }
 
   /// Queues the change of a Termin and returns the stand with all its queued changes, including the provisional
   /// flyer total.
   Future<StandDetailModel> _saveEntry(StandDetailModel stand, StandEntryUpdateModel entry) async {
     final marker = await campaignActionCache.updateStandEntry(stand.id, entry, stand);
-    mapController.setPoiMarkerSource([marker]);
-    return _changedStand = await campaignActionCache.getPoiAsStandDetail(stand.id);
+    return _afterChange(stand, marker);
   }
 
   Future<StandDetailModel> _deleteEntry(StandDetailModel stand, String entryId) async {
     final marker = await campaignActionCache.deleteStandEntry(stand.id, entryId, stand);
-    mapController.setPoiMarkerSource([marker]);
-    return _changedStand = await campaignActionCache.getPoiAsStandDetail(stand.id);
+    return _afterChange(stand, marker);
+  }
+
+  @override
+  Future<void> savePoi(StandUpdateModel poiUpdate) async {
+    final marker = await campaignActionCache.updatePoi(PoiCacheType.stand, poiUpdate);
+    _updateMarker(marker);
+  }
+
+  /// Updates the map and returns the stand as changed, once a change is queued. The change is saved by then, so a
+  /// failure here is not reported as a failed save: that would make the person save it a second time.
+  Future<StandDetailModel> _afterChange(StandDetailModel stand, turf.Feature marker) async {
+    _updateMarker(marker);
+    return _changedStand = await _loadChangedStand(stand);
+  }
+
+  void _updateMarker(turf.Feature marker) {
+    try {
+      mapController.setPoiMarkerSource([marker]);
+    } catch (e, stackTrace) {
+      logger.w('Updating the stand marker failed', error: e, stackTrace: stackTrace);
+    }
+  }
+
+  /// The stand with its queued changes. If a sync sent them in the meantime, the stand is loaded from the API;
+  /// if that fails, the stand as seen is shown until it is opened again.
+  Future<StandDetailModel> _loadChangedStand(StandDetailModel stand) async {
+    try {
+      return await campaignActionCache.findQueuedStandDetail(stand.id) ??
+          await campaignService.getPoiAsStandDetail(campaignActionCache.syncedStandId(stand.id));
+    } catch (e, stackTrace) {
+      logger.w('Loading the stand ${stand.id} after a change failed', error: e, stackTrace: stackTrace);
+      return stand;
+    }
   }
 
   @override

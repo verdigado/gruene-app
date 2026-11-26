@@ -612,6 +612,18 @@ void main() {
     expect(point.coordinates.lng, _location.longitude);
   });
 
+  test('a stand whose changes a sync just sent is not in the queue any more, and has its id from the API', () async {
+    final standId = await storeQueuedStand();
+    expect(await cache.findQueuedStandDetail(standId), isNotNull);
+
+    await cache.flushCache();
+
+    // the stand screen then loads the stand from the API instead of reporting the saved change as failed
+    expect(await cache.findQueuedStandDetail(standId), isNull);
+    expect(cache.syncedStandId(standId), '4711');
+    expect(() => cache.getPoiAsStandDetail(standId), throwsStateError);
+  });
+
   group('a stand detail opened before the sync', () {
     test('changes the first Termin of a stand created offline with the ids from the API', () async {
       // the created stand has only its first Termin
