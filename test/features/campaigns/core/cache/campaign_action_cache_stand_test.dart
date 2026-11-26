@@ -771,6 +771,26 @@ void main() {
       verify(() => standApi.deleteStandEntry('4711', '3')).called(1);
     });
 
+    test('refuses a Termin that cannot be told apart from one someone else added with the same times', () async {
+      StandEntryModel sameTimes(String id) => StandEntryModel(
+        id: id,
+        startAt: DateTime(2026, 11, 21, 10),
+        endAt: DateTime(2026, 11, 21, 12),
+        flyerCount: 0,
+      );
+      when(() => standApi.addStandEntry(any(), any())).thenAnswer(
+        (_) async => _serverStand().copyWith(entries: [..._serverStand().entries, sameTimes('31'), sameTimes('39')]),
+      );
+      await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10)), _serverStand());
+      final standSeen = await cache.getPoiAsStandDetail('4711');
+      final queuedEntry = standSeen.entries.firstWhere((e) => e.id.startsWith('local-'));
+
+      await cache.flushCache();
+
+      expect(() => cache.deleteStandEntry('4711', queuedEntry.id, standSeen), throwsA(isA<OutdatedStandException>()));
+      expect(await cache.getCachedActionCount(), 0);
+    });
+
     test('refuses a Termin whose id from the API is unknown instead of losing the change', () async {
       await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10)), _serverStand());
       final standSeen = await cache.getPoiAsStandDetail('4711');

@@ -658,7 +658,9 @@ class CampaignActionCache extends ChangeNotifier {
   );
 
   /// Remembers the id the API gave to a Termin sent from the queue: the one in [stand] that the person had not seen
-  /// before and that has the times of [entry].
+  /// before and that has the values of [entry]. If someone else added a Termin with the same values in the meantime,
+  /// it is unclear which one it is, so no id is remembered: a change of it from a stand opened before the sync is
+  /// then refused instead of changing the other Termin.
   void _rememberSyncedEntryId(
     CampaignAction action,
     StandDetailModel stand,
@@ -666,11 +668,16 @@ class CampaignActionCache extends ChangeNotifier {
     StandDetailModel standSeen,
   ) {
     final knownIds = {...standSeen.entries.map((e) => e.id), ..._syncedEntryIds.values};
-    final created = stand.entries
+    final candidates = stand.entries
         .where((e) => !knownIds.contains(e.id))
         .where((e) => e.startAt.isAtSameMomentAs(entry.startAt) && e.endAt.isAtSameMomentAs(entry.endAt))
-        .firstOrNull;
-    if (created != null) _syncedEntryIds[_localEntryId(action)] = created.id;
+        .where((e) => e.flyerCount == (entry.flyerCount ?? 0))
+        .toList();
+    if (candidates.length == 1) {
+      _syncedEntryIds[_localEntryId(action)] = candidates.single.id;
+    } else {
+      logger.w('Id of the synced Termin ${_localEntryId(action)} unknown, ${candidates.length} Termine match');
+    }
   }
 
   Future<RouteStatusUpdateModel> getPoiAsRouteDetail(String poiId) async {
