@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/poi_detail_model.dart';
@@ -11,6 +13,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/api/action_area_api_service.dart';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/services/api/base_poi_api_service.dart';
 import 'package:gruene_app/app/services/api/door_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/api/poster_api_service.dart';
@@ -142,7 +145,7 @@ void main() {
   });
 
   test('a stand changed while still in the queue is sent with its new id after it is created', () async {
-    when(() => standApi.updateStand(any()))
+    when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
         .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
     final standId = await storeQueuedStand();
     final queuedStand = await cache.getPoiAsStandDetail(standId);
@@ -154,7 +157,9 @@ void main() {
     expect((await cache.getPoiAsStandDetail(standId)).name, 'Rathausplatz');
     await cache.flushCache();
 
-    final update = verify(() => standApi.updateStand(captureAny())).captured.single as StandUpdateModel;
+    final update =
+        verify(() => standApi.updateStand(captureAny(), onPhotoStep: any(named: 'onPhotoStep'))).captured.single
+            as StandUpdateModel;
     expect(update.id, '4711');
     expect(update.name, 'Rathausplatz');
   });
@@ -278,6 +283,20 @@ void main() {
     expect(await cache.getCachedActionCount(), 0);
   });
 
+  test('an action failing without an answer of the API stays queued, and the other pins are still sent', () async {
+    when(() => standApi.createNewStand(any()))
+        .thenThrow(const FileSystemException('Permission denied', '/photos/a.jpg'));
+    final standId = await storeQueuedStand();
+    await cache.addStandEntry('4711', _newEntry(DateTime(2026, 11, 21, 10)), _serverStand());
+
+    await cache.flushCache();
+
+    verify(() => standApi.addStandEntry('4711', any())).called(1);
+    expect(await cache.isCached(standId, PoiCacheType.stand), isTrue);
+    expect(await cache.getCachedActionCount(), 1);
+    expect(cache.refusedActionCount, 0);
+  });
+
   test('the Termine of a stand that fails to sync stay in the queue', () async {
     when(() => standApi.createNewStand(any())).thenThrow(ApiException(statusCode: 500));
     final standId = await storeQueuedStand();
@@ -313,8 +332,65 @@ void main() {
     verifyNever(() => standApi.addStandEntry(any(), any()));
   });
 
+  group('photo steps of a queued change', () {
+    PosterPhotoModel photo(String file) =>
+        PosterPhotoModel(id: file, imageUrl: file, thumbnailUrl: file, createdAt: DateTime(2026, 11, 21));
+
+    Future<void> queuePhotos(List<String> files) => cache.updatePoi(
+      PoiCacheType.stand,
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: _location,
+        name: 'Marktplatz',
+        oldStandDetail: _serverStand(),
+        deletedPhotoIds: ['p1'],
+        newPhotos: files.map(photo).toList(),
+      ),
+    );
+
+    test('a retry only sends the photo steps not done yet', () async {
+      when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep'))).thenAnswer((invocation) async {
+        final onPhotoStep = invocation.namedArguments[#onPhotoStep] as OnPhotoStep;
+        await onPhotoStep('p1', PhotoStep.deleted);
+        await onPhotoStep('/photos/a.jpg', PhotoStep.uploaded);
+        throw ApiException(statusCode: 500);
+      });
+      await queuePhotos(['/photos/a.jpg', '/photos/b.jpg']);
+
+      await cache.flushCache();
+
+      when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
+          .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
+      await cache.flushCache();
+
+      final retried =
+          verify(() => standApi.updateStand(captureAny(), onPhotoStep: any(named: 'onPhotoStep'))).captured.last
+              as StandUpdateModel;
+      expect(retried.deletedPhotoIds, isEmpty);
+      expect(retried.newPhotos.map((p) => p.imageUrl), ['/photos/b.jpg']);
+      expect(await cache.getCachedActionCount(), 0);
+      expect(cache.refusedActionCount, 0);
+    });
+
+    test('a queued photo whose file is gone is reported and dropped from the change', () async {
+      when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep'))).thenAnswer((invocation) async {
+        final onPhotoStep = invocation.namedArguments[#onPhotoStep] as OnPhotoStep;
+        await onPhotoStep('/photos/a.jpg', PhotoStep.fileMissing);
+        throw ApiException(statusCode: 500);
+      });
+      await queuePhotos(['/photos/a.jpg', '/photos/b.jpg']);
+
+      await cache.flushCache();
+
+      expect(cache.refusedActionCount, 1);
+      final queued = await cache.getPoiAsStandDetail('4711');
+      expect(queued.photos.map((p) => p.imageUrl), ['/photos/b.jpg']);
+    });
+  });
+
   test('a photo added and deleted again offline is never uploaded', () async {
-    when(() => standApi.updateStand(any()))
+    when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
         .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
     StandUpdateModel update({List<String> deletedPhotoIds = const [], List<PosterPhotoModel> newPhotos = const []}) =>
         StandUpdateModel(
@@ -337,13 +413,15 @@ void main() {
     await cache.updatePoi(PoiCacheType.stand, update(deletedPhotoIds: ['new-1', 'p1']));
     await cache.flushCache();
 
-    final sent = verify(() => standApi.updateStand(captureAny())).captured.single as StandUpdateModel;
+    final sent =
+        verify(() => standApi.updateStand(captureAny(), onPhotoStep: any(named: 'onPhotoStep'))).captured.single
+            as StandUpdateModel;
     expect(sent.newPhotos, isEmpty);
     expect(sent.deletedPhotoIds, ['p1']);
   });
 
   test('photos changed on a stand created offline are uploaded after the stand, never deleted', () async {
-    when(() => standApi.updateStand(any()))
+    when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
         .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
     final marker = await cache.storeNewPoi(
       PoiCacheType.stand,
@@ -386,7 +464,9 @@ void main() {
 
     verify(() => standApi.createNewStand(any())).called(1);
     // the photos are uploaded with the queued change of the created stand
-    final sent = verify(() => standApi.updateStand(captureAny())).captured.single as StandUpdateModel;
+    final sent =
+        verify(() => standApi.updateStand(captureAny(), onPhotoStep: any(named: 'onPhotoStep'))).captured.single
+            as StandUpdateModel;
     expect(sent.id, '4711');
     expect(sent.deletedPhotoIds, isEmpty);
     expect(sent.newPhotos.map((p) => p.imageUrl), ['/photos/b.jpg', '/photos/c.jpg']);
@@ -420,7 +500,7 @@ void main() {
     );
 
     test('is refused once the photo was uploaded, as its id from the API is unknown', () async {
-      when(() => standApi.updateStand(any()))
+      when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
           .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
       final (standId, standSeen) = await storeStandWithPhoto();
       await cache.flushCache();
@@ -433,16 +513,19 @@ void main() {
     });
 
     test('takes the photo out of the queue while its upload is still queued', () async {
-      when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 500));
+      when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
+          .thenThrow(ApiException(statusCode: 500));
       final (standId, standSeen) = await storeStandWithPhoto();
       await cache.flushCache();
 
       await cache.updatePoi(PoiCacheType.stand, deletePhoto(standId, standSeen));
 
-      when(() => standApi.updateStand(any()))
+      when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
           .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
       await cache.flushCache();
-      final sent = verify(() => standApi.updateStand(captureAny())).captured.last as StandUpdateModel;
+      final sent =
+          verify(() => standApi.updateStand(captureAny(), onPhotoStep: any(named: 'onPhotoStep'))).captured.last
+              as StandUpdateModel;
       expect(sent.newPhotos, isEmpty);
       expect(sent.deletedPhotoIds, isEmpty);
     });
@@ -466,7 +549,8 @@ void main() {
   });
 
   test('a stand created and changed offline keeps its Termine while its photo upload is retried', () async {
-    when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 500));
+    when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
+        .thenThrow(ApiException(statusCode: 500));
     final marker = await cache.storeNewPoi(
       PoiCacheType.stand,
       StandCreateModel(
@@ -500,7 +584,8 @@ void main() {
   });
 
   test('a failed photo upload of a stand created offline is retried without creating the stand again', () async {
-    when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 500));
+    when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
+        .thenThrow(ApiException(statusCode: 500));
     final marker = await cache.storeNewPoi(
       PoiCacheType.stand,
       StandCreateModel(
@@ -523,12 +608,14 @@ void main() {
     // the Termin is not held back by the failed photos
     verify(() => standApi.addStandEntry('4711', any())).called(1);
 
-    when(() => standApi.updateStand(any()))
+    when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
         .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
     await cache.flushCache();
 
     verify(() => standApi.createNewStand(any())).called(1);
-    final sent = verify(() => standApi.updateStand(captureAny())).captured.last as StandUpdateModel;
+    final sent =
+        verify(() => standApi.updateStand(captureAny(), onPhotoStep: any(named: 'onPhotoStep'))).captured.last
+            as StandUpdateModel;
     expect(sent.id, '4711');
     expect(sent.newPhotos.map((p) => p.imageUrl), ['/photos/a.jpg', '/photos/b.jpg']);
     expect(await cache.getCachedActionCount(), 0);
@@ -558,7 +645,7 @@ void main() {
   });
 
   test('changing and deleting a stand from the API is sent with its id', () async {
-    when(() => standApi.updateStand(any()))
+    when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
         .thenAnswer((_) async => PoiDetailModel(id: 4711, status: 'stand', location: _location));
     when(() => standApi.deletePoi(any())).thenAnswer((_) async {});
 
@@ -576,7 +663,9 @@ void main() {
     await cache.deletePoi(PoiCacheType.stand, '4711');
     await cache.flushCache();
 
-    final update = verify(() => standApi.updateStand(captureAny())).captured.single as StandUpdateModel;
+    final update =
+        verify(() => standApi.updateStand(captureAny(), onPhotoStep: any(named: 'onPhotoStep'))).captured.single
+            as StandUpdateModel;
     expect(update.id, '4711');
     verify(() => standApi.deletePoi('4711')).called(1);
     expect(await cache.getCachedActionCount(), 0);
@@ -730,7 +819,8 @@ void main() {
     });
 
     test('a refused photo of a stand created offline keeps the stand and its Termine', () async {
-      when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 409));
+      when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
+          .thenThrow(ApiException(statusCode: 409));
       final marker = await cache.storeNewPoi(
         PoiCacheType.stand,
         StandCreateModel(
@@ -764,7 +854,8 @@ void main() {
     });
 
     test('a change of a stand without write access is dropped and reported', () async {
-      when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 403));
+      when(() => standApi.updateStand(any(), onPhotoStep: any(named: 'onPhotoStep')))
+          .thenThrow(ApiException(statusCode: 403));
       await cache.updatePoi(
         PoiCacheType.stand,
         StandUpdateModel(
@@ -793,7 +884,8 @@ void main() {
 
     test('poster actions are still retried, as before', () async {
       final posterApi = GetIt.I<PosterApiService>();
-      when(() => posterApi.createNewPoster(any())).thenThrow(ApiException(statusCode: 400));
+      when(() => posterApi.createNewPoster(any(), onPhotoStep: any(named: 'onPhotoStep')))
+          .thenThrow(ApiException(statusCode: 400));
       await cache.storeNewPoi(
         PoiCacheType.poster,
         PosterCreateModel(address: _address, location: _location, campaignId: 'campaign-1'),

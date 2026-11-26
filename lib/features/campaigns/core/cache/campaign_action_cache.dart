@@ -26,6 +26,7 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/api/action_area_api_service.dart';
 import 'package:gruene_app/app/services/api/base_api_service.dart';
+import 'package:gruene_app/app/services/api/base_poi_api_service.dart';
 import 'package:gruene_app/app/services/api/door_api_service.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
 import 'package:gruene_app/app/services/api/poster_api_service.dart';
@@ -817,6 +818,8 @@ class CampaignActionCache extends ChangeNotifier {
           continue;
         }
 
+        Future<void> savePhotoStep(String photo, PhotoStep step) => _savePhotoStep(action, photo, step);
+
         updateIds(int newPoiId) async => await _updateIdsInCache(
           oldId: action.poiTempId,
           newId: newPoiId,
@@ -828,13 +831,13 @@ class CampaignActionCache extends ChangeNotifier {
           switch (action.actionType) {
             case CampaignActionType.addPoster:
               var model = action.toPosterCreate();
-              var newPosterMarker = await posterApiService.createNewPoster(model);
+              var newPosterMarker = await posterApiService.createNewPoster(model, onPhotoStep: savePhotoStep);
               await updateIds(newPosterMarker.id!);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.editPoster:
               var model = action.toPosterUpdate();
-              await posterApiService.updatePoster(model);
+              await posterApiService.updatePoster(model, onPhotoStep: savePhotoStep);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.addDoor:
@@ -870,7 +873,7 @@ class CampaignActionCache extends ChangeNotifier {
 
             case CampaignActionType.editStand:
               var model = action.toStandUpdate();
-              await standApiService.updateStand(model);
+              await standApiService.updateStand(model, onPhotoStep: savePhotoStep);
               campaignActionDatabase.delete(action.id!);
 
             case CampaignActionType.deleteStand:
@@ -936,6 +939,12 @@ class CampaignActionCache extends ChangeNotifier {
               failingPoiIds.add(action.coalescedPoiId());
               continue;
           }
+        } catch (e, stackTrace) {
+          // not an answer of the API, e.g. a photo file that cannot be read: kept for the next sync, and the other
+          // pins are still sent instead of the whole queue stopping here on every sync
+          logger.e('Flushing Campaign Action (${action.actionType?.name}) failed', error: e, stackTrace: stackTrace);
+          failingPoiIds.add(action.coalescedPoiId());
+          continue;
         }
         notifyListeners();
       }
@@ -949,6 +958,29 @@ class CampaignActionCache extends ChangeNotifier {
       _isflushing = false;
       notifyListeners();
     }
+  }
+
+  /// Drops a photo step from a queued change once it is done, so that a retry of the change does not repeat it.
+  /// The change is read again, as the person may have changed it while it was being sent. A photo whose file is gone
+  /// while it is still queued cannot be uploaded any more and is reported like a refused change.
+  Future<void> _savePhotoStep(CampaignAction action, String photo, PhotoStep step) async {
+    if (step == PhotoStep.fileMissing) {
+      _refusedActionCount++;
+      notifyListeners();
+    }
+    final current = await campaignActionDatabase.read(action.id!);
+    final data = current?.serialized == null ? null : jsonDecode(current!.serialized!) as Map<String, dynamic>;
+    // a new poster keeps its one photo as `imageFileLocation`; its action is removed once the photo is sent
+    if (data == null || !data.containsKey('newPhotos')) return;
+
+    switch (step) {
+      case PhotoStep.deleted:
+        (data['deletedPhotoIds'] as List<dynamic>).remove(photo);
+      case PhotoStep.uploaded || PhotoStep.fileMissing:
+        (data['newPhotos'] as List<dynamic>).removeWhere((p) => (p as Map<String, dynamic>)['imageUrl'] == photo);
+    }
+    current!.serialized = jsonEncode(data);
+    await campaignActionDatabase.update(current);
   }
 
   /// Gives the stand snapshots kept by the queued actions of a stand the ids the sync got from the API so far.

@@ -295,6 +295,60 @@ void main() {
     );
   });
 
+  test('reports each photo step before the file of an uploaded photo is deleted, and a missing file', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(() => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: '4711', photoId: 'p1'))
+        .thenAnswer((_) async => _ok(_stand()));
+    when(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand(photos: [_photo('p2')]), statusCode: 201));
+    final events = <String>[];
+    when(() => fileManager.deleteFile(any())).thenAnswer((invocation) async {
+      events.add('file deleted ${invocation.positionalArguments.single}');
+    });
+    when(() => fileManager.retrieveFileData('/photos/gone.jpg'))
+        .thenThrow(const PathNotFoundException('/photos/gone.jpg', OSError()));
+    PosterPhotoModel photo(String file) =>
+        PosterPhotoModel(id: file, imageUrl: file, thumbnailUrl: file, createdAt: DateTime(2026));
+
+    await service.updateStand(
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: LatLng(52.52, 13.405),
+        name: 'Marktplatz',
+        oldStandDetail: StandDetailModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          flyerCountTotal: 250,
+          entries: const [],
+          photos: const [],
+          createdAt: '01.11.2026 10:00',
+        ),
+        deletedPhotoIds: ['p1'],
+        newPhotos: [photo('/photos/c.jpg'), photo('/photos/gone.jpg')],
+      ),
+      onPhotoStep: (photo, step) async => events.add('${step.name} $photo'),
+    );
+
+    expect(events, [
+      'deleted p1',
+      'uploaded /photos/c.jpg',
+      'file deleted /photos/c.jpg',
+      'fileMissing /photos/gone.jpg',
+    ]);
+  });
+
   test('an uploaded photo whose file cannot be deleted does not fail the change', () async {
     when(
       () => api.v1CampaignsPoisPoiIdPut(
@@ -334,6 +388,48 @@ void main() {
 
     expect(marker.id, 4711);
     verify(() => fileManager.deleteFile('/photos/c.jpg')).called(1);
+  });
+
+  test('a photo whose file cannot be read fails the change instead of being dropped', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(() => fileManager.retrieveFileData('/photos/c.jpg'))
+        .thenThrow(const FileSystemException('Permission denied', '/photos/c.jpg'));
+
+    await expectLater(
+      service.updateStand(
+        StandUpdateModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          oldStandDetail: StandDetailModel(
+            id: '4711',
+            address: _address,
+            location: LatLng(52.52, 13.405),
+            name: 'Marktplatz',
+            flyerCountTotal: 250,
+            entries: const [],
+            photos: const [],
+            createdAt: '01.11.2026 10:00',
+          ),
+          newPhotos: [
+            PosterPhotoModel(id: 'new', imageUrl: '/photos/c.jpg', thumbnailUrl: '', createdAt: DateTime(2026)),
+          ],
+        ),
+      ),
+      throwsA(isA<FileSystemException>()),
+    );
+    verifyNever(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    );
   });
 
   test('a retried change skips a photo whose file was deleted by an earlier upload', () async {

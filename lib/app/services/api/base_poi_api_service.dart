@@ -17,6 +17,21 @@ import 'package:http_parser/http_parser.dart';
 import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
+/// A photo step of a change, done or given up.
+enum PhotoStep {
+  /// The photo with this id was deleted, or was gone already.
+  deleted,
+
+  /// The photo from this local file was uploaded.
+  uploaded,
+
+  /// The photo from this local file could not be uploaded, as the file is gone: the photo is lost.
+  fileMissing,
+}
+
+/// Told about each photo step of a change, with the photo's id ([PhotoStep.deleted]) or its local file.
+typedef OnPhotoStep = Future<void> Function(String photo, PhotoStep step);
+
 abstract class BasePoiApiService extends BaseApiService {
   final PoiServiceType poiType;
 
@@ -90,16 +105,19 @@ abstract class BasePoiApiService extends BaseApiService {
 
   /// Uploads a photo from a local file and deletes the file afterwards. Only posters and stands can have photos.
   ///
-  /// Returns null without uploading if the file is gone: it was deleted after an earlier upload of a queued action
-  /// that failed further on and is now retried, so uploading it again is neither possible nor wanted.
-  Future<Poi?> storeNewPhoto(String poiId, String imageFileLocation) async {
+  /// [onPhotoStep] is told once the photo is uploaded, before its file is deleted, so that the queue can drop the
+  /// photo from its action: a retry of that action then does not upload it again.
+  /// Returns null without uploading if the file does not exist, and tells [onPhotoStep] that the photo is lost.
+  /// Any other error reading the file is thrown, so that the queued action is retried instead of losing the photo.
+  Future<Poi?> storeNewPhoto(String poiId, String imageFileLocation, {OnPhotoStep? onPhotoStep}) async {
     final timeStamp = DateFormat('yyMMdd_HHmmss').format(DateTime.now());
     final fileManager = GetIt.I<FileManager>();
     final Uint8List photo;
     try {
       photo = await fileManager.retrieveFileData(imageFileLocation);
-    } on FileSystemException catch (e) {
-      logger.w('Photo $imageFileLocation of pin $poiId not uploaded, its file is gone: ${e.message}');
+    } on PathNotFoundException catch (e) {
+      logger.e('Photo $imageFileLocation of pin $poiId not uploaded, its file is gone: ${e.message}');
+      await onPhotoStep?.call(imageFileLocation, PhotoStep.fileMissing);
       return null;
     }
     final poi = await send<Poi, Poi>(
@@ -113,22 +131,24 @@ abstract class BasePoiApiService extends BaseApiService {
         ),
       ),
     );
-    // a retry of the queued action skips a photo only once its file is gone, so the delete has to finish here
+    // the queue drops the photo before its file is deleted, so a missing file always means a lost photo
+    await onPhotoStep?.call(imageFileLocation, PhotoStep.uploaded);
     try {
       await fileManager.deleteFile(imageFileLocation);
     } on FileSystemException catch (e, stackTrace) {
-      // the photo is uploaded, so the upload is not reported as failed: a retry would upload it a second time.
-      // That still happens if a later step of this queued action fails, as the file is then still there
+      // the photo is uploaded and out of the queue, so a file left behind is only a leftover
       logger.e('File of the uploaded photo $imageFileLocation not deleted', error: e, stackTrace: stackTrace);
     }
     return poi;
   }
 
   /// Deletes and uploads photos of a pin. Returns the pin after the last change, or null if nothing changed.
+  /// [onPhotoStep] is told after each step, see [storeNewPhoto].
   Future<Poi?> updatePhotos(
     String poiId, {
     required Iterable<String> deletedPhotoIds,
     required Iterable<String> newImageFileLocations,
+    OnPhotoStep? onPhotoStep,
   }) async {
     Poi? poi;
     for (final photoId in deletedPhotoIds) {
@@ -137,13 +157,14 @@ abstract class BasePoiApiService extends BaseApiService {
           request: (api) => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: poiId, photoId: photoId),
         );
       } on ApiException catch (e) {
-        // the photo is gone already, e.g. deleted by an earlier try of this queued change that failed further on;
+        // the photo is gone already, e.g. deleted just before the app was closed and its step could be saved;
         // if the pin itself is gone, the upload or the next change fails with 404 instead
         if (e.statusCode != 404) rethrow;
       }
+      await onPhotoStep?.call(photoId, PhotoStep.deleted);
     }
     for (final imageFileLocation in newImageFileLocations) {
-      poi = await storeNewPhoto(poiId, imageFileLocation) ?? poi;
+      poi = await storeNewPhoto(poiId, imageFileLocation, onPhotoStep: onPhotoStep) ?? poi;
     }
     return poi;
   }

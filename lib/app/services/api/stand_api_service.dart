@@ -43,7 +43,7 @@ class StandApiService extends BasePoiApiService {
     map: (poi) => poi.toStandDetail(),
   );
 
-  Future<PoiDetailModel> updateStand(StandUpdateModel standUpdate) async {
+  Future<PoiDetailModel> updateStand(StandUpdateModel standUpdate, {OnPhotoStep? onPhotoStep}) async {
     final poi = await send<Poi, Poi>(
       request: (api) => api.v1CampaignsPoisPoiIdPut(
         poiId: standUpdate.id,
@@ -57,6 +57,7 @@ class StandApiService extends BasePoiApiService {
       standUpdate.id,
       deletedPhotoIds: standUpdate.deletedPhotoIds,
       newImageFileLocations: standUpdate.newPhotos.map((photo) => photo.imageUrl),
+      onPhotoStep: onPhotoStep,
     );
     return (poiWithPhotos ?? poi).toMarkerItem();
   }
