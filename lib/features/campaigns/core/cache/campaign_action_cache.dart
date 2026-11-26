@@ -947,7 +947,21 @@ class CampaignActionCache extends ChangeNotifier {
     if (index >= 0) {
       final queuedChange = allActions[index];
       // the queued change is newer, so its values win; the photos come first, as they were added first
-      queuedChange.serialized = jsonEncode(photoUpload.mergeWith(queuedChange.toStandUpdate()).toJson());
+      final merged = photoUpload.mergeWith(queuedChange.toStandUpdate());
+      // its snapshot was taken before the sync and still has the temporary id of the first Termin, whose action is
+      // gone now; the stand as created by the API has the real Termin ids
+      final withCreatedStand = StandUpdateModel(
+        id: merged.id,
+        address: merged.address,
+        location: merged.location,
+        name: merged.name,
+        description: merged.description,
+        comment: merged.comment,
+        oldStandDetail: createdStand,
+        deletedPhotoIds: merged.deletedPhotoIds,
+        newPhotos: merged.newPhotos,
+      );
+      queuedChange.serialized = jsonEncode(withCreatedStand.toJson());
       await _updateAction(queuedChange);
     } else {
       final action = await campaignActionDatabase.create(

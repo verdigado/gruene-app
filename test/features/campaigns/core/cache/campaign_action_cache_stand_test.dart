@@ -393,6 +393,40 @@ void main() {
     expect(await cache.getCachedActionCount(), 0);
   });
 
+  test('a stand created and changed offline keeps its Termine while its photo upload is retried', () async {
+    when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 500));
+    final marker = await cache.storeNewPoi(
+      PoiCacheType.stand,
+      StandCreateModel(
+        location: _location,
+        address: _address,
+        name: 'Marktplatz',
+        firstEntry: _newEntry(DateTime(2026, 11, 7, 10)),
+        imageFileLocations: ['/photos/a.jpg'],
+        campaignId: 'campaign-1',
+      ),
+    );
+    final standId = marker.id.toString();
+    await cache.updatePoi(
+      PoiCacheType.stand,
+      StandUpdateModel(
+        id: standId,
+        address: _address,
+        location: _location,
+        name: 'Wochenmarkt',
+        oldStandDetail: await cache.getPoiAsStandDetail(standId),
+      ),
+    );
+
+    await cache.flushCache();
+
+    final stand = await cache.getPoiAsStandDetail('4711');
+    expect(stand.name, 'Wochenmarkt');
+    expect(stand.entries.map((e) => e.id), ['2', '1']);
+    expect(stand.displayedFlyerTotal, 200);
+    expect(stand.photos.map((p) => p.imageUrl), ['/photos/a.jpg']);
+  });
+
   test('a failed photo upload of a stand created offline is retried without creating the stand again', () async {
     when(() => standApi.updateStand(any())).thenThrow(ApiException(statusCode: 500));
     final marker = await cache.storeNewPoi(
