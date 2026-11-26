@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:gruene_app/app/models/campaigns/posters/poster_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_update_model.dart';
 import 'package:gruene_app/app/services/api/enums.dart';
@@ -73,10 +74,17 @@ class _StandScreenState extends MapConsumer<StandScreen, StandCreateModel, Stand
     super.onFeatureClick<StandDetailModel>(
       feature,
       () => getPoiFromFeature<StandDetailModel>(feature),
-      (stand) => StandDetail(poi: stand, onSaveEntry: _saveEntry, onDeleteEntry: _deleteEntry),
+      (stand) => StandDetail(poi: stand, onAddEntry: _addEntry, onSaveEntry: _saveEntry, onDeleteEntry: _deleteEntry),
       (stand) => StandEdit(stand: _changedStand ?? stand, onSave: savePoi, onDelete: deletePoi),
       useBottomSheet: true,
     );
+  }
+
+  /// Queues a new Termin and returns the stand with all its queued changes, including the provisional flyer total.
+  Future<StandDetailModel> _addEntry(StandDetailModel stand, StandEntryCreateModel entry) async {
+    final marker = await campaignActionCache.addStandEntry(stand.id, entry, stand);
+    mapController.setPoiMarkerSource([marker]);
+    return _changedStand = await campaignActionCache.getPoiAsStandDetail(stand.id);
   }
 
   /// Queues the change of a Termin and returns the stand with all its queued changes, including the provisional

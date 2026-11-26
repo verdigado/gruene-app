@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
@@ -218,5 +219,108 @@ void main() {
     await tapVisible(tester, find.text('Speichern'));
     expect(tester.takeException(), isNull);
     expect(find.textContaining('überschneidet sich'), findsOneWidget);
+  });
+
+  group('adding', () {
+    late List<StandEntryCreateModel> added;
+
+    /// Opens the add form like the stand detail does ([MapConsumer.showModalEditForm]).
+    Future<void> openAdd(WidgetTester tester, {List<StandEntryModel> otherEntries = const []}) async {
+      added = [];
+      tester.view.physicalSize = const Size(411, 900) * tester.view.devicePixelRatio;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                onPressed: () => MapConsumer.showModalEditForm(
+                  context,
+                  () => StandEntryEdit.add(
+                    otherEntries: otherEntries,
+                    standName: 'Infostand am S-Bahnhof',
+                    onAdd: (entry) async => added.add(entry),
+                    now: _now,
+                  ),
+                ),
+                child: const Text('open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+    }
+
+    bool isAddOpen() => find.text('Termin hinzufügen').evaluate().isNotEmpty;
+
+    testWidgets('is prefilled with today, ending now rounded to the quarter hour, lasting two hours', (tester) async {
+      await openAdd(tester);
+
+      expect(find.text('Termin hinzufügen'), findsOneWidget);
+      expect(find.text('Infostand am S-Bahnhof'), findsOneWidget);
+      expect(find.text('Mittwoch, 4. November 2026'), findsOneWidget);
+      expect(find.text('5:45 PM'), findsOneWidget);
+      expect(find.text('7:45 PM'), findsOneWidget);
+      expect(tester.widget<TextField>(_flyerCountInput).controller!.text, isEmpty);
+    });
+
+    testWidgets('offers no delete and no last-Termin hint', (tester) async {
+      await openAdd(tester);
+
+      expect(find.text('Termin löschen'), findsNothing);
+      expect(find.text(_lastEntryHint), findsNothing);
+      expect(find.text('Speichern'), findsOneWidget);
+    });
+
+    testWidgets('saves the new Termin with its flyers and closes', (tester) async {
+      await openAdd(tester);
+
+      await tester.enterText(_flyerCountInput, '60');
+      await tapVisible(tester, find.text('Speichern'));
+
+      final entry = added.single;
+      expect(entry.startAt, DateTime(2026, 11, 4, 17, 45));
+      expect(entry.endAt, DateTime(2026, 11, 4, 19, 45));
+      expect(entry.flyerCount, 60);
+      expect(isAddOpen(), isFalse);
+    });
+
+    testWidgets('an empty flyer count is saved as 0', (tester) async {
+      await openAdd(tester);
+
+      await tapVisible(tester, find.text('Speichern'));
+
+      expect(added.single.flyerCount, 0);
+    });
+
+    testWidgets('cannot be saved overlapping another Termin of the stand, and says which', (tester) async {
+      await openAdd(tester, otherEntries: [_entry('6', DateTime(2026, 11, 4, 19))]);
+
+      await tapVisible(tester, find.text('Speichern'));
+
+      expect(added, isEmpty);
+      expect(
+        find.text('Dieser Termin überschneidet sich mit dem Termin am 04.11.2026 von 19:00 bis 21:00 Uhr.'),
+        findsOneWidget,
+      );
+      expect(isAddOpen(), isTrue);
+    });
+
+    testWidgets('a Termin after today has no flyer count', (tester) async {
+      await openAdd(tester);
+
+      await tapVisible(tester, find.text('Mittwoch, 4. November 2026'));
+      await tester.tap(find.text('20'));
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<TextField>(_flyerCountInput).enabled, isFalse);
+      expect(find.text(_futureHint), findsOneWidget);
+      await tapVisible(tester, find.text('Speichern'));
+      expect(added.single.startAt, DateTime(2026, 11, 20, 17, 45));
+      expect(added.single.flyerCount, isNull);
+    });
   });
 }

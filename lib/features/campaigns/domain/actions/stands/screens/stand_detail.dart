@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_detail_model.dart';
+import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
@@ -10,6 +11,12 @@ import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.d
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/sheet_header.dart';
 import 'package:gruene_app/features/campaigns/helper/enums.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
+
+/// Adds a Termin to [stand] and returns the stand with it.
+typedef OnAddStandEntryCallback = Future<StandDetailModel> Function(
+  StandDetailModel stand,
+  StandEntryCreateModel entry,
+);
 
 /// Saves a change of a Termin of [stand] and returns the stand with the change applied.
 typedef OnSaveStandEntryCallback = Future<StandDetailModel> Function(
@@ -23,16 +30,23 @@ typedef OnDeleteStandEntryCallback = Future<StandDetailModel> Function(StandDeta
 /// Detail of a stand, shown in a bottom sheet over the map. Its Termine are managed here, not in the stand edit view.
 ///
 /// Shows the latest [latestEntryCount] Termine without the year. With more, a line with the date range of all
-/// Termine comes first, and `Alle anzeigen` opens the full list (with the year). Tapping a Termin in either opens
-/// it for editing; the detail stays open and shows the change.
+/// Termine comes first, and `Alle anzeigen (n)` opens the full list (with the year). Both offer `Termin hinzufügen`,
+/// and tapping a Termin in either opens it for editing; the detail stays open and shows the change.
 class StandDetail extends StatefulWidget {
   static const latestEntryCount = 3;
 
   final StandDetailModel poi;
+  final OnAddStandEntryCallback onAddEntry;
   final OnSaveStandEntryCallback onSaveEntry;
   final OnDeleteStandEntryCallback onDeleteEntry;
 
-  const StandDetail({super.key, required this.poi, required this.onSaveEntry, required this.onDeleteEntry});
+  const StandDetail({
+    super.key,
+    required this.poi,
+    required this.onAddEntry,
+    required this.onSaveEntry,
+    required this.onDeleteEntry,
+  });
 
   @override
   State<StandDetail> createState() => _StandDetailState();
@@ -73,24 +87,25 @@ class _StandDetailState extends State<StandDetail> {
                 _ValueRow(label: t.campaigns.stand.flyerCountTotal, value: poi.displayedFlyerTotal.toString()),
                 if (description.isNotEmpty) _TextBlock(label: t.campaigns.stand.description, text: description),
                 if (comment.isNotEmpty) _TextBlock(label: t.campaigns.stand.comment, text: comment),
-                if (entries.isNotEmpty) ...[
-                  _SectionLabel(t.campaigns.stand.entries),
-                  if (hasMoreEntries)
-                    Text(
-                      StandEntryFormats.dateRange(entries),
-                      style: theme.textTheme.bodySmall?.apply(color: ThemeColors.textDisabled),
-                    ),
-                  StandEntryList(
-                    entries: entries.take(StandDetail.latestEntryCount).toList(),
-                    withYear: false,
-                    onEntryTap: _openEntry,
+                _EntriesHeading(onAddEntry: _addEntry),
+                if (hasMoreEntries)
+                  Text(
+                    StandEntryFormats.dateRange(entries),
+                    style: theme.textTheme.bodySmall?.apply(color: ThemeColors.textDisabled),
                   ),
-                  if (hasMoreEntries)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(onPressed: _showAllEntries, child: Text(t.campaigns.stand.showAllEntries)),
+                StandEntryList(
+                  entries: entries.take(StandDetail.latestEntryCount).toList(),
+                  withYear: false,
+                  onEntryTap: _openEntry,
+                ),
+                if (hasMoreEntries)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      onPressed: _showAllEntries,
+                      child: Text(t.campaigns.stand.showAllEntries(count: entries.length)),
                     ),
-                ],
+                  ),
               ],
             ),
           ),
@@ -131,6 +146,13 @@ class _StandDetailState extends State<StandDetail> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SheetHeader(title: t.campaigns.stand.entries, subtitle: poi.name),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: _AddEntryButton(onPressed: _addEntry),
+              ),
+            ),
             Flexible(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -142,6 +164,18 @@ class _StandDetailState extends State<StandDetail> {
       ),
     ),
   );
+
+  Future<void> _addEntry() {
+    final stand = _stand.value;
+    return MapConsumer.showModalEditForm(
+      context,
+      () => StandEntryEdit.add(
+        otherEntries: stand.entries,
+        standName: stand.name,
+        onAdd: (entry) async => _applyEntryChange(await widget.onAddEntry(stand, entry)),
+      ),
+    );
+  }
 
   Future<void> _openEntry(StandEntryModel entry) {
     final stand = _stand.value;
@@ -211,17 +245,36 @@ class _TextBlock extends StatelessWidget {
   }
 }
 
-class _SectionLabel extends StatelessWidget {
-  final String text;
+/// The title of the Termin list with `Termin hinzufügen` on its right; at large font sizes the button moves below.
+class _EntriesHeading extends StatelessWidget {
+  final VoidCallback onAddEntry;
 
-  const _SectionLabel(this.text);
+  const _EntriesHeading({required this.onAddEntry});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 4),
-      child: Text(text, style: theme.textTheme.titleSmall?.apply(color: ThemeColors.text)),
+      padding: const EdgeInsets.only(top: 8),
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        children: [
+          Text(t.campaigns.stand.entries, style: theme.textTheme.titleSmall?.apply(color: ThemeColors.text)),
+          _AddEntryButton(onPressed: onAddEntry),
+        ],
+      ),
     );
   }
+}
+
+class _AddEntryButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _AddEntryButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) =>
+      TextButton.icon(onPressed: onPressed, icon: const Icon(Icons.add), label: Text(t.campaigns.stand.entryAdd.title));
 }
