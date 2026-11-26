@@ -211,6 +211,89 @@ void main() {
     verify(() => fileManager.deleteFile('/photos/c.jpg')).called(1);
   });
 
+  test('a retried change takes a photo deleted by an earlier try as deleted and still uploads the new one', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(() => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: '4711', photoId: 'p1'))
+        .thenAnswer((_) async => _failed(404));
+    when(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand(photos: [_photo('p2')]), statusCode: 201));
+
+    final marker = await service.updateStand(
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: LatLng(52.52, 13.405),
+        name: 'Marktplatz',
+        oldStandDetail: StandDetailModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          flyerCountTotal: 250,
+          entries: const [],
+          photos: const [],
+          createdAt: '01.11.2026 10:00',
+        ),
+        deletedPhotoIds: ['p1'],
+        newPhotos: [
+          PosterPhotoModel(id: 'new', imageUrl: '/photos/c.jpg', thumbnailUrl: '', createdAt: DateTime(2026)),
+        ],
+      ),
+    );
+
+    verify(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: '4711',
+        image: any(named: 'image'),
+      ),
+    ).called(1);
+    verify(() => fileManager.deleteFile('/photos/c.jpg')).called(1);
+    expect(marker.id, 4711);
+  });
+
+  test('a photo delete refused for another reason still fails the change', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(() => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: '4711', photoId: 'p1'))
+        .thenAnswer((_) async => _failed(500));
+
+    expect(
+      () => service.updateStand(
+        StandUpdateModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          oldStandDetail: StandDetailModel(
+            id: '4711',
+            address: _address,
+            location: LatLng(52.52, 13.405),
+            name: 'Marktplatz',
+            flyerCountTotal: 250,
+            entries: const [],
+            photos: const [],
+            createdAt: '01.11.2026 10:00',
+          ),
+          deletedPhotoIds: ['p1'],
+        ),
+      ),
+      throwsA(isA<ApiException>().having((e) => e.statusCode, 'statusCode', 500)),
+    );
+  });
+
   test('a retried change skips a photo whose file was deleted by an earlier upload', () async {
     when(
       () => api.v1CampaignsPoisPoiIdPut(

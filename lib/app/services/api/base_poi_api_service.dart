@@ -125,9 +125,15 @@ abstract class BasePoiApiService extends BaseApiService {
   }) async {
     Poi? poi;
     for (final photoId in deletedPhotoIds) {
-      poi = await send<Poi, Poi>(
-        request: (api) => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: poiId, photoId: photoId),
-      );
+      try {
+        poi = await send<Poi, Poi>(
+          request: (api) => api.v1CampaignsPoisPoiIdPhotosPhotoIdDelete(poiId: poiId, photoId: photoId),
+        );
+      } on ApiException catch (e) {
+        // the photo is gone already, e.g. deleted by an earlier try of this queued change that failed further on;
+        // if the pin itself is gone, the upload or the next change fails with 404 instead
+        if (e.statusCode != 404) rethrow;
+      }
     }
     for (final imageFileLocation in newImageFileLocations) {
       poi = await storeNewPhoto(poiId, imageFileLocation) ?? poi;
