@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gruene_app/app/models/campaigns/posters/poster_photo_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_create_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.dart';
 import 'package:gruene_app/app/services/api/campaign_api_service.dart';
@@ -7,6 +8,8 @@ import 'package:gruene_app/app/services/nominatim/nominatim_service.dart';
 import 'package:gruene_app/app/theme/theme.dart';
 import 'package:gruene_app/app/utils/app_settings.dart';
 import 'package:gruene_app/app/utils/campaign.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/picker_field.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/photo_edit_controller.dart';
@@ -366,7 +369,17 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
     String? emptyToNull(String value) => value.trim().isEmpty ? null : value.trim();
 
     _isSaving = true;
-    final newPhotos = await _photos.prepareNewPhotos();
+    final List<PosterPhotoModel> newPhotos;
+    try {
+      newPhotos = await _photos.prepareNewPhotos();
+    } catch (e, stackTrace) {
+      logger.e('Preparing the photos of a new stand failed', error: e, stackTrace: stackTrace);
+      if (mounted) showSnackBar(context: context, text: t.campaigns.stand.saveFailed);
+      return;
+    } finally {
+      // if preparing the photos failed, Speichern works again; once they are ready, the screen closes
+      _isSaving = false;
+    }
     if (!mounted) return;
     Navigator.of(context).pop(
       StandCreateModel(

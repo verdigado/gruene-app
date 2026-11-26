@@ -3,6 +3,8 @@ import 'package:gruene_app/app/models/campaigns/stands/stand_entry_create_model.
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_model.dart';
 import 'package:gruene_app/app/models/campaigns/stands/stand_entry_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
+import 'package:gruene_app/app/utils/logger.dart';
+import 'package:gruene_app/app/utils/show_snack_bar.dart';
 import 'package:gruene_app/app/widgets/picker_field.dart';
 import 'package:gruene_app/app/widgets/text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
@@ -307,6 +309,9 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
     try {
       await change();
       if (mounted) Navigator.maybePop(context);
+    } catch (e, stackTrace) {
+      logger.e('Saving a Termin failed', error: e, stackTrace: stackTrace);
+      if (mounted) showSnackBar(context: context, text: t.campaigns.stand.saveFailed);
     } finally {
       _isSaving = false;
     }

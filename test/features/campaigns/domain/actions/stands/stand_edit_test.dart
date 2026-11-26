@@ -55,10 +55,14 @@ void main() {
   late List<StandUpdateModel> saved;
   late List<String> deleted;
 
+  /// Thrown by the next save, if set.
+  Exception? saveError;
+
   /// Opens the edit view the way the map does ([MapConsumer.showModalEditForm]).
   Future<void> openEdit(WidgetTester tester, StandDetailModel stand, {double textScale = 1}) async {
     saved = [];
     deleted = [];
+    saveError = null;
     tester.view.physicalSize = const Size(411, 900) * tester.view.devicePixelRatio;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -74,7 +78,12 @@ void main() {
                 context,
                 () => StandEdit(
                   stand: stand,
-                  onSave: (update) async => saved.add(update),
+                  onSave: (update) async {
+                    final error = saveError;
+                    saveError = null;
+                    if (error != null) throw error;
+                    saved.add(update);
+                  },
                   onDelete: (id) async => deleted.add(id),
                 ),
               ),
@@ -128,6 +137,22 @@ void main() {
     expect(update.address.houseNumber, '27');
     expect(update.location, stand.location);
     expect(update.oldStandDetail, same(stand));
+    expect(isOpen(), isFalse);
+  });
+
+  testWidgets('a failed save says so, stays open, and Speichern works again', (tester) async {
+    await openEdit(tester, _stand());
+    saveError = Exception('database not available');
+
+    await tapVisible(tester, find.text('Speichern'));
+
+    expect(find.text('Die Änderung konnte nicht gespeichert werden. Bitte versuche es noch einmal.'), findsOneWidget);
+    expect(saved, isEmpty);
+    expect(isOpen(), isTrue);
+
+    await tapVisible(tester, find.text('Speichern'));
+
+    expect(saved, hasLength(1));
     expect(isOpen(), isFalse);
   });
 

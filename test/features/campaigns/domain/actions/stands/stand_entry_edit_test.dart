@@ -139,6 +139,19 @@ void main() {
     expect(isOpen(), isFalse);
   });
 
+  testWidgets('a failed save says so and stays open', (tester) async {
+    await openEntry(tester, pastEntry);
+    // ignore() keeps the error from counting as unhandled before the save waits for it
+    saveGate = Completer<void>()
+      ..future.ignore()
+      ..completeError(Exception('database not available'));
+
+    await tapVisible(tester, find.text('Speichern'));
+
+    expect(find.text('Die Änderung konnte nicht gespeichert werden. Bitte versuche es noch einmal.'), findsOneWidget);
+    expect(isOpen(), isTrue);
+  });
+
   testWidgets('an emptied flyer count is saved as 0', (tester) async {
     await openEntry(tester, pastEntry);
 
