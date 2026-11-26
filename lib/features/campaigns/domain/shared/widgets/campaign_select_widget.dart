@@ -11,7 +11,7 @@ import 'package:gruene_app/app/utils/extensions.dart';
 import 'package:gruene_app/app/utils/logger.dart';
 import 'package:gruene_app/app/utils/open_url.dart';
 import 'package:gruene_app/app/utils/utils.dart';
-import 'package:gruene_app/app/widgets/dialog_close_button.dart';
+import 'package:gruene_app/app/widgets/dialog.dart';
 import 'package:gruene_app/app/widgets/icon.dart';
 import 'package:gruene_app/features/campaigns/core/converters.dart';
 import 'package:gruene_app/features/campaigns/helper/app_timers.dart';

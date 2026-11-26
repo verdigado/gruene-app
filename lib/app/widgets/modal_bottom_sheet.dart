@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/constants/constants.dart';
 import 'package:gruene_app/app/constants/design_constants.dart';
 import 'package:gruene_app/app/widgets/alert.dart';
-import 'package:gruene_app/app/widgets/dialog_close_button.dart';
+import 'package:gruene_app/app/widgets/dialog.dart';
 import 'package:gruene_app/app/widgets/full_width_image.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
@@ -27,11 +27,13 @@ class ModalBottomSheet extends StatelessWidget {
   final Widget? aside;
   final bool hasUnsavedChanges;
   final void Function()? onClose;
+  final void Function()? goBack;
 
   const ModalBottomSheet({
     super.key,
     required this.child,
     this.onClose,
+    this.goBack,
     this.image,
     this.aside,
     this.title,
@@ -42,15 +44,10 @@ class ModalBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final title = this.title;
     final image = this.image;
     final aside = this.aside;
-
-    final titleRow = BottomSheetTitleRow(
-      leading: leading,
-      title: title,
-      onClose: onClose,
-      showCloseButton: image == null,
-    );
+    final goBack = this.goBack;
 
     return PopScope(
       canPop: !hasUnsavedChanges,
@@ -59,7 +56,16 @@ class ModalBottomSheet extends StatelessWidget {
       },
       // The Scaffold is necessary to display snackbars with the bottom sheet opened
       child: Scaffold(
-        appBar: image == null ? PreferredSize(preferredSize: const Size.fromHeight(64), child: titleRow) : null,
+        appBar: image == null
+            ? AppBar(
+                automaticallyImplyLeading: false,
+                leading: leading ?? (goBack != null ? BackButton(onPressed: goBack) : null),
+                title: title != null ? Text(title, style: theme.textTheme.titleMedium) : null,
+                actions: [CloseButton(onPressed: onClose ?? Navigator.of(context).maybePop)],
+                titleSpacing: 0,
+                scrolledUnderElevation: 0,
+              )
+            : null,
         backgroundColor: theme.colorScheme.surface,
         body: Stack(
           fit: StackFit.expand,
@@ -70,7 +76,10 @@ class ModalBottomSheet extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 8,
                 children: [
-                  if (image != null) ...[FullWidthImage(image: image, heightRatio: 9 / 16), titleRow],
+                  if (image != null) ...[
+                    FullWidthImage(image: image, heightRatio: 9 / 16),
+                    if (title != null) Text(title, style: theme.textTheme.titleMedium),
+                  ],
                   Padding(
                     padding: horizontalScreenPadding.copyWith(bottom: DesignConstants.bottomPadding),
                     child: child,
@@ -78,39 +87,15 @@ class ModalBottomSheet extends StatelessWidget {
                 ],
               ),
             ),
+            if (image != null && goBack != null)
+              DialogButtonContainer(
+                alignment: Alignment.topLeft,
+                child: BackButton(onPressed: goBack),
+              ),
             if (image != null) DialogCloseButton(onClose: onClose),
             ?aside,
           ],
         ),
-      ),
-    );
-  }
-}
-
-class BottomSheetTitleRow extends StatelessWidget {
-  final void Function()? onClose;
-  final Widget? leading;
-  final String? title;
-  final bool showCloseButton;
-
-  const BottomSheetTitleRow({super.key, this.leading, this.title, this.onClose, this.showCloseButton = true});
-
-  @override
-  Widget build(BuildContext context) {
-    final title = this.title;
-    final leading = this.leading;
-
-    return Padding(
-      padding: screenPaddingSymmetric(vertical: 8),
-      child: Row(
-        spacing: 8,
-        children: [
-          ?leading,
-          if (title != null) Text(title, style: Theme.of(context).textTheme.titleMedium),
-          Spacer(),
-          if (showCloseButton)
-            IconButton(icon: const Icon(Icons.close), onPressed: onClose ?? Navigator.of(context).maybePop),
-        ],
       ),
     );
   }

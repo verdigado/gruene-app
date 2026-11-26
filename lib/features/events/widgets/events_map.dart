@@ -201,6 +201,7 @@ Future<void> _showBottomSheet({
             return ModalBottomSheet(
               image: event?.image,
               title: event?.title,
+              goBack: selectedEventId != null ? () => setState(() => selectedEventId = null) : null,
               aside: calendar != null && !calendar.readOnly
                   ? Positioned(
                       bottom: 16,

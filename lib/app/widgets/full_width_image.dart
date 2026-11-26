@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gruene_app/app/widgets/dialog_close_button.dart';
+import 'package:gruene_app/app/widgets/dialog.dart';
 import 'package:photo_view/photo_view.dart';
 
 class FullWidthImage extends StatelessWidget {
