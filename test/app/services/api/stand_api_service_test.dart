@@ -96,6 +96,7 @@ void main() {
     GetIt.I.registerSingleton<GrueneApi>(api);
     GetIt.I.registerSingleton<FileManager>(fileManager);
     when(() => fileManager.retrieveFileData(any())).thenAnswer((_) async => Uint8List.fromList([1, 2, 3]));
+    when(() => fileManager.deleteFile(any())).thenAnswer((_) async {});
     service = StandApiService();
   });
 
@@ -292,6 +293,47 @@ void main() {
       ),
       throwsA(isA<ApiException>().having((e) => e.statusCode, 'statusCode', 500)),
     );
+  });
+
+  test('an uploaded photo whose file cannot be deleted does not fail the change', () async {
+    when(
+      () => api.v1CampaignsPoisPoiIdPut(
+        poiId: any(named: 'poiId'),
+        body: any(named: 'body'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand()));
+    when(
+      () => api.v1CampaignsPoisPoiIdPhotosPost(
+        poiId: any(named: 'poiId'),
+        image: any(named: 'image'),
+      ),
+    ).thenAnswer((_) async => _ok(_stand(photos: [_photo('p2')]), statusCode: 201));
+    when(() => fileManager.deleteFile('/photos/c.jpg')).thenThrow(const FileSystemException('locked', '/photos/c.jpg'));
+
+    final marker = await service.updateStand(
+      StandUpdateModel(
+        id: '4711',
+        address: _address,
+        location: LatLng(52.52, 13.405),
+        name: 'Marktplatz',
+        oldStandDetail: StandDetailModel(
+          id: '4711',
+          address: _address,
+          location: LatLng(52.52, 13.405),
+          name: 'Marktplatz',
+          flyerCountTotal: 250,
+          entries: const [],
+          photos: const [],
+          createdAt: '01.11.2026 10:00',
+        ),
+        newPhotos: [
+          PosterPhotoModel(id: 'new', imageUrl: '/photos/c.jpg', thumbnailUrl: '', createdAt: DateTime(2026)),
+        ],
+      ),
+    );
+
+    expect(marker.id, 4711);
+    verify(() => fileManager.deleteFile('/photos/c.jpg')).called(1);
   });
 
   test('a retried change skips a photo whose file was deleted by an earlier upload', () async {

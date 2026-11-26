@@ -113,7 +113,14 @@ abstract class BasePoiApiService extends BaseApiService {
         ),
       ),
     );
-    fileManager.deleteFile(imageFileLocation);
+    // a retry of the queued action skips a photo only once its file is gone, so the delete has to finish here
+    try {
+      await fileManager.deleteFile(imageFileLocation);
+    } on FileSystemException catch (e, stackTrace) {
+      // the photo is uploaded, so the upload is not reported as failed: a retry would upload it a second time.
+      // That still happens if a later step of this queued action fails, as the file is then still there
+      logger.e('File of the uploaded photo $imageFileLocation not deleted', error: e, stackTrace: stackTrace);
+    }
     return poi;
   }
 
