@@ -187,6 +187,9 @@ class StandAddScreenState extends State<StandAddScreen> with AddressExtension {
                 if (headerIsFixed) ...header,
                 Expanded(
                   child: SingleChildScrollView(
+                    // a text field's selection handles would stay visible above the buttons when scrolled away
+                    // (https://github.com/flutter/flutter/issues/13182), so scrolling ends the editing
+                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
