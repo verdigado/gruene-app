@@ -367,7 +367,6 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     var typeLabel = switch (type) {
       ChallengeActivityType.swaggerGeneratedUnknown => null,
       ChallengeActivityType.poster => t.campaigns.poster.count(n: count),
-      ChallengeActivityType.flyerSpot => t.campaigns.flyer.count(n: count),
       ChallengeActivityType.house => t.campaigns.door.count(n: count),
     };
     return typeLabel ?? '';

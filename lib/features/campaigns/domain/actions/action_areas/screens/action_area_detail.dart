@@ -120,6 +120,14 @@ class _ActionAreaDetailState extends State<ActionAreaDetail> {
                   Row(
                     children: [
                       Text(
+                        '${t.campaigns.actionArea.typeLabel}: ${widget.actionAreaDetail.type.toLabel()}',
+                        style: theme.textTheme.labelLarge!.copyWith(color: ThemeColors.textDark),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
                         '${t.campaigns.actionArea.areaLabel}: $actionAreaSurface',
                         style: theme.textTheme.labelSmall!.copyWith(color: ThemeColors.textDisabled),
                       ),

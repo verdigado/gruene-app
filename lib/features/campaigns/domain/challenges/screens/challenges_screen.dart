@@ -29,10 +29,9 @@ class ChallengesScreen extends StatefulWidget {
 
 class _ChallengesScreenState extends State<ChallengesScreen> {
   bool _loading = true;
-  late List<FilterChipModel> _flyerFilter;
+  late List<FilterChipModel> _activityFilter;
   final List<ChallengeActivityType> challengeActivityFilter = [
     ChallengeActivityType.house,
-    ChallengeActivityType.flyerSpot,
     ChallengeActivityType.poster,
   ];
   final FilterChipController _filterController = FilterChipController();
@@ -50,7 +49,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   @override
   void initState() {
     super.initState();
-    _flyerFilter = [
+    _activityFilter = [
       FilterChipModel(
         text: t.campaigns.door.label,
         isActive: challengeActivityFilter.contains(ChallengeActivityType.house),
@@ -60,11 +59,6 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
         text: t.campaigns.poster.label,
         isActive: challengeActivityFilter.contains(ChallengeActivityType.poster),
         stateChanged: (state) => addRemoveActivityType(state, ChallengeActivityType.poster),
-      ),
-      FilterChipModel(
-        text: t.campaigns.flyer.label,
-        isActive: challengeActivityFilter.contains(ChallengeActivityType.flyerSpot),
-        stateChanged: (state) => addRemoveActivityType(state, ChallengeActivityType.flyerSpot),
       ),
     ];
 
@@ -148,7 +142,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
             ],
           ),
           FilterChipCampaign(
-            filterOptions: _flyerFilter,
+            filterOptions: _activityFilter,
             filterController: _filterController,
             spacingOnBeginAndEnd: false,
           ),

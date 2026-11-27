@@ -148,15 +148,6 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
           height: 16,
         ),
       ),
-      ButtonSegment(
-        value: PoiType.flyerSpot,
-        icon: CustomIcon(
-          path: 'assets/symbols/flyer/flyer.svg',
-          color: _selectedPoiType == PoiType.flyerSpot ? ThemeColors.background : ThemeColors.textDark,
-          width: 16,
-          height: 16,
-        ),
-      ),
     ];
   }
 
@@ -169,12 +160,11 @@ class _TeamMemberStatisticsState extends State<TeamMemberStatistics> {
 
   double _getCurrentStatValue(TeamMembershipStatisticsItem item) {
     switch (_selectedPoiType) {
-      case PoiType.flyerSpot:
-        return item.flyerCount;
       case PoiType.poster:
         return item.posterCount;
       case PoiType.house:
-        return item.openedDoorCount + item.closedDoorCount;
+        return item.conversationCount;
+      case PoiType.stand:
       case PoiType.swaggerGeneratedUnknown:
         return 0;
     }

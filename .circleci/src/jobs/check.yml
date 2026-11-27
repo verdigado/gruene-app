@@ -34,6 +34,6 @@ steps:
           echo "Capitalize the informal address in German translations (Du, Dich, Dir, Dein, ...)" >&2
           exit 1
         fi
-#  - run:
-#      name: Tests
-#      command: fvm flutter test
+  - run:
+      name: Tests
+      command: fvm flutter test

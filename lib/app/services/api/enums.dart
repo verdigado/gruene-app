@@ -1,3 +1,3 @@
-enum PoiServiceType { poster, door, flyer }
+enum PoiServiceType { poster, door, stand }
 
-enum PoiCacheType { poster, door, flyer, route, actionArea }
+enum PoiCacheType { poster, door, stand, route, actionArea }

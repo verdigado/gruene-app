@@ -1,0 +1,64 @@
+{
+  "label": "Stand",
+  "type": "Wahlkampfstand",
+  "where": "Wo",
+  "flyerCountTotal": "Verteilte Flyer",
+  "entries": "Termine",
+  "showAllEntries": "Alle anzeigen (${count})",
+  "entryDateShortFormat": "E dd.MM.",
+  "entryDateLongFormat": "E dd.MM.yyyy",
+  "entryRangeDateFormat": "dd.MM.yyyy",
+  "entryWhen": "${date} · ${from}–${to} Uhr",
+  "entryRange": "${from} – ${to}",
+  "entryFlyerCount": "${count} Flyer",
+  "add": {
+    "title": "Wahlkampfstand eintragen"
+  },
+  "edit": {
+    "title": "Wahlkampfstand bearbeiten"
+  },
+  "entryAdd": {
+    "title": "Termin hinzufügen"
+  },
+  "entryEdit": {
+    "title": "Termin bearbeiten",
+    "delete": "Termin löschen",
+    "deleteConfirmation": "Möchtest Du den Termin am ${date} von ${from} bis ${to} Uhr wirklich löschen? Seine verteilten Flyer werden aus der Summe entfernt.",
+    "lastEntryHint": "Der einzige Termin eines Stands kann nicht gelöscht werden. Wenn der Stand weg soll, lösche ihn unter „Wahlkampfstand bearbeiten“."
+  },
+  "deleteConfirmation(param=count)": {
+    "zero": "Möchtest Du diesen Wahlkampfstand wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+    "one": "Möchtest Du diesen Wahlkampfstand und seinen Termin wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+    "other": "Möchtest Du diesen Wahlkampfstand und alle seine ${count} Termine wirklich löschen? Dies kann nicht rückgängig gemacht werden."
+  },
+  "saveFailed": "Die Änderung konnte nicht gespeichert werden. Bitte versuche es noch einmal.",
+  "outdated": "Der Stand wurde inzwischen synchronisiert, Deine Änderung wurde nicht gespeichert. Bitte schließe den Stand, öffne ihn neu und versuche es noch einmal.",
+  "photoDeleteConfirmation": "Fotos helfen anderen, den Stand wiederzuerkennen. Bitte lösche sie mit Bedacht!",
+  "name": "Name",
+  "description": "Beschreibung",
+  "location": "Ort",
+  "comment": "Kommentar",
+  "date": "Datum",
+  "dateFormat": "EEEE, d. MMMM y",
+  "from": "Von",
+  "to": "Bis",
+  "flyerCount": "Verteilte Flyer (optional)",
+  "flyerCountFutureHint": "Verteilte Flyer kannst Du eintragen, sobald der Termin stattgefunden hat.",
+  "errors": {
+    "nameRequired": "Bitte gib einen Namen ein.",
+    "tooLong": "Höchstens ${max} Zeichen.",
+    "toBeforeFrom": "\"Bis\" muss nach \"Von\" liegen.",
+    "flyerCount": "Bitte gib eine ganze Zahl ab 0 ein.",
+    "overlap": "Dieser Termin überschneidet sich mit dem Termin am ${date} von ${from} bis ${to} Uhr."
+  },
+  "futureDateWithFlyers": {
+    "message": "Für einen Termin in der Zukunft können keine verteilten Flyer eingetragen werden. Die eingetragene Anzahl wird gelöscht.",
+    "confirm": "Datum übernehmen",
+    "decline": "Abbrechen"
+  },
+  "discardChanges": {
+    "message": "Deine Eingaben wurden noch nicht gespeichert. Möchtest Du sie verwerfen?",
+    "confirm": "Verwerfen",
+    "decline": "Weiter bearbeiten"
+  }
+}

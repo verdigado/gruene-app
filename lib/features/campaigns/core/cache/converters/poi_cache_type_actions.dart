@@ -7,8 +7,8 @@ extension PoiCacheTypeActions on PoiCacheType {
         return CampaignActionType.addPoster;
       case PoiCacheType.door:
         return CampaignActionType.addDoor;
-      case PoiCacheType.flyer:
-        return CampaignActionType.addFlyer;
+      case PoiCacheType.stand:
+        return CampaignActionType.addStand;
       case PoiCacheType.route:
       case PoiCacheType.actionArea:
         throw UnimplementedError();
@@ -21,8 +21,8 @@ extension PoiCacheTypeActions on PoiCacheType {
         return CampaignActionType.deletePoster;
       case PoiCacheType.door:
         return CampaignActionType.deleteDoor;
-      case PoiCacheType.flyer:
-        return CampaignActionType.deleteFlyer;
+      case PoiCacheType.stand:
+        return CampaignActionType.deleteStand;
       case PoiCacheType.route:
       case PoiCacheType.actionArea:
         throw UnimplementedError();
@@ -35,8 +35,8 @@ extension PoiCacheTypeActions on PoiCacheType {
         return CampaignActionType.editPoster;
       case PoiCacheType.door:
         return CampaignActionType.editDoor;
-      case PoiCacheType.flyer:
-        return CampaignActionType.editFlyer;
+      case PoiCacheType.stand:
+        return CampaignActionType.editStand;
       case PoiCacheType.route:
       case PoiCacheType.actionArea:
         throw UnimplementedError();

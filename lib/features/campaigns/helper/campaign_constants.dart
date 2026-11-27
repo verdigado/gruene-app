@@ -2,7 +2,9 @@ import 'package:gruene_app/swagger_generated_code/gruene_api.swagger.dart';
 
 class CampaignConstants {
   static const dummyImageAssetName = 'assets/splash/logo_android12.png';
+  static const standPlaceholderAssetName = 'assets/graphics/placeholder_stand.png';
   static const doorAssetName = 'assets/symbols/doors/door.png';
+  static const standAssetName = 'assets/symbols/stands/stand.png';
   static const flyerAssetName = 'assets/symbols/flyer/flyer.png';
   static const posterOkAssetName = 'assets/symbols/posters/poster.png';
   static const posterDamagedAssetName = 'assets/symbols/posters/poster_damaged.png';
@@ -86,6 +88,8 @@ class CampaignConstants {
   static const featurePropertyIsAssigned = 'is_assigned';
   static const featurePropertyColor = 'color';
   static const featurePropertyVisualIdentifierId = 'visual_identifier_id';
+  static const featurePropertyName = 'name';
+  static const featurePropertyTypeLabel = 'type_label';
 
   static String focusAreaMapIdProperty = 'id';
   static String focusAreaMapScoreColorProperty = 'score_color';

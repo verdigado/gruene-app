@@ -67,7 +67,9 @@ class _LocationButtonState extends State<CampaignLocationButton> {
       // screen edge
       padding: const EdgeInsets.only(right: 16),
       child: FloatingActionButton(
-        heroTag: 'fab_map_view',
+        // No hero: every kept-alive campaign map tab has this button, and pushing a route on the
+        // root navigator would find several heroes with the same tag.
+        heroTag: null,
         elevation: 1,
         backgroundColor: ThemeColors.textDisabled.withAlpha(150),
         onPressed: _locationStatus != null ? () => _determinePosition() : null,

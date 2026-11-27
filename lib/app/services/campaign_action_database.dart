@@ -1,4 +1,5 @@
 import 'package:gruene_app/app/models/campaigns/campaign_action.dart';
+import 'package:gruene_app/app/services/campaign_action_database_migrations.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,10 +17,18 @@ class CampaignActionDatabase {
   Future<Database> _initDatabase() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'campaign_action_db.db');
-    return await openDatabase(path, version: 1, onCreate: _createDatabase);
+    return await databaseFactory.openDatabase(path, options: openOptions);
   }
 
-  Future<void> _createDatabase(Database db, _) async {
+  /// Options used to open the database, shared with tests so they exercise the same create and upgrade path.
+  static OpenDatabaseOptions get openOptions => OpenDatabaseOptions(
+    version: CampaignActionDatabaseMigrations.currentVersion,
+    onCreate: _createDatabase,
+    // sqflite runs onUpgrade inside a transaction, so a failed step leaves the database on its old version
+    onUpgrade: CampaignActionDatabaseMigrations.upgrade,
+  );
+
+  static Future<void> _createDatabase(Database db, _) async {
     return await db.execute('''
         CREATE TABLE ${CampaignActionFields.tableName} (
           ${CampaignActionFields.id} ${CampaignActionFields.idType},
@@ -81,9 +90,19 @@ class CampaignActionDatabase {
     return result.map((json) => CampaignAction.fromMap(json)).toList();
   }
 
+  Future<CampaignAction?> read(int id) async {
+    final db = await instance.database;
+    final result = await db.query(
+      CampaignActionFields.tableName,
+      where: '${CampaignActionFields.id} = ?',
+      whereArgs: [id],
+    );
+    return result.map((json) => CampaignAction.fromMap(json)).singleOrNull;
+  }
+
   Future<void> update(CampaignAction campaignAction) async {
     final db = await instance.database;
-    db.update(
+    await db.update(
       CampaignActionFields.tableName,
       campaignAction.toMap(),
       where: '${CampaignActionFields.id} = ?',

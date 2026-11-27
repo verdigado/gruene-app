@@ -388,6 +388,9 @@ jobs:
                       exit 1
                     fi
                 name: Check Capitalized Informal Address
+            - run:
+                command: fvm flutter test
+                name: Tests
     deliver_android:
         docker:
             - image: cimg/android:2026.03.1-node

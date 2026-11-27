@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_detail_model.dart';
 import 'package:gruene_app/app/models/campaigns/doors/door_update_model.dart';
 import 'package:gruene_app/app/theme/theme.dart';
-import 'package:gruene_app/app/widgets/enhanced_wheel_slider.dart';
+import 'package:gruene_app/app/widgets/counter_input.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/doors/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/create_address_widget.dart';
 import 'package:gruene_app/features/campaigns/domain/actions/shared/widgets/delete_and_save_widget.dart';
@@ -34,17 +34,21 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
   @override
   TextEditingController cityTextController = TextEditingController();
 
-  TextEditingController closedDoorTextController = TextEditingController();
-  TextEditingController openedDoorTextController = TextEditingController();
+  TextEditingController conversationsTextController = TextEditingController();
+  TextEditingController materialOnlyTextController = TextEditingController();
 
   @override
   void dispose() {
     disposeAddressTextControllers();
+    conversationsTextController.dispose();
+    materialOnlyTextController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
+    conversationsTextController.text = widget.door.conversations.toString();
+    materialOnlyTextController.text = widget.door.materialOnly.toString();
     streetTextController.text = widget.door.address.street;
     houseNumberTextController.text = widget.door.address.houseNumber;
     zipCodeTextController.text = widget.door.address.zipCode;
@@ -66,7 +70,10 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
           ),
           Container(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(children: [Text(t.campaigns.door.edit.title, style: theme.textTheme.titleLarge)]),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(t.campaigns.door.edit.title, style: theme.textTheme.titleLarge),
+            ),
           ),
           Align(
             alignment: Alignment.centerLeft,
@@ -82,37 +89,13 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
             cityTextController: cityTextController,
             inputBorderColor: lightBorderColor,
           ),
-          Container(
+          Padding(
+            padding: EdgeInsets.only(top: 12, bottom: 6),
+            child: CounterInput(label: t.campaigns.door.conversations, controller: conversationsTextController),
+          ),
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              children: [
-                Flexible(
-                  child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.closedDoors,
-                    textController: closedDoorTextController,
-                    initialValue: widget.door.closedDoors,
-                    labelColor: ThemeColors.textDisabled,
-                    sliderColor: ThemeColors.text,
-                    borderColor: lightBorderColor,
-                    actionColor: theme.colorScheme.secondary,
-                    sliderInputRange: SliderInputRange.numbers0To999,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Flexible(
-                  child: EnhancedWheelSlider(
-                    labelText: t.campaigns.door.openedDoors,
-                    initialValue: widget.door.openedDoors,
-                    textController: openedDoorTextController,
-                    labelColor: ThemeColors.textDisabled,
-                    sliderColor: ThemeColors.text,
-                    borderColor: lightBorderColor,
-                    actionColor: theme.colorScheme.secondary,
-                    sliderInputRange: SliderInputRange.numbers0To999,
-                  ),
-                ),
-              ],
-            ),
+            child: CounterInput(label: t.campaigns.door.materialOnly, controller: materialOnlyTextController),
           ),
           Container(
             padding: EdgeInsets.only(top: 6, bottom: 24),
@@ -137,14 +120,14 @@ class _DoorEditState extends State<DoorEdit> with AddressExtension, DoorValidato
 
   void _saveDoor() async {
     if (!context.mounted) return;
-    final validationResult = validateDoors(openedDoorTextController.text, closedDoorTextController.text, context);
+    final validationResult = validateDoors(conversationsTextController.text, materialOnlyTextController.text, context);
     if (validationResult == null) return;
 
     final updateModel = DoorUpdateModel(
       id: widget.door.id,
       address: getAddress(),
-      openedDoors: validationResult.openedDoors,
-      closedDoors: validationResult.closedDoors,
+      conversations: validationResult.conversations,
+      materialOnly: validationResult.materialOnly,
       location: widget.door.location,
       oldDoorDetail: widget.door,
     );

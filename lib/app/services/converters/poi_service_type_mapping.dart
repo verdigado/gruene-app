@@ -7,19 +7,20 @@ extension PoiServiceTypeMapping on PoiServiceType {
         return PoiType.poster;
       case PoiServiceType.door:
         return PoiType.house;
-      case PoiServiceType.flyer:
-        return PoiType.flyerSpot;
+      case PoiServiceType.stand:
+        return PoiType.stand;
     }
   }
 
-  AreaType toApiAreasGetType() {
+  List<AreaType> toApiAreasGetTypes() {
     switch (this) {
+      // flyer action areas are shown in the door tab
       case PoiServiceType.door:
-        return AreaType.house;
-      case PoiServiceType.flyer:
-        return AreaType.flyerSpot;
+        return [AreaType.house, AreaType.flyerSpot];
       case PoiServiceType.poster:
-        return AreaType.poster;
+        return [AreaType.poster];
+      case PoiServiceType.stand:
+        throw UnsupportedError('The stand tab shows no action areas');
     }
   }
 
@@ -31,19 +32,20 @@ extension PoiServiceTypeMapping on PoiServiceType {
         if (posterStatus != null) statusSuffix = '_${posterStatus.name}';
         return '$typeName$statusSuffix';
       case PoiServiceType.door:
-      case PoiServiceType.flyer:
+      case PoiServiceType.stand:
         return typeName;
     }
   }
 
-  RouteType toRoutesApiGetType() {
+  List<RouteType> toRoutesApiGetTypes() {
     switch (this) {
       case PoiServiceType.poster:
-        return RouteType.poster;
+        return [RouteType.poster];
+      // flyer routes are shown in the door tab
       case PoiServiceType.door:
-        return RouteType.house;
-      case PoiServiceType.flyer:
-        return RouteType.flyerSpot;
+        return [RouteType.house, RouteType.flyerSpot];
+      case PoiServiceType.stand:
+        throw UnsupportedError('The stand tab shows no routes');
     }
   }
 
@@ -53,8 +55,8 @@ extension PoiServiceTypeMapping on PoiServiceType {
         return PoiCacheType.poster;
       case PoiServiceType.door:
         return PoiCacheType.door;
-      case PoiServiceType.flyer:
-        return PoiCacheType.flyer;
+      case PoiServiceType.stand:
+        return PoiCacheType.stand;
     }
   }
 }

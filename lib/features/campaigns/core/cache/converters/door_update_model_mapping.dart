@@ -4,8 +4,8 @@ extension DoorUpdateModelMapping on DoorUpdateModel {
   DoorDetailModel toDoorDetailModel() {
     var newDoorDetail = oldDoorDetail.copyWith(
       address: address,
-      closedDoors: closedDoors,
-      openedDoors: openedDoors,
+      materialOnly: materialOnly,
+      conversations: conversations,
       isCached: true,
     );
     return newDoorDetail;

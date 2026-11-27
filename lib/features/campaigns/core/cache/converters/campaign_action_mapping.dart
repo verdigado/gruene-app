@@ -30,19 +30,45 @@ extension CampaignActionMapping on CampaignAction {
     return model;
   }
 
-  FlyerCreateModel toFlyerCreate() {
+  StandCreateModel toStandCreate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
-    var model = FlyerCreateModel.fromJson(data.convertLatLongField());
-
-    return model;
+    return StandCreateModel.fromJson(data.convertLatLongField());
   }
 
-  FlyerUpdateModel toFlyerUpdate() {
+  StandUpdateModel toStandUpdate() {
     var data = jsonDecode(serialized!) as Map<String, dynamic>;
-    var model = FlyerUpdateModel.fromJson(data.updateIdField(poiId!).convertLatLongField());
-
-    return model;
+    return StandUpdateModel.fromJson(data.updateIdField(poiId!).convertLatLongField());
   }
+
+  /// Termin actions keep the stand as the person last saw it, for the map and the detail while offline.
+  ({StandEntryCreateModel entry, StandDetailModel oldStandDetail}) toStandEntryCreate() {
+    var data = jsonDecode(serialized!) as Map<String, dynamic>;
+    return (
+      entry: StandEntryCreateModel.fromJson(data['entry'] as Map<String, dynamic>),
+      oldStandDetail: StandDetailModel.fromJson(data['oldStandDetail'] as Map<String, dynamic>),
+    );
+  }
+
+  ({StandEntryUpdateModel entry, StandDetailModel oldStandDetail}) toStandEntryUpdate() {
+    var data = jsonDecode(serialized!) as Map<String, dynamic>;
+    return (
+      entry: StandEntryUpdateModel.fromJson(data['entry'] as Map<String, dynamic>),
+      oldStandDetail: StandDetailModel.fromJson(data['oldStandDetail'] as Map<String, dynamic>),
+    );
+  }
+
+  ({String entryId, StandDetailModel oldStandDetail}) toStandEntryDelete() {
+    var data = jsonDecode(serialized!) as Map<String, dynamic>;
+    return (
+      entryId: data['entryId'] as String,
+      oldStandDetail: StandDetailModel.fromJson(data['oldStandDetail'] as Map<String, dynamic>),
+    );
+  }
+
+  /// The stand as last seen by the person, kept with a Termin action.
+  StandDetailModel standOfEntryAction() => StandDetailModel.fromJson(
+    (jsonDecode(serialized!) as Map<String, dynamic>)['oldStandDetail'] as Map<String, dynamic>,
+  );
 
   PosterListItemModel toPosterListItemFromUpdate(DateTime originalCreatedAt) {
     var updateModel = toPosterUpdate().toPosterDetailModel();

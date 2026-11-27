@@ -24,6 +24,7 @@ import 'package:gruene_app/features/campaigns/domain/maps/widgets/campaign_locat
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_compass.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller.dart';
 import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_controller_simplified.dart';
+import 'package:gruene_app/features/campaigns/domain/maps/widgets/map_popover.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/campaign_select_dialog.dart';
 import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/features/campaigns/helper/map_feature_manager.dart';
@@ -159,7 +160,7 @@ class _MapContainerState extends State<MapContainer>
         : CameraPosition(target: defaultStartLocation, zoom: zoomLevelUserOverview);
 
     Widget addMarker = SizedBox(height: 0, width: 0);
-    if (popups.isEmpty && _showAddMarker & !_isInFocusMode) {
+    if (widget.addPOIClicked != null && popups.isEmpty && _showAddMarker & !_isInFocusMode) {
       addMarker = Center(
         child: Container(
           padding: EdgeInsets.only(bottom: 65 /* height of the add_marker icon to position it exactly on the middle */),
@@ -297,7 +298,13 @@ class _MapContainerState extends State<MapContainer>
           return distanceA.compareTo(distanceB);
         });
 
-        feature = await _userMultiSelect(poiMarkers);
+        feature = await _userMultiSelect(poiMarkers, (item) {
+          var itemsOnSamePos = poiMarkers
+              .map(MapHelper.extractLatLngFromFeature)
+              .where((x) => x == MapHelper.extractLatLngFromFeature(item));
+          var isDuplicate = itemsOnSamePos.length > 1;
+          return _getMultiSelectRow(item, isDuplicate);
+        });
       } else {
         feature = MapHelper.getClosestFeature(poiMarkers, targetLatLng);
       }
@@ -334,7 +341,8 @@ class _MapContainerState extends State<MapContainer>
     final routes = jsonFeaturesRoutes.map((e) => e as Map<String, dynamic>).toList();
 
     if (routes.isNotEmpty) {
-      final feature = MapHelper.getClosestFeature(routes, targetLatLng);
+      final feature = await _selectRouteOrArea(routes, targetLatLng);
+      if (feature == null || !mounted) return true;
 
       _onRouteClick(feature);
       return true;
@@ -351,11 +359,22 @@ class _MapContainerState extends State<MapContainer>
     final actionAreas = jsonFeaturesActionAreas.map((e) => e as Map<String, dynamic>).toList();
 
     if (actionAreas.isNotEmpty) {
-      final feature = MapHelper.getClosestFeature(actionAreas, targetLatLng);
+      // the touch target also catches areas next to the tap, only offer the ones it is in
+      final tappedAreas = MapHelper.filterPolygonsContaining(actionAreas, targetLatLng);
+      final feature = await _selectRouteOrArea(tappedAreas, targetLatLng);
+      if (feature == null || !mounted) return true;
+
       _onActionAreaClick(feature);
       return true;
     }
     return false;
+  }
+
+  /// Returns the only feature in [features], or lets the user choose one if several (e.g. a flyer and a door
+  /// route) are at the tapped spot. Returns null if the user closes the selection.
+  Future<Map<String, dynamic>?> _selectRouteOrArea(List<Map<String, dynamic>> features, LatLng targetLatLng) async {
+    if (features.length == 1) return features.single;
+    return _userMultiSelect(MapHelper.sortByDistance(features, targetLatLng), _getRouteOrAreaSelectRow);
   }
 
   Future<bool> _findAndHandleClickExperienceAreas(Point<double> point, LatLng targetLatLng) async {
@@ -574,11 +593,12 @@ class _MapContainerState extends State<MapContainer>
     LatLng coord,
     Widget widget,
     OnEditItemClickedCallback? onEditItemClicked,
-    Size desiredSize,
+    Size? desiredSize,
   ) async {
     if (!mounted) return;
 
-    await moveMapIfItemIsOnBorder(coord, desiredSize);
+    // a popover sized to its content is not measured before it is shown, so an estimate is used here
+    await moveMapIfItemIsOnBorder(coord, desiredSize ?? const Size(200, 120));
     final point = await getScreenPointFromLatLng(coord);
 
     _showPopOver(point, widget, onEditItemClicked, desiredSize: desiredSize);
@@ -661,16 +681,13 @@ class _MapContainerState extends State<MapContainer>
     Point<num> pointOnScreen,
     Widget widget,
     OnEditItemClickedCallback? onEditItemClicked, {
-    Size desiredSize = const Size(100, 100),
+    Size? desiredSize,
   }) {
     final mediaQuery = MediaQuery.of(context);
-    final theme = Theme.of(context);
     var pixelRatio = Platform.isAndroid ? mediaQuery.devicePixelRatio : 1.0;
 
     setState(() {
       popups.clear();
-      num popupHeight = desiredSize.height - 15;
-      num popupWidth = desiredSize.width;
       popups.add(
         GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -682,72 +699,13 @@ class _MapContainerState extends State<MapContainer>
           },
         ),
       );
-      final heightArrowTriangle = 10.0;
       popups.add(
-        Positioned(
-          top: ((pointOnScreen.y / pixelRatio) - popupHeight).toDouble() - (5 + heightArrowTriangle) - 5,
-          left: (pointOnScreen.x / pixelRatio) - (popupWidth / 2),
-          child: Column(
-            children: [
-              Container(
-                width: popupWidth.toDouble(),
-                height: popupHeight.toDouble() + 5,
-                decoration: BoxDecoration(color: ThemeColors.background, borderRadius: BorderRadius.circular(5)),
-                padding: EdgeInsets.only(top: 3, left: 5, right: 5),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                popups.clear();
-                              });
-                            },
-                            child: Icon(Icons.close_outlined, size: 14),
-                          ),
-                          GestureDetector(
-                            onTap: () => onTapPopup(onEditItemClicked),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border(bottom: BorderSide(width: 1.5, color: ThemeColors.textDark)),
-                              ),
-                              child: Text(
-                                t.common.actions.edit,
-                                style: theme.textTheme.labelSmall?.apply(
-                                  color: ThemeColors.textDark,
-                                  fontWeightDelta: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => onTapPopup(onEditItemClicked),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        width: popupWidth.toDouble(),
-                        height: popupHeight.toDouble() - 25,
-                        child: widget,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Center(
-                child: ClipPath(
-                  clipper: MyTriangle(),
-                  child: Container(color: ThemeColors.background, width: 15, height: heightArrowTriangle),
-                ),
-              ),
-            ],
-          ),
+        MapPopover(
+          anchor: Offset(pointOnScreen.x / pixelRatio, pointOnScreen.y / pixelRatio),
+          desiredSize: desiredSize,
+          onClose: () => setState(() => popups.clear()),
+          onEdit: () => onTapPopup(onEditItemClicked),
+          child: widget,
         ),
       );
     });
@@ -885,7 +843,10 @@ class _MapContainerState extends State<MapContainer>
     Timer(Duration(milliseconds: 500), () => _loadDataOnMap());
   }
 
-  Future<Map<String, dynamic>?> _userMultiSelect(List<Map<String, dynamic>> features) async {
+  Future<Map<String, dynamic>?> _userMultiSelect(
+    List<Map<String, dynamic>> features,
+    Widget Function(Map<String, dynamic> feature) buildRow,
+  ) async {
     var theme = Theme.of(context);
 
     var selectedFeature = await showDialog<Map<String, dynamic>>(
@@ -907,17 +868,7 @@ class _MapContainerState extends State<MapContainer>
                   ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: 250),
                     child: RawScrollbar(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: features.map((item) {
-                            var itemsOnSamePos = features
-                                .map(MapHelper.extractLatLngFromFeature)
-                                .where((x) => x == MapHelper.extractLatLngFromFeature(item));
-                            var isDuplicate = itemsOnSamePos.length > 1;
-                            return _getMultiSelectRow(item, isDuplicate);
-                          }).toList(),
-                        ),
-                      ),
+                      child: SingleChildScrollView(child: Column(children: features.map(buildRow).toList())),
                     ),
                   ),
                 ],
@@ -976,6 +927,38 @@ class _MapContainerState extends State<MapContainer>
     );
   }
 
+  Widget _getRouteOrAreaSelectRow(Map<String, dynamic> feature) {
+    var theme = Theme.of(context);
+    var name = MapHelper.extractNameFromFeature(feature);
+    return GestureDetector(
+      onTap: () => Navigator.maybePop(context, feature),
+      child: Card(
+        color: theme.colorScheme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        shadowColor: ThemeColors.textDisabled,
+        child: InkWell(
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name.isEmpty ? '-' : name,
+                  style: theme.textTheme.labelMedium!.copyWith(color: ThemeColors.text, fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  MapHelper.extractTypeLabelFromFeature(feature),
+                  style: theme.textTheme.labelMedium!.copyWith(color: ThemeColors.text),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showItem() {
     if (widget.mapContainerController.route != null) {
       _onRouteClick(widget.mapContainerController.route!.toRouteDetail().toFeature().toJson());
@@ -987,19 +970,5 @@ class _MapContainerState extends State<MapContainer>
   void _changeActiveCampaign() {
     resetMarkerItems();
     campaignActionCache.flushCache();
-  }
-}
-
-class MyTriangle extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.addPolygon([Offset(0, 0), Offset(size.width / 2, size.height), Offset(size.width, 0)], true);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
   }
 }

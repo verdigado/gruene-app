@@ -15,6 +15,8 @@ class TextInputField extends StatefulWidget {
 
   final bool selectAllTextOnFocus;
 
+  final bool enabled;
+
   const TextInputField({
     required this.labelText,
     required this.textController,
@@ -22,6 +24,7 @@ class TextInputField extends StatefulWidget {
     this.borderColor,
     this.inputType = InputFieldType.string,
     this.selectAllTextOnFocus = false,
+    this.enabled = true,
     super.key,
   });
 
@@ -50,6 +53,9 @@ class _TextInputFieldState extends State<TextInputField> {
       case InputFieldType.numbers1To999:
         inputType = TextInputType.number;
         formatters = <TextInputFormatter>[NumericRangeFormatter(min: 1, max: 999)];
+      case InputFieldType.numbers0To2000:
+        inputType = TextInputType.number;
+        formatters = <TextInputFormatter>[NumericRangeFormatter(min: 0, max: 2000)];
     }
     final theme = Theme.of(context);
     final inputBorder = switch (widget.borderColor) {
@@ -75,6 +81,7 @@ class _TextInputFieldState extends State<TextInputField> {
         },
         child: TextFormField(
           controller: widget.textController,
+          enabled: widget.enabled,
           keyboardType: inputType,
           inputFormatters: formatters,
           style: theme.textTheme.bodyMedium?.apply(color: ThemeColors.text),
@@ -90,7 +97,7 @@ class _TextInputFieldState extends State<TextInputField> {
   }
 }
 
-enum InputFieldType { string, numbers, numbers0To99, numbers0To999, numbers1To999 }
+enum InputFieldType { string, numbers, numbers0To99, numbers0To999, numbers1To999, numbers0To2000 }
 
 class NumericRangeFormatter extends TextInputFormatter {
   final int min;
@@ -111,11 +118,20 @@ class NumericRangeFormatter extends TextInputFormatter {
     }
 
     if (newValueNumber < min) {
-      return newValue.copyWith(text: min.toString());
+      return _clampedTo(min);
     } else if (newValueNumber > max) {
-      return newValue.copyWith(text: max.toString());
+      return _clampedTo(max);
     } else {
       return newValue;
     }
+  }
+
+  // The cursor has to move as well, it may be beyond the end of the shorter clamped text
+  TextEditingValue _clampedTo(int value) {
+    final text = value.toString();
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
   }
 }

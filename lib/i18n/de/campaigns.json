@@ -5,6 +5,9 @@
     "confirmStoringCache": "Falls Du Probleme beim Synchronisieren hast, kannst Du die lokalen Änderungen nun auf Deinem Gerät abspeichern. Willst Du das?",
     "storingCacheSuccess": "Die lokalen Änderungen wurden nun gespeichert. Bitte sende diese per E-Mail an beteiligung@gruene.de. Damit unterstützt Du uns bei der Problemlösung!"
   },
+  "sync": {
+    "refusedActions": "Einige Änderungen konnten nicht gespeichert werden und wurden verworfen."
+  },
   "map": {
     "noMapDataInfo": "Bitte zoome in die Karte, um mehr Informationen zu sehen.",
     "identicalPositions": "Identische Position"
@@ -47,7 +50,7 @@
       "activated": "Routen aktiviert",
       "deactivated": "Routen deaktiviert",
       "aboutTitle": "Über Routen",
-      "aboutText": "Routen zeigen Dir, welche Wege Du am besten ablaufen kannst, um Haustüren zu besuchen, Plakate aufzuhängen oder Flyer zu verteilen. Die Routen werden von Wahlkampfkoordinator*innen im Grünen Atlas erstellt. Für mehr Informationen wende Dich bitte an Deinen Orts- oder Kreisverband."
+      "aboutText": "Routen zeigen Dir, welche Wege Du am besten ablaufen kannst, um Haustüren zu besuchen, Plakate aufzuhängen oder Material zu verteilen. Die Routen werden von Wahlkampfkoordinator*innen im Grünen Atlas erstellt. Für mehr Informationen wende Dich bitte an Deinen Orts- oder Kreisverband."
     },
     "campaignChanged": "Kampagne ausgewählt: ${campaignName}",
     "more": "mehr Info"
@@ -69,6 +72,7 @@
   "actionArea": {
     "label": "Einsatzgebiet",
     "areaLabel": "Fläche",
+    "typeLabel": "Typ",
     "quickAction": {
       "status": "Gebiet abgearbeitet"
     }

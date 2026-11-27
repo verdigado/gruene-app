@@ -20,8 +20,8 @@
   },
   "recorded": {
     "posters": "Plakate",
-    "doors": "Haustüren",
-    "flyer": "Flyer"
+    "doors": "Haustürgespräche",
+    "material": "Material"
   },
   "asAt": "Stand",
   "noTeams": "In Deinem ${division} existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."

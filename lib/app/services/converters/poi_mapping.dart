@@ -20,9 +20,29 @@ extension PoiMapping on Poi {
     return DoorDetailModel(
       id: poi.id,
       address: poi.address.toAddressModel(),
-      openedDoors: poi.house!.countOpenedDoors.toInt(),
-      closedDoors: poi.house!.countClosedDoors.toInt(),
+      conversations: poi.house!.countConversations.toInt(),
+      materialOnly: poi.house!.countMaterialOnly.toInt(),
       location: poi.coords.toLatLng(),
+      createdAt: poi.createdAt.toLocalDateTimeString(),
+    );
+  }
+
+  StandDetailModel toStandDetail() {
+    final poi = this;
+    if (poi.type != PoiType.stand) {
+      throw Exception('Unexpected PoiType');
+    }
+    final stand = poi.stand!;
+    return StandDetailModel(
+      id: poi.id,
+      address: poi.address.toAddressModel(),
+      location: poi.coords.toLatLng(),
+      name: stand.name,
+      description: stand.description,
+      comment: stand.comment,
+      flyerCountTotal: stand.flyerCountTotal.toInt(),
+      entries: stand.entries.map((entry) => entry.toStandEntry()).toList(),
+      photos: _getPosterPhotos(),
       createdAt: poi.createdAt.toLocalDateTimeString(),
     );
   }
@@ -40,20 +60,6 @@ extension PoiMapping on Poi {
       location: coords.toLatLng(),
       comment: poi.poster!.comment.safe(),
       createdAt: poi.createdAt.toLocalDateTimeString(),
-    );
-  }
-
-  FlyerDetailModel toFlyerDetail() {
-    final poi = this;
-    if (poi.type != PoiType.flyerSpot) {
-      throw Exception('Unexpected PoiType');
-    }
-    return FlyerDetailModel(
-      id: poi.id,
-      address: poi.address.toAddressModel(),
-      flyerCount: poi.flyerSpot!.flyerCount.toInt(),
-      createdAt: poi.createdAt.toLocalDateTimeString(),
-      location: coords.toLatLng(),
     );
   }
 
@@ -103,6 +109,11 @@ extension PoiMapping on Poi {
     photos.sortByIdDescending();
     return photos.first.imageUrl;
   }
+}
+
+extension on PoiStandEntry {
+  StandEntryModel toStandEntry() =>
+      StandEntryModel(id: id, startAt: startAt.toLocal(), endAt: endAt.toLocal(), flyerCount: flyerCount.toInt());
 }
 
 extension on ImageSrcSet {

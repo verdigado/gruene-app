@@ -18,26 +18,35 @@ typedef DownloadImageCallback = void Function(int imageIndex);
 typedef ReplaceImageWithCameraCallback = Future<bool> Function(int imageIndex);
 typedef ReplaceImageWithDeviceCallback = Future<bool> Function(int imageIndex);
 
+/// Shows photos full screen. The menu offers the actions that are given; without any, there is no menu.
 class PictureGalleryView extends StatefulWidget {
   final GetImageProviderCallback getImageProvider;
   final GetAllImagesCallback getAllImages;
 
   final int currentImageIndex;
-  final RemoveImageCallback removeImage;
-  final DownloadImageCallback downloadImage;
-  final ReplaceImageWithCameraCallback replaceImageWithCamera;
-  final ReplaceImageWithDeviceCallback replaceImageWithDevice;
+  final RemoveImageCallback? removeImage;
+  final DownloadImageCallback? downloadImage;
+  final ReplaceImageWithCameraCallback? replaceImageWithCamera;
+  final ReplaceImageWithDeviceCallback? replaceImageWithDevice;
+
+  /// Asked before a photo is deleted; needed with [removeImage].
+  final String? deleteConfirmationText;
+
+  /// Shown with the newest photo, e.g. "Aktuelles Bild" for posters; none if null.
+  final String? currentPictureLabel;
 
   const PictureGalleryView({
     super.key,
     required this.getImageProvider,
     required this.getAllImages,
     required this.currentImageIndex,
-    required this.removeImage,
-    required this.downloadImage,
-    required this.replaceImageWithCamera,
-    required this.replaceImageWithDevice,
-  });
+    this.removeImage,
+    this.downloadImage,
+    this.replaceImageWithCamera,
+    this.replaceImageWithDevice,
+    this.deleteConfirmationText,
+    this.currentPictureLabel,
+  }) : assert(removeImage == null || deleteConfirmationText != null, 'deleting needs a confirmation text');
 
   @override
   State<PictureGalleryView> createState() => _PictureGalleryViewState();
@@ -109,11 +118,12 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
               ),
             ),
           ),
-          Positioned(
-            bottom: 6,
-            right: 14,
-            child: Align(alignment: Alignment.bottomRight, child: _getGalleryPopUpMenu()),
-          ),
+          if (_hasActions)
+            Positioned(
+              bottom: 6,
+              right: 14,
+              child: Align(alignment: Alignment.bottomRight, child: _getGalleryPopUpMenu()),
+            ),
           Positioned(
             right: 20,
             top: 20,
@@ -127,76 +137,83 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
     );
   }
 
+  bool get _canReplace => widget.replaceImageWithCamera != null && widget.replaceImageWithDevice != null;
+
+  bool get _hasActions => widget.downloadImage != null || widget.removeImage != null || _canReplace;
+
   PopupMenuButton<PhotoGalleryAction> _getGalleryPopUpMenu() {
     return PopupMenuButton<PhotoGalleryAction>(
       color: ThemeColors.background,
       onSelected: _doGalleryAction,
       child: Icon(Icons.more_vert_outlined, color: ThemeColors.background),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<PhotoGalleryAction>>[
-        PopupMenuItem<PhotoGalleryAction>(
-          value: PhotoGalleryAction.downloadPhoto,
-          child: Row(
-            children: [
-              Icon(Icons.file_download_outlined),
-              SizedBox(width: 12),
-              Text(t.campaigns.poster.photoEditActions.downloadPicture),
-            ],
-          ),
-        ),
-        PopupMenuItem<PhotoGalleryAction>(
-          value: PhotoGalleryAction.deletePhoto,
-          child: Row(
-            children: [
-              Icon(Icons.delete_outlined),
-              SizedBox(width: 12),
-              Text(t.campaigns.poster.photoEditActions.deletePhoto),
-            ],
-          ),
-        ),
-        PopupMenuItem<PhotoGalleryAction>(
-          value: PhotoGalleryAction.replacePhoto,
-          child: PopupMenuButton(
-            color: ThemeColors.background,
-            onOpened: () => Navigator.pop(context),
+        if (widget.downloadImage != null)
+          PopupMenuItem<PhotoGalleryAction>(
+            value: PhotoGalleryAction.downloadPhoto,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.camera_alt_outlined),
-                    SizedBox(width: 12),
-                    Text(t.campaigns.poster.photoEditActions.replacePhoto),
-                  ],
-                ),
-                Icon(Icons.arrow_right_outlined),
+                Icon(Icons.file_download_outlined),
+                SizedBox(width: 12),
+                Flexible(child: Text(t.campaigns.photo.actions.downloadPhoto)),
               ],
             ),
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<PhotoGalleryAction>>[
-              PopupMenuItem<PhotoGalleryAction>(
-                value: PhotoGalleryAction.replacePhotoWithCamera,
-                child: Row(
-                  children: [
-                    Icon(Icons.add_a_photo_outlined),
-                    SizedBox(width: 12),
-                    Text(t.campaigns.poster.photoEditActions.acquireNewPhoto),
-                  ],
-                ),
-                onTap: () => _doGalleryAction(PhotoGalleryAction.replacePhotoWithCamera),
-              ),
-              PopupMenuItem<PhotoGalleryAction>(
-                value: PhotoGalleryAction.replacePhotoWithImage,
-                child: Row(
-                  children: [
-                    Icon(Icons.image_outlined),
-                    SizedBox(width: 12),
-                    Text(t.campaigns.poster.photoEditActions.uploadFile),
-                  ],
-                ),
-                onTap: () => _doGalleryAction(PhotoGalleryAction.replacePhotoWithImage),
-              ),
-            ],
           ),
-        ),
+        if (widget.removeImage != null)
+          PopupMenuItem<PhotoGalleryAction>(
+            value: PhotoGalleryAction.deletePhoto,
+            child: Row(
+              children: [
+                Icon(Icons.delete_outlined),
+                SizedBox(width: 12),
+                Flexible(child: Text(t.campaigns.photo.actions.deletePhoto)),
+              ],
+            ),
+          ),
+        if (_canReplace)
+          PopupMenuItem<PhotoGalleryAction>(
+            value: PhotoGalleryAction.replacePhoto,
+            child: PopupMenuButton(
+              color: ThemeColors.background,
+              onOpened: () => Navigator.pop(context),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.camera_alt_outlined),
+                      SizedBox(width: 12),
+                      Text(t.campaigns.photo.actions.replacePhoto),
+                    ],
+                  ),
+                  Icon(Icons.arrow_right_outlined),
+                ],
+              ),
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<PhotoGalleryAction>>[
+                PopupMenuItem<PhotoGalleryAction>(
+                  value: PhotoGalleryAction.replacePhotoWithCamera,
+                  child: Row(
+                    children: [
+                      Icon(Icons.add_a_photo_outlined),
+                      SizedBox(width: 12),
+                      Flexible(child: Text(t.campaigns.photo.actions.acquireNewPhoto)),
+                    ],
+                  ),
+                  onTap: () => _doGalleryAction(PhotoGalleryAction.replacePhotoWithCamera),
+                ),
+                PopupMenuItem<PhotoGalleryAction>(
+                  value: PhotoGalleryAction.replacePhotoWithImage,
+                  child: Row(
+                    children: [
+                      Icon(Icons.image_outlined),
+                      SizedBox(width: 12),
+                      Flexible(child: Text(t.campaigns.photo.actions.uploadFile)),
+                    ],
+                  ),
+                  onTap: () => _doGalleryAction(PhotoGalleryAction.replacePhotoWithImage),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -209,10 +226,10 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
 
     switch (result) {
       case PhotoGalleryAction.downloadPhoto:
-        widget.downloadImage(_currentImageIndex);
+        widget.downloadImage!(_currentImageIndex);
       case PhotoGalleryAction.deletePhoto:
         if (await _showConfirmationDialog(context, PictureViewConfirmationDialogOptions.delete)) {
-          widget.removeImage(_currentImageIndex);
+          widget.removeImage!(_currentImageIndex);
           var currentImages = widget.getAllImages();
           if (currentImages.isEmpty) {
             _closeWindow();
@@ -224,12 +241,12 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
         throw UnimplementedError();
       case PhotoGalleryAction.replacePhotoWithCamera:
         if (await _showConfirmationDialog(context, PictureViewConfirmationDialogOptions.replace)) {
-          var result = await widget.replaceImageWithCamera(_currentImageIndex);
+          var result = await widget.replaceImageWithCamera!(_currentImageIndex);
           if (result) setCurrentImageIndex(0);
         }
       case PhotoGalleryAction.replacePhotoWithImage:
         if (await _showConfirmationDialog(context, PictureViewConfirmationDialogOptions.replace)) {
-          var result = await widget.replaceImageWithDevice(_currentImageIndex);
+          var result = await widget.replaceImageWithDevice!(_currentImageIndex);
           if (result) setCurrentImageIndex(0);
         }
     }
@@ -243,15 +260,15 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
   Future<bool> _showConfirmationDialog(BuildContext context, PictureViewConfirmationDialogOptions options) async {
     var optionSet = switch (options) {
       PictureViewConfirmationDialogOptions.replace => (
-        title: t.campaigns.poster.photoEditActions.confirmReplace.title,
-        text: t.campaigns.poster.photoEditActions.confirmReplace.text,
-        actionText: t.campaigns.poster.photoEditActions.replacePhoto,
+        title: t.campaigns.photo.confirmReplace.title,
+        text: t.campaigns.photo.confirmReplace.text,
+        actionText: t.campaigns.photo.actions.replacePhoto,
         icon: Icons.camera_alt_outlined,
       ),
       PictureViewConfirmationDialogOptions.delete => (
-        title: t.campaigns.poster.photoEditActions.confirmDelete.title,
-        text: t.campaigns.poster.photoEditActions.confirmDelete.text,
-        actionText: t.campaigns.poster.photoEditActions.deletePhoto,
+        title: t.campaigns.photo.confirmDelete.title,
+        text: widget.deleteConfirmationText!,
+        actionText: t.campaigns.photo.actions.deletePhoto,
         icon: Icons.delete_outlined,
       ),
     };
@@ -294,7 +311,8 @@ class _PictureGalleryViewState extends State<PictureGalleryView> {
 
   String getImageText(List<PosterPhotoModel> allImages) {
     var title = '';
-    if (_currentImageIndex == 0) title += t.campaigns.poster.pictureView.currentPictureLabel;
+    final currentPictureLabel = widget.currentPictureLabel;
+    if (currentPictureLabel != null && _currentImageIndex == 0) title += currentPictureLabel;
     return title;
   }
 }

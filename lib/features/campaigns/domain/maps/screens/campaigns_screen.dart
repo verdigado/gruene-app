@@ -29,7 +29,7 @@ class _CampaignsScreenState extends State<CampaignsScreen> {
   final List<TabModelBase> campaignTabs = [
     TabModelBase(label: t.campaigns.door.label),
     TabModelBase(label: t.campaigns.poster.label),
-    TabModelBase(label: t.campaigns.flyer.label),
+    TabModelBase(label: t.campaigns.stand.label),
     TabModelBase(label: t.campaigns.challenges.label),
     TabModelBase(label: t.campaigns.team.label, badgeSource: BadgeSource.openInvitations),
     TabModelBase(label: t.campaigns.statistics.label),

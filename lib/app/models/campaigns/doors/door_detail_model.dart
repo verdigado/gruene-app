@@ -15,8 +15,8 @@ class DoorDetailModel extends BasicPoi {
 
   @override
   final AddressModel address;
-  final int openedDoors;
-  final int closedDoors;
+  final int conversations;
+  final int materialOnly;
   final String createdAt;
   @LatLongConverter()
   final LatLng location;
@@ -25,8 +25,8 @@ class DoorDetailModel extends BasicPoi {
   DoorDetailModel({
     required this.id,
     required this.address,
-    required this.openedDoors,
-    required this.closedDoors,
+    required this.conversations,
+    required this.materialOnly,
     required this.createdAt,
     required this.location,
     this.isCached = false,
@@ -39,8 +39,8 @@ class DoorDetailModel extends BasicPoi {
   DoorDetailModel copyWith({
     String? id,
     AddressModel? address,
-    int? openedDoors,
-    int? closedDoors,
+    int? conversations,
+    int? materialOnly,
     String? createdAt,
     LatLng? location,
     bool? isCached,
@@ -48,8 +48,8 @@ class DoorDetailModel extends BasicPoi {
     return DoorDetailModel(
       id: id ?? this.id,
       address: address ?? this.address,
-      openedDoors: openedDoors ?? this.openedDoors,
-      closedDoors: closedDoors ?? this.closedDoors,
+      conversations: conversations ?? this.conversations,
+      materialOnly: materialOnly ?? this.materialOnly,
       createdAt: createdAt ?? this.createdAt,
       location: location ?? this.location,
       isCached: isCached ?? this.isCached,

@@ -95,11 +95,15 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+  sqflite_common_ffi: ^2.4.7
 #--------- swagger_dart_code_generator --------------
   build_runner: ^2.4.13
   chopper_generator: ^8.0.0
   json_serializable: ^6.6.1
   swagger_dart_code_generator: ^4.1.1
+  mocktail: ^1.0.5
 #----------------------------------------------------
 
 dependency_overrides:
@@ -123,6 +127,7 @@ flutter:
     - assets/symbols/posters/
     - assets/symbols/posters/svg_inverted/
     - assets/symbols/doors/
+    - assets/symbols/stands/
     - assets/symbols/flyer/
     - assets/symbols/polling_stations/
     - assets/symbols/events/
