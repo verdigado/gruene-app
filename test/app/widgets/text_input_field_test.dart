@@ -115,6 +115,7 @@ void main() {
       (InputFieldType.numbers0To99, '150', '99', '-1', '0'),
       (InputFieldType.numbers0To999, '5000', '999', '-1', '0'),
       (InputFieldType.numbers1To999, '5000', '999', '0', '1'),
+      (InputFieldType.numbers0To2000, '5000', '2000', '-1', '0'),
     ]) {
       testWidgets('${inputType.name} clamps to $min..$max', (tester) async {
         await pumpField(tester, inputType: inputType);

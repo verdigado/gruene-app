@@ -165,7 +165,7 @@ class _StandEntryEditState extends State<StandEntryEdit> with ConfirmDelete {
                 TextInputField(
                   labelText: t.campaigns.stand.flyerCount,
                   textController: _flyerCountTextController,
-                  inputType: InputFieldType.numbers,
+                  inputType: InputFieldType.numbers0To2000,
                   enabled: !_isAfterToday,
                 ),
                 error: _errors.flyerCount,
