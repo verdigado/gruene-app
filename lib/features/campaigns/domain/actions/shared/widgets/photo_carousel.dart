@@ -64,9 +64,9 @@ class _PhotoCarouselState extends State<PhotoCarousel> {
   );
 }
 
-/// Edits the photos of a pin in its form: a carousel of the photos (newest first, the logo while there are none) with
-/// the page dots on the photos and a camera button at the top right to take or pick a photo. Tapping a photo opens all
-/// of them full screen, where a photo can be downloaded, replaced or deleted.
+/// Edits the photos of a pin in its form: a carousel of the photos (newest first, the placeholder image while there are
+/// none) with the page dots on the photos and a camera button at the top right to take or pick a photo. Tapping a photo
+/// opens all of them full screen, where a photo can be downloaded, replaced or deleted.
 class PhotoCarouselEditor extends StatefulWidget {
   final PhotoEditController controller;
 
@@ -82,6 +82,9 @@ class PhotoCarouselEditor extends StatefulWidget {
   /// The start of the file name of a downloaded photo.
   final String downloadFileNamePrefix;
 
+  /// Shown while there are no photos, filling the photo row.
+  final String placeholderAssetName;
+
   const PhotoCarouselEditor({
     super.key,
     required this.controller,
@@ -89,6 +92,7 @@ class PhotoCarouselEditor extends StatefulWidget {
     required this.deleteConfirmationText,
     this.currentPhotoLabel,
     this.downloadFileNamePrefix = 'poster',
+    this.placeholderAssetName = CampaignConstants.dummyImageAssetName,
   });
 
   @override
@@ -135,7 +139,7 @@ class _PhotoCarouselEditorState extends State<PhotoCarouselEditor> {
         fit: StackFit.expand,
         children: [
           photos.isEmpty
-              ? Image.asset(CampaignConstants.dummyImageAssetName)
+              ? Image.asset(widget.placeholderAssetName, fit: BoxFit.cover)
               : _PhotoSlider(
                   photos: photos,
                   controller: _sliderController,

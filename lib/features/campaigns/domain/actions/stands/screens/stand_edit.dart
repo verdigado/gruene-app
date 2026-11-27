@@ -15,6 +15,7 @@ import 'package:gruene_app/features/campaigns/domain/maps/screens/map_consumer.d
 import 'package:gruene_app/features/campaigns/domain/shared/mixins.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/multiline_text_input_field.dart';
 import 'package:gruene_app/features/campaigns/domain/shared/widgets/sheet_header.dart';
+import 'package:gruene_app/features/campaigns/helper/campaign_constants.dart';
 import 'package:gruene_app/i18n/translations.g.dart';
 
 typedef OnSaveStandCallback = Future<void> Function(StandUpdateModel standUpdate);
@@ -105,6 +106,7 @@ class _StandEditState extends State<StandEdit> with AddressExtension, ConfirmDel
                 controller: _photos,
                 deleteConfirmationText: t.campaigns.stand.photoDeleteConfirmation,
                 downloadFileNamePrefix: 'stand',
+                placeholderAssetName: CampaignConstants.standPlaceholderAssetName,
               ),
               _field(
                 TextInputField(
