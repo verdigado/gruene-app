@@ -115,9 +115,9 @@ class PushNotificationService {
     final firebase = FirebaseMessaging.instance;
 
     try {
-      final fbToken = await firebase.getToken();
-      if (fbToken != null) {
-        await _registerDeviceToken(fbToken);
+      final firebaseToken = await firebase.getToken();
+      if (firebaseToken != null) {
+        await _registerDeviceToken(firebaseToken);
       }
     } catch (e) {
       // e.g. "FCM Registration failed" / SERVICE_NOT_AVAILABLE when Google Play services
@@ -127,34 +127,32 @@ class PushNotificationService {
     }
 
     final newTopics = await _getFcmTopics();
-    final currentTopics = (await _loadSubscribedFcmTopics()).toSet();
+    final previousTopics = (await _loadSubscribedFcmTopics()).toSet();
+    final subscribedTopics = Set<String>.of(previousTopics);
 
-    // Subscribe to new topics not currently subscribed
-    final topicsToSubscribe = newTopics.difference(currentTopics);
-    for (var topic in topicsToSubscribe) {
+    final topicsToSubscribe = newTopics.difference(previousTopics);
+    for (final topic in topicsToSubscribe) {
       try {
         await firebase.subscribeToTopic(topic);
+        subscribedTopics.add(topic);
         logger.d('Subscribed to topic: $topic');
       } catch (e) {
         logger.w('Error subscribing to topic $topic: $e');
       }
     }
 
-    // Unsubscribe from topics no longer needed
-    final topicsToUnsubscribe = currentTopics.difference(newTopics);
-    for (var topic in topicsToUnsubscribe) {
+    final topicsToUnsubscribe = previousTopics.difference(newTopics);
+    for (final topic in topicsToUnsubscribe) {
       try {
         await firebase.unsubscribeFromTopic(topic);
+        subscribedTopics.remove(topic);
         logger.d('Unsubscribed from topic: $topic');
       } catch (e) {
         logger.w('Error unsubscribing from topic $topic: $e');
       }
     }
 
-    var subscribedTopics = newTopics.toList();
-
-    // Save the updated topics to secure storage
-    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsFcmTopics, value: jsonEncode(subscribedTopics));
+    await _saveSubscribedFcmTopics(subscribedTopics);
   }
 
   /// Calculate the new list of all topics the user should be subscribed to
@@ -223,15 +221,22 @@ class PushNotificationService {
       return;
     }
     final firebase = FirebaseMessaging.instance;
-    final topics = await _loadSubscribedFcmTopics();
-    for (final topic in topics) {
+    final previousTopics = await _loadSubscribedFcmTopics();
+    final subscribedTopics = Set<String>.of(previousTopics);
+
+    for (final topic in previousTopics) {
       try {
         await firebase.unsubscribeFromTopic(topic);
+        subscribedTopics.remove(topic);
       } catch (e) {
         logger.w('Error unsubscribing from topic $topic: $e');
       }
     }
 
-    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsFcmTopics, value: jsonEncode([]));
+    await _saveSubscribedFcmTopics(subscribedTopics);
+  }
+
+  Future<void> _saveSubscribedFcmTopics(Iterable<String> topics) async {
+    await _secureStorage.write(key: SecureStorageKeys.pushNotificationsFcmTopics, value: jsonEncode(topics.toList()));
   }
 }

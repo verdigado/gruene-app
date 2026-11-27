@@ -24,5 +24,5 @@
     "material": "Material"
   },
   "asAt": "Stand",
-  "noTeams": "In deinem ${division} existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
+  "noTeams": "In Deinem ${division} existieren noch keine Teams mit Wahlkampfaktivitäten in der gewählten Kampagne."
 }

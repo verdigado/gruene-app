@@ -23,16 +23,16 @@
   "entryEdit": {
     "title": "Termin bearbeiten",
     "delete": "Termin löschen",
-    "deleteConfirmation": "Möchtest du den Termin am ${date} von ${from} bis ${to} Uhr wirklich löschen? Seine verteilten Flyer werden aus der Summe entfernt.",
+    "deleteConfirmation": "Möchtest Du den Termin am ${date} von ${from} bis ${to} Uhr wirklich löschen? Seine verteilten Flyer werden aus der Summe entfernt.",
     "lastEntryHint": "Der einzige Termin eines Stands kann nicht gelöscht werden. Wenn der Stand weg soll, lösche ihn unter „Wahlkampfstand bearbeiten“."
   },
   "deleteConfirmation(param=count)": {
-    "zero": "Möchtest du diesen Wahlkampfstand wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
-    "one": "Möchtest du diesen Wahlkampfstand und seinen Termin wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
-    "other": "Möchtest du diesen Wahlkampfstand und alle seine ${count} Termine wirklich löschen? Dies kann nicht rückgängig gemacht werden."
+    "zero": "Möchtest Du diesen Wahlkampfstand wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+    "one": "Möchtest Du diesen Wahlkampfstand und seinen Termin wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+    "other": "Möchtest Du diesen Wahlkampfstand und alle seine ${count} Termine wirklich löschen? Dies kann nicht rückgängig gemacht werden."
   },
   "saveFailed": "Die Änderung konnte nicht gespeichert werden. Bitte versuche es noch einmal.",
-  "outdated": "Der Stand wurde inzwischen synchronisiert, deine Änderung wurde nicht gespeichert. Bitte schließe den Stand, öffne ihn neu und versuche es noch einmal.",
+  "outdated": "Der Stand wurde inzwischen synchronisiert, Deine Änderung wurde nicht gespeichert. Bitte schließe den Stand, öffne ihn neu und versuche es noch einmal.",
   "photoDeleteConfirmation": "Fotos helfen anderen, den Stand wiederzuerkennen. Bitte lösche sie mit Bedacht!",
   "name": "Name",
   "description": "Beschreibung",
@@ -43,7 +43,7 @@
   "from": "Von",
   "to": "Bis",
   "flyerCount": "Verteilte Flyer (optional)",
-  "flyerCountFutureHint": "Verteilte Flyer kannst du eintragen, sobald der Termin stattgefunden hat.",
+  "flyerCountFutureHint": "Verteilte Flyer kannst Du eintragen, sobald der Termin stattgefunden hat.",
   "errors": {
     "nameRequired": "Bitte gib einen Namen ein.",
     "tooLong": "Höchstens ${max} Zeichen.",
@@ -57,7 +57,7 @@
     "decline": "Abbrechen"
   },
   "discardChanges": {
-    "message": "Deine Eingaben wurden noch nicht gespeichert. Möchtest du sie verwerfen?",
+    "message": "Deine Eingaben wurden noch nicht gespeichert. Möchtest Du sie verwerfen?",
     "confirm": "Verwerfen",
     "decline": "Weiter bearbeiten"
   }

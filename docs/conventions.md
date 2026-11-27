@@ -76,6 +76,11 @@ its own file in a subdirectory; the keys stay the same.
   "@loginMembers": "Button on the welcome screen"
   ```
 
+### Informal Address
+
+German texts address users informally and capitalize the pronouns: `Du`, `Dich`, `Dir`, `Dein`, `Deine`, etc.
+The CI fails if a lowercase form is found in [lib/i18n/de](../lib/i18n/de).
+
 ### Unused Translations
 
 The CI fails if there are unused translations. To check locally, run

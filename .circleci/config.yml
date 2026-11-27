@@ -382,6 +382,13 @@ jobs:
                     '
                 name: Check Unused Translations
             - run:
+                command: |
+                    if grep -rnwE 'du|dich|dir|dein|deine|deinem|deinen|deiner|deines' lib/i18n/de; then
+                      echo "Capitalize the informal address in German translations (Du, Dich, Dir, Dein, ...)" >&2
+                      exit 1
+                    fi
+                name: Check Capitalized Informal Address
+            - run:
                 command: fvm flutter test
                 name: Tests
     deliver_android:
