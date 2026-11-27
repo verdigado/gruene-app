@@ -14,7 +14,7 @@
   },
   "joinDialog": {
     "title": "Challenge-Funktion nutzen",
-    "text": "Bitte beachte, dass du als Challenge-Teilnehmer*in namentlich in der Rangliste aufgeführt werden kannst. Deine Sichtbarkeits-Einstellungen greifen hier nicht.",
+    "text": "Bitte beachte, dass Du als Challenge-Teilnehmer*in namentlich in der Rangliste aufgeführt werden kannst. Deine Sichtbarkeits-Einstellungen greifen hier nicht.",
     "toast": "Challenge \"${title}\" beigetreten. Viel Erfolg!"
   },
   "leaveDialog": {

@@ -27,6 +27,13 @@ steps:
             process.exit(1)
           }
         '
+  - run:
+      name: Check Capitalized Informal Address
+      command: |
+        if grep -rnwE 'du|dich|dir|dein|deine|deinem|deinen|deiner|deines' lib/i18n/de; then
+          echo "Capitalize the informal address in German translations (Du, Dich, Dir, Dein, ...)" >&2
+          exit 1
+        fi
 #  - run:
 #      name: Tests
 #      command: fvm flutter test
