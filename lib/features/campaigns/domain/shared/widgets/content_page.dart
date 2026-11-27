@@ -28,7 +28,14 @@ class ContentPage extends StatelessWidget {
         alignment: alignment,
         child: Padding(
           padding: EdgeInsets.only(bottom: 50),
-          child: withScroll ? SingleChildScrollView(child: child) : child,
+          child: withScroll
+              ? SingleChildScrollView(
+                  // a text field's selection handles would stay visible above the app bar when scrolled away
+                  // (https://github.com/flutter/flutter/issues/13182), so scrolling ends the editing
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: child,
+                )
+              : child,
         ),
       ),
       appBar: CustomAppBar(title: title, showBackButton: showBackButton),
