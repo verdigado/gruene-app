@@ -20,7 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 const _flyerCount = 'Verteilte Flyer (optional)';
-const _futureHint = 'Verteilte Flyer kannst du eintragen, sobald der Termin stattgefunden hat.';
+const _futureHint = 'Verteilte Flyer kannst Du eintragen, sobald der Termin stattgefunden hat.';
 
 /// The campaign name in the header is not part of these tests, so it never loads.
 class _FakeCampaignApiService extends Fake implements CampaignApiService {
@@ -284,7 +284,7 @@ void main() {
     await tester.enterText(multiLineField('Kommentar'), 'Tisch mitbringen');
 
     await tapText(tester, 'Abbrechen');
-    expect(find.text('Deine Eingaben wurden noch nicht gespeichert. Möchtest du sie verwerfen?'), findsOneWidget);
+    expect(find.text('Deine Eingaben wurden noch nicht gespeichert. Möchtest Du sie verwerfen?'), findsOneWidget);
 
     await tapText(tester, 'Weiter bearbeiten');
     expect(screen.closed(), isFalse);

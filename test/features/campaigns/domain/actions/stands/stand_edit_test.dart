@@ -187,7 +187,7 @@ void main() {
     expect(find.text('Eintrag löschen?'), findsOneWidget);
     expect(
       find.text(
-        'Möchtest du diesen Wahlkampfstand und alle seine 3 Termine wirklich löschen? '
+        'Möchtest Du diesen Wahlkampfstand und alle seine 3 Termine wirklich löschen? '
         'Dies kann nicht rückgängig gemacht werden.',
       ),
       findsOneWidget,
@@ -213,7 +213,7 @@ void main() {
     await tapVisible(tester, find.text('Eintrag löschen'));
 
     expect(
-      find.text('Möchtest du diesen Wahlkampfstand wirklich löschen? Dies kann nicht rückgängig gemacht werden.'),
+      find.text('Möchtest Du diesen Wahlkampfstand wirklich löschen? Dies kann nicht rückgängig gemacht werden.'),
       findsOneWidget,
     );
   });

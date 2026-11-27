@@ -12,7 +12,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 const _flyerCount = 'Verteilte Flyer (optional)';
-const _futureHint = 'Verteilte Flyer kannst du eintragen, sobald der Termin stattgefunden hat.';
+const _futureHint = 'Verteilte Flyer kannst Du eintragen, sobald der Termin stattgefunden hat.';
 const _lastEntryHint =
     'Der einzige Termin eines Stands kann nicht gelöscht werden. '
     'Wenn der Stand weg soll, lösche ihn unter „Wahlkampfstand bearbeiten“.';
@@ -220,7 +220,7 @@ void main() {
     expect(find.text('Termin löschen?'), findsOneWidget);
     expect(
       find.text(
-        'Möchtest du den Termin am 02.11.2026 von 10:00 bis 12:00 Uhr wirklich löschen? '
+        'Möchtest Du den Termin am 02.11.2026 von 10:00 bis 12:00 Uhr wirklich löschen? '
         'Seine verteilten Flyer werden aus der Summe entfernt.',
       ),
       findsOneWidget,
