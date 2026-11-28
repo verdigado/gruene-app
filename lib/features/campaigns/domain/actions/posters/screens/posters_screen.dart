@@ -126,7 +126,7 @@ class _PostersScreenState extends MapConsumer<PostersScreen, PosterCreateModel, 
                     style: theme.textTheme.bodyMedium?.apply(
                       color: ThemeColors.background,
                       letterSpacingDelta: 1,
-                      fontWeightDelta: 5,
+                      fontWeightDelta: 3,
                     ),
                   ),
                 ),

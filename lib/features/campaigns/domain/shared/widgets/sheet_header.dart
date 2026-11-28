@@ -23,10 +23,7 @@ class SheetHeader extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  title,
-                  style: theme.textTheme.titleMedium?.apply(color: ThemeColors.text, fontWeightDelta: 2),
-                ),
+                child: Text(title, style: theme.textTheme.titleMedium?.apply(color: ThemeColors.text)),
               ),
               IconButton(
                 icon: const Icon(Icons.close),
