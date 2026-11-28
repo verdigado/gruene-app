@@ -92,7 +92,7 @@ class _EnhancedWheelSliderState extends State<EnhancedWheelSlider> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     widget.labelText,
-                    style: theme.textTheme.labelMedium?.apply(color: _labelColor, fontWeightDelta: 5),
+                    style: theme.textTheme.labelMedium?.apply(color: _labelColor, fontWeightDelta: 3),
                   ),
                 ),
                 Align(

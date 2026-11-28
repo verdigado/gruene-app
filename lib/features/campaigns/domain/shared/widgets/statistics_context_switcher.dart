@@ -85,7 +85,7 @@ class _StatisticsContextSwitcherState extends State<StatisticsContextSwitcher> {
                 ),
                 Text(
                   t.common.actions.change,
-                  style: theme.textTheme.labelMedium!.apply(decoration: TextDecoration.underline, fontWeightDelta: 5),
+                  style: theme.textTheme.labelMedium!.apply(decoration: TextDecoration.underline, fontWeightDelta: 3),
                 ),
               ],
             ),

@@ -99,7 +99,7 @@ class _CounterInputState extends State<CounterInput> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [NumericRangeFormatter(min: widget.min, max: widget.max)],
                 textAlign: TextAlign.center,
-                style: theme.textTheme.titleLarge?.apply(color: ThemeColors.text, fontWeightDelta: 2),
+                style: theme.textTheme.titleLarge?.apply(color: ThemeColors.text),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: theme.colorScheme.surface,

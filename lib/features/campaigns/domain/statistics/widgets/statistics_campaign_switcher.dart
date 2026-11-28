@@ -79,7 +79,7 @@ class _StatisticsCampaignSwitcherState extends State<StatisticsCampaignSwitcher>
               ),
               Text(
                 t.common.actions.change,
-                style: theme.textTheme.labelMedium!.apply(decoration: TextDecoration.underline, fontWeightDelta: 5),
+                style: theme.textTheme.labelMedium!.apply(decoration: TextDecoration.underline, fontWeightDelta: 3),
               ),
             ],
           ),
